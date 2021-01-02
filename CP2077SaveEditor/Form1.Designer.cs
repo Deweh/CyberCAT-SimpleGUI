@@ -31,11 +31,17 @@ namespace CP2077SaveEditor
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.optionsPanel = new System.Windows.Forms.Panel();
+            this.factsButton = new CP2077SaveEditor.ModernButton();
+            this.inventoryButton = new CP2077SaveEditor.ModernButton();
+            this.saveChangesButton = new CP2077SaveEditor.ModernButton();
+            this.appearanceButton = new CP2077SaveEditor.ModernButton();
             this.editorPanel = new System.Windows.Forms.Panel();
             this.filePathLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.appearancePanel = new System.Windows.Forms.Panel();
+            this.loadAppearButton = new CP2077SaveEditor.ModernButton();
+            this.saveAppearButton = new CP2077SaveEditor.ModernButton();
             this.earsBox = new System.Windows.Forms.TextBox();
             this.jawBox = new System.Windows.Forms.TextBox();
             this.mouthBox = new System.Windows.Forms.TextBox();
@@ -62,13 +68,8 @@ namespace CP2077SaveEditor
             this.factsListView = new System.Windows.Forms.ListView();
             this.factsValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.loadAppearButton = new CP2077SaveEditor.ModernButton();
-            this.saveAppearButton = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.factsButton = new CP2077SaveEditor.ModernButton();
-            this.inventoryButton = new CP2077SaveEditor.ModernButton();
-            this.saveChangesButton = new CP2077SaveEditor.ModernButton();
-            this.appearanceButton = new CP2077SaveEditor.ModernButton();
+            this.appearanceTreeView = new System.Windows.Forms.TreeView();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.inventoryPanel.SuspendLayout();
@@ -94,6 +95,71 @@ namespace CP2077SaveEditor
             this.optionsPanel.Name = "optionsPanel";
             this.optionsPanel.Size = new System.Drawing.Size(143, 1064);
             this.optionsPanel.TabIndex = 1;
+            // 
+            // factsButton
+            // 
+            this.factsButton.BackColor = System.Drawing.Color.White;
+            this.factsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.factsButton.ClickEffectEnabled = true;
+            this.factsButton.DefaultColor = System.Drawing.Color.White;
+            this.factsButton.HoverColor = System.Drawing.Color.DarkGray;
+            this.factsButton.Location = new System.Drawing.Point(-1, 119);
+            this.factsButton.Name = "factsButton";
+            this.factsButton.Size = new System.Drawing.Size(143, 61);
+            this.factsButton.TabIndex = 2;
+            this.factsButton.Text = "Quest Facts";
+            this.factsButton.TextColor = System.Drawing.Color.Black;
+            this.factsButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.factsButton.Click += new System.EventHandler(this.factsButton_Click);
+            // 
+            // inventoryButton
+            // 
+            this.inventoryButton.BackColor = System.Drawing.Color.White;
+            this.inventoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.inventoryButton.ClickEffectEnabled = true;
+            this.inventoryButton.DefaultColor = System.Drawing.Color.White;
+            this.inventoryButton.HoverColor = System.Drawing.Color.DarkGray;
+            this.inventoryButton.Location = new System.Drawing.Point(-1, 59);
+            this.inventoryButton.Name = "inventoryButton";
+            this.inventoryButton.Size = new System.Drawing.Size(143, 61);
+            this.inventoryButton.TabIndex = 1;
+            this.inventoryButton.Text = "Inventory";
+            this.inventoryButton.TextColor = System.Drawing.Color.Black;
+            this.inventoryButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.inventoryButton.Click += new System.EventHandler(this.inventoryButton_Click);
+            // 
+            // saveChangesButton
+            // 
+            this.saveChangesButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.saveChangesButton.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.saveChangesButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.saveChangesButton.ClickEffectEnabled = true;
+            this.saveChangesButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
+            this.saveChangesButton.HoverColor = System.Drawing.Color.LightGray;
+            this.saveChangesButton.Location = new System.Drawing.Point(-1, 1019);
+            this.saveChangesButton.Name = "saveChangesButton";
+            this.saveChangesButton.Size = new System.Drawing.Size(143, 44);
+            this.saveChangesButton.TabIndex = 1;
+            this.saveChangesButton.Text = "Save Changes";
+            this.saveChangesButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.saveChangesButton.Click += new System.EventHandler(this.saveChangesButton_Click);
+            // 
+            // appearanceButton
+            // 
+            this.appearanceButton.BackColor = System.Drawing.Color.White;
+            this.appearanceButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.appearanceButton.ClickEffectEnabled = false;
+            this.appearanceButton.DefaultColor = System.Drawing.Color.White;
+            this.appearanceButton.HoverColor = System.Drawing.Color.DarkGray;
+            this.appearanceButton.Location = new System.Drawing.Point(-1, -1);
+            this.appearanceButton.Name = "appearanceButton";
+            this.appearanceButton.Size = new System.Drawing.Size(143, 61);
+            this.appearanceButton.TabIndex = 0;
+            this.appearanceButton.Text = "Appearance";
+            this.appearanceButton.TextColor = System.Drawing.Color.Black;
+            this.appearanceButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.appearanceButton.Click += new System.EventHandler(this.appearanceButton_Click);
             // 
             // editorPanel
             // 
@@ -138,6 +204,7 @@ namespace CP2077SaveEditor
             // 
             // appearancePanel
             // 
+            this.appearancePanel.Controls.Add(this.appearanceTreeView);
             this.appearancePanel.Controls.Add(this.loadAppearButton);
             this.appearancePanel.Controls.Add(this.saveAppearButton);
             this.appearancePanel.Controls.Add(this.earsBox);
@@ -156,12 +223,46 @@ namespace CP2077SaveEditor
             this.appearancePanel.Size = new System.Drawing.Size(851, 548);
             this.appearancePanel.TabIndex = 4;
             // 
+            // loadAppearButton
+            // 
+            this.loadAppearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.loadAppearButton.BackColor = System.Drawing.Color.White;
+            this.loadAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.loadAppearButton.ClickEffectEnabled = true;
+            this.loadAppearButton.DefaultColor = System.Drawing.Color.White;
+            this.loadAppearButton.HoverColor = System.Drawing.Color.LightGray;
+            this.loadAppearButton.Location = new System.Drawing.Point(636, 501);
+            this.loadAppearButton.Name = "loadAppearButton";
+            this.loadAppearButton.Size = new System.Drawing.Size(98, 33);
+            this.loadAppearButton.TabIndex = 11;
+            this.loadAppearButton.Text = "Load Preset";
+            this.loadAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.loadAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.loadAppearButton.Click += new System.EventHandler(this.loadAppearButton_Click);
+            // 
+            // saveAppearButton
+            // 
+            this.saveAppearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveAppearButton.BackColor = System.Drawing.Color.White;
+            this.saveAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.saveAppearButton.ClickEffectEnabled = true;
+            this.saveAppearButton.DefaultColor = System.Drawing.Color.White;
+            this.saveAppearButton.HoverColor = System.Drawing.Color.LightGray;
+            this.saveAppearButton.Location = new System.Drawing.Point(740, 501);
+            this.saveAppearButton.Name = "saveAppearButton";
+            this.saveAppearButton.Size = new System.Drawing.Size(98, 33);
+            this.saveAppearButton.TabIndex = 10;
+            this.saveAppearButton.Text = "Save Preset";
+            this.saveAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.saveAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.saveAppearButton.Click += new System.EventHandler(this.saveAppearButton_Click);
+            // 
             // earsBox
             // 
             this.earsBox.Location = new System.Drawing.Point(60, 136);
             this.earsBox.Name = "earsBox";
             this.earsBox.ReadOnly = true;
-            this.earsBox.Size = new System.Drawing.Size(236, 22);
+            this.earsBox.Size = new System.Drawing.Size(51, 22);
             this.earsBox.TabIndex = 9;
             // 
             // jawBox
@@ -169,7 +270,7 @@ namespace CP2077SaveEditor
             this.jawBox.Location = new System.Drawing.Point(60, 108);
             this.jawBox.Name = "jawBox";
             this.jawBox.ReadOnly = true;
-            this.jawBox.Size = new System.Drawing.Size(236, 22);
+            this.jawBox.Size = new System.Drawing.Size(51, 22);
             this.jawBox.TabIndex = 8;
             // 
             // mouthBox
@@ -177,7 +278,7 @@ namespace CP2077SaveEditor
             this.mouthBox.Location = new System.Drawing.Point(60, 80);
             this.mouthBox.Name = "mouthBox";
             this.mouthBox.ReadOnly = true;
-            this.mouthBox.Size = new System.Drawing.Size(236, 22);
+            this.mouthBox.Size = new System.Drawing.Size(51, 22);
             this.mouthBox.TabIndex = 7;
             // 
             // noseBox
@@ -185,7 +286,7 @@ namespace CP2077SaveEditor
             this.noseBox.Location = new System.Drawing.Point(60, 52);
             this.noseBox.Name = "noseBox";
             this.noseBox.ReadOnly = true;
-            this.noseBox.Size = new System.Drawing.Size(236, 22);
+            this.noseBox.Size = new System.Drawing.Size(51, 22);
             this.noseBox.TabIndex = 6;
             // 
             // label7
@@ -229,7 +330,7 @@ namespace CP2077SaveEditor
             this.eyesBox.Location = new System.Drawing.Point(60, 24);
             this.eyesBox.Name = "eyesBox";
             this.eyesBox.ReadOnly = true;
-            this.eyesBox.Size = new System.Drawing.Size(236, 22);
+            this.eyesBox.Size = new System.Drawing.Size(51, 22);
             this.eyesBox.TabIndex = 1;
             // 
             // label3
@@ -400,40 +501,6 @@ namespace CP2077SaveEditor
             this.factsNameHeader.Text = "Name";
             this.factsNameHeader.Width = 764;
             // 
-            // loadAppearButton
-            // 
-            this.loadAppearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.loadAppearButton.BackColor = System.Drawing.Color.White;
-            this.loadAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.loadAppearButton.ClickEffectEnabled = true;
-            this.loadAppearButton.DefaultColor = System.Drawing.Color.White;
-            this.loadAppearButton.HoverColor = System.Drawing.Color.LightGray;
-            this.loadAppearButton.Location = new System.Drawing.Point(636, 501);
-            this.loadAppearButton.Name = "loadAppearButton";
-            this.loadAppearButton.Size = new System.Drawing.Size(98, 33);
-            this.loadAppearButton.TabIndex = 11;
-            this.loadAppearButton.Text = "Load Preset";
-            this.loadAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.loadAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.loadAppearButton.Click += new System.EventHandler(this.loadAppearButton_Click);
-            // 
-            // saveAppearButton
-            // 
-            this.saveAppearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveAppearButton.BackColor = System.Drawing.Color.White;
-            this.saveAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.saveAppearButton.ClickEffectEnabled = true;
-            this.saveAppearButton.DefaultColor = System.Drawing.Color.White;
-            this.saveAppearButton.HoverColor = System.Drawing.Color.LightGray;
-            this.saveAppearButton.Location = new System.Drawing.Point(740, 501);
-            this.saveAppearButton.Name = "saveAppearButton";
-            this.saveAppearButton.Size = new System.Drawing.Size(98, 33);
-            this.saveAppearButton.TabIndex = 10;
-            this.saveAppearButton.Text = "Save Preset";
-            this.saveAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.saveAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.saveAppearButton.Click += new System.EventHandler(this.saveAppearButton_Click);
-            // 
             // openSaveButton
             // 
             this.openSaveButton.BackColor = System.Drawing.Color.WhiteSmoke;
@@ -450,70 +517,12 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
-            // factsButton
+            // appearanceTreeView
             // 
-            this.factsButton.BackColor = System.Drawing.Color.White;
-            this.factsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.factsButton.ClickEffectEnabled = true;
-            this.factsButton.DefaultColor = System.Drawing.Color.White;
-            this.factsButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.factsButton.Location = new System.Drawing.Point(-1, 119);
-            this.factsButton.Name = "factsButton";
-            this.factsButton.Size = new System.Drawing.Size(143, 61);
-            this.factsButton.TabIndex = 2;
-            this.factsButton.Text = "Quest Facts";
-            this.factsButton.TextColor = System.Drawing.Color.Black;
-            this.factsButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.factsButton.Click += new System.EventHandler(this.factsButton_Click);
-            // 
-            // inventoryButton
-            // 
-            this.inventoryButton.BackColor = System.Drawing.Color.White;
-            this.inventoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.inventoryButton.ClickEffectEnabled = true;
-            this.inventoryButton.DefaultColor = System.Drawing.Color.White;
-            this.inventoryButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.inventoryButton.Location = new System.Drawing.Point(-1, 59);
-            this.inventoryButton.Name = "inventoryButton";
-            this.inventoryButton.Size = new System.Drawing.Size(143, 61);
-            this.inventoryButton.TabIndex = 1;
-            this.inventoryButton.Text = "Inventory";
-            this.inventoryButton.TextColor = System.Drawing.Color.Black;
-            this.inventoryButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.inventoryButton.Click += new System.EventHandler(this.inventoryButton_Click);
-            // 
-            // saveChangesButton
-            // 
-            this.saveChangesButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.saveChangesButton.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.saveChangesButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.saveChangesButton.ClickEffectEnabled = true;
-            this.saveChangesButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
-            this.saveChangesButton.HoverColor = System.Drawing.Color.LightGray;
-            this.saveChangesButton.Location = new System.Drawing.Point(-1, 1019);
-            this.saveChangesButton.Name = "saveChangesButton";
-            this.saveChangesButton.Size = new System.Drawing.Size(143, 44);
-            this.saveChangesButton.TabIndex = 1;
-            this.saveChangesButton.Text = "Save Changes";
-            this.saveChangesButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.saveChangesButton.Click += new System.EventHandler(this.saveChangesButton_Click);
-            // 
-            // appearanceButton
-            // 
-            this.appearanceButton.BackColor = System.Drawing.Color.White;
-            this.appearanceButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.appearanceButton.ClickEffectEnabled = false;
-            this.appearanceButton.DefaultColor = System.Drawing.Color.White;
-            this.appearanceButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.appearanceButton.Location = new System.Drawing.Point(-1, -1);
-            this.appearanceButton.Name = "appearanceButton";
-            this.appearanceButton.Size = new System.Drawing.Size(143, 61);
-            this.appearanceButton.TabIndex = 0;
-            this.appearanceButton.Text = "Appearance";
-            this.appearanceButton.TextColor = System.Drawing.Color.Black;
-            this.appearanceButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.appearanceButton.Click += new System.EventHandler(this.appearanceButton_Click);
+            this.appearanceTreeView.Location = new System.Drawing.Point(117, 24);
+            this.appearanceTreeView.Name = "appearanceTreeView";
+            this.appearanceTreeView.Size = new System.Drawing.Size(721, 450);
+            this.appearanceTreeView.TabIndex = 12;
             // 
             // Form1
             // 
@@ -590,6 +599,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.ColumnHeader inventoryIdHeader;
         private System.Windows.Forms.ColumnHeader inventoryQuantityHeader;
         private System.Windows.Forms.ColumnHeader inventoryDescriptionHeader;
+        private System.Windows.Forms.TreeView appearanceTreeView;
     }
 }
 

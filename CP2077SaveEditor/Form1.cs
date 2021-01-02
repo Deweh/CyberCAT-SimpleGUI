@@ -59,6 +59,38 @@ namespace CP2077SaveEditor
             mouthBox.Text = activeSaveFile.GetFacialFeatureValue("mouth");
             jawBox.Text = activeSaveFile.GetFacialFeatureValue("jaw");
             earsBox.Text = activeSaveFile.GetFacialFeatureValue("ear");
+
+            appearanceTreeView.Nodes.Clear();
+            var appearance = activeSaveFile.GetAppearanceContainer();
+            var baseNode = appearanceTreeView.Nodes.Add("FirstSection", "FirstSection");
+            IterateAppearanceSection(appearance.FirstSection, baseNode);
+            baseNode = appearanceTreeView.Nodes.Add("SecondSection", "SecondSection");
+            IterateAppearanceSection(appearance.SecondSection, baseNode);
+            baseNode = appearanceTreeView.Nodes.Add("ThirdSection", "ThirdSection");
+            IterateAppearanceSection(appearance.ThirdSection, baseNode);
+        }
+
+        private void IterateAppearanceSection(CharacterCustomizationAppearances.Section section, TreeNode rootNode)
+        {
+            foreach (CharacterCustomizationAppearances.AppearanceSection subSection in section.AppearanceSections)
+            {
+                var subSectionNode = rootNode.Nodes.Add(subSection.SectionName, subSection.SectionName);
+                var mainlistNode = subSectionNode.Nodes.Add("Main List", "Main List");
+                foreach (CharacterCustomizationAppearances.HashValueEntry entry in subSection.MainList)
+                {
+                    var entryNode = mainlistNode.Nodes.Add(entry.FirstString, entry.FirstString);
+                    entryNode.Nodes.Add("First String: " + entry.FirstString);
+                    entryNode.Nodes.Add("Hash: " + entry.Hash.ToString());
+                    entryNode.Nodes.Add("Second String: " + entry.SecondString);
+                }
+                var additionallistNode = subSectionNode.Nodes.Add("Additional List", "Additional List");
+                foreach (CharacterCustomizationAppearances.ValueEntry entry in subSection.AdditionalList)
+                {
+                    var entryNode = additionallistNode.Nodes.Add(entry.FirstString, entry.FirstString);
+                    entryNode.Nodes.Add("First String: " + entry.FirstString);
+                    entryNode.Nodes.Add("Second String: " + entry.SecondString);
+                }
+            }
         }
 
         public string RefreshInventory()
