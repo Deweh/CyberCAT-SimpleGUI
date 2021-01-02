@@ -78,7 +78,7 @@ namespace CP2077SaveEditor
             if (activeItem.Data.GetType().FullName.EndsWith("SimpleItemData"))
             {
                 itemType = DataType.SimpleItem;
-                this.Text += " (Simple Item)";
+                this.Text = activeItem.ItemName + " (Simple Item)";
                 basicInfoGroupBox.Enabled = true;
                 quickActionsGroupBox.Enabled = false;
                 modInfoGroupBox.Enabled = false;
@@ -88,7 +88,7 @@ namespace CP2077SaveEditor
             else
             {
                 itemType = DataType.ModableItem;
-                this.Text += " (Modable Item)";
+                this.Text = activeItem.ItemName + " (Modable Item)";
                 basicInfoGroupBox.Enabled = false;
                 quickActionsGroupBox.Enabled = true;
                 modInfoGroupBox.Enabled = true;
@@ -109,7 +109,6 @@ namespace CP2077SaveEditor
         public void LoadItem(ItemData item, Func<string> callback)
         {
             callbackFunc = callback;
-            this.Text = item.ItemName;
             activeItem = item;
             ReloadData();
 
