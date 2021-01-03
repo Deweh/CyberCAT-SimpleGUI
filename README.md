@@ -2,7 +2,7 @@
 A simplified offshoot of SirBitesalot's CyberCAT.
 
 ## Features
-- Save and load presets for your character's facial features. (EXPERIMENTAL - High chance of save corruption.)
+- Save and load presets for your character's appearance. (Stable as of v0.01a_r1)
 - Edit the quantity, flags, & mod tree of items in your inventory. (Stable)
 - Edit quest facts. (Stable)
 - Quick actions - dedicated controls for changing money & making items legendary. (Semi-Stable)
