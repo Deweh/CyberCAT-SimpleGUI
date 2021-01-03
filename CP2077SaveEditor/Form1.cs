@@ -263,9 +263,10 @@ namespace CP2077SaveEditor
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName));
-                activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().FirstSection, newValues.FirstSection);
-                activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().SecondSection, newValues.SecondSection);
-                activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().ThirdSection, newValues.ThirdSection);
+                //activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().FirstSection, newValues.FirstSection);
+                //activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().SecondSection, newValues.SecondSection);
+                //activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().ThirdSection, newValues.ThirdSection);
+                activeSaveFile.SetAllAppearanceValues(newValues);
                 RefreshAppearanceValues();
                 statusLabel.Text = "Appearance preset loaded.";
             }
