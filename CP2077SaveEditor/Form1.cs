@@ -28,6 +28,7 @@ namespace CP2077SaveEditor
             InitializeComponent();
         }
 
+        //This function & other functions related to managing tabs need to be refactored.
         private void SwapTab(ModernButton tabButton, Panel tabPanel)
         {
             if (tabButton == activeTabButton)
@@ -54,33 +55,22 @@ namespace CP2077SaveEditor
 
         private void RefreshAppearanceValues()
         {
-            eyesBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.AdditionalListEntry, SaveFileHelper.AppearanceField.SecondString, "eyes");
-            eyesColorBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.MainListEntry, SaveFileHelper.AppearanceField.FirstString, "eyes_color");
-            noseBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.AdditionalListEntry, SaveFileHelper.AppearanceField.SecondString, "nose");
-            mouthBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.AdditionalListEntry, SaveFileHelper.AppearanceField.SecondString, "mouth");
-            jawBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.AdditionalListEntry, SaveFileHelper.AppearanceField.SecondString, "jaw");
-            earsBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.AdditionalListEntry, SaveFileHelper.AppearanceField.SecondString, "ear");
+            var valueFields = new Dictionary<string, TextBox>
+            {
+                //Facial Features
+                {"first.additional.second.eyes", eyesBox}, {"first.main.first.eyes_color", eyesColorBox }, {"first.additional.second.nose", noseBox}, {"first.additional.second.mouth", mouthBox}, {"first.additional.second.jaw", jawBox}, {"first.additional.second.ear", earsBox},
+                //Hair
+                {"first.main.hash.hair_color", hairStyleBox}, {"first.main.first.hair_color", hairColorBox},
+                //Makeup
+                {"first.main.first.makeupEyes_", eyeMakeupBox}, {"first.main.first.makeupLips_", lipMakeupBox}, {"first.main.first.makeupCheeks_", cheekMakeupBox},
+                //Body
+                {"third.main.first.body_color", skinColorBox}, {"third.main.first.nipples_", nipplesBox}, {"third.main.first.genitals_", genitalsBox}, {"third.additional.second.breast", breastsBox}
+            };
 
-            hairStyleBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.MainListEntry, SaveFileHelper.AppearanceField.Hash, "hair_color");
-            hairColorBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.MainListEntry, SaveFileHelper.AppearanceField.FirstString, "hair_color");
-
-            eyeMakeupBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.MainListEntry, SaveFileHelper.AppearanceField.FirstString, "makeupEyes_");
-            lipMakeupBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.MainListEntry, SaveFileHelper.AppearanceField.FirstString, "makeupLips_");
-            cheekMakeupBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().FirstSection, SaveFileHelper.AppearanceEntryType.MainListEntry, SaveFileHelper.AppearanceField.FirstString, "makeupCheeks_");
-
-            skinColorBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().ThirdSection, SaveFileHelper.AppearanceEntryType.MainListEntry, SaveFileHelper.AppearanceField.FirstString, "body_color");
-            nipplesBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().ThirdSection, SaveFileHelper.AppearanceEntryType.MainListEntry, SaveFileHelper.AppearanceField.FirstString, "nipples_");
-            genitalsBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().ThirdSection, SaveFileHelper.AppearanceEntryType.MainListEntry, SaveFileHelper.AppearanceField.FirstString, "genitals_");
-            breastsBox.Text = activeSaveFile.GetAppearanceValue(activeSaveFile.GetAppearanceContainer().ThirdSection, SaveFileHelper.AppearanceEntryType.AdditionalListEntry, SaveFileHelper.AppearanceField.SecondString, "breast");
-
-            //appearanceTreeView.Nodes.Clear();
-            //var appearance = activeSaveFile.GetAppearanceContainer();
-            //var baseNode = appearanceTreeView.Nodes.Add("FirstSection", "FirstSection");
-            //IterateAppearanceSection(appearance.FirstSection, baseNode);
-            //baseNode = appearanceTreeView.Nodes.Add("SecondSection", "SecondSection");
-            //IterateAppearanceSection(appearance.SecondSection, baseNode);
-            //baseNode = appearanceTreeView.Nodes.Add("ThirdSection", "ThirdSection");
-            //IterateAppearanceSection(appearance.ThirdSection, baseNode);
+            foreach(string searchString in valueFields.Keys)
+            {
+                valueFields[searchString].Text = activeSaveFile.GetAppearanceValue(searchString);
+            }
         }
 
         private void IterateAppearanceSection(CharacterCustomizationAppearances.Section section, TreeNode rootNode)

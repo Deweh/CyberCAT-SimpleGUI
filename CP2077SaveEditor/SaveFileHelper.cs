@@ -108,6 +108,45 @@ namespace CP2077SaveEditor
             return "default";
         }
 
+        public string GetAppearanceValue(string searchString)
+        {
+            var searchValues = searchString.Split('.');
+
+            if (searchValues.Count() != 4)
+            {
+                return "default";
+            }
+
+            var searchSection = this.GetAppearanceContainer().FirstSection;
+            var searchType = AppearanceEntryType.MainListEntry;
+            var searchFieldToGet = AppearanceField.FirstString;
+            var searchTrueString = searchValues[3];
+
+            if (searchValues[0] == "second")
+            {
+                searchSection = this.GetAppearanceContainer().SecondSection;
+            }
+            else if(searchValues[0] == "third")
+            {
+                searchSection = this.GetAppearanceContainer().ThirdSection;
+            }
+
+            if (searchValues[1] == "additional")
+            {
+                searchType = AppearanceEntryType.AdditionalListEntry;
+            }
+
+            if (searchValues[2] == "hash")
+            {
+                searchFieldToGet = AppearanceField.Hash;
+            }
+            else if(searchValues[2] == "second")
+            {
+                searchFieldToGet = AppearanceField.SecondString;
+            }
+            return GetAppearanceValue(searchSection, searchType, searchFieldToGet, searchTrueString);
+        }
+
         public void SetAllAppearanceValues(CharacterCustomizationAppearances newValues)
         {
             this.GetAppearanceContainer().FirstSection = newValues.FirstSection;
