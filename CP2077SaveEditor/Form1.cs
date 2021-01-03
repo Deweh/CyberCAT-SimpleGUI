@@ -262,7 +262,10 @@ namespace CP2077SaveEditor
             fileWindow.Filter = "Cyberpunk 2077 Character Preset|*.preset";
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
-                activeSaveFile.SetAllAppearanceValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName)));
+                var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName));
+                activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().FirstSection, newValues.FirstSection);
+                activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().SecondSection, newValues.SecondSection);
+                activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().ThirdSection, newValues.ThirdSection);
                 RefreshAppearanceValues();
                 statusLabel.Text = "Appearance preset loaded.";
             }
