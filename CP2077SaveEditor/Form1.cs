@@ -195,6 +195,10 @@ namespace CP2077SaveEditor
             saveWindow.Filter = "Cyberpunk 2077 Save File|*.dat";
             if (saveWindow.ShowDialog() == DialogResult.OK)
             {
+                if (File.Exists(saveWindow.FileName))
+                {
+                    File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
+                }
                 File.WriteAllBytes(saveWindow.FileName, activeSaveFile.SaveToCompressed());
                 statusLabel.Text = "File saved.";
             }
