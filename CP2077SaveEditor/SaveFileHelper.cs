@@ -14,6 +14,19 @@ namespace CP2077SaveEditor
     class SaveFileHelper : SaveFile
     {
 
+        public enum AppearanceEntryType
+        {
+            MainListEntry,
+            AdditionalListEntry
+        }
+
+        public enum AppearanceField
+        {
+            FirstString,
+            Hash,
+            SecondString
+        }
+
         public SaveFileHelper(IEnumerable<INodeParser> parsers) : base(parsers) {}
 
         public CharacterCustomizationAppearances GetAppearanceContainer()
@@ -53,19 +66,46 @@ namespace CP2077SaveEditor
             return this.GetInventoriesContainer().SubInventories[Array.FindIndex(this.GetInventoriesContainer().SubInventories, x => x.InventoryId == id)];
         }
 
-        public string GetFacialFeatureValue(string name)
+        public string GetAppearanceValue(CharacterCustomizationAppearances.Section appearanceSection, AppearanceEntryType entryType, AppearanceField fieldToGet, string searchString)
         {
-            var facialFeatures = this.GetAppearanceContainer().FirstSection.AppearanceSections[0].AdditionalList;
-            var i = facialFeatures.FindIndex(x => x.FirstString == name);
-
-            if (i > -1)
+            foreach (CharacterCustomizationAppearances.AppearanceSection subSection in appearanceSection.AppearanceSections)
             {
-                return facialFeatures[i].SecondString;
+                if (entryType == AppearanceEntryType.MainListEntry)
+                {
+                    foreach (CharacterCustomizationAppearances.HashValueEntry mainListEntry in subSection.MainList)
+                    {
+                        if (CompareMainListAppearanceEntries(mainListEntry.SecondString, searchString) == true)
+                        {
+                            if (fieldToGet == AppearanceField.FirstString)
+                            {
+                                return mainListEntry.FirstString;
+                            }
+                            else if (fieldToGet == AppearanceField.Hash)
+                            {
+                                return "hash(" + mainListEntry.Hash.ToString() + ")";
+                            } else {
+                                return mainListEntry.SecondString;
+                            }
+                        }
+                    }
+                } else {
+                    foreach (CharacterCustomizationAppearances.ValueEntry additionalListEntry in subSection.AdditionalList)
+                    {
+                        if (additionalListEntry.FirstString == searchString)
+                        {
+                            if (fieldToGet == AppearanceField.FirstString)
+                            {
+                                return additionalListEntry.FirstString;
+                            }
+                            else
+                            {
+                                return additionalListEntry.SecondString;
+                            }
+                        }
+                    }
+                }
             }
-            else
-            {
-                return "default";
-            }
+            return "default";
         }
 
         public void SetAllAppearanceValues(CharacterCustomizationAppearances newValues)
@@ -75,38 +115,9 @@ namespace CP2077SaveEditor
             this.GetAppearanceContainer().ThirdSection = newValues.ThirdSection;
         }
 
-        public void SetAppearanceSectionSafely(CharacterCustomizationAppearances.Section currentSection, CharacterCustomizationAppearances.Section newSection)
+        private bool CompareMainListAppearanceEntries(string entry1, string entry2)
         {
-            foreach (CharacterCustomizationAppearances.AppearanceSection currentSubSection in currentSection.AppearanceSections)
-            {
-                var i = newSection.AppearanceSections.FindIndex(x => x.SectionName == currentSubSection.SectionName);
-                if (i < 0) { continue; }
-
-                var newSubSection = newSection.AppearanceSections[i];
-                foreach (CharacterCustomizationAppearances.HashValueEntry mainListEntry in currentSubSection.MainList)
-                {
-                    i = newSubSection.MainList.FindIndex(x => CompareMainListAppearanceEntries(x, mainListEntry) == true);
-                    if (i < 0) { continue; }
-
-                    var newMainListEntry = newSubSection.MainList[i];
-                    //mainListEntry.FirstString = newMainListEntry.FirstString; -- Resizing issues.
-                    mainListEntry.Hash = newMainListEntry.Hash;
-                    //mainListEntry.SecondString = newMainListEntry.SecondString; -- Resizing issues.
-                }
-                foreach (CharacterCustomizationAppearances.ValueEntry additionalListEntry in currentSubSection.AdditionalList)
-                {
-                    i = newSubSection.AdditionalList.FindIndex(x => x.FirstString == additionalListEntry.FirstString);
-                    if (i < 0) { continue; }
-
-                    var newAdditionalListEntry = newSubSection.AdditionalList[i];
-                    additionalListEntry.SecondString = newAdditionalListEntry.SecondString;
-                }
-            }
-        }
-
-        private bool CompareMainListAppearanceEntries(CharacterCustomizationAppearances.HashValueEntry entry1, CharacterCustomizationAppearances.HashValueEntry entry2)
-        {
-            return Regex.Replace(entry1.SecondString, @"[\d-]", string.Empty) == Regex.Replace(entry2.SecondString, @"[\d-]", string.Empty);
+            return Regex.Replace(entry1, @"[\d-]", string.Empty) == Regex.Replace(entry2, @"[\d-]", string.Empty);
         }
 
     }

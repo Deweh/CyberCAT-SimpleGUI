@@ -31,17 +31,12 @@ namespace CP2077SaveEditor
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.optionsPanel = new System.Windows.Forms.Panel();
-            this.factsButton = new CP2077SaveEditor.ModernButton();
-            this.inventoryButton = new CP2077SaveEditor.ModernButton();
-            this.saveChangesButton = new CP2077SaveEditor.ModernButton();
-            this.appearanceButton = new CP2077SaveEditor.ModernButton();
             this.editorPanel = new System.Windows.Forms.Panel();
             this.filePathLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.appearancePanel = new System.Windows.Forms.Panel();
-            this.loadAppearButton = new CP2077SaveEditor.ModernButton();
-            this.saveAppearButton = new CP2077SaveEditor.ModernButton();
+            this.appearanceTreeView = new System.Windows.Forms.TreeView();
             this.earsBox = new System.Windows.Forms.TextBox();
             this.jawBox = new System.Windows.Forms.TextBox();
             this.mouthBox = new System.Windows.Forms.TextBox();
@@ -68,8 +63,37 @@ namespace CP2077SaveEditor
             this.factsListView = new System.Windows.Forms.ListView();
             this.factsValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.hairStyleBox = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.hairColorBox = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.eyesColorBox = new System.Windows.Forms.TextBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.eyeMakeupBox = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.lipMakeupBox = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.cheekMakeupBox = new System.Windows.Forms.TextBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.genitalsBox = new System.Windows.Forms.TextBox();
+            this.nipplesBox = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.skinColorBox = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.breastsBox = new System.Windows.Forms.TextBox();
+            this.loadAppearButton = new CP2077SaveEditor.ModernButton();
+            this.saveAppearButton = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.appearanceTreeView = new System.Windows.Forms.TreeView();
+            this.factsButton = new CP2077SaveEditor.ModernButton();
+            this.inventoryButton = new CP2077SaveEditor.ModernButton();
+            this.saveChangesButton = new CP2077SaveEditor.ModernButton();
+            this.appearanceButton = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.inventoryPanel.SuspendLayout();
@@ -78,6 +102,10 @@ namespace CP2077SaveEditor
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.moneyUpDown)).BeginInit();
             this.factsPanel.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // optionsPanel
@@ -95,71 +123,6 @@ namespace CP2077SaveEditor
             this.optionsPanel.Name = "optionsPanel";
             this.optionsPanel.Size = new System.Drawing.Size(143, 1064);
             this.optionsPanel.TabIndex = 1;
-            // 
-            // factsButton
-            // 
-            this.factsButton.BackColor = System.Drawing.Color.White;
-            this.factsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.factsButton.ClickEffectEnabled = true;
-            this.factsButton.DefaultColor = System.Drawing.Color.White;
-            this.factsButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.factsButton.Location = new System.Drawing.Point(-1, 119);
-            this.factsButton.Name = "factsButton";
-            this.factsButton.Size = new System.Drawing.Size(143, 61);
-            this.factsButton.TabIndex = 2;
-            this.factsButton.Text = "Quest Facts";
-            this.factsButton.TextColor = System.Drawing.Color.Black;
-            this.factsButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.factsButton.Click += new System.EventHandler(this.factsButton_Click);
-            // 
-            // inventoryButton
-            // 
-            this.inventoryButton.BackColor = System.Drawing.Color.White;
-            this.inventoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.inventoryButton.ClickEffectEnabled = true;
-            this.inventoryButton.DefaultColor = System.Drawing.Color.White;
-            this.inventoryButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.inventoryButton.Location = new System.Drawing.Point(-1, 59);
-            this.inventoryButton.Name = "inventoryButton";
-            this.inventoryButton.Size = new System.Drawing.Size(143, 61);
-            this.inventoryButton.TabIndex = 1;
-            this.inventoryButton.Text = "Inventory";
-            this.inventoryButton.TextColor = System.Drawing.Color.Black;
-            this.inventoryButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.inventoryButton.Click += new System.EventHandler(this.inventoryButton_Click);
-            // 
-            // saveChangesButton
-            // 
-            this.saveChangesButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.saveChangesButton.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.saveChangesButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.saveChangesButton.ClickEffectEnabled = true;
-            this.saveChangesButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
-            this.saveChangesButton.HoverColor = System.Drawing.Color.LightGray;
-            this.saveChangesButton.Location = new System.Drawing.Point(-1, 1019);
-            this.saveChangesButton.Name = "saveChangesButton";
-            this.saveChangesButton.Size = new System.Drawing.Size(143, 44);
-            this.saveChangesButton.TabIndex = 1;
-            this.saveChangesButton.Text = "Save Changes";
-            this.saveChangesButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.saveChangesButton.Click += new System.EventHandler(this.saveChangesButton_Click);
-            // 
-            // appearanceButton
-            // 
-            this.appearanceButton.BackColor = System.Drawing.Color.White;
-            this.appearanceButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.appearanceButton.ClickEffectEnabled = false;
-            this.appearanceButton.DefaultColor = System.Drawing.Color.White;
-            this.appearanceButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.appearanceButton.Location = new System.Drawing.Point(-1, -1);
-            this.appearanceButton.Name = "appearanceButton";
-            this.appearanceButton.Size = new System.Drawing.Size(143, 61);
-            this.appearanceButton.TabIndex = 0;
-            this.appearanceButton.Text = "Appearance";
-            this.appearanceButton.TextColor = System.Drawing.Color.Black;
-            this.appearanceButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.appearanceButton.Click += new System.EventHandler(this.appearanceButton_Click);
             // 
             // editorPanel
             // 
@@ -204,62 +167,30 @@ namespace CP2077SaveEditor
             // 
             // appearancePanel
             // 
+            this.appearancePanel.Controls.Add(this.groupBox6);
+            this.appearancePanel.Controls.Add(this.groupBox5);
+            this.appearancePanel.Controls.Add(this.groupBox4);
+            this.appearancePanel.Controls.Add(this.groupBox3);
             this.appearancePanel.Controls.Add(this.appearanceTreeView);
             this.appearancePanel.Controls.Add(this.loadAppearButton);
             this.appearancePanel.Controls.Add(this.saveAppearButton);
-            this.appearancePanel.Controls.Add(this.earsBox);
-            this.appearancePanel.Controls.Add(this.jawBox);
-            this.appearancePanel.Controls.Add(this.mouthBox);
-            this.appearancePanel.Controls.Add(this.noseBox);
-            this.appearancePanel.Controls.Add(this.label7);
-            this.appearancePanel.Controls.Add(this.label6);
-            this.appearancePanel.Controls.Add(this.label5);
-            this.appearancePanel.Controls.Add(this.label4);
-            this.appearancePanel.Controls.Add(this.eyesBox);
-            this.appearancePanel.Controls.Add(this.label3);
             this.appearancePanel.Enabled = false;
             this.appearancePanel.Location = new System.Drawing.Point(1018, 12);
             this.appearancePanel.Name = "appearancePanel";
             this.appearancePanel.Size = new System.Drawing.Size(851, 548);
             this.appearancePanel.TabIndex = 4;
             // 
-            // loadAppearButton
+            // appearanceTreeView
             // 
-            this.loadAppearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.loadAppearButton.BackColor = System.Drawing.Color.White;
-            this.loadAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.loadAppearButton.ClickEffectEnabled = true;
-            this.loadAppearButton.DefaultColor = System.Drawing.Color.White;
-            this.loadAppearButton.HoverColor = System.Drawing.Color.LightGray;
-            this.loadAppearButton.Location = new System.Drawing.Point(636, 501);
-            this.loadAppearButton.Name = "loadAppearButton";
-            this.loadAppearButton.Size = new System.Drawing.Size(98, 33);
-            this.loadAppearButton.TabIndex = 11;
-            this.loadAppearButton.Text = "Load Preset";
-            this.loadAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.loadAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.loadAppearButton.Click += new System.EventHandler(this.loadAppearButton_Click);
-            // 
-            // saveAppearButton
-            // 
-            this.saveAppearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveAppearButton.BackColor = System.Drawing.Color.White;
-            this.saveAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.saveAppearButton.ClickEffectEnabled = true;
-            this.saveAppearButton.DefaultColor = System.Drawing.Color.White;
-            this.saveAppearButton.HoverColor = System.Drawing.Color.LightGray;
-            this.saveAppearButton.Location = new System.Drawing.Point(740, 501);
-            this.saveAppearButton.Name = "saveAppearButton";
-            this.saveAppearButton.Size = new System.Drawing.Size(98, 33);
-            this.saveAppearButton.TabIndex = 10;
-            this.saveAppearButton.Text = "Save Preset";
-            this.saveAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.saveAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.saveAppearButton.Click += new System.EventHandler(this.saveAppearButton_Click);
+            this.appearanceTreeView.Location = new System.Drawing.Point(15, 515);
+            this.appearanceTreeView.Name = "appearanceTreeView";
+            this.appearanceTreeView.Size = new System.Drawing.Size(22, 19);
+            this.appearanceTreeView.TabIndex = 12;
+            this.appearanceTreeView.Visible = false;
             // 
             // earsBox
             // 
-            this.earsBox.Location = new System.Drawing.Point(60, 136);
+            this.earsBox.Location = new System.Drawing.Point(66, 136);
             this.earsBox.Name = "earsBox";
             this.earsBox.ReadOnly = true;
             this.earsBox.Size = new System.Drawing.Size(51, 22);
@@ -267,7 +198,7 @@ namespace CP2077SaveEditor
             // 
             // jawBox
             // 
-            this.jawBox.Location = new System.Drawing.Point(60, 108);
+            this.jawBox.Location = new System.Drawing.Point(66, 108);
             this.jawBox.Name = "jawBox";
             this.jawBox.ReadOnly = true;
             this.jawBox.Size = new System.Drawing.Size(51, 22);
@@ -275,7 +206,7 @@ namespace CP2077SaveEditor
             // 
             // mouthBox
             // 
-            this.mouthBox.Location = new System.Drawing.Point(60, 80);
+            this.mouthBox.Location = new System.Drawing.Point(66, 80);
             this.mouthBox.Name = "mouthBox";
             this.mouthBox.ReadOnly = true;
             this.mouthBox.Size = new System.Drawing.Size(51, 22);
@@ -283,7 +214,7 @@ namespace CP2077SaveEditor
             // 
             // noseBox
             // 
-            this.noseBox.Location = new System.Drawing.Point(60, 52);
+            this.noseBox.Location = new System.Drawing.Point(66, 52);
             this.noseBox.Name = "noseBox";
             this.noseBox.ReadOnly = true;
             this.noseBox.Size = new System.Drawing.Size(51, 22);
@@ -292,7 +223,7 @@ namespace CP2077SaveEditor
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(23, 139);
+            this.label7.Location = new System.Drawing.Point(29, 139);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(31, 13);
             this.label7.TabIndex = 5;
@@ -301,7 +232,7 @@ namespace CP2077SaveEditor
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(25, 111);
+            this.label6.Location = new System.Drawing.Point(31, 111);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(29, 13);
             this.label6.TabIndex = 4;
@@ -310,7 +241,7 @@ namespace CP2077SaveEditor
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 83);
+            this.label5.Location = new System.Drawing.Point(15, 83);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(45, 13);
             this.label5.TabIndex = 3;
@@ -319,7 +250,7 @@ namespace CP2077SaveEditor
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(18, 55);
+            this.label4.Location = new System.Drawing.Point(24, 55);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(36, 13);
             this.label4.TabIndex = 2;
@@ -327,7 +258,7 @@ namespace CP2077SaveEditor
             // 
             // eyesBox
             // 
-            this.eyesBox.Location = new System.Drawing.Point(60, 24);
+            this.eyesBox.Location = new System.Drawing.Point(66, 24);
             this.eyesBox.Name = "eyesBox";
             this.eyesBox.ReadOnly = true;
             this.eyesBox.Size = new System.Drawing.Size(51, 22);
@@ -336,7 +267,7 @@ namespace CP2077SaveEditor
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(22, 27);
+            this.label3.Location = new System.Drawing.Point(28, 27);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(32, 13);
             this.label3.TabIndex = 0;
@@ -501,6 +432,294 @@ namespace CP2077SaveEditor
             this.factsNameHeader.Text = "Name";
             this.factsNameHeader.Width = 764;
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.label10);
+            this.groupBox3.Controls.Add(this.eyesColorBox);
+            this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.eyesBox);
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.label5);
+            this.groupBox3.Controls.Add(this.earsBox);
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.jawBox);
+            this.groupBox3.Controls.Add(this.label7);
+            this.groupBox3.Controls.Add(this.mouthBox);
+            this.groupBox3.Controls.Add(this.noseBox);
+            this.groupBox3.Location = new System.Drawing.Point(15, 15);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(311, 188);
+            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Facial Features";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.label9);
+            this.groupBox4.Controls.Add(this.hairColorBox);
+            this.groupBox4.Controls.Add(this.label8);
+            this.groupBox4.Controls.Add(this.hairStyleBox);
+            this.groupBox4.Location = new System.Drawing.Point(332, 15);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(506, 63);
+            this.groupBox4.TabIndex = 14;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Hair";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(24, 27);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(34, 13);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "Style:";
+            // 
+            // hairStyleBox
+            // 
+            this.hairStyleBox.Location = new System.Drawing.Point(64, 24);
+            this.hairStyleBox.Name = "hairStyleBox";
+            this.hairStyleBox.ReadOnly = true;
+            this.hairStyleBox.Size = new System.Drawing.Size(200, 22);
+            this.hairStyleBox.TabIndex = 1;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(270, 27);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(38, 13);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "Color:";
+            // 
+            // hairColorBox
+            // 
+            this.hairColorBox.Location = new System.Drawing.Point(314, 24);
+            this.hairColorBox.Name = "hairColorBox";
+            this.hairColorBox.ReadOnly = true;
+            this.hairColorBox.Size = new System.Drawing.Size(166, 22);
+            this.hairColorBox.TabIndex = 3;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(123, 27);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(38, 13);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Color:";
+            // 
+            // eyesColorBox
+            // 
+            this.eyesColorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.eyesColorBox.Location = new System.Drawing.Point(167, 24);
+            this.eyesColorBox.Name = "eyesColorBox";
+            this.eyesColorBox.ReadOnly = true;
+            this.eyesColorBox.Size = new System.Drawing.Size(125, 22);
+            this.eyesColorBox.TabIndex = 5;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.Controls.Add(this.label13);
+            this.groupBox5.Controls.Add(this.label11);
+            this.groupBox5.Controls.Add(this.cheekMakeupBox);
+            this.groupBox5.Controls.Add(this.lipMakeupBox);
+            this.groupBox5.Controls.Add(this.label12);
+            this.groupBox5.Controls.Add(this.eyeMakeupBox);
+            this.groupBox5.Location = new System.Drawing.Point(332, 84);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(506, 119);
+            this.groupBox5.TabIndex = 15;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Makeup";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(26, 27);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(32, 13);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "Eyes:";
+            // 
+            // eyeMakeupBox
+            // 
+            this.eyeMakeupBox.Location = new System.Drawing.Point(64, 24);
+            this.eyeMakeupBox.Name = "eyeMakeupBox";
+            this.eyeMakeupBox.ReadOnly = true;
+            this.eyeMakeupBox.Size = new System.Drawing.Size(416, 22);
+            this.eyeMakeupBox.TabIndex = 1;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(28, 55);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(30, 13);
+            this.label11.TabIndex = 2;
+            this.label11.Text = "Lips:";
+            // 
+            // lipMakeupBox
+            // 
+            this.lipMakeupBox.Location = new System.Drawing.Point(64, 52);
+            this.lipMakeupBox.Name = "lipMakeupBox";
+            this.lipMakeupBox.ReadOnly = true;
+            this.lipMakeupBox.Size = new System.Drawing.Size(416, 22);
+            this.lipMakeupBox.TabIndex = 3;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(11, 83);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(47, 13);
+            this.label13.TabIndex = 4;
+            this.label13.Text = "Cheeks:";
+            // 
+            // cheekMakeupBox
+            // 
+            this.cheekMakeupBox.Location = new System.Drawing.Point(64, 80);
+            this.cheekMakeupBox.Name = "cheekMakeupBox";
+            this.cheekMakeupBox.ReadOnly = true;
+            this.cheekMakeupBox.Size = new System.Drawing.Size(416, 22);
+            this.cheekMakeupBox.TabIndex = 5;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox6.Controls.Add(this.label17);
+            this.groupBox6.Controls.Add(this.breastsBox);
+            this.groupBox6.Controls.Add(this.label14);
+            this.groupBox6.Controls.Add(this.label15);
+            this.groupBox6.Controls.Add(this.genitalsBox);
+            this.groupBox6.Controls.Add(this.nipplesBox);
+            this.groupBox6.Controls.Add(this.label16);
+            this.groupBox6.Controls.Add(this.skinColorBox);
+            this.groupBox6.Location = new System.Drawing.Point(15, 209);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(823, 148);
+            this.groupBox6.TabIndex = 16;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Body";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(22, 83);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(52, 13);
+            this.label14.TabIndex = 4;
+            this.label14.Text = "Genitals:";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(25, 55);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(49, 13);
+            this.label15.TabIndex = 2;
+            this.label15.Text = "Nipples:";
+            // 
+            // genitalsBox
+            // 
+            this.genitalsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.genitalsBox.Location = new System.Drawing.Point(80, 80);
+            this.genitalsBox.Name = "genitalsBox";
+            this.genitalsBox.ReadOnly = true;
+            this.genitalsBox.Size = new System.Drawing.Size(717, 22);
+            this.genitalsBox.TabIndex = 5;
+            // 
+            // nipplesBox
+            // 
+            this.nipplesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nipplesBox.Location = new System.Drawing.Point(80, 52);
+            this.nipplesBox.Name = "nipplesBox";
+            this.nipplesBox.ReadOnly = true;
+            this.nipplesBox.Size = new System.Drawing.Size(717, 22);
+            this.nipplesBox.TabIndex = 3;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(11, 27);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(63, 13);
+            this.label16.TabIndex = 0;
+            this.label16.Text = "Skin Color:";
+            // 
+            // skinColorBox
+            // 
+            this.skinColorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.skinColorBox.Location = new System.Drawing.Point(80, 24);
+            this.skinColorBox.Name = "skinColorBox";
+            this.skinColorBox.ReadOnly = true;
+            this.skinColorBox.Size = new System.Drawing.Size(717, 22);
+            this.skinColorBox.TabIndex = 1;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(28, 111);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(46, 13);
+            this.label17.TabIndex = 6;
+            this.label17.Text = "Breasts:";
+            // 
+            // breastsBox
+            // 
+            this.breastsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.breastsBox.Location = new System.Drawing.Point(80, 108);
+            this.breastsBox.Name = "breastsBox";
+            this.breastsBox.ReadOnly = true;
+            this.breastsBox.Size = new System.Drawing.Size(717, 22);
+            this.breastsBox.TabIndex = 7;
+            // 
+            // loadAppearButton
+            // 
+            this.loadAppearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.loadAppearButton.BackColor = System.Drawing.Color.White;
+            this.loadAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.loadAppearButton.ClickEffectEnabled = true;
+            this.loadAppearButton.DefaultColor = System.Drawing.Color.White;
+            this.loadAppearButton.HoverColor = System.Drawing.Color.LightGray;
+            this.loadAppearButton.Location = new System.Drawing.Point(626, 496);
+            this.loadAppearButton.Name = "loadAppearButton";
+            this.loadAppearButton.Size = new System.Drawing.Size(98, 33);
+            this.loadAppearButton.TabIndex = 11;
+            this.loadAppearButton.Text = "Load Preset";
+            this.loadAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.loadAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.loadAppearButton.Click += new System.EventHandler(this.loadAppearButton_Click);
+            // 
+            // saveAppearButton
+            // 
+            this.saveAppearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveAppearButton.BackColor = System.Drawing.Color.White;
+            this.saveAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.saveAppearButton.ClickEffectEnabled = true;
+            this.saveAppearButton.DefaultColor = System.Drawing.Color.White;
+            this.saveAppearButton.HoverColor = System.Drawing.Color.LightGray;
+            this.saveAppearButton.Location = new System.Drawing.Point(730, 496);
+            this.saveAppearButton.Name = "saveAppearButton";
+            this.saveAppearButton.Size = new System.Drawing.Size(98, 33);
+            this.saveAppearButton.TabIndex = 10;
+            this.saveAppearButton.Text = "Save Preset";
+            this.saveAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.saveAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.saveAppearButton.Click += new System.EventHandler(this.saveAppearButton_Click);
+            // 
             // openSaveButton
             // 
             this.openSaveButton.BackColor = System.Drawing.Color.WhiteSmoke;
@@ -517,12 +736,70 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
-            // appearanceTreeView
+            // factsButton
             // 
-            this.appearanceTreeView.Location = new System.Drawing.Point(117, 24);
-            this.appearanceTreeView.Name = "appearanceTreeView";
-            this.appearanceTreeView.Size = new System.Drawing.Size(721, 450);
-            this.appearanceTreeView.TabIndex = 12;
+            this.factsButton.BackColor = System.Drawing.Color.White;
+            this.factsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.factsButton.ClickEffectEnabled = true;
+            this.factsButton.DefaultColor = System.Drawing.Color.White;
+            this.factsButton.HoverColor = System.Drawing.Color.DarkGray;
+            this.factsButton.Location = new System.Drawing.Point(-1, 119);
+            this.factsButton.Name = "factsButton";
+            this.factsButton.Size = new System.Drawing.Size(143, 61);
+            this.factsButton.TabIndex = 2;
+            this.factsButton.Text = "Quest Facts";
+            this.factsButton.TextColor = System.Drawing.Color.Black;
+            this.factsButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.factsButton.Click += new System.EventHandler(this.factsButton_Click);
+            // 
+            // inventoryButton
+            // 
+            this.inventoryButton.BackColor = System.Drawing.Color.White;
+            this.inventoryButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.inventoryButton.ClickEffectEnabled = true;
+            this.inventoryButton.DefaultColor = System.Drawing.Color.White;
+            this.inventoryButton.HoverColor = System.Drawing.Color.DarkGray;
+            this.inventoryButton.Location = new System.Drawing.Point(-1, 59);
+            this.inventoryButton.Name = "inventoryButton";
+            this.inventoryButton.Size = new System.Drawing.Size(143, 61);
+            this.inventoryButton.TabIndex = 1;
+            this.inventoryButton.Text = "Inventory";
+            this.inventoryButton.TextColor = System.Drawing.Color.Black;
+            this.inventoryButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.inventoryButton.Click += new System.EventHandler(this.inventoryButton_Click);
+            // 
+            // saveChangesButton
+            // 
+            this.saveChangesButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.saveChangesButton.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.saveChangesButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.saveChangesButton.ClickEffectEnabled = true;
+            this.saveChangesButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
+            this.saveChangesButton.HoverColor = System.Drawing.Color.LightGray;
+            this.saveChangesButton.Location = new System.Drawing.Point(-1, 1019);
+            this.saveChangesButton.Name = "saveChangesButton";
+            this.saveChangesButton.Size = new System.Drawing.Size(143, 44);
+            this.saveChangesButton.TabIndex = 1;
+            this.saveChangesButton.Text = "Save Changes";
+            this.saveChangesButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.saveChangesButton.Click += new System.EventHandler(this.saveChangesButton_Click);
+            // 
+            // appearanceButton
+            // 
+            this.appearanceButton.BackColor = System.Drawing.Color.White;
+            this.appearanceButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.appearanceButton.ClickEffectEnabled = false;
+            this.appearanceButton.DefaultColor = System.Drawing.Color.White;
+            this.appearanceButton.HoverColor = System.Drawing.Color.DarkGray;
+            this.appearanceButton.Location = new System.Drawing.Point(-1, -1);
+            this.appearanceButton.Name = "appearanceButton";
+            this.appearanceButton.Size = new System.Drawing.Size(143, 61);
+            this.appearanceButton.TabIndex = 0;
+            this.appearanceButton.Text = "Appearance";
+            this.appearanceButton.TextColor = System.Drawing.Color.Black;
+            this.appearanceButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.appearanceButton.Click += new System.EventHandler(this.appearanceButton_Click);
             // 
             // Form1
             // 
@@ -547,7 +824,6 @@ namespace CP2077SaveEditor
             this.Load += new System.EventHandler(this.Form1_Load);
             this.optionsPanel.ResumeLayout(false);
             this.appearancePanel.ResumeLayout(false);
-            this.appearancePanel.PerformLayout();
             this.inventoryPanel.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.containerGroupBox.ResumeLayout(false);
@@ -555,6 +831,14 @@ namespace CP2077SaveEditor
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.moneyUpDown)).EndInit();
             this.factsPanel.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -600,6 +884,30 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.ColumnHeader inventoryQuantityHeader;
         private System.Windows.Forms.ColumnHeader inventoryDescriptionHeader;
         private System.Windows.Forms.TreeView appearanceTreeView;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox hairColorBox;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox hairStyleBox;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox eyesColorBox;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox cheekMakeupBox;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox lipMakeupBox;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox eyeMakeupBox;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox breastsBox;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox genitalsBox;
+        private System.Windows.Forms.TextBox nipplesBox;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox skinColorBox;
     }
 }
 
