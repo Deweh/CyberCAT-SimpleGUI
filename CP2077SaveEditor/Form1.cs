@@ -148,7 +148,7 @@ namespace CP2077SaveEditor
                 });
 
                 var newSave = new SaveFileHelper(parsers);
-                newSave.LoadFromCompressedStream(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                newSave.LoadPCSaveFile(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
                 activeSaveFile = newSave;
 
                 //Appearance parsing
@@ -199,7 +199,7 @@ namespace CP2077SaveEditor
                 {
                     File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
                 }
-                File.WriteAllBytes(saveWindow.FileName, activeSaveFile.SaveToCompressed());
+                File.WriteAllBytes(saveWindow.FileName, activeSaveFile.SaveToPCSaveFile());
                 statusLabel.Text = "File saved.";
             }
         }
