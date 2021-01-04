@@ -95,7 +95,7 @@ namespace CP2077SaveEditor
                 modInfoGroupBox.Enabled = true;
                 var data = (ItemData.ModableItemData)activeItem.Data;
                 quantityUpDown.Value = 1;
-                modsBaseIdBox.Text = data.TdbId1.Id.ToString();
+                modsBaseIdBox.Text = data.TdbId1.Raw64.ToString();
 
                 modsTreeView.Nodes.Clear();
                 var rootNode = modsTreeView.Nodes.Add(data.RootNode.AttachmentSlotName, data.RootNode.AttachmentSlotName + " :: " + data.RootNode.ItemName + " [" + data.RootNode.ChildrenCount.ToString() + "]");
@@ -129,14 +129,14 @@ namespace CP2077SaveEditor
             } else {
                 try
                 {
-                    uint.Parse(modsBaseIdBox.Text);
+                    ulong.Parse(modsBaseIdBox.Text);
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("ID must be a 32-bit unsigned integer.");
+                    MessageBox.Show("ID must be a 64-bit unsigned integer.");
                     return;
                 }
-                ((ItemData.ModableItemData)activeItem.Data).TdbId1.Id = uint.Parse(modsBaseIdBox.Text);
+                ((ItemData.ModableItemData)activeItem.Data).TdbId1.Raw64 = ulong.Parse(modsBaseIdBox.Text);
             }
             activeItem.Flags.Unknown2 = unknownFlag1CheckBox.Checked;
             activeItem.Flags.IsQuestItem = questItemCheckBox.Checked;
@@ -169,8 +169,8 @@ namespace CP2077SaveEditor
 
                     data.RootNode.Children = new ItemData.ItemModData[0];
                     data.RootNode.AttachmentSlotTdbId = 0;
-                    data.RootNode.ItemTdbId.Id = 0;
-                    data.RootNode.TdbId2.Id = 0;
+                    data.RootNode.ItemTdbId.Raw64 = 0;
+                    data.RootNode.TdbId2.Raw64 = 0;
                     data.RootNode.Unknown2 = 0;
                     data.RootNode.Unknown3 = 0;
                     data.RootNode.Unknown4 = 0;

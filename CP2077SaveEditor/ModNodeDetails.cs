@@ -35,7 +35,7 @@ namespace CP2077SaveEditor
             attachmentNameLabel.Text = node.AttachmentSlotName;
             attachmentIdBox.Text = node.AttachmentSlotTdbId.ToString();
             item1NameLabel.Text = node.ItemName;
-            item1IdBox.Text = node.ItemTdbId.Id.ToString();
+            item1IdBox.Text = node.ItemTdbId.Raw64.ToString();
             unknown1Box.Text = node.Unknown2.ToString();
             unknown2Box.Text = node.Unknown3.ToString();
             unknown3Box.Text = node.Unknown4.ToString();
@@ -59,7 +59,7 @@ namespace CP2077SaveEditor
             }
 
             activeNode.AttachmentSlotTdbId = ulong.Parse(attachmentIdBox.Text);
-            activeNode.ItemTdbId.Id = uint.Parse(item1IdBox.Text);
+            activeNode.ItemTdbId.Raw64 = ulong.Parse(item1IdBox.Text);
             activeNode.Unknown2 = uint.Parse(unknown1Box.Text);
             activeNode.Unknown3 = uint.Parse(unknown2Box.Text);
             activeNode.Unknown4 = uint.Parse(unknown3Box.Text);
