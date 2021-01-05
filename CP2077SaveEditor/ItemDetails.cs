@@ -14,7 +14,7 @@ namespace CP2077SaveEditor
 {
     public partial class ItemDetails : Form
     {
-        private Func<string> callbackFunc;
+        private Func<bool> callbackFunc;
         private ItemData activeItem;
         private DataType itemType;
 
@@ -107,7 +107,7 @@ namespace CP2077SaveEditor
             return true;
         }
 
-        public void LoadItem(ItemData item, Func<string> callback)
+        public void LoadItem(ItemData item, Func<bool> callback)
         {
             callbackFunc = callback;
             activeItem = item;

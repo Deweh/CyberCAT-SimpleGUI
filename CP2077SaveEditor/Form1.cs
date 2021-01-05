@@ -120,15 +120,13 @@ namespace CP2077SaveEditor
             }
         }
 
-        public string RefreshInventory()
+        public bool RefreshInventory()
         {
             inventoryListView.Items.Clear();
             var containerID = containersListBox.SelectedItem.ToString();
             containerGroupBox.Visible = true;
             containerGroupBox.Text = containerID;
             if (containerID == "Player Inventory") { containerID = "1"; }
-
-            //var debugList = new List<string>();
 
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
@@ -154,8 +152,6 @@ namespace CP2077SaveEditor
                     row[1] = classes[correctedID];
                 }
 
-                //debugList.Add(item.ItemTdbId.ToString());
-
                 inventoryListView.Items.Add(new ListViewItem(row)).Tag = item;
 
                 if (item.ItemGameName == "Eddies" && containerID == "1")
@@ -164,10 +160,7 @@ namespace CP2077SaveEditor
                     moneyUpDown.Enabled = true;
                 }
             }
-
-            //File.WriteAllText("dump.json", JsonConvert.SerializeObject(debugList));
-
-            return "";
+            return true;
         }
 
         private void openSaveButton_Click(object sender, EventArgs e)
@@ -290,9 +283,6 @@ namespace CP2077SaveEditor
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName));
-                //activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().FirstSection, newValues.FirstSection);
-                //activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().SecondSection, newValues.SecondSection);
-                //activeSaveFile.SetAppearanceSectionSafely(activeSaveFile.GetAppearanceContainer().ThirdSection, newValues.ThirdSection);
                 activeSaveFile.SetAllAppearanceValues(newValues);
                 RefreshAppearanceValues();
                 statusLabel.Text = "Appearance preset loaded.";
