@@ -23,6 +23,7 @@ namespace CP2077SaveEditor
         private Panel activeTabPanel = new Panel();
         private ListViewColumnSorter inventoryColumnSorter;
         private ListViewColumnSorter factsColumnSorter;
+        private Dictionary<string, string> itemClasses;
 
         public Form1()
         {
@@ -50,6 +51,8 @@ namespace CP2077SaveEditor
             factsColumnSorter = new ListViewColumnSorter();
             inventoryListView.ListViewItemSorter = inventoryColumnSorter;
             factsListView.ListViewItemSorter = factsColumnSorter;
+
+            itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         }
 
         //This function & other functions related to managing tabs need to be refactored.
@@ -122,13 +125,12 @@ namespace CP2077SaveEditor
 
         public bool RefreshInventory()
         {
-            inventoryListView.Items.Clear();
+            var listViewRows = new List<ListViewItem>();
             var containerID = containersListBox.SelectedItem.ToString();
             containerGroupBox.Visible = true;
             containerGroupBox.Text = containerID;
             if (containerID == "Player Inventory") { containerID = "1"; }
-
-            var classes = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
+            
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
                 var row = new string[] { item.ItemGameName, "Unknown", item.ItemName, "1", item.ItemGameDescription };
@@ -143,22 +145,32 @@ namespace CP2077SaveEditor
                     row[3] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
                 }
 
-                var baseID = item.ItemTdbId.ToString();
-                var correctedID = baseID.Substring(6, 2) + baseID.Substring(4, 2) + baseID.Substring(2, 2) + baseID.Substring(0, 2) + baseID.Substring(8, 3);
-                
-                if (classes.ContainsKey(correctedID))
+                var id = item.ItemTdbId.ToString();
+                if (itemClasses.ContainsKey(id))
                 {
-                    row[1] = classes[correctedID];
+                    row[1] = itemClasses[id];
                 }
 
-                inventoryListView.Items.Add(new ListViewItem(row)).Tag = item;
+                var newItem = new ListViewItem(row);
+                newItem.Tag = item;
 
+                listViewRows.Add(newItem);
                 if (item.ItemGameName == "Eddies" && containerID == "1")
                 {
                     moneyUpDown.Value = ((ItemData.SimpleItemData)item.Data).Quantity;
                     moneyUpDown.Enabled = true;
                 }
             }
+
+            inventoryListView.BeginUpdate();
+            inventoryListView.ListViewItemSorter = null;
+
+            inventoryListView.Items.Clear();
+            inventoryListView.Items.AddRange(listViewRows.ToArray());
+
+            inventoryListView.ListViewItemSorter = inventoryColumnSorter;
+            inventoryListView.Sort();
+            inventoryListView.EndUpdate();
             return true;
         }
 
