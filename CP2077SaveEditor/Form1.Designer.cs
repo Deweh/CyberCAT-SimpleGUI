@@ -40,6 +40,7 @@ namespace CP2077SaveEditor
             this.label1 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.appearancePanel = new System.Windows.Forms.Panel();
+            this.label18 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
             this.breastsBox = new System.Windows.Forms.TextBox();
@@ -94,7 +95,7 @@ namespace CP2077SaveEditor
             this.factsValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.label18 = new System.Windows.Forms.Label();
+            this.inventoryTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -246,6 +247,16 @@ namespace CP2077SaveEditor
             this.appearancePanel.Name = "appearancePanel";
             this.appearancePanel.Size = new System.Drawing.Size(851, 548);
             this.appearancePanel.TabIndex = 4;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(191, 506);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(429, 13);
+            this.label18.TabIndex = 17;
+            this.label18.Text = "Presets will affect ALL character appearance attributes, even ones not listed abo" +
+    "ve.";
             // 
             // groupBox6
             // 
@@ -680,6 +691,7 @@ namespace CP2077SaveEditor
             this.inventoryListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.inventoryListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.inventoryNameHeader,
+            this.inventoryTypeHeader,
             this.inventoryIdHeader,
             this.inventoryQuantityHeader,
             this.inventoryDescriptionHeader});
@@ -712,7 +724,7 @@ namespace CP2077SaveEditor
             // inventoryDescriptionHeader
             // 
             this.inventoryDescriptionHeader.Text = "Description";
-            this.inventoryDescriptionHeader.Width = 456;
+            this.inventoryDescriptionHeader.Width = 332;
             // 
             // groupBox1
             // 
@@ -803,15 +815,10 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
-            // label18
+            // inventoryTypeHeader
             // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(191, 506);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(429, 13);
-            this.label18.TabIndex = 17;
-            this.label18.Text = "Presets will affect ALL character appearance attributes, even ones not listed abo" +
-    "ve.";
+            this.inventoryTypeHeader.Text = "Type";
+            this.inventoryTypeHeader.Width = 119;
             // 
             // Form1
             // 
@@ -921,6 +928,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox skinColorBox;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.ColumnHeader inventoryTypeHeader;
     }
 }
 

@@ -132,6 +132,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="Resources\Facts.json" />
+    <None Include="Resources\ItemClasses.json" />
     <None Include="Resources\ItemNames.json" />
   </ItemGroup>
   <ItemGroup>

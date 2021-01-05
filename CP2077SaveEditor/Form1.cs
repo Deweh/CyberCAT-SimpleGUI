@@ -128,9 +128,11 @@ namespace CP2077SaveEditor
             containerGroupBox.Text = containerID;
             if (containerID == "Player Inventory") { containerID = "1"; }
 
+            //var debugList = new List<string>();
+
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
-                var row = new string[] { item.ItemGameName, item.ItemName, "1", item.ItemGameDescription };
+                var row = new string[] { item.ItemGameName, "Unknown", item.ItemName, "1", item.ItemGameDescription };
 
                 if (item.ItemGameName.Length < 1)
                 {
@@ -139,8 +141,20 @@ namespace CP2077SaveEditor
 
                 if (item.Data.GetType().FullName.EndsWith("SimpleItemData") == true)
                 {
-                    row[2] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
+                    row[3] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
                 }
+
+
+                var baseID = item.ItemTdbId.ToString();
+                var correctedID = baseID.Substring(6, 2) + baseID.Substring(4, 2) + baseID.Substring(2, 2) + baseID.Substring(0, 2) + baseID.Substring(8, 3);
+
+                var classes = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
+                if (classes.ContainsKey(correctedID))
+                {
+                    row[1] = classes[correctedID];
+                }
+
+                //debugList.Add(item.ItemTdbId.ToString());
 
                 inventoryListView.Items.Add(new ListViewItem(row)).Tag = item;
 
@@ -150,6 +164,9 @@ namespace CP2077SaveEditor
                     moneyUpDown.Enabled = true;
                 }
             }
+
+            //File.WriteAllText("dump.json", JsonConvert.SerializeObject(debugList));
+
             return "";
         }
 

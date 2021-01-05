@@ -84,6 +84,33 @@ namespace CP2077SaveEditor.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to {
+        ///  &quot;#0001F38D:18&quot;: &quot;ConsumableItem&quot;,
+        ///  &quot;#0002DF00:18&quot;: &quot;Clothing&quot;,
+        ///  &quot;#001E62F0:1D&quot;: &quot;Clothing&quot;,
+        ///  &quot;#0032C251:1A&quot;: &quot;Item&quot;,
+        ///  &quot;#003C51F8:13&quot;: &quot;WeaponItem&quot;,
+        ///  &quot;#006AB6EB:24&quot;: &quot;Item&quot;,
+        ///  &quot;#008D5D92:17&quot;: &quot;WeaponItem&quot;,
+        ///  &quot;#00B5353D:1D&quot;: &quot;Item&quot;,
+        ///  &quot;#00C206AA:14&quot;: &quot;Item&quot;,
+        ///  &quot;#00E07A60:28&quot;: &quot;Item&quot;,
+        ///  &quot;#00E6A912:1D&quot;: &quot;Item&quot;,
+        ///  &quot;#00ED2150:1E&quot;: &quot;Item&quot;,
+        ///  &quot;#00F1A609:16&quot;: &quot;Clothing&quot;,
+        ///  &quot;#00FD5730:15&quot;: &quot;ConsumableItem&quot;,
+        ///  &quot;#01079B74:2E&quot;: &quot;Item&quot;,
+        ///  &quot;#011B4434:17&quot;: &quot;Item&quot;,
+        ///  &quot;#011E89EA:1A&quot;: &quot;WeaponItem&quot;,
+        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ItemClasses {
+            get {
+                return ResourceManager.GetString("ItemClasses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
         ///  &quot;0&quot;: {
         ///    &quot;gameDescription&quot;: &quot;&quot;,
         ///    &quot;gameName&quot;: &quot;&quot;,
@@ -91,7 +118,7 @@ namespace CP2077SaveEditor.Properties {
         ///  },
         ///  &quot;100003754986&quot;: {
         ///    &quot;gameDescription&quot;: &quot;&quot;,
-        ///    &quot;gameName&quot;: &quot;&quot;,
+        ///    &quot;gameName&quot;: &quot;8L-OODY Tungsten-Steel Military Helmet&quot;,
         ///    &quot;name&quot;: &quot;Items.Helmet_02_rich_02&quot;
         ///  },
         ///  &quot;100011957978&quot;: {
@@ -104,8 +131,7 @@ namespace CP2077SaveEditor.Properties {
         ///    &quot;gameName&quot;: &quot;&quot;,
         ///    &quot;name&quot;: &quot;Items.crowd_bucket_Epic&quot;
         ///  },
-        ///  &quot;100032210792&quot;: {
-        ///    &quot;gameDescripti [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ItemNames {
             get {
