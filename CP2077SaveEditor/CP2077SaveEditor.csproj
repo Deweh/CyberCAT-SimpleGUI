@@ -92,6 +92,7 @@
     <Compile Include="ItemDetails.Designer.cs">
       <DependentUpon>ItemDetails.cs</DependentUpon>
     </Compile>
+    <Compile Include="ListViewColumnSorter.cs" />
     <Compile Include="ModNodeDetails.cs">
       <SubType>Form</SubType>
     </Compile>

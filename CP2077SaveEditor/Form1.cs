@@ -21,11 +21,35 @@ namespace CP2077SaveEditor
         private SaveFileHelper activeSaveFile;
         private ModernButton activeTabButton = new ModernButton();
         private Panel activeTabPanel = new Panel();
-        private Inventory.SubInventory activeInventoryContainer;
+        private ListViewColumnSorter inventoryColumnSorter;
+        private ListViewColumnSorter factsColumnSorter;
 
         public Form1()
         {
             InitializeComponent();
+            this.Size = new Size(1040, 627);
+            this.CenterToScreen();
+            editorPanel.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right);
+            editorPanel.Controls.Add(appearancePanel);
+            editorPanel.Controls.Add(inventoryPanel);
+            editorPanel.Controls.Add(factsPanel);
+            appearancePanel.Dock = DockStyle.Fill;
+            inventoryPanel.Dock = DockStyle.Fill;
+            factsPanel.Dock = DockStyle.Fill;
+            appearancePanel.Visible = false;
+            inventoryPanel.Visible = false;
+            factsPanel.Visible = false;
+
+            factsListView.AfterLabelEdit += factsListView_AfterLabelEdit;
+            factsListView.MouseUp += factsListView_MouseUp;
+            factsListView.ColumnClick += factsListView_ColumnClick;
+            inventoryListView.DoubleClick += inventoryListView_DoubleClick;
+            inventoryListView.ColumnClick += inventoryListView_ColumnClick;
+
+            inventoryColumnSorter = new ListViewColumnSorter();
+            factsColumnSorter = new ListViewColumnSorter();
+            inventoryListView.ListViewItemSorter = inventoryColumnSorter;
+            factsListView.ListViewItemSorter = factsColumnSorter;
         }
 
         //This function & other functions related to managing tabs need to be refactored.
@@ -104,8 +128,7 @@ namespace CP2077SaveEditor
             containerGroupBox.Text = containerID;
             if (containerID == "Player Inventory") { containerID = "1"; }
 
-            var containerData = activeSaveFile.GetInventory(ulong.Parse(containerID)); activeInventoryContainer = containerData;
-            foreach (ItemData item in containerData.Items)
+            foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
                 var row = new string[] { item.ItemGameName, item.ItemName, "1", item.ItemGameDescription };
 
@@ -119,7 +142,7 @@ namespace CP2077SaveEditor
                     row[2] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
                 }
 
-                inventoryListView.Items.Add(new ListViewItem(row));
+                inventoryListView.Items.Add(new ListViewItem(row)).Tag = item;
 
                 if (item.ItemGameName == "Eddies" && containerID == "1")
                 {
@@ -176,7 +199,7 @@ namespace CP2077SaveEditor
 
                 foreach (FactsTable.FactEntry fact in factsList)
                 {
-                    factsListView.Items.Add(new ListViewItem(new string[] { fact.Value.ToString(), fact.FactName }));
+                    factsListView.Items.Add(new ListViewItem(new string[] { fact.Value.ToString(), fact.FactName })).Tag = fact;
                 }
 
                 //Update controls
@@ -202,26 +225,6 @@ namespace CP2077SaveEditor
                 File.WriteAllBytes(saveWindow.FileName, activeSaveFile.SaveToPCSaveFile());
                 statusLabel.Text = "File saved.";
             }
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            this.Size = new Size(1040, 627);
-            this.CenterToScreen();
-            editorPanel.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right);
-            editorPanel.Controls.Add(appearancePanel);
-            editorPanel.Controls.Add(inventoryPanel);
-            editorPanel.Controls.Add(factsPanel);
-            appearancePanel.Dock = DockStyle.Fill;
-            inventoryPanel.Dock = DockStyle.Fill;
-            factsPanel.Dock = DockStyle.Fill;
-            appearancePanel.Visible = false;
-            inventoryPanel.Visible = false;
-            factsPanel.Visible = false;
-
-            factsListView.AfterLabelEdit += factsListView_AfterLabelEdit;
-            factsListView.MouseUp += factsListView_MouseUp;
-            inventoryListView.DoubleClick += inventoryListView_DoubleClick;
         }
 
         private void appearanceButton_Click(object sender, EventArgs e)
@@ -293,7 +296,7 @@ namespace CP2077SaveEditor
                 e.CancelEdit = true;
                 return;
             }
-            activeSaveFile.GetKnownFacts()[factsListView.SelectedIndices[0]].Value = UInt32.Parse(e.Label);
+            ((FactsTable.FactEntry)factsListView.SelectedItems[0].Tag).Value = UInt32.Parse(e.Label);
         }
 
         private void inventoryListView_DoubleClick(object sender, EventArgs e)
@@ -301,8 +304,30 @@ namespace CP2077SaveEditor
             if (inventoryListView.SelectedIndices.Count > 0)
             {
                 var activeDetails = new ItemDetails();
-                activeDetails.LoadItem(activeInventoryContainer.Items[inventoryListView.SelectedIndices[0]], RefreshInventory);
+                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, RefreshInventory);
             }
+        }
+
+        private void inventoryListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == inventoryColumnSorter.SortColumn)
+            {
+                if (inventoryColumnSorter.Order == SortOrder.Ascending)
+                {
+                    inventoryColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    inventoryColumnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                inventoryColumnSorter.SortColumn = e.Column;
+                inventoryColumnSorter.Order = SortOrder.Ascending;
+            }
+
+            inventoryListView.Sort();
         }
 
         private void factsListView_MouseUp(object sender, EventArgs e)
@@ -311,6 +336,28 @@ namespace CP2077SaveEditor
             {
                 factsListView.SelectedItems[0].BeginEdit();
             }
+        }
+
+        private void factsListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == factsColumnSorter.SortColumn)
+            {
+                if (factsColumnSorter.Order == SortOrder.Ascending)
+                {
+                    factsColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    factsColumnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                factsColumnSorter.SortColumn = e.Column;
+                factsColumnSorter.Order = SortOrder.Ascending;
+            }
+
+            factsListView.Sort();
         }
     }
 }
