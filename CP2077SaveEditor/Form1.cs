@@ -128,6 +128,7 @@ namespace CP2077SaveEditor
             containerGroupBox.Text = containerID;
             if (containerID == "Player Inventory") { containerID = "1"; }
 
+            var classes = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
                 var row = new string[] { item.ItemGameName, "Unknown", item.ItemName, "1", item.ItemGameDescription };
@@ -142,11 +143,9 @@ namespace CP2077SaveEditor
                     row[3] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
                 }
 
-
                 var baseID = item.ItemTdbId.ToString();
                 var correctedID = baseID.Substring(6, 2) + baseID.Substring(4, 2) + baseID.Substring(2, 2) + baseID.Substring(0, 2) + baseID.Substring(8, 3);
-
-                var classes = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
+                
                 if (classes.ContainsKey(correctedID))
                 {
                     row[1] = classes[correctedID];
