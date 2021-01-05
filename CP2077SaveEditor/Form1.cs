@@ -24,6 +24,7 @@ namespace CP2077SaveEditor
         private ListViewColumnSorter inventoryColumnSorter;
         private ListViewColumnSorter factsColumnSorter;
         private Dictionary<string, string> itemClasses;
+        private ItemData activeItemEdit = null;
 
         public Form1()
         {
@@ -130,7 +131,8 @@ namespace CP2077SaveEditor
             containerGroupBox.Visible = true;
             containerGroupBox.Text = containerID;
             if (containerID == "Player Inventory") { containerID = "1"; }
-            
+
+            ListViewItem selectItem = null;
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
                 var row = new string[] { item.ItemGameName, "Unknown", item.ItemName, "1", item.ItemGameDescription };
@@ -154,6 +156,12 @@ namespace CP2077SaveEditor
                 var newItem = new ListViewItem(row);
                 newItem.Tag = item;
 
+                if (activeItemEdit == item)
+                {
+                    newItem.Selected = true;
+                    selectItem = newItem;
+                }
+
                 listViewRows.Add(newItem);
                 if (item.ItemGameName == "Eddies" && containerID == "1")
                 {
@@ -171,6 +179,18 @@ namespace CP2077SaveEditor
             inventoryListView.ListViewItemSorter = inventoryColumnSorter;
             inventoryListView.Sort();
             inventoryListView.EndUpdate();
+
+            if (selectItem != null)
+            {
+                inventoryListView.EnsureVisible(inventoryListView.Items.IndexOf(selectItem));
+            }
+            
+            return true;
+        }
+
+        public bool ClearActiveItem()
+        {
+            activeItemEdit = null;
             return true;
         }
 
@@ -321,8 +341,9 @@ namespace CP2077SaveEditor
         {
             if (inventoryListView.SelectedIndices.Count > 0)
             {
+                activeItemEdit = (ItemData)inventoryListView.SelectedItems[0].Tag;
                 var activeDetails = new ItemDetails();
-                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, RefreshInventory);
+                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, RefreshInventory, ClearActiveItem);
             }
         }
 

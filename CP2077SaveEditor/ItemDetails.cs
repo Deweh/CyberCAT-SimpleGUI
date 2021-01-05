@@ -14,19 +14,26 @@ namespace CP2077SaveEditor
 {
     public partial class ItemDetails : Form
     {
-        private Func<bool> callbackFunc;
+        private Func<bool> callbackFunc1;
+        private Func<bool> callbackFunc2;
         private ItemData activeItem;
         private DataType itemType;
 
         public ItemDetails()
         {
             InitializeComponent();
+            this.FormClosing += ItemDetails_FormClosing;
         }
 
         enum DataType
         {
             SimpleItem,
             ModableItem
+        }
+
+        private void ItemDetails_FormClosing(object sender, EventArgs e)
+        {
+            callbackFunc2.Invoke();
         }
 
         private void ItemDetails_Load(object sender, EventArgs e)
@@ -107,9 +114,10 @@ namespace CP2077SaveEditor
             return true;
         }
 
-        public void LoadItem(ItemData item, Func<bool> callback)
+        public void LoadItem(ItemData item, Func<bool> callback1, Func<bool> callback2)
         {
-            callbackFunc = callback;
+            callbackFunc1 = callback1;
+            callbackFunc2 = callback2;
             activeItem = item;
             ReloadData();
 
@@ -140,11 +148,12 @@ namespace CP2077SaveEditor
             }
             activeItem.Flags.Unknown2 = unknownFlag1CheckBox.Checked;
             activeItem.Flags.IsQuestItem = questItemCheckBox.Checked;
-            callbackFunc.Invoke();
+            callbackFunc1.Invoke();
         }
 
         private void closeButton_Click(object sender, EventArgs e)
         {
+            callbackFunc2.Invoke();
             this.Close();
         }
 
