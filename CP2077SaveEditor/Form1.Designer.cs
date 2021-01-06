@@ -82,6 +82,7 @@ namespace CP2077SaveEditor
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.containersListBox = new System.Windows.Forms.ListBox();
             this.containerGroupBox = new System.Windows.Forms.GroupBox();
+            this.inventorySearchBox = new System.Windows.Forms.TextBox();
             this.inventoryListView = new System.Windows.Forms.ListView();
             this.inventoryNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.inventoryTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -92,12 +93,12 @@ namespace CP2077SaveEditor
             this.label2 = new System.Windows.Forms.Label();
             this.moneyUpDown = new System.Windows.Forms.NumericUpDown();
             this.factsPanel = new System.Windows.Forms.Panel();
+            this.factsSearchBox = new System.Windows.Forms.TextBox();
             this.factsListView = new System.Windows.Forms.ListView();
             this.factsValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.factsSearchBox = new System.Windows.Forms.TextBox();
-            this.inventorySearchBox = new System.Windows.Forms.TextBox();
+            this.addFactButton = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -689,6 +690,19 @@ namespace CP2077SaveEditor
             this.containerGroupBox.TabStop = false;
             this.containerGroupBox.Visible = false;
             // 
+            // inventorySearchBox
+            // 
+            this.inventorySearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.inventorySearchBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.inventorySearchBox.ForeColor = System.Drawing.Color.Silver;
+            this.inventorySearchBox.Location = new System.Drawing.Point(10, 17);
+            this.inventorySearchBox.Name = "inventorySearchBox";
+            this.inventorySearchBox.Size = new System.Drawing.Size(829, 15);
+            this.inventorySearchBox.TabIndex = 2;
+            this.inventorySearchBox.Text = "Search";
+            this.inventorySearchBox.TextChanged += new System.EventHandler(this.inventorySearchBox_TextChanged);
+            // 
             // inventoryListView
             // 
             this.inventoryListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -773,6 +787,7 @@ namespace CP2077SaveEditor
             // 
             // factsPanel
             // 
+            this.factsPanel.Controls.Add(this.addFactButton);
             this.factsPanel.Controls.Add(this.factsSearchBox);
             this.factsPanel.Controls.Add(this.factsListView);
             this.factsPanel.Enabled = false;
@@ -780,6 +795,19 @@ namespace CP2077SaveEditor
             this.factsPanel.Name = "factsPanel";
             this.factsPanel.Size = new System.Drawing.Size(851, 548);
             this.factsPanel.TabIndex = 13;
+            // 
+            // factsSearchBox
+            // 
+            this.factsSearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.factsSearchBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.factsSearchBox.ForeColor = System.Drawing.Color.Silver;
+            this.factsSearchBox.Location = new System.Drawing.Point(6, 4);
+            this.factsSearchBox.Name = "factsSearchBox";
+            this.factsSearchBox.Size = new System.Drawing.Size(814, 15);
+            this.factsSearchBox.TabIndex = 1;
+            this.factsSearchBox.Text = "Search";
+            this.factsSearchBox.TextChanged += new System.EventHandler(this.factsSearchBox_TextChanged);
             // 
             // factsListView
             // 
@@ -828,31 +856,20 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
-            // factsSearchBox
+            // addFactButton
             // 
-            this.factsSearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.factsSearchBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.factsSearchBox.ForeColor = System.Drawing.Color.Silver;
-            this.factsSearchBox.Location = new System.Drawing.Point(6, 4);
-            this.factsSearchBox.Name = "factsSearchBox";
-            this.factsSearchBox.Size = new System.Drawing.Size(841, 15);
-            this.factsSearchBox.TabIndex = 1;
-            this.factsSearchBox.Text = "Search";
-            this.factsSearchBox.TextChanged += new System.EventHandler(this.factsSearchBox_TextChanged);
-            // 
-            // inventorySearchBox
-            // 
-            this.inventorySearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.inventorySearchBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.inventorySearchBox.ForeColor = System.Drawing.Color.Silver;
-            this.inventorySearchBox.Location = new System.Drawing.Point(10, 17);
-            this.inventorySearchBox.Name = "inventorySearchBox";
-            this.inventorySearchBox.Size = new System.Drawing.Size(829, 15);
-            this.inventorySearchBox.TabIndex = 2;
-            this.inventorySearchBox.Text = "Search";
-            this.inventorySearchBox.TextChanged += new System.EventHandler(this.inventorySearchBox_TextChanged);
+            this.addFactButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.addFactButton.ClickEffectEnabled = true;
+            this.addFactButton.DefaultColor = System.Drawing.Color.White;
+            this.addFactButton.HoverColor = System.Drawing.Color.LightGray;
+            this.addFactButton.Location = new System.Drawing.Point(826, 1);
+            this.addFactButton.Name = "addFactButton";
+            this.addFactButton.Size = new System.Drawing.Size(20, 20);
+            this.addFactButton.TabIndex = 2;
+            this.addFactButton.Text = "+";
+            this.addFactButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.addFactButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addFactButton.Click += new System.EventHandler(this.addFactButton_Click);
             // 
             // Form1
             // 
@@ -967,6 +984,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.ColumnHeader inventoryTypeHeader;
         private System.Windows.Forms.TextBox factsSearchBox;
         private System.Windows.Forms.TextBox inventorySearchBox;
+        private ModernButton addFactButton;
     }
 }
 

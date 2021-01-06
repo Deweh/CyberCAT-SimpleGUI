@@ -32,15 +32,14 @@ namespace CP2077SaveEditor
             this.Size = new Size(1040, 627);
             this.CenterToScreen();
             editorPanel.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right);
-            editorPanel.Controls.Add(appearancePanel);
-            editorPanel.Controls.Add(inventoryPanel);
-            editorPanel.Controls.Add(factsPanel);
-            appearancePanel.Dock = DockStyle.Fill;
-            inventoryPanel.Dock = DockStyle.Fill;
-            factsPanel.Dock = DockStyle.Fill;
-            appearancePanel.Visible = false;
-            inventoryPanel.Visible = false;
-            factsPanel.Visible = false;
+
+            var tabPanels = new Panel[] { appearancePanel, inventoryPanel, factsPanel };
+            foreach (Panel singleTab in tabPanels)
+            {
+                editorPanel.Controls.Add(singleTab);
+                singleTab.Dock = DockStyle.Fill;
+                singleTab.Visible = false;
+            }
 
             factsListView.AfterLabelEdit += factsListView_AfterLabelEdit;
             factsListView.MouseUp += factsListView_MouseUp;
@@ -283,7 +282,7 @@ namespace CP2077SaveEditor
                 var parsers = new List<INodeParser>();
                 parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
-                    new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser()
+                    new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(), new StatsSystemParser()
                 });
 
                 var newSave = new SaveFileHelper(parsers);
@@ -311,10 +310,12 @@ namespace CP2077SaveEditor
 
                 //Facts parsing
                 RefreshFacts();
-                //These 2 lines may look redundant, but they initialize the factsListView so that the render thread doesn't freeze when selecting the Quest Facts tab for the first time.
+                //These lines may look redundant, but they initialize the factsListView so that the render thread doesn't freeze when selecting the Quest Facts tab for the first time.
                 //Since the render thread will be frozen here anyways while everything loads, it's best to do this here.
+                addFactButton.Visible = false;
                 factsPanel.Visible = true;
                 factsPanel.Visible = false;
+                addFactButton.Visible = true;
 
                 //Update controls
                 editorPanel.Enabled = true;
@@ -336,7 +337,17 @@ namespace CP2077SaveEditor
                 {
                     File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
                 }
-                File.WriteAllBytes(saveWindow.FileName, activeSaveFile.SaveToPCSaveFile());
+                var saveBytes = activeSaveFile.SaveToPCSaveFile();
+                File.WriteAllBytes(saveWindow.FileName, saveBytes);
+
+                var parsers = new List<INodeParser>();
+                parsers.AddRange(new INodeParser[] {
+                    new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
+                    new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(), new StatsSystemParser()
+                });
+
+                activeSaveFile = new SaveFileHelper(parsers);
+                activeSaveFile.LoadPCSaveFile(new MemoryStream(saveBytes));
                 statusLabel.Text = "File saved.";
             }
         }
@@ -416,7 +427,7 @@ namespace CP2077SaveEditor
             {
                 activeItemEdit = (ItemData)inventoryListView.SelectedItems[0].Tag;
                 var activeDetails = new ItemDetails();
-                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, RefreshInventory, ClearActiveItem);
+                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, activeSaveFile, RefreshInventory, ClearActiveItem);
             }
         }
 
@@ -534,6 +545,29 @@ namespace CP2077SaveEditor
                 }
             }
             
+        }
+
+        private void addFactButton_Click(object sender, EventArgs e)
+        {
+            var factDialog = new AddFact();
+            factDialog.LoadFactDialog(AddFactCallback);
+        }
+
+        public void AddFactCallback(string factEntry, int factType, int factValue)
+        {
+            if (factType == 0)
+            {
+                activeSaveFile.AddFactByName(factEntry, (uint)factValue);
+            } else {
+                if (!uint.TryParse(factEntry, out _))
+                {
+                    MessageBox.Show("Hash must be a valid 32-bit unsigned integer.");
+                    return;
+                }
+
+                activeSaveFile.AddFactByHash(uint.Parse(factEntry), (uint)factValue);
+            }
+            RefreshFacts();
         }
     }
 }

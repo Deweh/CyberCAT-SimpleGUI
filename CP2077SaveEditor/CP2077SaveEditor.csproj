@@ -77,6 +77,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddFact.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddFact.Designer.cs">
+      <DependentUpon>AddFact.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddStat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddStat.Designer.cs">
+      <DependentUpon>AddStat.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -102,6 +114,18 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveFileHelper.cs" />
+    <Compile Include="StatDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StatDetails.Designer.cs">
+      <DependentUpon>StatDetails.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AddFact.resx">
+      <DependentUpon>AddFact.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddStat.resx">
+      <DependentUpon>AddStat.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -121,6 +145,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="StatDetails.resx">
+      <DependentUpon>StatDetails.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="bin\Debug\ItemNames.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

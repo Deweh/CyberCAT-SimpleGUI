@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CyberCAT.Core.Classes;
 using CyberCAT.Core.Classes.Interfaces;
+using CyberCAT.Core.Classes.Mapping.StatsSystem;
 using CyberCAT.Core.Classes.NodeRepresentations;
+using Newtonsoft.Json;
 
 namespace CP2077SaveEditor
 {
@@ -44,6 +46,26 @@ namespace CP2077SaveEditor
             var questSystem = this.Nodes[this.Nodes.FindIndex(x => x.Name == "questSystem")]; return questSystem.Children[questSystem.Children.FindIndex(x => x.Name == "FactsDB")];
         }
 
+        public GenericUnknownStruct GetStatsContainer()
+        {
+            return (GenericUnknownStruct)this.Nodes[this.Nodes.FindIndex(x => x.Name == "StatsSystem")].Value;
+        }
+
+        public GameStatsStateMapStructure GetStatsMap()
+        {
+            return (GameStatsStateMapStructure)this.GetStatsContainer().ClassList[Array.FindIndex(this.GetStatsContainer().ClassList, x => x.GetType().FullName.EndsWith("GameStatsStateMapStructure"))];
+        }
+
+        public GameSavedStatsData GetItemStatData(ItemData item)
+        {
+            var i = Array.FindIndex(this.GetStatsMap().Values, x => x.Seed == item.Header.ItemId);
+            if (i > -1)
+            {
+                return this.GetStatsMap().Values[i];
+            }
+            return null;
+        }
+
         public List<FactsTable.FactEntry> GetKnownFacts()
         {
             var factsList = new List<FactsTable.FactEntry>();
@@ -59,6 +81,27 @@ namespace CP2077SaveEditor
                 }
             }
             return (factsList);
+        }
+
+        public void AddFactByName(string factName, uint factValue)
+        {
+            var factsList = JsonConvert.DeserializeObject<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
+            if (!factsList.Values.Contains(factName))
+            {
+                MessageBox.Show("Fact name '" + factName + "' could not be found on the known facts list.");
+            }
+
+            var factHash = factsList.FirstOrDefault(x => x.Value == factName).Key;
+            AddFactByHash(factHash, factValue);
+        }
+
+        public void AddFactByHash(uint factHash, uint factValue)
+        {
+            var newFact = new FactsTable.FactEntry();
+            newFact.Hash = factHash;
+            newFact.Value = factValue;
+
+            ((FactsTable)this.GetFactsContainer().Children[0].Value).FactEntries = ((FactsTable)this.GetFactsContainer().Children[0].Value).FactEntries.Append(newFact).ToArray();
         }
 
         public Inventory.SubInventory GetInventory(ulong id)
