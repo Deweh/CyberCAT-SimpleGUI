@@ -26,16 +26,6 @@ namespace CP2077SaveEditor
         private Dictionary<string, string> itemClasses;
         private ItemData activeItemEdit = null;
 
-        public enum InventoryField
-        {
-            All,
-            ItemName,
-            Type,
-            ID,
-            Quantity,
-            Description
-        }
-
         public Form1()
         {
             InitializeComponent();
@@ -232,7 +222,13 @@ namespace CP2077SaveEditor
 
         public bool RefreshInventory()
         {
-            return RefreshInventory("", -1);
+            if (inventorySearchBox.Text != "" && inventorySearchBox.Text != "Search")
+            {
+                inventorySearchBox_TextChanged(null, new EventArgs());
+            } else {
+                RefreshInventory("", -1);
+            }
+            return true;
         }
 
         public bool ClearActiveItem()
