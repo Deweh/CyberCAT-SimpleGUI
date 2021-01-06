@@ -500,34 +500,40 @@ namespace CP2077SaveEditor
 
         private void inventorySearchBox_TextChanged(object sender, EventArgs e)
         {
-            var query = inventorySearchBox.Text;
-            if (query.StartsWith("name:"))
+            if (inventorySearchBox.ForeColor != Color.Silver)
             {
-                query = query.Remove(0, 5);
-                RefreshInventory(query, 0);
+                var query = inventorySearchBox.Text;
+                if (query.StartsWith("name:"))
+                {
+                    query = query.Remove(0, 5);
+                    RefreshInventory(query, 0);
+                }
+                else if (query.StartsWith("type:"))
+                {
+                    query = query.Remove(0, 5);
+                    RefreshInventory(query, 1);
+                }
+                else if (query.StartsWith("id:"))
+                {
+                    query = query.Remove(0, 3);
+                    RefreshInventory(query, 2);
+                }
+                else if (query.StartsWith("quantity:"))
+                {
+                    query = query.Remove(0, 9);
+                    RefreshInventory(query, 3);
+                }
+                else if (query.StartsWith("desc:"))
+                {
+                    query = query.Remove(0, 5);
+                    RefreshInventory(query, 4);
+                }
+                else
+                {
+                    RefreshInventory(query, -1);
+                }
             }
-            else if (query.StartsWith("type:"))
-            {
-                query = query.Remove(0, 5);
-                RefreshInventory(query, 1);
-            }
-            else if (query.StartsWith("id:"))
-            {
-                query = query.Remove(0, 3);
-                RefreshInventory(query, 2);
-            }
-            else if (query.StartsWith("quantity:"))
-            {
-                query = query.Remove(0, 9);
-                RefreshInventory(query, 3);
-            }
-            else if (query.StartsWith("desc:"))
-            {
-                query = query.Remove(0, 5);
-                RefreshInventory(query, 4);
-            } else {
-                RefreshInventory(query, -1);
-            }
+            
         }
     }
 }
