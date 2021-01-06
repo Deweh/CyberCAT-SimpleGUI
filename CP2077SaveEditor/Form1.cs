@@ -53,6 +53,9 @@ namespace CP2077SaveEditor
             inventoryListView.ListViewItemSorter = inventoryColumnSorter;
             factsListView.ListViewItemSorter = factsColumnSorter;
 
+            factsSearchBox.GotFocus += SearchBoxGotFocus;
+            factsSearchBox.LostFocus += SearchBoxLostFocus;
+
             itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         }
 
@@ -194,6 +197,38 @@ namespace CP2077SaveEditor
             return true;
         }
 
+        public void RefreshFacts(string search = "")
+        {
+            var factsList = activeSaveFile.GetKnownFacts();
+            var listViewRows = new List<ListViewItem>();
+
+            foreach (FactsTable.FactEntry fact in factsList)
+            {
+                if (search != "")
+                {
+                    if (!fact.FactName.Contains(search))
+                    {
+                        continue;
+                    }
+                }
+
+                var newItem = new ListViewItem(new string[] { fact.Value.ToString(), fact.FactName });
+                newItem.Tag = fact;
+
+                listViewRows.Add(newItem);
+            }
+
+            factsListView.BeginUpdate();
+            factsListView.ListViewItemSorter = null;
+
+            factsListView.Items.Clear();
+            factsListView.Items.AddRange(listViewRows.ToArray());
+
+            factsListView.ListViewItemSorter = factsColumnSorter;
+            factsListView.Sort();
+            factsListView.EndUpdate();
+        }
+
         private void openSaveButton_Click(object sender, EventArgs e)
         {
             var fileWindow = new OpenFileDialog();
@@ -235,13 +270,11 @@ namespace CP2077SaveEditor
                 }
 
                 //Facts parsing
-                factsListView.Items.Clear();
-                var factsList = activeSaveFile.GetKnownFacts();
-
-                foreach (FactsTable.FactEntry fact in factsList)
-                {
-                    factsListView.Items.Add(new ListViewItem(new string[] { fact.Value.ToString(), fact.FactName })).Tag = fact;
-                }
+                RefreshFacts();
+                //These 2 lines may look redundant, but they initialize the factsListView so that the render thread doesn't freeze when selecting the Quest Facts tab for the first time.
+                //Since the render thread will be frozen here anyways while everything loads, it's best to do this here.
+                factsPanel.Visible = true;
+                factsPanel.Visible = false;
 
                 //Update controls
                 editorPanel.Enabled = true;
@@ -397,6 +430,32 @@ namespace CP2077SaveEditor
             }
 
             factsListView.Sort();
+        }
+
+        private void factsSearchBox_TextChanged(object sender, EventArgs e)
+        {
+            if (factsSearchBox.ForeColor != Color.Silver)
+            {
+                RefreshFacts(factsSearchBox.Text);
+            }
+        }
+
+        private void SearchBoxGotFocus(object sender, EventArgs e)
+        {
+            if (((TextBox)sender).Text == "Search" && ((TextBox)sender).ForeColor == Color.Silver)
+            {
+                ((TextBox)sender).Text = "";
+                ((TextBox)sender).ForeColor = Color.Black;
+            }
+        }
+
+        private void SearchBoxLostFocus(object sender, EventArgs e)
+        {
+            if (((TextBox)sender).Text == "")
+            {
+                ((TextBox)sender).ForeColor = Color.Silver;
+                ((TextBox)sender).Text = "Search";
+            }
         }
     }
 }

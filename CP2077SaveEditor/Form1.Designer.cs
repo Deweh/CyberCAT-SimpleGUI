@@ -84,6 +84,7 @@ namespace CP2077SaveEditor
             this.containerGroupBox = new System.Windows.Forms.GroupBox();
             this.inventoryListView = new System.Windows.Forms.ListView();
             this.inventoryNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.inventoryTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.inventoryIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.inventoryQuantityHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.inventoryDescriptionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -95,7 +96,7 @@ namespace CP2077SaveEditor
             this.factsValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.inventoryTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.factsSearchBox = new System.Windows.Forms.TextBox();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -712,6 +713,11 @@ namespace CP2077SaveEditor
             this.inventoryNameHeader.Text = "Item Name";
             this.inventoryNameHeader.Width = 171;
             // 
+            // inventoryTypeHeader
+            // 
+            this.inventoryTypeHeader.Text = "Type";
+            this.inventoryTypeHeader.Width = 119;
+            // 
             // inventoryIdHeader
             // 
             this.inventoryIdHeader.Text = "ID";
@@ -763,6 +769,7 @@ namespace CP2077SaveEditor
             // 
             // factsPanel
             // 
+            this.factsPanel.Controls.Add(this.factsSearchBox);
             this.factsPanel.Controls.Add(this.factsListView);
             this.factsPanel.Enabled = false;
             this.factsPanel.Location = new System.Drawing.Point(1018, 566);
@@ -772,19 +779,21 @@ namespace CP2077SaveEditor
             // 
             // factsListView
             // 
+            this.factsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.factsListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.factsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.factsValueHeader,
             this.factsNameHeader});
-            this.factsListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.factsListView.FullRowSelect = true;
             this.factsListView.GridLines = true;
             this.factsListView.HideSelection = false;
             this.factsListView.LabelEdit = true;
-            this.factsListView.Location = new System.Drawing.Point(0, 0);
+            this.factsListView.Location = new System.Drawing.Point(0, 22);
             this.factsListView.MultiSelect = false;
             this.factsListView.Name = "factsListView";
-            this.factsListView.Size = new System.Drawing.Size(851, 548);
+            this.factsListView.Size = new System.Drawing.Size(851, 526);
             this.factsListView.TabIndex = 0;
             this.factsListView.UseCompatibleStateImageBehavior = false;
             this.factsListView.View = System.Windows.Forms.View.Details;
@@ -815,10 +824,16 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
-            // inventoryTypeHeader
+            // factsSearchBox
             // 
-            this.inventoryTypeHeader.Text = "Type";
-            this.inventoryTypeHeader.Width = 119;
+            this.factsSearchBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.factsSearchBox.ForeColor = System.Drawing.Color.Silver;
+            this.factsSearchBox.Location = new System.Drawing.Point(3, 4);
+            this.factsSearchBox.Name = "factsSearchBox";
+            this.factsSearchBox.Size = new System.Drawing.Size(844, 15);
+            this.factsSearchBox.TabIndex = 1;
+            this.factsSearchBox.Text = "Search";
+            this.factsSearchBox.TextChanged += new System.EventHandler(this.factsSearchBox_TextChanged);
             // 
             // Form1
             // 
@@ -858,6 +873,7 @@ namespace CP2077SaveEditor
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.moneyUpDown)).EndInit();
             this.factsPanel.ResumeLayout(false);
+            this.factsPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -929,6 +945,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.TextBox skinColorBox;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.ColumnHeader inventoryTypeHeader;
+        private System.Windows.Forms.TextBox factsSearchBox;
     }
 }
 
