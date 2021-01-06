@@ -97,6 +97,7 @@ namespace CP2077SaveEditor
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
             this.factsSearchBox = new System.Windows.Forms.TextBox();
+            this.inventorySearchBox = new System.Windows.Forms.TextBox();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -679,6 +680,7 @@ namespace CP2077SaveEditor
             this.containerGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.containerGroupBox.Controls.Add(this.inventorySearchBox);
             this.containerGroupBox.Controls.Add(this.inventoryListView);
             this.containerGroupBox.Location = new System.Drawing.Point(3, 86);
             this.containerGroupBox.Name = "containerGroupBox";
@@ -689,6 +691,9 @@ namespace CP2077SaveEditor
             // 
             // inventoryListView
             // 
+            this.inventoryListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.inventoryListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.inventoryListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.inventoryNameHeader,
@@ -696,14 +701,13 @@ namespace CP2077SaveEditor
             this.inventoryIdHeader,
             this.inventoryQuantityHeader,
             this.inventoryDescriptionHeader});
-            this.inventoryListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.inventoryListView.FullRowSelect = true;
             this.inventoryListView.GridLines = true;
             this.inventoryListView.HideSelection = false;
-            this.inventoryListView.Location = new System.Drawing.Point(3, 18);
+            this.inventoryListView.Location = new System.Drawing.Point(3, 35);
             this.inventoryListView.MultiSelect = false;
             this.inventoryListView.Name = "inventoryListView";
-            this.inventoryListView.Size = new System.Drawing.Size(839, 438);
+            this.inventoryListView.Size = new System.Drawing.Size(839, 421);
             this.inventoryListView.TabIndex = 0;
             this.inventoryListView.UseCompatibleStateImageBehavior = false;
             this.inventoryListView.View = System.Windows.Forms.View.Details;
@@ -826,14 +830,29 @@ namespace CP2077SaveEditor
             // 
             // factsSearchBox
             // 
+            this.factsSearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.factsSearchBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.factsSearchBox.ForeColor = System.Drawing.Color.Silver;
-            this.factsSearchBox.Location = new System.Drawing.Point(3, 4);
+            this.factsSearchBox.Location = new System.Drawing.Point(6, 4);
             this.factsSearchBox.Name = "factsSearchBox";
-            this.factsSearchBox.Size = new System.Drawing.Size(844, 15);
+            this.factsSearchBox.Size = new System.Drawing.Size(841, 15);
             this.factsSearchBox.TabIndex = 1;
             this.factsSearchBox.Text = "Search";
             this.factsSearchBox.TextChanged += new System.EventHandler(this.factsSearchBox_TextChanged);
+            // 
+            // inventorySearchBox
+            // 
+            this.inventorySearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.inventorySearchBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.inventorySearchBox.ForeColor = System.Drawing.Color.Silver;
+            this.inventorySearchBox.Location = new System.Drawing.Point(10, 17);
+            this.inventorySearchBox.Name = "inventorySearchBox";
+            this.inventorySearchBox.Size = new System.Drawing.Size(829, 15);
+            this.inventorySearchBox.TabIndex = 2;
+            this.inventorySearchBox.Text = "Search";
+            this.inventorySearchBox.TextChanged += new System.EventHandler(this.inventorySearchBox_TextChanged);
             // 
             // Form1
             // 
@@ -869,6 +888,7 @@ namespace CP2077SaveEditor
             this.inventoryPanel.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.containerGroupBox.ResumeLayout(false);
+            this.containerGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.moneyUpDown)).EndInit();
@@ -946,6 +966,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.ColumnHeader inventoryTypeHeader;
         private System.Windows.Forms.TextBox factsSearchBox;
+        private System.Windows.Forms.TextBox inventorySearchBox;
     }
 }
 

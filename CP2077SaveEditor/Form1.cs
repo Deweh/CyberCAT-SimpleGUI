@@ -26,6 +26,16 @@ namespace CP2077SaveEditor
         private Dictionary<string, string> itemClasses;
         private ItemData activeItemEdit = null;
 
+        public enum InventoryField
+        {
+            All,
+            ItemName,
+            Type,
+            ID,
+            Quantity,
+            Description
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -55,6 +65,8 @@ namespace CP2077SaveEditor
 
             factsSearchBox.GotFocus += SearchBoxGotFocus;
             factsSearchBox.LostFocus += SearchBoxLostFocus;
+            inventorySearchBox.GotFocus += SearchBoxGotFocus;
+            inventorySearchBox.LostFocus += SearchBoxLostFocus;
 
             itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         }
@@ -127,7 +139,7 @@ namespace CP2077SaveEditor
             }
         }
 
-        public bool RefreshInventory()
+        public bool RefreshInventory(string search = "", int searchField = -1)
         {
             var listViewRows = new List<ListViewItem>();
             var containerID = containersListBox.SelectedItem.ToString();
@@ -154,6 +166,33 @@ namespace CP2077SaveEditor
                 if (itemClasses.ContainsKey(id))
                 {
                     row[1] = itemClasses[id];
+                }
+
+                if (search != "")
+                {
+                    if (searchField > -1)
+                    {
+                        if (!row[searchField].ToLower().Contains(search.ToLower()))
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        var containsSearchString = false;
+                        foreach (string rowItem in row)
+                        {
+                            if (rowItem.ToLower().Contains(search.ToLower()))
+                            {
+                                containsSearchString = true;
+                                break;
+                            }
+                        }
+                        if (!containsSearchString)
+                        {
+                            continue;
+                        }
+                    }
                 }
 
                 var newItem = new ListViewItem(row);
@@ -191,6 +230,11 @@ namespace CP2077SaveEditor
             return true;
         }
 
+        public bool RefreshInventory()
+        {
+            return RefreshInventory("", -1);
+        }
+
         public bool ClearActiveItem()
         {
             activeItemEdit = null;
@@ -206,7 +250,7 @@ namespace CP2077SaveEditor
             {
                 if (search != "")
                 {
-                    if (!fact.FactName.Contains(search))
+                    if (!fact.FactName.ToLower().Contains(search.ToLower()))
                     {
                         continue;
                     }
@@ -455,6 +499,38 @@ namespace CP2077SaveEditor
             {
                 ((TextBox)sender).ForeColor = Color.Silver;
                 ((TextBox)sender).Text = "Search";
+            }
+        }
+
+        private void inventorySearchBox_TextChanged(object sender, EventArgs e)
+        {
+            var query = inventorySearchBox.Text;
+            if (query.StartsWith("name:"))
+            {
+                query = query.Remove(0, 5);
+                RefreshInventory(query, 0);
+            }
+            else if (query.StartsWith("type:"))
+            {
+                query = query.Remove(0, 5);
+                RefreshInventory(query, 1);
+            }
+            else if (query.StartsWith("id:"))
+            {
+                query = query.Remove(0, 3);
+                RefreshInventory(query, 2);
+            }
+            else if (query.StartsWith("quantity:"))
+            {
+                query = query.Remove(0, 9);
+                RefreshInventory(query, 3);
+            }
+            else if (query.StartsWith("desc:"))
+            {
+                query = query.Remove(0, 5);
+                RefreshInventory(query, 4);
+            } else {
+                RefreshInventory(query, -1);
             }
         }
     }
