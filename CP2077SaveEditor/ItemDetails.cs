@@ -183,7 +183,57 @@ namespace CP2077SaveEditor
 
         private void pasteLegendaryIdButton_Click(object sender, EventArgs e)
         {
-            modsBaseIdBox.Text = ((ulong)88400986533).ToString();
+            if (activeSaveFile.GetItemStatData(activeItem) == null)
+            {
+                if (MessageBox.Show("Item has no stat data. Fallback to old method?", "Notice", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    modsBaseIdBox.Text = ((ulong)88400986533).ToString();
+                }
+            } else {
+                var foundQualityStat = false;
+                foreach (CyberCAT.Core.Classes.Mapping.Global.Handle<GameStatModifierData> modifier in activeSaveFile.GetItemStatData(activeItem).StatModifiers)
+                {
+                    if (modifier.Value.GetType().Name == "GameConstantStatModifierData")
+                    {
+                        if (((GameConstantStatModifierData)modifier.Value).StatType == gamedataStatType.Quality)
+                        {
+                            ((GameConstantStatModifierData)modifier.Value).Value = 4;
+                            foundQualityStat = true;
+                        }
+                    }
+                }
+
+                if (!foundQualityStat)
+                {
+                    var newModifierData = new GameConstantStatModifierData();
+                    newModifierData.ModifierType = gameStatModifierType.Additive;
+                    newModifierData.StatType = gamedataStatType.Quality;
+                    newModifierData.Value = 4;
+
+                    uint maxIdFound = 0;
+                    foreach (GameSavedStatsData value in activeSaveFile.GetStatsMap().Values)
+                    {
+                        if (value.StatModifiers != null)
+                        {
+                            foreach (Handle<GameStatModifierData> modifierData in value.StatModifiers)
+                            {
+                                if (modifierData.Id > maxIdFound)
+                                {
+                                    maxIdFound = modifierData.Id;
+                                }
+                            }
+                        }
+                    }
+
+                    var newModifier = new CyberCAT.Core.Classes.Mapping.Global.Handle<GameStatModifierData>(maxIdFound + 1);
+                    newModifier.Value = newModifierData;
+
+                    activeSaveFile.GetItemStatData(activeItem).StatModifiers = activeSaveFile.GetItemStatData(activeItem).StatModifiers.Append(newModifier).ToArray();
+                }
+
+                ReloadData();
+                MessageBox.Show("Legendary quality stat applied.");
+            }
         }
 
         private void applyButton_Click(object sender, EventArgs e)

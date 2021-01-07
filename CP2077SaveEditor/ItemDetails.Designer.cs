@@ -47,9 +47,9 @@ namespace CP2077SaveEditor
             this.detailsTabControl = new System.Windows.Forms.TabControl();
             this.modInfoTab = new System.Windows.Forms.TabPage();
             this.statsTab = new System.Windows.Forms.TabPage();
+            this.removeStatButton = new CP2077SaveEditor.ModernButton();
             this.addStatButton = new CP2077SaveEditor.ModernButton();
             this.statsTreeView = new System.Windows.Forms.TreeView();
-            this.removeStatButton = new CP2077SaveEditor.ModernButton();
             this.basicInfoGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.quantityUpDown)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -138,7 +138,7 @@ namespace CP2077SaveEditor
             this.pasteLegendaryIdButton.Name = "pasteLegendaryIdButton";
             this.pasteLegendaryIdButton.Size = new System.Drawing.Size(420, 24);
             this.pasteLegendaryIdButton.TabIndex = 2;
-            this.pasteLegendaryIdButton.Text = "Make Legendary (May not work on everything)";
+            this.pasteLegendaryIdButton.Text = "Make Legendary";
             this.pasteLegendaryIdButton.TextColor = System.Drawing.SystemColors.ControlText;
             this.pasteLegendaryIdButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pasteLegendaryIdButton.Click += new System.EventHandler(this.pasteLegendaryIdButton_Click);
@@ -252,6 +252,22 @@ namespace CP2077SaveEditor
             this.statsTab.Text = "Stats";
             this.statsTab.UseVisualStyleBackColor = true;
             // 
+            // removeStatButton
+            // 
+            this.removeStatButton.BackColor = System.Drawing.Color.White;
+            this.removeStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.removeStatButton.ClickEffectEnabled = true;
+            this.removeStatButton.DefaultColor = System.Drawing.Color.White;
+            this.removeStatButton.HoverColor = System.Drawing.Color.LightGray;
+            this.removeStatButton.Location = new System.Drawing.Point(355, 6);
+            this.removeStatButton.Name = "removeStatButton";
+            this.removeStatButton.Size = new System.Drawing.Size(20, 20);
+            this.removeStatButton.TabIndex = 4;
+            this.removeStatButton.Text = "-";
+            this.removeStatButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.removeStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.removeStatButton.Click += new System.EventHandler(this.removeStatButton_Click);
+            // 
             // addStatButton
             // 
             this.addStatButton.BackColor = System.Drawing.Color.White;
@@ -274,22 +290,6 @@ namespace CP2077SaveEditor
             this.statsTreeView.Name = "statsTreeView";
             this.statsTreeView.Size = new System.Drawing.Size(379, 283);
             this.statsTreeView.TabIndex = 0;
-            // 
-            // removeStatButton
-            // 
-            this.removeStatButton.BackColor = System.Drawing.Color.White;
-            this.removeStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.removeStatButton.ClickEffectEnabled = true;
-            this.removeStatButton.DefaultColor = System.Drawing.Color.White;
-            this.removeStatButton.HoverColor = System.Drawing.Color.LightGray;
-            this.removeStatButton.Location = new System.Drawing.Point(355, 6);
-            this.removeStatButton.Name = "removeStatButton";
-            this.removeStatButton.Size = new System.Drawing.Size(20, 20);
-            this.removeStatButton.TabIndex = 4;
-            this.removeStatButton.Text = "-";
-            this.removeStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.removeStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.removeStatButton.Click += new System.EventHandler(this.removeStatButton_Click);
             // 
             // ItemDetails
             // 
