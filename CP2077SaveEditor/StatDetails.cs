@@ -32,33 +32,36 @@ namespace CP2077SaveEditor
             {
                 statTabControl.TabPages.Remove(constantStatTab);
                 statTabControl.TabPages.Remove(curveStatTab);
+                var data = ((GameCombinedStatModifierData)stat.Value);
 
-                combinedModifier.Text = ((GameCombinedStatModifierData)stat.Value).ModifierType.ToString();
-                combinedOperation.Text = ((GameCombinedStatModifierData)stat.Value).Operation.ToString();
-                combinedRefObject.Text = ((GameCombinedStatModifierData)stat.Value).RefObject.ToString();
-                combinedRefStatType.Text = ((GameCombinedStatModifierData)stat.Value).RefStatType.ToString();
-                combinedStatType.Text = ((GameCombinedStatModifierData)stat.Value).StatType.ToString();
-                combinedValue.Text = ((GameCombinedStatModifierData)stat.Value).Value.ToString();
+                combinedModifier.Text = data.ModifierType.ToString();
+                combinedOperation.Text = data.Operation.ToString();
+                combinedRefObject.Text = data.RefObject.ToString();
+                combinedRefStatType.Text = data.RefStatType.ToString();
+                combinedStatType.Text = data.StatType.ToString();
+                combinedValue.Text = data.Value.ToString();
             }
             else if (stat.Value.GetType().Name == "GameConstantStatModifierData")
             {
                 statTabControl.TabPages.Remove(combinedStatTab);
                 statTabControl.TabPages.Remove(curveStatTab);
+                var data = ((GameConstantStatModifierData)stat.Value);
 
-                constantModifier.Text = ((GameConstantStatModifierData)stat.Value).ModifierType.ToString();
-                constantStatType.Text = ((GameConstantStatModifierData)stat.Value).StatType.ToString();
-                constantValue.Text = ((GameConstantStatModifierData)stat.Value).Value.ToString();
+                constantModifier.Text = data.ModifierType.ToString();
+                constantStatType.Text = data.StatType.ToString();
+                constantValue.Text = data.Value.ToString();
             }
             else if (stat.Value.GetType().Name == "GameCurveStatModifierData")
             {
                 statTabControl.TabPages.Remove(constantStatTab);
                 statTabControl.TabPages.Remove(combinedStatTab);
+                var data = ((GameCurveStatModifierData)stat.Value);
 
-                curveColumnName.Text = ((GameCurveStatModifierData)stat.Value).ColumnName.ToString();
-                curveName.Text = ((GameCurveStatModifierData)stat.Value).CurveName.ToString();
-                curveStat.Text = ((GameCurveStatModifierData)stat.Value).CurveStat.ToString();
-                curveModifier.Text = ((GameCurveStatModifierData)stat.Value).ModifierType.ToString();
-                curveStatType.Text = ((GameCurveStatModifierData)stat.Value).StatType.ToString();
+                curveColumnName.Text = data.ColumnName.ToString();
+                curveName.Text = data.CurveName.ToString();
+                curveStat.Text = data.CurveStat.ToString();
+                curveModifier.Text = data.ModifierType.ToString();
+                curveStatType.Text = data.StatType.ToString();
             }
 
             this.ShowDialog();
@@ -70,21 +73,53 @@ namespace CP2077SaveEditor
             if (activeStat.Value.GetType().Name == "GameCombinedStatModifierData")
             {
                 var data = (GameCombinedStatModifierData)activeStat.Value;
+                try
+                {
+                    data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), combinedModifier.Text);
+                    data.Operation = (gameCombinedStatOperation)Enum.Parse(typeof(gameCombinedStatOperation), combinedOperation.Text);
+                    data.RefObject = (gameStatObjectsRelation)Enum.Parse(typeof(gameStatObjectsRelation), combinedRefObject.Text);
+                    data.RefStatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedRefStatType.Text);
+                    data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedStatType.Text);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Invalid enum.");
+                    return;
+                }
 
-                data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), combinedModifier.Text);
-                data.Operation = (gameCombinedStatOperation)Enum.Parse(typeof(gameCombinedStatOperation), combinedOperation.Text);
-                data.RefObject = (gameStatObjectsRelation)Enum.Parse(typeof(gameStatObjectsRelation), combinedRefObject.Text);
-                data.RefStatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedRefStatType.Text);
-                data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedStatType.Text);
-                data.Value = float.Parse(combinedValue.Text);
+                try
+                {
+                    data.Value = float.Parse(combinedValue.Text);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Value must be a valid float.");
+                    return;
+                }     
             }
             else if (activeStat.Value.GetType().Name == "GameConstantStatModifierData")
             {
                 var data = (GameConstantStatModifierData)activeStat.Value;
+                try
+                {
+                    data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), constantModifier.Text);
+                    data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), constantStatType.Text);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Invalid enum.");
+                    return;
+                }
 
-                data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), constantModifier.Text);
-                data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), constantStatType.Text);
-                data.Value = float.Parse(constantValue.Text);
+                try
+                {
+                    data.Value = float.Parse(constantValue.Text);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Value must be a valid float.");
+                    return;
+                }
             }
             else if (activeStat.Value.GetType().Name == "GameCurveStatModifierData")
             {
@@ -92,9 +127,18 @@ namespace CP2077SaveEditor
 
                 data.ColumnName = curveColumnName.Text;
                 data.CurveName = curveName.Text;
-                data.CurveStat = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStat.Text);
-                data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), curveModifier.Text);
-                data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStatType.Text);
+
+                try
+                {
+                    data.CurveStat = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStat.Text);
+                    data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), curveModifier.Text);
+                    data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStatType.Text);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Invalid enum.");
+                    return;
+                }
             }
 
             callbackFunc.Invoke();

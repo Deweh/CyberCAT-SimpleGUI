@@ -319,7 +319,9 @@ namespace CP2077SaveEditor
             else if (modifierObjType == "GameCurveStatModifierData")
             {
                 newModifierData = new GameCurveStatModifierData();
-                
+                ((GameCurveStatModifierData)newModifierData).ColumnName = "<null>";
+                ((GameCurveStatModifierData)newModifierData).CurveName = "<null>";
+
             } else {
                 return;
             }
@@ -353,11 +355,16 @@ namespace CP2077SaveEditor
 
         private void removeStatButton_Click(object sender, EventArgs e)
         {
-            if (statsTreeView.SelectedNode.Tag != null && statsTreeView.SelectedNode.Text != "< Edit >")
-            {
-                RemoveStat((Handle<GameStatModifierData>)statsTreeView.SelectedNode.Tag);
-                statsTreeView.Nodes.Remove(statsTreeView.SelectedNode);
+            if (statsTreeView.SelectedNode != null) {
+
+                if (statsTreeView.SelectedNode.Tag != null && statsTreeView.SelectedNode.Text != "< Edit >")
+                {
+                    RemoveStat((Handle<GameStatModifierData>)statsTreeView.SelectedNode.Tag);
+                    statsTreeView.Nodes.Remove(statsTreeView.SelectedNode);
+                }
+
             }
+            
         }
     }
 }

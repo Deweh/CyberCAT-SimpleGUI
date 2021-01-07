@@ -312,10 +312,8 @@ namespace CP2077SaveEditor
                 RefreshFacts();
                 //These lines may look redundant, but they initialize the factsListView so that the render thread doesn't freeze when selecting the Quest Facts tab for the first time.
                 //Since the render thread will be frozen here anyways while everything loads, it's best to do this here.
-                addFactButton.Visible = false;
                 factsPanel.Visible = true;
                 factsPanel.Visible = false;
-                addFactButton.Visible = true;
 
                 //Update controls
                 editorPanel.Enabled = true;

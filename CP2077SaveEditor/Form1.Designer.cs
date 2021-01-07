@@ -93,12 +93,12 @@ namespace CP2077SaveEditor
             this.label2 = new System.Windows.Forms.Label();
             this.moneyUpDown = new System.Windows.Forms.NumericUpDown();
             this.factsPanel = new System.Windows.Forms.Panel();
+            this.addFactButton = new CP2077SaveEditor.ModernButton();
             this.factsSearchBox = new System.Windows.Forms.TextBox();
             this.factsListView = new System.Windows.Forms.ListView();
             this.factsValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.addFactButton = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -796,6 +796,23 @@ namespace CP2077SaveEditor
             this.factsPanel.Size = new System.Drawing.Size(851, 548);
             this.factsPanel.TabIndex = 13;
             // 
+            // addFactButton
+            // 
+            this.addFactButton.BackColor = System.Drawing.Color.White;
+            this.addFactButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.addFactButton.ClickEffectEnabled = true;
+            this.addFactButton.DefaultColor = System.Drawing.Color.White;
+            this.addFactButton.HoverColor = System.Drawing.Color.LightGray;
+            this.addFactButton.Location = new System.Drawing.Point(826, 1);
+            this.addFactButton.Name = "addFactButton";
+            this.addFactButton.Size = new System.Drawing.Size(20, 20);
+            this.addFactButton.TabIndex = 2;
+            this.addFactButton.Text = "+";
+            this.addFactButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.addFactButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addFactButton.Visible = false;
+            this.addFactButton.Click += new System.EventHandler(this.addFactButton_Click);
+            // 
             // factsSearchBox
             // 
             this.factsSearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -855,21 +872,6 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
-            // 
-            // addFactButton
-            // 
-            this.addFactButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.addFactButton.ClickEffectEnabled = true;
-            this.addFactButton.DefaultColor = System.Drawing.Color.White;
-            this.addFactButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addFactButton.Location = new System.Drawing.Point(826, 1);
-            this.addFactButton.Name = "addFactButton";
-            this.addFactButton.Size = new System.Drawing.Size(20, 20);
-            this.addFactButton.TabIndex = 2;
-            this.addFactButton.Text = "+";
-            this.addFactButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.addFactButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.addFactButton.Click += new System.EventHandler(this.addFactButton_Click);
             // 
             // Form1
             // 
