@@ -33,7 +33,7 @@ namespace CP2077SaveEditor
             this.CenterToScreen();
             editorPanel.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right);
 
-            var tabPanels = new Panel[] { appearancePanel, inventoryPanel, factsPanel };
+            var tabPanels = new Panel[] { appearancePanel, inventoryPanel, factsPanel, statsPanel };
             foreach (Panel singleTab in tabPanels)
             {
                 editorPanel.Controls.Add(singleTab);
@@ -318,6 +318,33 @@ namespace CP2077SaveEditor
                 factsPanel.Visible = false;
                 factsSaveButton.Visible = true;
 
+                //Player stats parsing
+                var profics = activeSaveFile.GetPlayerDevelopmentData().Value.Proficiencies;
+
+                levelUpDown.Value = profics[Array.FindIndex(profics, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataProficiencyType.Level)].CurrentLevel;
+                streetCredUpDown.Value = profics[Array.FindIndex(profics, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataProficiencyType.StreetCred)].CurrentLevel;
+
+                var attrs = activeSaveFile.GetPlayerDevelopmentData().Value.Attributes;
+
+                bodyUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Strength)].Value;
+                reflexesUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Reflexes)].Value;
+                technicalAbilityUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.TechnicalAbility)].Value;
+                intelligenceUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Intelligence)].Value;
+                coolUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Cool)].Value;
+
+                if (activeSaveFile.GetPlayerDevelopmentData().Value.LifePath == CyberCAT.Core.DumpedEnums.gamedataLifePath.Nomad)
+                {
+                    lifePathBox.SelectedIndex = 0;
+                }
+                else if (activeSaveFile.GetPlayerDevelopmentData().Value.LifePath == CyberCAT.Core.DumpedEnums.gamedataLifePath.StreetKid)
+                {
+                    lifePathBox.SelectedIndex = 1;
+                }
+                else if (activeSaveFile.GetPlayerDevelopmentData().Value.LifePath == CyberCAT.Core.DumpedEnums.gamedataLifePath.Corporate)
+                {
+                    lifePathBox.SelectedIndex = 2;
+                }
+
                 //Update controls
                 editorPanel.Enabled = true;
                 optionsPanel.Enabled = true;
@@ -580,6 +607,32 @@ namespace CP2077SaveEditor
             {
                 File.WriteAllText(saveWindow.FileName, JsonConvert.SerializeObject(activeSaveFile.GetKnownFacts(), Formatting.Indented));
             }
+        }
+
+        private void statsButton_Click(object sender, EventArgs e)
+        {
+            SwapTab(statsButton, statsPanel);
+        }
+
+        private void lifePathBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lifePathBox.SelectedIndex == 0)
+            {
+                lifePathPictureBox.Image = CP2077SaveEditor.Properties.Resources.nomad;
+            }
+            else if (lifePathBox.SelectedIndex == 1)
+            {
+                lifePathPictureBox.Image = CP2077SaveEditor.Properties.Resources.streetkid;
+            }
+            else if (lifePathBox.SelectedIndex == 2)
+            {
+                lifePathPictureBox.Image = CP2077SaveEditor.Properties.Resources.corpo;
+            }
+        }
+
+        private void PlayerStatChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

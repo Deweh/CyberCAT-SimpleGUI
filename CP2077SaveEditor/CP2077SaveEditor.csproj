@@ -167,6 +167,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="IaKy3w-m_400x400.ico" />
+    <None Include="Resources\streetkid.png" />
+    <None Include="Resources\nomad.png" />
+    <None Include="Resources\corpo.png" />
+    <None Include="Resources\player_stats.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

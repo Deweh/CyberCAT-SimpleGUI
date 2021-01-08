@@ -61,20 +61,30 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap corpo {
+            get {
+                object obj = ResourceManager.GetObject("corpo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {
-        ///  &quot;1950262135&quot;: &quot;q000_vr_tutorial_skipped&quot;,
-        ///  &quot;3822603142&quot;: &quot;q003_militech_met&quot;,
-        ///  &quot;2615790314&quot;: &quot;q003_militech_chip&quot;,
-        ///  &quot;91832264&quot;: &quot;q003_militech_refused&quot;,
-        ///  &quot;679450517&quot;: &quot;q003_militech_virus&quot;,
-        ///  &quot;4264227091&quot;: &quot;q003_militech_corporate_help&quot;,
-        ///  &quot;2043453274&quot;: &quot;q003_militech_virus_removed&quot;,
-        ///  &quot;444318484&quot;: &quot;q003_no_deal&quot;,
-        ///  &quot;3703783914&quot;: &quot;q003_deal_started&quot;,
-        ///  &quot;3362733970&quot;: &quot;q003_militech_virus_uploaded&quot;,
-        ///  &quot;1103635120&quot;: &quot;q003_militech_betrayed&quot;,
-        ///  &quot;1705749461&quot;: &quot;q003_paid_maelstrom&quot;,
-        ///  &quot;3508740884&quot;: &quot;q003_ [rest of string was truncated]&quot;;.
+        ///  &quot;2436045487&quot;: &quot;CYB-12345&quot;,
+        ///  &quot;2145224326&quot;: &quot;travelling_merchant_lives&quot;,
+        ///  &quot;141669211&quot;: &quot;CYB-596812&quot;,
+        ///  &quot;2500105824&quot;: &quot;CYB-626716&quot;,
+        ///  &quot;2061787877&quot;: &quot;holo_force_reset&quot;,
+        ///  &quot;3763092045&quot;: &quot;holo_setup_started&quot;,
+        ///  &quot;2143749004&quot;: &quot;holo_setup_ended&quot;,
+        ///  &quot;453873154&quot;: &quot;holo_interrupt_call&quot;,
+        ///  &quot;1648090866&quot;: &quot;holo_v_calls_panam_end_activate&quot;,
+        ///  &quot;1642883195&quot;: &quot;CYB-629334&quot;,
+        ///  &quot;2054825040&quot;: &quot;holo_anders_hellman_calls_v_start_done&quot;,
+        ///  &quot;2558910171&quot;: &quot;holo_anders_hellman_calls_v_end_done&quot;,
+        ///  &quot;1017146762&quot;: &quot;holo [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Facts {
             get {
@@ -83,25 +93,7 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {
-        ///  &quot;#0001F38D:18&quot;: &quot;ConsumableItem&quot;,
-        ///  &quot;#0002DF00:18&quot;: &quot;Clothing&quot;,
-        ///  &quot;#001E62F0:1D&quot;: &quot;Clothing&quot;,
-        ///  &quot;#0032C251:1A&quot;: &quot;Item&quot;,
-        ///  &quot;#003C51F8:13&quot;: &quot;WeaponItem&quot;,
-        ///  &quot;#006AB6EB:24&quot;: &quot;Item&quot;,
-        ///  &quot;#008D5D92:17&quot;: &quot;WeaponItem&quot;,
-        ///  &quot;#00B5353D:1D&quot;: &quot;Item&quot;,
-        ///  &quot;#00C206AA:14&quot;: &quot;Item&quot;,
-        ///  &quot;#00E07A60:28&quot;: &quot;Item&quot;,
-        ///  &quot;#00E6A912:1D&quot;: &quot;Item&quot;,
-        ///  &quot;#00ED2150:1E&quot;: &quot;Item&quot;,
-        ///  &quot;#00F1A609:16&quot;: &quot;Clothing&quot;,
-        ///  &quot;#00FD5730:15&quot;: &quot;ConsumableItem&quot;,
-        ///  &quot;#01079B74:2E&quot;: &quot;Item&quot;,
-        ///  &quot;#011B4434:17&quot;: &quot;Item&quot;,
-        ///  &quot;#011E89EA:1A&quot;: &quot;WeaponItem&quot;,
-        /// [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {&quot;8DF30100:18&quot;:&quot;ConsumableItem&quot;,&quot;00DF0200:18&quot;:&quot;Clothing&quot;,&quot;F0621E00:1D&quot;:&quot;Clothing&quot;,&quot;51C23200:1A&quot;:&quot;Item&quot;,&quot;F8513C00:13&quot;:&quot;WeaponItem&quot;,&quot;EBB66A00:24&quot;:&quot;Item&quot;,&quot;925D8D00:17&quot;:&quot;WeaponItem&quot;,&quot;3D35B500:1D&quot;:&quot;Item&quot;,&quot;AA06C200:14&quot;:&quot;Item&quot;,&quot;607AE000:28&quot;:&quot;Item&quot;,&quot;12A9E600:1D&quot;:&quot;Item&quot;,&quot;5021ED00:1E&quot;:&quot;Item&quot;,&quot;09A6F100:16&quot;:&quot;Clothing&quot;,&quot;3057FD00:15&quot;:&quot;ConsumableItem&quot;,&quot;749B0701:2E&quot;:&quot;Item&quot;,&quot;34441B01:17&quot;:&quot;Item&quot;,&quot;EA891E01:1A&quot;:&quot;WeaponItem&quot;,&quot;33992001:18&quot;:&quot;WeaponItem&quot;,&quot;E5BF2001:1A&quot;:&quot;WeaponItem&quot;,&quot;56AD2A01:23&quot;:&quot;Item&quot;,&quot;43844301:1F&quot;:&quot;Item&quot;,&quot;2140600 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ItemClasses {
             get {
@@ -136,6 +128,36 @@ namespace CP2077SaveEditor.Properties {
         internal static string ItemNames {
             get {
                 return ResourceManager.GetString("ItemNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap nomad {
+            get {
+                object obj = ResourceManager.GetObject("nomad", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap player_stats {
+            get {
+                object obj = ResourceManager.GetObject("player_stats", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap streetkid {
+            get {
+                object obj = ResourceManager.GetObject("streetkid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

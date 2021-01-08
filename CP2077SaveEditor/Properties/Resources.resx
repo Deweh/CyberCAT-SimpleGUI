@@ -121,10 +121,22 @@
   <data name="Facts" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Facts.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="ItemNames" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ItemNames.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="ItemClasses" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ItemClasses.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="ItemNames" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ItemNames.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="player_stats" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player_stats.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="corpo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\corpo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nomad" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nomad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="streetkid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\streetkid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
