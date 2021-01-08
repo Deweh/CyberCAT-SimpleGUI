@@ -656,7 +656,7 @@ namespace CP2077SaveEditor
                     item.Flags.Raw = 0;
                 }
             }
-            MessageBox.Show("All quest flags cleared.");
+            MessageBox.Show("All item flags cleared.");
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)
