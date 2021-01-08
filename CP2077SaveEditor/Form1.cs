@@ -647,6 +647,18 @@ namespace CP2077SaveEditor
             }
         }
 
+        private void clearQuestFlagsButton_Click(object sender, EventArgs e)
+        {
+            foreach (Inventory.SubInventory inventory in activeSaveFile.GetInventoriesContainer().SubInventories)
+            {
+                foreach (ItemData item in inventory.Items)
+                {
+                    item.Flags.IsQuestItem = false;
+                }
+            }
+            MessageBox.Show("All quest flags cleared.");
+        }
+
         private void PlayerStatChanged(object sender, EventArgs e)
         {
             if (!loadingSave)

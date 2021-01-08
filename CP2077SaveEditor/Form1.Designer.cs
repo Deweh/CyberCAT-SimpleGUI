@@ -111,6 +111,7 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.lifePathPictureBox = new System.Windows.Forms.PictureBox();
             this.lifePathBox = new System.Windows.Forms.ComboBox();
+            this.clearQuestFlagsButton = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -697,9 +698,9 @@ namespace CP2077SaveEditor
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.containersListBox);
-            this.groupBox2.Location = new System.Drawing.Point(271, 15);
+            this.groupBox2.Location = new System.Drawing.Point(418, 15);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(574, 65);
+            this.groupBox2.Size = new System.Drawing.Size(427, 65);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Inventories";
@@ -711,7 +712,7 @@ namespace CP2077SaveEditor
             this.containersListBox.FormattingEnabled = true;
             this.containersListBox.Location = new System.Drawing.Point(3, 18);
             this.containersListBox.Name = "containersListBox";
-            this.containersListBox.Size = new System.Drawing.Size(568, 44);
+            this.containersListBox.Size = new System.Drawing.Size(421, 44);
             this.containersListBox.TabIndex = 4;
             this.containersListBox.SelectedIndexChanged += new System.EventHandler(this.containersListBox_SelectedIndexChanged);
             // 
@@ -793,11 +794,12 @@ namespace CP2077SaveEditor
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.clearQuestFlagsButton);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.moneyUpDown);
             this.groupBox1.Location = new System.Drawing.Point(6, 15);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(259, 65);
+            this.groupBox1.Size = new System.Drawing.Size(406, 65);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Quick Actions";
@@ -1136,6 +1138,21 @@ namespace CP2077SaveEditor
             this.lifePathBox.TabIndex = 20;
             this.lifePathBox.SelectedIndexChanged += new System.EventHandler(this.lifePathBox_SelectedIndexChanged);
             // 
+            // clearQuestFlagsButton
+            // 
+            this.clearQuestFlagsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.clearQuestFlagsButton.ClickEffectEnabled = true;
+            this.clearQuestFlagsButton.DefaultColor = System.Drawing.Color.White;
+            this.clearQuestFlagsButton.HoverColor = System.Drawing.Color.LightGray;
+            this.clearQuestFlagsButton.Location = new System.Drawing.Point(224, 27);
+            this.clearQuestFlagsButton.Name = "clearQuestFlagsButton";
+            this.clearQuestFlagsButton.Size = new System.Drawing.Size(151, 22);
+            this.clearQuestFlagsButton.TabIndex = 2;
+            this.clearQuestFlagsButton.Text = "Clear All Quest Flags";
+            this.clearQuestFlagsButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.clearQuestFlagsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.clearQuestFlagsButton.Click += new System.EventHandler(this.clearQuestFlagsButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1272,6 +1289,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.NumericUpDown streetCredUpDown;
         private System.Windows.Forms.ComboBox lifePathBox;
         private System.Windows.Forms.PictureBox lifePathPictureBox;
+        private ModernButton clearQuestFlagsButton;
     }
 }
 
