@@ -401,6 +401,9 @@ namespace CP2077SaveEditor
             newNode.Expand();
             newNode.EnsureVisible();
             statsTreeView.SelectedNode = newNode;
+
+            var statDialog = new StatDetails();
+            statDialog.LoadStat(activeSaveFile.GetItemStatData(activeItem).StatModifiers[Array.FindIndex(activeSaveFile.GetItemStatData(activeItem).StatModifiers, x => x.Id == newModifier.Id)], ReloadData);
         }
 
         private void removeStatButton_Click(object sender, EventArgs e)

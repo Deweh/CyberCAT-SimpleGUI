@@ -70,75 +70,77 @@ namespace CP2077SaveEditor
 
         private void applyCloseButton_Click(object sender, EventArgs e)
         {
-            if (activeStat.Value.GetType().Name == "GameCombinedStatModifierData")
+            bool CheckInput(List<bool> results, string value = null)
             {
-                var data = (GameCombinedStatModifierData)activeStat.Value;
-                try
+                if (results.Any(x => x == false))
                 {
-                    data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), combinedModifier.Text);
-                    data.Operation = (gameCombinedStatOperation)Enum.Parse(typeof(gameCombinedStatOperation), combinedOperation.Text);
-                    data.RefObject = (gameStatObjectsRelation)Enum.Parse(typeof(gameStatObjectsRelation), combinedRefObject.Text);
-                    data.RefStatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedRefStatType.Text);
-                    data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedStatType.Text);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Invalid enum.");
-                    return;
+                    MessageBox.Show("Invalid enum. Must choose an option from the drop down list.");
+                    return false;
                 }
 
-                try
+                if (value != null)
                 {
-                    data.Value = float.Parse(combinedValue.Text);
+                    if (!float.TryParse(value, out _))
+                    {
+                        MessageBox.Show("Value must be a valid float.");
+                        return false;
+                    }
                 }
-                catch (Exception)
-                {
-                    MessageBox.Show("Value must be a valid float.");
-                    return;
-                }     
+                return true;
+            }
+
+            if (activeStat.Value.GetType().Name == "GameCombinedStatModifierData")
+            {
+                if (!CheckInput(new List<bool> {
+                    Enum.TryParse<gameStatModifierType>(combinedModifier.Text, out _),
+                    Enum.TryParse<gameCombinedStatOperation>(combinedOperation.Text, out _),
+                    Enum.TryParse<gameStatObjectsRelation>(combinedRefObject.Text, out _),
+                    Enum.TryParse<gamedataStatType>(combinedRefStatType.Text, out _),
+                    Enum.TryParse<gamedataStatType>(combinedStatType.Text, out _)
+                }, combinedValue.Text)) { return; }
+
+                var data = (GameCombinedStatModifierData)activeStat.Value;
+
+                data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), combinedModifier.Text);
+                data.Operation = (gameCombinedStatOperation)Enum.Parse(typeof(gameCombinedStatOperation), combinedOperation.Text);
+                data.RefObject = (gameStatObjectsRelation)Enum.Parse(typeof(gameStatObjectsRelation), combinedRefObject.Text);
+                data.RefStatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedRefStatType.Text);
+                data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedStatType.Text);
+
+                data.Value = float.Parse(combinedValue.Text);
+
             }
             else if (activeStat.Value.GetType().Name == "GameConstantStatModifierData")
             {
-                var data = (GameConstantStatModifierData)activeStat.Value;
-                try
-                {
-                    data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), constantModifier.Text);
-                    data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), constantStatType.Text);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Invalid enum.");
-                    return;
-                }
+                if (!CheckInput(new List<bool> {
+                    Enum.TryParse<gameStatModifierType>(constantModifier.Text, out _),
+                    Enum.TryParse<gamedataStatType>(constantStatType.Text, out _)
+                }, constantValue.Text)) { return; }
 
-                try
-                {
-                    data.Value = float.Parse(constantValue.Text);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Value must be a valid float.");
-                    return;
-                }
+                var data = (GameConstantStatModifierData)activeStat.Value;
+
+                data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), constantModifier.Text);
+                data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), constantStatType.Text);
+
+                data.Value = float.Parse(constantValue.Text);
+
             }
             else if (activeStat.Value.GetType().Name == "GameCurveStatModifierData")
             {
+                if (!CheckInput(new List<bool> {
+                    Enum.TryParse<gamedataStatType>(curveStat.Text, out _),
+                    Enum.TryParse<gameStatModifierType>(curveModifier.Text, out _),
+                    Enum.TryParse<gamedataStatType>(curveStatType.Text, out _)
+                }, constantValue.Text)) { return; }
+
                 var data = (GameCurveStatModifierData)activeStat.Value;
 
                 data.ColumnName = curveColumnName.Text;
                 data.CurveName = curveName.Text;
 
-                try
-                {
-                    data.CurveStat = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStat.Text);
-                    data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), curveModifier.Text);
-                    data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStatType.Text);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Invalid enum.");
-                    return;
-                }
+                data.CurveStat = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStat.Text);
+                data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), curveModifier.Text);
+                data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStatType.Text);
             }
 
             callbackFunc.Invoke();
