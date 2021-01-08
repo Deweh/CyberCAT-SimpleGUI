@@ -1,4 +1,4 @@
-﻿using CyberCAT.Core.Classes.Mapping.StatsSystem;
+﻿using CyberCAT.Core.Classes.Mapping;
 using CyberCAT.Core.DumpedEnums;
 using CyberCAT.Core;
 using System;
@@ -10,20 +10,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CyberCAT.Core.Classes.DumpedClasses;
 
 namespace CP2077SaveEditor
 {
     public partial class StatDetails : Form
     {
         private Func<bool> callbackFunc;
-        private CyberCAT.Core.Classes.Mapping.Global.Handle<GameStatModifierData> activeStat;
+        private Handle<GameStatModifierData> activeStat;
 
         public StatDetails()
         {
             InitializeComponent();
         }
 
-        public void LoadStat(CyberCAT.Core.Classes.Mapping.Global.Handle<GameStatModifierData> stat, Func<bool> callback)
+        public void LoadStat(Handle<GameStatModifierData> stat, Func<bool> callback)
         {
             callbackFunc = callback;
             activeStat = stat;

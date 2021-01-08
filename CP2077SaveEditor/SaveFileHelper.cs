@@ -6,8 +6,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CyberCAT.Core.Classes;
+using CyberCAT.Core.Classes.DumpedClasses;
 using CyberCAT.Core.Classes.Interfaces;
-using CyberCAT.Core.Classes.Mapping.StatsSystem;
+using CyberCAT.Core.Classes.Mapping;
 using CyberCAT.Core.Classes.NodeRepresentations;
 using Newtonsoft.Json;
 
@@ -101,12 +102,12 @@ namespace CP2077SaveEditor
             newFact.Hash = factHash;
             newFact.Value = factValue;
 
-            ((FactsTable)this.GetFactsContainer().Children[0].Value).FactEntries = ((FactsTable)this.GetFactsContainer().Children[0].Value).FactEntries.Append(newFact).ToArray();
+            ((FactsTable)this.GetFactsContainer().Children[0].Value).FactEntries.Add(newFact);
         }
 
         public Inventory.SubInventory GetInventory(ulong id)
         {
-            return this.GetInventoriesContainer().SubInventories[Array.FindIndex(this.GetInventoriesContainer().SubInventories, x => x.InventoryId == id)];
+            return this.GetInventoriesContainer().SubInventories[this.GetInventoriesContainer().SubInventories.IndexOf(this.GetInventoriesContainer().SubInventories.Where(x => x.InventoryId == id).FirstOrDefault())];
         }
 
         public string GetAppearanceValue(CharacterCustomizationAppearances.Section appearanceSection, AppearanceEntryType entryType, AppearanceField fieldToGet, string searchString)
@@ -192,9 +193,23 @@ namespace CP2077SaveEditor
 
         public void SetAllAppearanceValues(CharacterCustomizationAppearances newValues)
         {
-            this.GetAppearanceContainer().FirstSection = newValues.FirstSection;
-            this.GetAppearanceContainer().SecondSection = newValues.SecondSection;
-            this.GetAppearanceContainer().ThirdSection = newValues.ThirdSection;
+            this.GetAppearanceContainer().FirstSection.AppearanceSections.Clear();
+            foreach (CharacterCustomizationAppearances.AppearanceSection section in newValues.FirstSection.AppearanceSections)
+            {
+                this.GetAppearanceContainer().FirstSection.AppearanceSections.Add(section);
+            }
+
+            this.GetAppearanceContainer().SecondSection.AppearanceSections.Clear();
+            foreach (CharacterCustomizationAppearances.AppearanceSection section in newValues.SecondSection.AppearanceSections)
+            {
+                this.GetAppearanceContainer().SecondSection.AppearanceSections.Add(section);
+            }
+
+            this.GetAppearanceContainer().ThirdSection.AppearanceSections.Clear();
+            foreach (CharacterCustomizationAppearances.AppearanceSection section in newValues.ThirdSection.AppearanceSections)
+            {
+                this.GetAppearanceContainer().ThirdSection.AppearanceSections.Add(section);
+            }
         }
 
         private bool CompareMainListAppearanceEntries(string entry1, string entry2)

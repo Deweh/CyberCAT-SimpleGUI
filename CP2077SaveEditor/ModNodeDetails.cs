@@ -58,7 +58,7 @@ namespace CP2077SaveEditor
                 return;
             }
 
-            activeNode.AttachmentSlotTdbId = ulong.Parse(attachmentIdBox.Text);
+            activeNode.AttachmentSlotTdbId.Raw64 = ulong.Parse(attachmentIdBox.Text);
             activeNode.ItemTdbId.Raw64 = ulong.Parse(item1IdBox.Text);
             activeNode.Unknown2 = uint.Parse(unknown1Box.Text);
             activeNode.Unknown3 = uint.Parse(unknown2Box.Text);

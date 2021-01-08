@@ -366,7 +366,8 @@ namespace CP2077SaveEditor
         {
             if (moneyUpDown.Enabled)
             {
-                ((ItemData.SimpleItemData)activeSaveFile.GetInventory(1).Items[Array.FindIndex(activeSaveFile.GetInventory(1).Items, x => x.ItemGameName == "Eddies")].Data).Quantity = (uint)moneyUpDown.Value;
+                var playerInventory = activeSaveFile.GetInventory(1);
+                ((ItemData.SimpleItemData)playerInventory.Items[ playerInventory.Items.IndexOf( playerInventory.Items.Where(x => x.ItemGameName == "Eddies").FirstOrDefault() )].Data).Quantity = (uint)moneyUpDown.Value;
             }
         }
 

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CyberCAT.Core.Classes;
 using CyberCAT.Core.Classes.NodeRepresentations;
-using CyberCAT.Core.Classes.Mapping.StatsSystem;
 using CyberCAT.Core.DumpedEnums;
-using CyberCAT.Core.Classes.Mapping.Global;
+using CyberCAT.Core.Classes.Mapping;
+using CyberCAT.Core.Classes.DumpedClasses;
 
 namespace CP2077SaveEditor
 {
@@ -64,9 +64,7 @@ namespace CP2077SaveEditor
 
             if (rootNode.Children.Contains(targetNode))
             {
-                var newChildren = rootNode.Children.ToList();
-                newChildren.Remove(targetNode);
-                rootNode.Children = newChildren.ToArray();
+                rootNode.Children.Remove(targetNode);
             } else {
                 foreach (ItemData.ItemModData childNode in rootNode.Children)
                 {
@@ -128,7 +126,7 @@ namespace CP2077SaveEditor
             } else {
                 statsTreeView.Nodes.Clear();
                 var statsData = activeSaveFile.GetItemStatData(activeItem);
-                foreach (CyberCAT.Core.Classes.Mapping.Global.Handle<GameStatModifierData> modifier in statsData.StatModifiers)
+                foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
                 {
                     var rootNode = statsTreeView.Nodes.Add(modifier.Value.GetType().Name + " :: " + modifier.Value.StatType.ToString());
                     rootNode.Tag = modifier;
@@ -191,7 +189,7 @@ namespace CP2077SaveEditor
                 }
             } else {
                 var foundQualityStat = false;
-                foreach (CyberCAT.Core.Classes.Mapping.Global.Handle<GameStatModifierData> modifier in activeSaveFile.GetItemStatData(activeItem).StatModifiers)
+                foreach (Handle<GameStatModifierData> modifier in activeSaveFile.GetItemStatData(activeItem).StatModifiers)
                 {
                     if (modifier.Value.GetType().Name == "GameConstantStatModifierData")
                     {
@@ -210,24 +208,7 @@ namespace CP2077SaveEditor
                     newModifierData.StatType = gamedataStatType.Quality;
                     newModifierData.Value = 4;
 
-                    uint maxIdFound = 0;
-                    foreach (GameSavedStatsData value in activeSaveFile.GetStatsMap().Values)
-                    {
-                        if (value.StatModifiers != null)
-                        {
-                            foreach (Handle<GameStatModifierData> modifierData in value.StatModifiers)
-                            {
-                                if (modifierData.Id > maxIdFound)
-                                {
-                                    maxIdFound = modifierData.Id;
-                                }
-                            }
-                        }
-                    }
-
-                    var newModifier = new CyberCAT.Core.Classes.Mapping.Global.Handle<GameStatModifierData>(maxIdFound + 1);
-                    newModifier.Value = newModifierData;
-
+                    var newModifier = activeSaveFile.GetStatsContainer().CreateHandle<GameStatModifierData>(newModifierData);
                     activeSaveFile.GetItemStatData(activeItem).StatModifiers = activeSaveFile.GetItemStatData(activeItem).StatModifiers.Append(newModifier).ToArray();
                 }
 
@@ -275,15 +256,13 @@ namespace CP2077SaveEditor
             if (e.Node.Tag != null)
             {
                 var nodeDetails = new StatDetails();
-                nodeDetails.LoadStat(((CyberCAT.Core.Classes.Mapping.Global.Handle<GameStatModifierData>)e.Node.Tag), ReloadData);
+                nodeDetails.LoadStat(((Handle<GameStatModifierData>)e.Node.Tag), ReloadData);
             }
         }
 
         private void modsTreeView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete && modsTreeView.SelectedNode != null) {
-                MessageBox.Show("Node deletion is not currently supported by CyberCAT. Please use CPSE for the time being.", "Error");
-                return;
 
                 var data = (ItemData.ModableItemData)activeItem.Data;
                 if (data.RootNode != (ItemData.ItemModData)modsTreeView.SelectedNode.Tag)
@@ -292,8 +271,8 @@ namespace CP2077SaveEditor
                     modsTreeView.SelectedNode.Remove();
                 } else {
 
-                    data.RootNode.Children = new ItemData.ItemModData[0];
-                    data.RootNode.AttachmentSlotTdbId = 0;
+                    data.RootNode.Children.Clear();
+                    data.RootNode.AttachmentSlotTdbId.Raw64 = 0;
                     data.RootNode.ItemTdbId.Raw64 = 0;
                     data.RootNode.TdbId2.Raw64 = 0;
                     data.RootNode.Unknown2 = 0;
@@ -307,30 +286,23 @@ namespace CP2077SaveEditor
 
         private void RemoveStat(Handle<GameStatModifierData> statsHandle)
         {
-            uint removeId = statsHandle.Id;
-
             var modifiersList = activeSaveFile.GetItemStatData(activeItem).StatModifiers.ToList();
             modifiersList.Remove(statsHandle);
             activeSaveFile.GetItemStatData(activeItem).StatModifiers = modifiersList.ToArray();
+
+            activeSaveFile.GetStatsContainer().RemoveHandle((int)statsHandle.Id);
 
             foreach (GameSavedStatsData value in activeSaveFile.GetStatsMap().Values)
             {
                 if (value.StatModifiers != null)
                 {
-                    var replaceList = value.StatModifiers.ToList();
-
                     foreach (Handle<GameStatModifierData> modifierData in value.StatModifiers)
                     {
-                        if (modifierData.Id > removeId)
+                        if (modifierData.Id > statsHandle.Id)
                         {
-                            var newHandle = new Handle<GameStatModifierData>(modifierData.Id - 1);
-                            newHandle.Value = modifierData.Value;
-
-                            replaceList[replaceList.FindIndex(x => x == modifierData)] = newHandle;
+                            modifierData.SetId(modifierData.Id - 1);
                         }
                     }
-
-                    value.StatModifiers = replaceList.ToArray();
                 }
             }
         }
@@ -375,24 +347,7 @@ namespace CP2077SaveEditor
             } else {
                 return;
             }
-
-            uint maxIdFound = 0;
-            foreach (GameSavedStatsData value in activeSaveFile.GetStatsMap().Values)
-            {
-                if (value.StatModifiers != null)
-                {
-                    foreach (Handle<GameStatModifierData> modifierData in value.StatModifiers)
-                    {
-                        if (modifierData.Id > maxIdFound)
-                        {
-                            maxIdFound = modifierData.Id;
-                        }
-                    }
-                }
-            }
-
-            var newModifier = new CyberCAT.Core.Classes.Mapping.Global.Handle<GameStatModifierData>(maxIdFound + 1);
-            newModifier.Value = (GameStatModifierData)newModifierData;
+            var newModifier = activeSaveFile.GetStatsContainer().CreateHandle<GameStatModifierData>((GameStatModifierData)newModifierData);
 
             activeSaveFile.GetItemStatData(activeItem).StatModifiers = activeSaveFile.GetItemStatData(activeItem).StatModifiers.Append(newModifier).ToArray();
             ReloadData();
