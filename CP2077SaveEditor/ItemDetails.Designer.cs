@@ -259,7 +259,7 @@ namespace CP2077SaveEditor
             this.removeStatButton.ClickEffectEnabled = true;
             this.removeStatButton.DefaultColor = System.Drawing.Color.White;
             this.removeStatButton.HoverColor = System.Drawing.Color.LightGray;
-            this.removeStatButton.Location = new System.Drawing.Point(355, 6);
+            this.removeStatButton.Location = new System.Drawing.Point(351, 6);
             this.removeStatButton.Name = "removeStatButton";
             this.removeStatButton.Size = new System.Drawing.Size(20, 20);
             this.removeStatButton.TabIndex = 4;
@@ -275,7 +275,7 @@ namespace CP2077SaveEditor
             this.addStatButton.ClickEffectEnabled = true;
             this.addStatButton.DefaultColor = System.Drawing.Color.White;
             this.addStatButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addStatButton.Location = new System.Drawing.Point(381, 6);
+            this.addStatButton.Location = new System.Drawing.Point(377, 6);
             this.addStatButton.Name = "addStatButton";
             this.addStatButton.Size = new System.Drawing.Size(20, 20);
             this.addStatButton.TabIndex = 3;
@@ -286,9 +286,9 @@ namespace CP2077SaveEditor
             // 
             // statsTreeView
             // 
-            this.statsTreeView.Location = new System.Drawing.Point(22, 30);
+            this.statsTreeView.Location = new System.Drawing.Point(18, 30);
             this.statsTreeView.Name = "statsTreeView";
-            this.statsTreeView.Size = new System.Drawing.Size(379, 283);
+            this.statsTreeView.Size = new System.Drawing.Size(379, 285);
             this.statsTreeView.TabIndex = 0;
             // 
             // ItemDetails
