@@ -52,6 +52,17 @@ namespace CP2077SaveEditor
             return (GenericUnknownStruct)this.Nodes[this.Nodes.FindIndex(x => x.Name == "StatsSystem")].Value;
         }
 
+        public GenericUnknownStruct GetScriptableContainer()
+        {
+            return (GenericUnknownStruct)this.Nodes[this.Nodes.FindIndex(x => x.Name == "ScriptableSystemsContainer")].Value;
+        }
+
+        public Handle<PlayerDevelopmentData> GetPlayerDevelopmentData()
+        {
+            var devSystem = (PlayerDevelopmentSystem)this.GetScriptableContainer().ClassList[Array.FindIndex(this.GetScriptableContainer().ClassList, x => x.GetType().Name == "PlayerDevelopmentSystem")];
+            return devSystem.PlayerData[Array.FindIndex(devSystem.PlayerData, x => x.Value.OwnerID.Hash == 1)];
+        }
+
         public GameStatsStateMapStructure GetStatsMap()
         {
             return (GameStatsStateMapStructure)this.GetStatsContainer().ClassList[Array.FindIndex(this.GetStatsContainer().ClassList, x => x.GetType().FullName.EndsWith("GameStatsStateMapStructure"))];

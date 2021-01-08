@@ -282,7 +282,8 @@ namespace CP2077SaveEditor
                 var parsers = new List<INodeParser>();
                 parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
-                    new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(), new StatsSystemParser()
+                    new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
+                    new StatsSystemParser(), new ScriptableSystemsContainerParser()
                 });
 
                 var newSave = new SaveFileHelper(parsers);
