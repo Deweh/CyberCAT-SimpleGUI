@@ -91,6 +91,7 @@ namespace CP2077SaveEditor
             this.factsListView = new System.Windows.Forms.ListView();
             this.factsValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.factsSaveButton = new CP2077SaveEditor.ModernButton();
             this.addFactButton = new CP2077SaveEditor.ModernButton();
             this.loadAppearButton = new CP2077SaveEditor.ModernButton();
             this.saveAppearButton = new CP2077SaveEditor.ModernButton();
@@ -688,6 +689,7 @@ namespace CP2077SaveEditor
             // 
             // factsPanel
             // 
+            this.factsPanel.Controls.Add(this.factsSaveButton);
             this.factsPanel.Controls.Add(this.addFactButton);
             this.factsPanel.Controls.Add(this.factsSearchBox);
             this.factsPanel.Controls.Add(this.factsListView);
@@ -705,7 +707,7 @@ namespace CP2077SaveEditor
             this.factsSearchBox.ForeColor = System.Drawing.Color.Silver;
             this.factsSearchBox.Location = new System.Drawing.Point(6, 4);
             this.factsSearchBox.Name = "factsSearchBox";
-            this.factsSearchBox.Size = new System.Drawing.Size(814, 15);
+            this.factsSearchBox.Size = new System.Drawing.Size(718, 15);
             this.factsSearchBox.TabIndex = 1;
             this.factsSearchBox.Text = "Search";
             this.factsSearchBox.TextChanged += new System.EventHandler(this.factsSearchBox_TextChanged);
@@ -741,6 +743,23 @@ namespace CP2077SaveEditor
             this.factsNameHeader.Text = "Name";
             this.factsNameHeader.Width = 764;
             // 
+            // factsSaveButton
+            // 
+            this.factsSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.factsSaveButton.BackColor = System.Drawing.Color.White;
+            this.factsSaveButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.factsSaveButton.ClickEffectEnabled = true;
+            this.factsSaveButton.DefaultColor = System.Drawing.Color.White;
+            this.factsSaveButton.HoverColor = System.Drawing.Color.LightGray;
+            this.factsSaveButton.Location = new System.Drawing.Point(747, -1);
+            this.factsSaveButton.Name = "factsSaveButton";
+            this.factsSaveButton.Size = new System.Drawing.Size(105, 18);
+            this.factsSaveButton.TabIndex = 3;
+            this.factsSaveButton.Text = "Save to File";
+            this.factsSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.factsSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.factsSaveButton.Click += new System.EventHandler(this.factsSaveButton_Click);
+            // 
             // addFactButton
             // 
             this.addFactButton.BackColor = System.Drawing.Color.White;
@@ -748,7 +767,7 @@ namespace CP2077SaveEditor
             this.addFactButton.ClickEffectEnabled = true;
             this.addFactButton.DefaultColor = System.Drawing.Color.White;
             this.addFactButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addFactButton.Location = new System.Drawing.Point(826, 1);
+            this.addFactButton.Location = new System.Drawing.Point(719, 1);
             this.addFactButton.Name = "addFactButton";
             this.addFactButton.Size = new System.Drawing.Size(20, 20);
             this.addFactButton.TabIndex = 2;
@@ -987,6 +1006,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.TextBox factsSearchBox;
         private System.Windows.Forms.TextBox inventorySearchBox;
         private ModernButton addFactButton;
+        private ModernButton factsSaveButton;
     }
 }
 

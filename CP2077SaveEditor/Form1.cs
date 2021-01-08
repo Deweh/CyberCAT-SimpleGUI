@@ -312,8 +312,10 @@ namespace CP2077SaveEditor
                 RefreshFacts();
                 //These lines may look redundant, but they initialize the factsListView so that the render thread doesn't freeze when selecting the Quest Facts tab for the first time.
                 //Since the render thread will be frozen here anyways while everything loads, it's best to do this here.
+                factsSaveButton.Visible = false;
                 factsPanel.Visible = true;
                 factsPanel.Visible = false;
+                factsSaveButton.Visible = true;
 
                 //Update controls
                 editorPanel.Enabled = true;
@@ -566,6 +568,16 @@ namespace CP2077SaveEditor
                 activeSaveFile.AddFactByHash(uint.Parse(factEntry), (uint)factValue);
             }
             RefreshFacts();
+        }
+
+        private void factsSaveButton_Click(object sender, EventArgs e)
+        {
+            var saveWindow = new SaveFileDialog();
+            saveWindow.Filter = "JSON File|*.json";
+            if (saveWindow.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(saveWindow.FileName, JsonConvert.SerializeObject(activeSaveFile.GetKnownFacts(), Formatting.Indented));
+            }
         }
     }
 }
