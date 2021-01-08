@@ -221,6 +221,15 @@ namespace CP2077SaveEditor
             {
                 this.GetAppearanceContainer().ThirdSection.AppearanceSections.Add(section);
             }
+
+            if (newValues.Strings != null)
+            {
+                this.GetAppearanceContainer().Strings.Clear();
+                foreach (string singleString in newValues.Strings)
+                {
+                    this.GetAppearanceContainer().Strings.Add(singleString);
+                }
+            }
         }
 
         private bool CompareMainListAppearanceEntries(string entry1, string entry2)

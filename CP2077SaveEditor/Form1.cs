@@ -352,7 +352,7 @@ namespace CP2077SaveEditor
                 {
                     lifePathBox.SelectedIndex = 1;
                 }
-                else if (activeSaveFile.GetPlayerDevelopmentData().Value.LifePath == CyberCAT.Core.DumpedEnums.gamedataLifePath.Corporate)
+                else
                 {
                     lifePathBox.SelectedIndex = 2;
                 }
