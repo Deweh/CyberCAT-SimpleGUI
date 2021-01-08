@@ -653,7 +653,7 @@ namespace CP2077SaveEditor
             {
                 foreach (ItemData item in inventory.Items)
                 {
-                    item.Flags.IsQuestItem = false;
+                    item.Flags.Raw = 0;
                 }
             }
             MessageBox.Show("All quest flags cleared.");

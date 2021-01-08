@@ -91,6 +91,7 @@ namespace CP2077SaveEditor
             this.inventoryQuantityHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.inventoryDescriptionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.clearQuestFlagsButton = new CP2077SaveEditor.ModernButton();
             this.label2 = new System.Windows.Forms.Label();
             this.moneyUpDown = new System.Windows.Forms.NumericUpDown();
             this.factsPanel = new System.Windows.Forms.Panel();
@@ -102,6 +103,8 @@ namespace CP2077SaveEditor
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
             this.statsPanel = new System.Windows.Forms.Panel();
+            this.lifePathBox = new System.Windows.Forms.ComboBox();
+            this.lifePathPictureBox = new System.Windows.Forms.PictureBox();
             this.coolUpDown = new System.Windows.Forms.NumericUpDown();
             this.intelligenceUpDown = new System.Windows.Forms.NumericUpDown();
             this.technicalAbilityUpDown = new System.Windows.Forms.NumericUpDown();
@@ -109,9 +112,6 @@ namespace CP2077SaveEditor
             this.reflexesUpDown = new System.Windows.Forms.NumericUpDown();
             this.streetCredUpDown = new System.Windows.Forms.NumericUpDown();
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
-            this.lifePathPictureBox = new System.Windows.Forms.PictureBox();
-            this.lifePathBox = new System.Windows.Forms.ComboBox();
-            this.clearQuestFlagsButton = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -125,6 +125,7 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.moneyUpDown)).BeginInit();
             this.factsPanel.SuspendLayout();
             this.statsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lifePathPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.coolUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligenceUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.technicalAbilityUpDown)).BeginInit();
@@ -132,7 +133,6 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.reflexesUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.streetCredUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lifePathPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // optionsPanel
@@ -804,6 +804,22 @@ namespace CP2077SaveEditor
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Quick Actions";
             // 
+            // clearQuestFlagsButton
+            // 
+            this.clearQuestFlagsButton.BackColor = System.Drawing.Color.White;
+            this.clearQuestFlagsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.clearQuestFlagsButton.ClickEffectEnabled = true;
+            this.clearQuestFlagsButton.DefaultColor = System.Drawing.Color.White;
+            this.clearQuestFlagsButton.HoverColor = System.Drawing.Color.LightGray;
+            this.clearQuestFlagsButton.Location = new System.Drawing.Point(224, 27);
+            this.clearQuestFlagsButton.Name = "clearQuestFlagsButton";
+            this.clearQuestFlagsButton.Size = new System.Drawing.Size(151, 22);
+            this.clearQuestFlagsButton.TabIndex = 2;
+            this.clearQuestFlagsButton.Text = "Clear All Item Flags";
+            this.clearQuestFlagsButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.clearQuestFlagsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.clearQuestFlagsButton.Click += new System.EventHandler(this.clearQuestFlagsButton_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -950,6 +966,32 @@ namespace CP2077SaveEditor
             this.statsPanel.Name = "statsPanel";
             this.statsPanel.Size = new System.Drawing.Size(851, 548);
             this.statsPanel.TabIndex = 14;
+            // 
+            // lifePathBox
+            // 
+            this.lifePathBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.lifePathBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lifePathBox.FormattingEnabled = true;
+            this.lifePathBox.Items.AddRange(new object[] {
+            "Nomad",
+            "Street Kid",
+            "Corpo"});
+            this.lifePathBox.Location = new System.Drawing.Point(366, 191);
+            this.lifePathBox.Name = "lifePathBox";
+            this.lifePathBox.Size = new System.Drawing.Size(124, 21);
+            this.lifePathBox.TabIndex = 20;
+            this.lifePathBox.SelectedIndexChanged += new System.EventHandler(this.lifePathBox_SelectedIndexChanged);
+            // 
+            // lifePathPictureBox
+            // 
+            this.lifePathPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lifePathPictureBox.Image = global::CP2077SaveEditor.Properties.Resources.nomad;
+            this.lifePathPictureBox.Location = new System.Drawing.Point(366, 217);
+            this.lifePathPictureBox.Name = "lifePathPictureBox";
+            this.lifePathPictureBox.Size = new System.Drawing.Size(124, 188);
+            this.lifePathPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.lifePathPictureBox.TabIndex = 19;
+            this.lifePathPictureBox.TabStop = false;
             // 
             // coolUpDown
             // 
@@ -1112,47 +1154,6 @@ namespace CP2077SaveEditor
             0,
             0});
             // 
-            // lifePathPictureBox
-            // 
-            this.lifePathPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lifePathPictureBox.Image = global::CP2077SaveEditor.Properties.Resources.nomad;
-            this.lifePathPictureBox.Location = new System.Drawing.Point(366, 217);
-            this.lifePathPictureBox.Name = "lifePathPictureBox";
-            this.lifePathPictureBox.Size = new System.Drawing.Size(124, 188);
-            this.lifePathPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.lifePathPictureBox.TabIndex = 19;
-            this.lifePathPictureBox.TabStop = false;
-            // 
-            // lifePathBox
-            // 
-            this.lifePathBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.lifePathBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lifePathBox.FormattingEnabled = true;
-            this.lifePathBox.Items.AddRange(new object[] {
-            "Nomad",
-            "Street Kid",
-            "Corpo"});
-            this.lifePathBox.Location = new System.Drawing.Point(366, 191);
-            this.lifePathBox.Name = "lifePathBox";
-            this.lifePathBox.Size = new System.Drawing.Size(124, 21);
-            this.lifePathBox.TabIndex = 20;
-            this.lifePathBox.SelectedIndexChanged += new System.EventHandler(this.lifePathBox_SelectedIndexChanged);
-            // 
-            // clearQuestFlagsButton
-            // 
-            this.clearQuestFlagsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.clearQuestFlagsButton.ClickEffectEnabled = true;
-            this.clearQuestFlagsButton.DefaultColor = System.Drawing.Color.White;
-            this.clearQuestFlagsButton.HoverColor = System.Drawing.Color.LightGray;
-            this.clearQuestFlagsButton.Location = new System.Drawing.Point(224, 27);
-            this.clearQuestFlagsButton.Name = "clearQuestFlagsButton";
-            this.clearQuestFlagsButton.Size = new System.Drawing.Size(151, 22);
-            this.clearQuestFlagsButton.TabIndex = 2;
-            this.clearQuestFlagsButton.Text = "Clear All Quest Flags";
-            this.clearQuestFlagsButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.clearQuestFlagsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clearQuestFlagsButton.Click += new System.EventHandler(this.clearQuestFlagsButton_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1195,6 +1196,7 @@ namespace CP2077SaveEditor
             this.factsPanel.ResumeLayout(false);
             this.factsPanel.PerformLayout();
             this.statsPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.lifePathPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.coolUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligenceUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.technicalAbilityUpDown)).EndInit();
@@ -1202,7 +1204,6 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.reflexesUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.streetCredUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lifePathPictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
