@@ -19,12 +19,14 @@ namespace CP2077SaveEditor
     public partial class Form1 : Form
     {
         private SaveFileHelper activeSaveFile;
+
         private ModernButton activeTabButton = new ModernButton();
         private Panel activeTabPanel = new Panel();
-        private ListViewColumnSorter inventoryColumnSorter;
-        private ListViewColumnSorter factsColumnSorter;
+        private ListViewColumnSorter inventoryColumnSorter, factsColumnSorter;
+
         private Dictionary<string, string> itemClasses;
         private ItemData activeItemEdit = null;
+        private bool loadingSave = false;
 
         public Form1()
         {
@@ -56,6 +58,15 @@ namespace CP2077SaveEditor
             factsSearchBox.LostFocus += SearchBoxLostFocus;
             inventorySearchBox.GotFocus += SearchBoxGotFocus;
             inventorySearchBox.LostFocus += SearchBoxLostFocus;
+
+            levelUpDown.ValueChanged += PlayerStatChanged;
+            streetCredUpDown.ValueChanged += PlayerStatChanged;
+
+            bodyUpDown.ValueChanged += PlayerStatChanged;
+            reflexesUpDown.ValueChanged += PlayerStatChanged;
+            technicalAbilityUpDown.ValueChanged += PlayerStatChanged;
+            intelligenceUpDown.ValueChanged += PlayerStatChanged;
+            coolUpDown.ValueChanged += PlayerStatChanged;
 
             itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         }
@@ -275,6 +286,7 @@ namespace CP2077SaveEditor
             fileWindow.Filter = "Cyberpunk 2077 Save File|*.dat";
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
+                loadingSave = true;
                 //Initialize NameResolver & FactResolver dictionaries, build parsers list & load save file
                 NameResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, NameResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames));
                 FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
@@ -346,11 +358,12 @@ namespace CP2077SaveEditor
                 }
 
                 //Update controls
+                loadingSave = false;
                 editorPanel.Enabled = true;
                 optionsPanel.Enabled = true;
                 filePathLabel.Text = Path.GetFileName(Path.GetDirectoryName(fileWindow.FileName));
                 statusLabel.Text = "Save file loaded.";
-                SwapTab(appearanceButton, appearancePanel);
+                SwapTab(statsButton, statsPanel);
             }
         }
 
@@ -371,7 +384,8 @@ namespace CP2077SaveEditor
                 var parsers = new List<INodeParser>();
                 parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
-                    new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(), new StatsSystemParser()
+                    new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
+                    new StatsSystemParser(), new ScriptableSystemsContainerParser()
                 });
 
                 activeSaveFile = new SaveFileHelper(parsers);
@@ -619,20 +633,37 @@ namespace CP2077SaveEditor
             if (lifePathBox.SelectedIndex == 0)
             {
                 lifePathPictureBox.Image = CP2077SaveEditor.Properties.Resources.nomad;
+                activeSaveFile.GetPlayerDevelopmentData().Value.LifePath = CyberCAT.Core.DumpedEnums.gamedataLifePath.Nomad;
             }
             else if (lifePathBox.SelectedIndex == 1)
             {
                 lifePathPictureBox.Image = CP2077SaveEditor.Properties.Resources.streetkid;
+                activeSaveFile.GetPlayerDevelopmentData().Value.LifePath = CyberCAT.Core.DumpedEnums.gamedataLifePath.StreetKid;
             }
             else if (lifePathBox.SelectedIndex == 2)
             {
                 lifePathPictureBox.Image = CP2077SaveEditor.Properties.Resources.corpo;
+                activeSaveFile.GetPlayerDevelopmentData().Value.LifePath = CyberCAT.Core.DumpedEnums.gamedataLifePath.Corporate;
             }
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)
         {
+            if (!loadingSave)
+            {
+                var profics = activeSaveFile.GetPlayerDevelopmentData().Value.Proficiencies;
 
+                profics[Array.FindIndex(profics, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataProficiencyType.Level)].CurrentLevel = (int)levelUpDown.Value;
+                profics[Array.FindIndex(profics, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataProficiencyType.StreetCred)].CurrentLevel = (int)streetCredUpDown.Value;
+
+                var attrs = activeSaveFile.GetPlayerDevelopmentData().Value.Attributes;
+
+                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Strength)].Value = (int)bodyUpDown.Value;
+                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Reflexes)].Value = (int)reflexesUpDown.Value;
+                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.TechnicalAbility)].Value = (int)technicalAbilityUpDown.Value;
+                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Intelligence)].Value = (int)intelligenceUpDown.Value;
+                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Cool)].Value = (int)coolUpDown.Value;
+            }
         }
     }
 }

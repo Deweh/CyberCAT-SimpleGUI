@@ -158,7 +158,7 @@ namespace CP2077SaveEditor
             this.statsButton.ClickEffectEnabled = true;
             this.statsButton.DefaultColor = System.Drawing.Color.White;
             this.statsButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.statsButton.Location = new System.Drawing.Point(-1, 179);
+            this.statsButton.Location = new System.Drawing.Point(-1, -1);
             this.statsButton.Name = "statsButton";
             this.statsButton.Size = new System.Drawing.Size(143, 61);
             this.statsButton.TabIndex = 3;
@@ -174,7 +174,7 @@ namespace CP2077SaveEditor
             this.factsButton.ClickEffectEnabled = true;
             this.factsButton.DefaultColor = System.Drawing.Color.White;
             this.factsButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.factsButton.Location = new System.Drawing.Point(-1, 119);
+            this.factsButton.Location = new System.Drawing.Point(-1, 179);
             this.factsButton.Name = "factsButton";
             this.factsButton.Size = new System.Drawing.Size(143, 61);
             this.factsButton.TabIndex = 2;
@@ -190,7 +190,7 @@ namespace CP2077SaveEditor
             this.inventoryButton.ClickEffectEnabled = true;
             this.inventoryButton.DefaultColor = System.Drawing.Color.White;
             this.inventoryButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.inventoryButton.Location = new System.Drawing.Point(-1, 59);
+            this.inventoryButton.Location = new System.Drawing.Point(-1, 119);
             this.inventoryButton.Name = "inventoryButton";
             this.inventoryButton.Size = new System.Drawing.Size(143, 61);
             this.inventoryButton.TabIndex = 1;
@@ -223,7 +223,7 @@ namespace CP2077SaveEditor
             this.appearanceButton.ClickEffectEnabled = false;
             this.appearanceButton.DefaultColor = System.Drawing.Color.White;
             this.appearanceButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.appearanceButton.Location = new System.Drawing.Point(-1, -1);
+            this.appearanceButton.Location = new System.Drawing.Point(-1, 59);
             this.appearanceButton.Name = "appearanceButton";
             this.appearanceButton.Size = new System.Drawing.Size(143, 61);
             this.appearanceButton.TabIndex = 0;
