@@ -67,6 +67,8 @@ namespace CP2077SaveEditor
             technicalAbilityUpDown.ValueChanged += PlayerStatChanged;
             intelligenceUpDown.ValueChanged += PlayerStatChanged;
             coolUpDown.ValueChanged += PlayerStatChanged;
+            perkPointsUpDown.ValueChanged += PlayerStatChanged;
+            attrPointsUpDown.ValueChanged += PlayerStatChanged;
 
             itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         }
@@ -356,6 +358,11 @@ namespace CP2077SaveEditor
                 {
                     lifePathBox.SelectedIndex = 2;
                 }
+
+                var points = activeSaveFile.GetPlayerDevelopmentData().Value.DevPoints;
+
+                perkPointsUpDown.Value = points[Array.FindIndex(points, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataDevelopmentPointType.Primary)].Unspent;
+                attrPointsUpDown.Value = points[Array.FindIndex(points, x => x.Type == null)].Unspent;
 
                 //Update controls
                 loadingSave = false;
@@ -675,6 +682,11 @@ namespace CP2077SaveEditor
                 attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.TechnicalAbility)].Value = (int)technicalAbilityUpDown.Value;
                 attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Intelligence)].Value = (int)intelligenceUpDown.Value;
                 attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Cool)].Value = (int)coolUpDown.Value;
+
+                var points = activeSaveFile.GetPlayerDevelopmentData().Value.DevPoints;
+
+                points[Array.FindIndex(points, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataDevelopmentPointType.Primary)].Unspent = (int)perkPointsUpDown.Value;
+                points[Array.FindIndex(points, x => x.Type == null)].Unspent = (int)attrPointsUpDown.Value;
             }
         }
     }

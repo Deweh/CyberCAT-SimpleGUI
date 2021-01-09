@@ -103,6 +103,8 @@ namespace CP2077SaveEditor
             this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
             this.statsPanel = new System.Windows.Forms.Panel();
+            this.perkPointsUpDown = new System.Windows.Forms.NumericUpDown();
+            this.attrPointsUpDown = new System.Windows.Forms.NumericUpDown();
             this.lifePathBox = new System.Windows.Forms.ComboBox();
             this.lifePathPictureBox = new System.Windows.Forms.PictureBox();
             this.coolUpDown = new System.Windows.Forms.NumericUpDown();
@@ -125,6 +127,8 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.moneyUpDown)).BeginInit();
             this.factsPanel.SuspendLayout();
             this.statsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.perkPointsUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attrPointsUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lifePathPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.coolUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligenceUpDown)).BeginInit();
@@ -878,9 +882,9 @@ namespace CP2077SaveEditor
             this.addFactButton.ClickEffectEnabled = true;
             this.addFactButton.DefaultColor = System.Drawing.Color.White;
             this.addFactButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addFactButton.Location = new System.Drawing.Point(719, 1);
+            this.addFactButton.Location = new System.Drawing.Point(728, -1);
             this.addFactButton.Name = "addFactButton";
-            this.addFactButton.Size = new System.Drawing.Size(20, 20);
+            this.addFactButton.Size = new System.Drawing.Size(20, 18);
             this.addFactButton.TabIndex = 2;
             this.addFactButton.Text = "+";
             this.addFactButton.TextColor = System.Drawing.SystemColors.ControlText;
@@ -952,6 +956,8 @@ namespace CP2077SaveEditor
             // 
             this.statsPanel.BackgroundImage = global::CP2077SaveEditor.Properties.Resources.player_stats;
             this.statsPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.statsPanel.Controls.Add(this.perkPointsUpDown);
+            this.statsPanel.Controls.Add(this.attrPointsUpDown);
             this.statsPanel.Controls.Add(this.lifePathBox);
             this.statsPanel.Controls.Add(this.lifePathPictureBox);
             this.statsPanel.Controls.Add(this.coolUpDown);
@@ -966,6 +972,32 @@ namespace CP2077SaveEditor
             this.statsPanel.Name = "statsPanel";
             this.statsPanel.Size = new System.Drawing.Size(851, 548);
             this.statsPanel.TabIndex = 14;
+            // 
+            // perkPointsUpDown
+            // 
+            this.perkPointsUpDown.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.perkPointsUpDown.Location = new System.Drawing.Point(44, 310);
+            this.perkPointsUpDown.Maximum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            0});
+            this.perkPointsUpDown.Name = "perkPointsUpDown";
+            this.perkPointsUpDown.Size = new System.Drawing.Size(45, 25);
+            this.perkPointsUpDown.TabIndex = 22;
+            // 
+            // attrPointsUpDown
+            // 
+            this.attrPointsUpDown.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.attrPointsUpDown.Location = new System.Drawing.Point(44, 266);
+            this.attrPointsUpDown.Maximum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            0});
+            this.attrPointsUpDown.Name = "attrPointsUpDown";
+            this.attrPointsUpDown.Size = new System.Drawing.Size(45, 25);
+            this.attrPointsUpDown.TabIndex = 21;
             // 
             // lifePathBox
             // 
@@ -1196,6 +1228,8 @@ namespace CP2077SaveEditor
             this.factsPanel.ResumeLayout(false);
             this.factsPanel.PerformLayout();
             this.statsPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.perkPointsUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attrPointsUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lifePathPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.coolUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.intelligenceUpDown)).EndInit();
@@ -1291,6 +1325,8 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.ComboBox lifePathBox;
         private System.Windows.Forms.PictureBox lifePathPictureBox;
         private ModernButton clearQuestFlagsButton;
+        private System.Windows.Forms.NumericUpDown perkPointsUpDown;
+        private System.Windows.Forms.NumericUpDown attrPointsUpDown;
     }
 }
 
