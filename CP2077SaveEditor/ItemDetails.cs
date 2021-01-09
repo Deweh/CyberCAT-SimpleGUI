@@ -362,5 +362,46 @@ namespace CP2077SaveEditor
             var statDialog = new StatDetails();
             statDialog.LoadStat(activeSaveFile.GetItemStatData(activeItem).StatModifiers[Array.FindIndex(activeSaveFile.GetItemStatData(activeItem).StatModifiers, x => x.Id == newId)], ReloadData);
         }
+
+        private void deleteModNodeButton_Click(object sender, EventArgs e)
+        {
+            if (modsTreeView.SelectedNode != null)
+            {
+
+                var data = (ItemData.ModableItemData)activeItem.Data;
+                if (data.RootNode != (ItemData.ItemModData)modsTreeView.SelectedNode.Tag)
+                {
+                    IterativeDeleteModNode(((ItemData.ItemModData)modsTreeView.SelectedNode.Tag), data.RootNode);
+                    modsTreeView.SelectedNode.Remove();
+                }
+                else
+                {
+
+                    data.RootNode.Children.Clear();
+                    data.RootNode.AttachmentSlotTdbId.Raw64 = 0;
+                    data.RootNode.ItemTdbId.Raw64 = 0;
+                    data.RootNode.TdbId2.Raw64 = 0;
+                    data.RootNode.Unknown2 = 0;
+                    data.RootNode.Unknown3 = 0;
+                    data.RootNode.Unknown4 = 0;
+                    data.RootNode.UnknownString = "";
+                    ReloadData();
+                }
+            }
+        }
+
+        private void newModNodeButton_Click(object sender, EventArgs e)
+        {
+            if (modsTreeView.SelectedNode == null)
+            {
+                MessageBox.Show("Must select parent node.");
+            } else {
+                var newNode = new ItemData.ItemModData();
+                ((ItemData.ItemModData)modsTreeView.SelectedNode.Tag).Children.Add(newNode);
+                ReloadData();
+                var nodeDialog = new ModNodeDetails();
+                nodeDialog.LoadNode(newNode, ReloadData);
+            }
+        }
     }
 }

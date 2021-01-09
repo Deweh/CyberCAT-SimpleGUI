@@ -33,7 +33,7 @@ namespace CP2077SaveEditor
             callbackFunc = callback;
 
             attachmentNameLabel.Text = node.AttachmentSlotName;
-            attachmentIdBox.Text = node.AttachmentSlotTdbId.ToString();
+            attachmentIdBox.Text = node.AttachmentSlotTdbId.Raw64.ToString();
             item1NameLabel.Text = node.ItemName;
             item1IdBox.Text = node.ItemTdbId.Raw64.ToString();
             unknown1Box.Text = node.Unknown2.ToString();
