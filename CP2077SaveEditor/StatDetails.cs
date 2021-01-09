@@ -142,7 +142,7 @@ namespace CP2077SaveEditor
                     Enum.TryParse<gamedataStatType>(curveStat.Text, out _),
                     Enum.TryParse<gameStatModifierType>(curveModifier.Text, out _),
                     Enum.TryParse<gamedataStatType>(curveStatType.Text, out _)
-                }, constantValue.Text)) { return; }
+                })) { return; }
 
                 var data = (GameCurveStatModifierData)activeStat.Value;
 
