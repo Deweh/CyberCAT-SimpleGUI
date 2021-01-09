@@ -386,7 +386,6 @@ namespace CP2077SaveEditor
                     File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
                 }
                 var saveBytes = activeSaveFile.SaveToPCSaveFile();
-                File.WriteAllBytes(saveWindow.FileName, saveBytes);
 
                 var parsers = new List<INodeParser>();
                 parsers.AddRange(new INodeParser[] {
@@ -395,8 +394,18 @@ namespace CP2077SaveEditor
                     new StatsSystemParser(), new ScriptableSystemsContainerParser()
                 });
 
-                activeSaveFile = new SaveFileHelper(parsers);
-                activeSaveFile.LoadPCSaveFile(new MemoryStream(saveBytes));
+                var testFile = new SaveFileHelper(parsers);
+                try
+                {
+                    testFile.LoadPCSaveFile(new MemoryStream(saveBytes));
+                } catch(Exception ex) {
+                    File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
+                    MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
+                    return;
+                }
+
+                File.WriteAllBytes(saveWindow.FileName, saveBytes);
+                activeSaveFile = testFile;
                 statusLabel.Text = "File saved.";
             }
         }
