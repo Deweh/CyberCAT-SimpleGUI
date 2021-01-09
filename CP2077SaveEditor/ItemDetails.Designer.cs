@@ -37,27 +37,33 @@ namespace CP2077SaveEditor
             this.modsTreeView = new System.Windows.Forms.TreeView();
             this.modsBaseIdBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.pasteLegendaryIdButton = new CP2077SaveEditor.ModernButton();
-            this.applyButton = new CP2077SaveEditor.ModernButton();
-            this.closeButton = new CP2077SaveEditor.ModernButton();
             this.quickActionsGroupBox = new System.Windows.Forms.GroupBox();
+            this.pasteLegendaryIdButton = new CP2077SaveEditor.ModernButton();
             this.questItemCheckBox = new System.Windows.Forms.CheckBox();
             this.flagsGroupBox = new System.Windows.Forms.GroupBox();
             this.unknownFlag1CheckBox = new System.Windows.Forms.CheckBox();
             this.detailsTabControl = new System.Windows.Forms.TabControl();
-            this.modInfoTab = new System.Windows.Forms.TabPage();
             this.statsTab = new System.Windows.Forms.TabPage();
+            this.addCurveStatButton = new CP2077SaveEditor.ModernButton();
+            this.addCombinedStatButton = new CP2077SaveEditor.ModernButton();
+            this.statsListView = new System.Windows.Forms.ListView();
+            this.statTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.statModifierHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.statNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.statValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.removeStatButton = new CP2077SaveEditor.ModernButton();
-            this.addStatButton = new CP2077SaveEditor.ModernButton();
-            this.statsTreeView = new System.Windows.Forms.TreeView();
+            this.addConstantStatButton = new CP2077SaveEditor.ModernButton();
+            this.modInfoTab = new System.Windows.Forms.TabPage();
+            this.closeButton = new CP2077SaveEditor.ModernButton();
+            this.applyButton = new CP2077SaveEditor.ModernButton();
             this.basicInfoGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.quantityUpDown)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.quickActionsGroupBox.SuspendLayout();
             this.flagsGroupBox.SuspendLayout();
             this.detailsTabControl.SuspendLayout();
-            this.modInfoTab.SuspendLayout();
             this.statsTab.SuspendLayout();
+            this.modInfoTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // basicInfoGroupBox
@@ -127,6 +133,16 @@ namespace CP2077SaveEditor
             this.label2.TabIndex = 0;
             this.label2.Text = "Special ID:";
             // 
+            // quickActionsGroupBox
+            // 
+            this.quickActionsGroupBox.Controls.Add(this.pasteLegendaryIdButton);
+            this.quickActionsGroupBox.Location = new System.Drawing.Point(12, 138);
+            this.quickActionsGroupBox.Name = "quickActionsGroupBox";
+            this.quickActionsGroupBox.Size = new System.Drawing.Size(432, 57);
+            this.quickActionsGroupBox.TabIndex = 4;
+            this.quickActionsGroupBox.TabStop = false;
+            this.quickActionsGroupBox.Text = "Quick Actions";
+            // 
             // pasteLegendaryIdButton
             // 
             this.pasteLegendaryIdButton.BackColor = System.Drawing.Color.White;
@@ -142,48 +158,6 @@ namespace CP2077SaveEditor
             this.pasteLegendaryIdButton.TextColor = System.Drawing.SystemColors.ControlText;
             this.pasteLegendaryIdButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pasteLegendaryIdButton.Click += new System.EventHandler(this.pasteLegendaryIdButton_Click);
-            // 
-            // applyButton
-            // 
-            this.applyButton.BackColor = System.Drawing.Color.White;
-            this.applyButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.applyButton.ClickEffectEnabled = true;
-            this.applyButton.DefaultColor = System.Drawing.Color.White;
-            this.applyButton.HoverColor = System.Drawing.Color.LightGray;
-            this.applyButton.Location = new System.Drawing.Point(230, 565);
-            this.applyButton.Name = "applyButton";
-            this.applyButton.Size = new System.Drawing.Size(104, 26);
-            this.applyButton.TabIndex = 2;
-            this.applyButton.Text = "Apply";
-            this.applyButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.applyButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
-            // 
-            // closeButton
-            // 
-            this.closeButton.BackColor = System.Drawing.Color.White;
-            this.closeButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.closeButton.ClickEffectEnabled = true;
-            this.closeButton.DefaultColor = System.Drawing.Color.White;
-            this.closeButton.HoverColor = System.Drawing.Color.LightGray;
-            this.closeButton.Location = new System.Drawing.Point(340, 565);
-            this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(104, 26);
-            this.closeButton.TabIndex = 3;
-            this.closeButton.Text = "Close";
-            this.closeButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.closeButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
-            // 
-            // quickActionsGroupBox
-            // 
-            this.quickActionsGroupBox.Controls.Add(this.pasteLegendaryIdButton);
-            this.quickActionsGroupBox.Location = new System.Drawing.Point(12, 138);
-            this.quickActionsGroupBox.Name = "quickActionsGroupBox";
-            this.quickActionsGroupBox.Size = new System.Drawing.Size(432, 57);
-            this.quickActionsGroupBox.TabIndex = 4;
-            this.quickActionsGroupBox.TabStop = false;
-            this.quickActionsGroupBox.Text = "Quick Actions";
             // 
             // questItemCheckBox
             // 
@@ -218,13 +192,131 @@ namespace CP2077SaveEditor
             // 
             // detailsTabControl
             // 
-            this.detailsTabControl.Controls.Add(this.modInfoTab);
             this.detailsTabControl.Controls.Add(this.statsTab);
+            this.detailsTabControl.Controls.Add(this.modInfoTab);
             this.detailsTabControl.Location = new System.Drawing.Point(12, 201);
             this.detailsTabControl.Name = "detailsTabControl";
             this.detailsTabControl.SelectedIndex = 0;
             this.detailsTabControl.Size = new System.Drawing.Size(432, 356);
             this.detailsTabControl.TabIndex = 6;
+            // 
+            // statsTab
+            // 
+            this.statsTab.Controls.Add(this.addCurveStatButton);
+            this.statsTab.Controls.Add(this.addCombinedStatButton);
+            this.statsTab.Controls.Add(this.statsListView);
+            this.statsTab.Controls.Add(this.removeStatButton);
+            this.statsTab.Controls.Add(this.addConstantStatButton);
+            this.statsTab.Location = new System.Drawing.Point(4, 22);
+            this.statsTab.Name = "statsTab";
+            this.statsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.statsTab.Size = new System.Drawing.Size(424, 330);
+            this.statsTab.TabIndex = 1;
+            this.statsTab.Text = "Stats";
+            this.statsTab.UseVisualStyleBackColor = true;
+            // 
+            // addCurveStatButton
+            // 
+            this.addCurveStatButton.BackColor = System.Drawing.Color.White;
+            this.addCurveStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.addCurveStatButton.ClickEffectEnabled = true;
+            this.addCurveStatButton.DefaultColor = System.Drawing.Color.White;
+            this.addCurveStatButton.HoverColor = System.Drawing.Color.LightGray;
+            this.addCurveStatButton.Location = new System.Drawing.Point(90, 10);
+            this.addCurveStatButton.Name = "addCurveStatButton";
+            this.addCurveStatButton.Size = new System.Drawing.Size(81, 20);
+            this.addCurveStatButton.TabIndex = 5;
+            this.addCurveStatButton.Text = "+ New Curve";
+            this.addCurveStatButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.addCurveStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addCurveStatButton.Click += new System.EventHandler(this.addCurveStatButton_Click);
+            // 
+            // addCombinedStatButton
+            // 
+            this.addCombinedStatButton.BackColor = System.Drawing.Color.White;
+            this.addCombinedStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.addCombinedStatButton.ClickEffectEnabled = true;
+            this.addCombinedStatButton.DefaultColor = System.Drawing.Color.White;
+            this.addCombinedStatButton.HoverColor = System.Drawing.Color.LightGray;
+            this.addCombinedStatButton.Location = new System.Drawing.Point(177, 10);
+            this.addCombinedStatButton.Name = "addCombinedStatButton";
+            this.addCombinedStatButton.Size = new System.Drawing.Size(107, 20);
+            this.addCombinedStatButton.TabIndex = 4;
+            this.addCombinedStatButton.Text = "+ New Combined";
+            this.addCombinedStatButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.addCombinedStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addCombinedStatButton.Click += new System.EventHandler(this.addCombinedStatButton_Click);
+            // 
+            // statsListView
+            // 
+            this.statsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.statsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.statTypeHeader,
+            this.statModifierHeader,
+            this.statNameHeader,
+            this.statValueHeader});
+            this.statsListView.FullRowSelect = true;
+            this.statsListView.HideSelection = false;
+            this.statsListView.Location = new System.Drawing.Point(18, 36);
+            this.statsListView.MultiSelect = false;
+            this.statsListView.Name = "statsListView";
+            this.statsListView.Size = new System.Drawing.Size(379, 283);
+            this.statsListView.TabIndex = 5;
+            this.statsListView.UseCompatibleStateImageBehavior = false;
+            this.statsListView.View = System.Windows.Forms.View.Details;
+            // 
+            // statTypeHeader
+            // 
+            this.statTypeHeader.Text = "Type";
+            this.statTypeHeader.Width = 77;
+            // 
+            // statModifierHeader
+            // 
+            this.statModifierHeader.DisplayIndex = 2;
+            this.statModifierHeader.Text = "Modifier";
+            this.statModifierHeader.Width = 87;
+            // 
+            // statNameHeader
+            // 
+            this.statNameHeader.DisplayIndex = 1;
+            this.statNameHeader.Text = "Stat";
+            this.statNameHeader.Width = 131;
+            // 
+            // statValueHeader
+            // 
+            this.statValueHeader.Text = "Value";
+            // 
+            // removeStatButton
+            // 
+            this.removeStatButton.BackColor = System.Drawing.Color.White;
+            this.removeStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.removeStatButton.ClickEffectEnabled = true;
+            this.removeStatButton.DefaultColor = System.Drawing.Color.White;
+            this.removeStatButton.HoverColor = System.Drawing.Color.LightGray;
+            this.removeStatButton.Location = new System.Drawing.Point(18, 10);
+            this.removeStatButton.Name = "removeStatButton";
+            this.removeStatButton.Size = new System.Drawing.Size(66, 20);
+            this.removeStatButton.TabIndex = 4;
+            this.removeStatButton.Text = "- Delete";
+            this.removeStatButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.removeStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.removeStatButton.Click += new System.EventHandler(this.removeStatButton_Click);
+            // 
+            // addConstantStatButton
+            // 
+            this.addConstantStatButton.BackColor = System.Drawing.Color.White;
+            this.addConstantStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.addConstantStatButton.ClickEffectEnabled = true;
+            this.addConstantStatButton.DefaultColor = System.Drawing.Color.White;
+            this.addConstantStatButton.HoverColor = System.Drawing.Color.LightGray;
+            this.addConstantStatButton.Location = new System.Drawing.Point(290, 10);
+            this.addConstantStatButton.Name = "addConstantStatButton";
+            this.addConstantStatButton.Size = new System.Drawing.Size(107, 20);
+            this.addConstantStatButton.TabIndex = 3;
+            this.addConstantStatButton.Text = "+ New Constant";
+            this.addConstantStatButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.addConstantStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addConstantStatButton.Click += new System.EventHandler(this.addConstantStatButton_Click);
             // 
             // modInfoTab
             // 
@@ -239,57 +331,37 @@ namespace CP2077SaveEditor
             this.modInfoTab.Text = "Mods/Special";
             this.modInfoTab.UseVisualStyleBackColor = true;
             // 
-            // statsTab
+            // closeButton
             // 
-            this.statsTab.Controls.Add(this.removeStatButton);
-            this.statsTab.Controls.Add(this.addStatButton);
-            this.statsTab.Controls.Add(this.statsTreeView);
-            this.statsTab.Location = new System.Drawing.Point(4, 22);
-            this.statsTab.Name = "statsTab";
-            this.statsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.statsTab.Size = new System.Drawing.Size(424, 330);
-            this.statsTab.TabIndex = 1;
-            this.statsTab.Text = "Stats";
-            this.statsTab.UseVisualStyleBackColor = true;
+            this.closeButton.BackColor = System.Drawing.Color.White;
+            this.closeButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.closeButton.ClickEffectEnabled = true;
+            this.closeButton.DefaultColor = System.Drawing.Color.White;
+            this.closeButton.HoverColor = System.Drawing.Color.LightGray;
+            this.closeButton.Location = new System.Drawing.Point(340, 565);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(104, 26);
+            this.closeButton.TabIndex = 3;
+            this.closeButton.Text = "Close";
+            this.closeButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.closeButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
-            // removeStatButton
+            // applyButton
             // 
-            this.removeStatButton.BackColor = System.Drawing.Color.White;
-            this.removeStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.removeStatButton.ClickEffectEnabled = true;
-            this.removeStatButton.DefaultColor = System.Drawing.Color.White;
-            this.removeStatButton.HoverColor = System.Drawing.Color.LightGray;
-            this.removeStatButton.Location = new System.Drawing.Point(351, 6);
-            this.removeStatButton.Name = "removeStatButton";
-            this.removeStatButton.Size = new System.Drawing.Size(20, 20);
-            this.removeStatButton.TabIndex = 4;
-            this.removeStatButton.Text = "-";
-            this.removeStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.removeStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.removeStatButton.Click += new System.EventHandler(this.removeStatButton_Click);
-            // 
-            // addStatButton
-            // 
-            this.addStatButton.BackColor = System.Drawing.Color.White;
-            this.addStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.addStatButton.ClickEffectEnabled = true;
-            this.addStatButton.DefaultColor = System.Drawing.Color.White;
-            this.addStatButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addStatButton.Location = new System.Drawing.Point(377, 6);
-            this.addStatButton.Name = "addStatButton";
-            this.addStatButton.Size = new System.Drawing.Size(20, 20);
-            this.addStatButton.TabIndex = 3;
-            this.addStatButton.Text = "+";
-            this.addStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.addStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.addStatButton.Click += new System.EventHandler(this.addStatButton_Click);
-            // 
-            // statsTreeView
-            // 
-            this.statsTreeView.Location = new System.Drawing.Point(18, 30);
-            this.statsTreeView.Name = "statsTreeView";
-            this.statsTreeView.Size = new System.Drawing.Size(379, 285);
-            this.statsTreeView.TabIndex = 0;
+            this.applyButton.BackColor = System.Drawing.Color.White;
+            this.applyButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.applyButton.ClickEffectEnabled = true;
+            this.applyButton.DefaultColor = System.Drawing.Color.White;
+            this.applyButton.HoverColor = System.Drawing.Color.LightGray;
+            this.applyButton.Location = new System.Drawing.Point(230, 565);
+            this.applyButton.Name = "applyButton";
+            this.applyButton.Size = new System.Drawing.Size(104, 26);
+            this.applyButton.TabIndex = 2;
+            this.applyButton.Text = "Apply";
+            this.applyButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.applyButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // ItemDetails
             // 
@@ -317,9 +389,9 @@ namespace CP2077SaveEditor
             this.flagsGroupBox.ResumeLayout(false);
             this.flagsGroupBox.PerformLayout();
             this.detailsTabControl.ResumeLayout(false);
+            this.statsTab.ResumeLayout(false);
             this.modInfoTab.ResumeLayout(false);
             this.modInfoTab.PerformLayout();
-            this.statsTab.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -343,8 +415,14 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.TabControl detailsTabControl;
         private System.Windows.Forms.TabPage modInfoTab;
         private System.Windows.Forms.TabPage statsTab;
-        private System.Windows.Forms.TreeView statsTreeView;
-        private ModernButton addStatButton;
+        private ModernButton addConstantStatButton;
         private ModernButton removeStatButton;
+        private System.Windows.Forms.ListView statsListView;
+        private System.Windows.Forms.ColumnHeader statTypeHeader;
+        private System.Windows.Forms.ColumnHeader statModifierHeader;
+        private System.Windows.Forms.ColumnHeader statNameHeader;
+        private System.Windows.Forms.ColumnHeader statValueHeader;
+        private ModernButton addCurveStatButton;
+        private ModernButton addCombinedStatButton;
     }
 }

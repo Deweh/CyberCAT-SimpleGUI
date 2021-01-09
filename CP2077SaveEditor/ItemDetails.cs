@@ -31,8 +31,8 @@ namespace CP2077SaveEditor
             modsTreeView.NodeMouseDoubleClick += modsTreeView_DoubleClick;
             modsTreeView.KeyDown += modsTreeView_KeyDown;
 
-            statsTreeView.NodeMouseDoubleClick += statsTreeView_DoubleClick;
-            statsTreeView.KeyDown += statsTreeView_KeyDown;
+            statsListView.DoubleClick += statsListView_DoubleClick;
+            statsListView.KeyDown += statsListView_KeyDown;
         }
 
         enum DataType
@@ -124,45 +124,37 @@ namespace CP2077SaveEditor
                     detailsTabControl.TabPages.Remove(statsTab);
                 }
             } else {
-                statsTreeView.Nodes.Clear();
+                statsListView.Items.Clear();
+                var listRows = new List<ListViewItem>();
                 var statsData = activeSaveFile.GetItemStatData(activeItem);
                 foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
                 {
-                    var rootNode = statsTreeView.Nodes.Add(modifier.Value.GetType().Name + " :: " + modifier.Value.StatType.ToString());
-                    rootNode.Tag = modifier;
+                    var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
 
                     if (modifier.Value.GetType().Name == "GameCombinedStatModifierData")
                     {
-                        rootNode.Nodes.Add("Modifier Type: " + ((GameCombinedStatModifierData)modifier.Value).ModifierType.ToString());
-                        rootNode.Nodes.Add("Operation: " + ((GameCombinedStatModifierData)modifier.Value).Operation.ToString());
-                        rootNode.Nodes.Add("Ref Object: " + ((GameCombinedStatModifierData)modifier.Value).RefObject.ToString());
-                        rootNode.Nodes.Add("Ref Stat Type: " + ((GameCombinedStatModifierData)modifier.Value).RefStatType.ToString());
-                        rootNode.Nodes.Add("Stat Type: " + ((GameCombinedStatModifierData)modifier.Value).StatType.ToString());
-                        rootNode.Nodes.Add("Value: " + ((GameCombinedStatModifierData)modifier.Value).Value.ToString());
-
-                        rootNode.Nodes.Add("< Edit >").Tag = modifier;
+                        row[0] = "Combined";
+                        row[3] = ((GameCombinedStatModifierData)modifier.Value).Value.ToString();
                     }
                     else if(modifier.Value.GetType().Name == "GameConstantStatModifierData")
                     {
-                        rootNode.Nodes.Add("Modifier Type: " + ((GameConstantStatModifierData)modifier.Value).ModifierType.ToString());
-                        rootNode.Nodes.Add("Stat Type: " + ((GameConstantStatModifierData)modifier.Value).StatType.ToString());
-                        rootNode.Nodes.Add("Value: " + ((GameConstantStatModifierData)modifier.Value).Value.ToString());
-
-                        rootNode.Nodes.Add("< Edit >").Tag = modifier;
+                        row[3] = ((GameConstantStatModifierData)modifier.Value).Value.ToString();
                     }
-                    else if (modifier.Value.GetType().Name == "GameCurveStatModifierData")
+                    else
                     {
-                        rootNode.Nodes.Add("Column Name: " + ((GameCurveStatModifierData)modifier.Value).ColumnName.ToString());
-                        rootNode.Nodes.Add("Curve Name: " + ((GameCurveStatModifierData)modifier.Value).CurveName.ToString());
-                        rootNode.Nodes.Add("Curve Stat: " + ((GameCurveStatModifierData)modifier.Value).CurveStat.ToString());
-                        rootNode.Nodes.Add("Modifier Type: " + ((GameCurveStatModifierData)modifier.Value).ModifierType.ToString());
-                        rootNode.Nodes.Add("Stat Type: " + ((GameCurveStatModifierData)modifier.Value).StatType.ToString());
-
-                        rootNode.Nodes.Add("< Edit >").Tag = modifier;
+                        row[0] = "Curve";
                     }
-                }
-            }
 
+                    var newItem = new ListViewItem(row);
+                    newItem.Tag = modifier;
+                    listRows.Add(newItem);
+                }
+
+                statsListView.BeginUpdate();
+                statsListView.Items.AddRange(listRows.ToArray());
+                statsListView.EndUpdate();
+            }
+            
             unknownFlag1CheckBox.Checked = activeItem.Flags.Unknown2;
             questItemCheckBox.Checked = activeItem.Flags.IsQuestItem;
             return true;
@@ -251,12 +243,12 @@ namespace CP2077SaveEditor
             nodeDetails.LoadNode(((ItemData.ItemModData)e.Node.Tag), ReloadData);
         }
 
-        private void statsTreeView_DoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void statsListView_DoubleClick(object sender, EventArgs e)
         {
-            if (e.Node.Tag != null)
+            if (statsListView.SelectedItems.Count > 0)
             {
                 var nodeDetails = new StatDetails();
-                nodeDetails.LoadStat(((Handle<GameStatModifierData>)e.Node.Tag), ReloadData);
+                nodeDetails.LoadStat(((Handle<GameStatModifierData>)statsListView.SelectedItems[0].Tag), ReloadData);
             }
         }
 
@@ -307,72 +299,68 @@ namespace CP2077SaveEditor
             }
         }
 
-        private void statsTreeView_KeyDown(object sender, KeyEventArgs e)
+        private uint AddStat(Type statType)
         {
-            if (e.KeyCode == Keys.Delete && statsTreeView.SelectedNode != null)
-            {
-                if (statsTreeView.SelectedNode.Tag != null && statsTreeView.SelectedNode.Text != "< Edit >")
-                {
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    RemoveStat((Handle<GameStatModifierData>)statsTreeView.SelectedNode.Tag);
-                    statsTreeView.Nodes.Remove(statsTreeView.SelectedNode);
-                }
-            }
-        }
+            var newModifierData = Activator.CreateInstance(statType);
 
-        private void addStatButton_Click(object sender, EventArgs e)
-        {
-            var addStatDialog = new AddStat();
-            addStatDialog.LoadAddDialog(addStatCallback);
-        }
-
-        public void addStatCallback(string modifierObjType)
-        {
-            object newModifierData;
-            if (modifierObjType == "GameCombinedStatModifierData")
+            if (statType == typeof(GameCurveStatModifierData))
             {
-                newModifierData = new GameCombinedStatModifierData();
-            }
-            else if (modifierObjType == "GameConstantStatModifierData")
-            {
-                newModifierData = new GameConstantStatModifierData();
-            }
-            else if (modifierObjType == "GameCurveStatModifierData")
-            {
-                newModifierData = new GameCurveStatModifierData();
                 ((GameCurveStatModifierData)newModifierData).ColumnName = "<null>";
                 ((GameCurveStatModifierData)newModifierData).CurveName = "<null>";
 
-            } else {
-                return;
             }
-            var newModifier = activeSaveFile.GetStatsContainer().CreateHandle<GameStatModifierData>((GameStatModifierData)newModifierData);
 
+            var newModifier = activeSaveFile.GetStatsContainer().CreateHandle<GameStatModifierData>((GameStatModifierData)newModifierData);
             activeSaveFile.GetItemStatData(activeItem).StatModifiers = activeSaveFile.GetItemStatData(activeItem).StatModifiers.Append(newModifier).ToArray();
+
+            return newModifier.Id;
+        }
+
+        private void statsListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && statsListView.SelectedItems.Count > 0)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                RemoveStat((Handle<GameStatModifierData>)statsListView.SelectedItems[0].Tag);
+                statsListView.Items.Remove(statsListView.SelectedItems[0]);
+            }
+        }
+
+        private void addConstantStatButton_Click(object sender, EventArgs e)
+        {
+            var newId = AddStat(typeof(GameConstantStatModifierData));
             ReloadData();
 
-            var newNode = statsTreeView.Nodes[statsTreeView.Nodes.Count - 1];
-            newNode.Expand();
-            newNode.EnsureVisible();
-            statsTreeView.SelectedNode = newNode;
-
             var statDialog = new StatDetails();
-            statDialog.LoadStat(activeSaveFile.GetItemStatData(activeItem).StatModifiers[Array.FindIndex(activeSaveFile.GetItemStatData(activeItem).StatModifiers, x => x.Id == newModifier.Id)], ReloadData);
+            statDialog.LoadStat(activeSaveFile.GetItemStatData(activeItem).StatModifiers[Array.FindIndex(activeSaveFile.GetItemStatData(activeItem).StatModifiers, x => x.Id == newId)], ReloadData);
         }
 
         private void removeStatButton_Click(object sender, EventArgs e)
         {
-            if (statsTreeView.SelectedNode != null) {
-
-                if (statsTreeView.SelectedNode.Tag != null && statsTreeView.SelectedNode.Text != "< Edit >")
-                {
-                    RemoveStat((Handle<GameStatModifierData>)statsTreeView.SelectedNode.Tag);
-                    statsTreeView.Nodes.Remove(statsTreeView.SelectedNode);
-                }
-
+            if (statsListView.SelectedItems.Count > 0) {
+                RemoveStat((Handle<GameStatModifierData>)statsListView.SelectedItems[0].Tag);
+                statsListView.Items.Remove(statsListView.SelectedItems[0]);
             }
             
+        }
+
+        private void addCombinedStatButton_Click(object sender, EventArgs e)
+        {
+            var newId = AddStat(typeof(GameCombinedStatModifierData));
+            ReloadData();
+
+            var statDialog = new StatDetails();
+            statDialog.LoadStat(activeSaveFile.GetItemStatData(activeItem).StatModifiers[Array.FindIndex(activeSaveFile.GetItemStatData(activeItem).StatModifiers, x => x.Id == newId)], ReloadData);
+        }
+
+        private void addCurveStatButton_Click(object sender, EventArgs e)
+        {
+            var newId = AddStat(typeof(GameCurveStatModifierData));
+            ReloadData();
+
+            var statDialog = new StatDetails();
+            statDialog.LoadStat(activeSaveFile.GetItemStatData(activeItem).StatModifiers[Array.FindIndex(activeSaveFile.GetItemStatData(activeItem).StatModifiers, x => x.Id == newId)], ReloadData);
         }
     }
 }
