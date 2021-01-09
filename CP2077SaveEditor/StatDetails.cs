@@ -22,6 +22,17 @@ namespace CP2077SaveEditor
         public StatDetails()
         {
             InitializeComponent();
+            constantStatType.GotFocus += PopulateStatTypes;
+            combinedStatType.GotFocus += PopulateStatTypes;
+            combinedRefStatType.GotFocus += PopulateStatTypes;
+            curveStat.GotFocus += PopulateStatTypes;
+            curveStatType.GotFocus += PopulateStatTypes;
+        }
+
+        private void PopulateStatTypes(object sender, EventArgs e)
+        {
+            var statTypes = Enum.GetNames(typeof(gamedataStatType));
+            ((ComboBox)sender).Items.AddRange(statTypes);
         }
 
         public void LoadStat(Handle<GameStatModifierData> stat, Func<bool> callback)
@@ -40,7 +51,7 @@ namespace CP2077SaveEditor
                 combinedRefObject.Text = data.RefObject.ToString();
                 combinedRefStatType.Text = data.RefStatType.ToString();
                 combinedStatType.Text = data.StatType.ToString();
-                combinedValue.Text = data.Value.ToString();
+                combinedValue.Text = data.Value.ToString();                
             }
             else if (stat.Value.GetType().Name == "GameConstantStatModifierData")
             {
@@ -66,7 +77,6 @@ namespace CP2077SaveEditor
             }
 
             this.ShowDialog();
-            this.Refresh();
         }
 
         private void applyCloseButton_Click(object sender, EventArgs e)
