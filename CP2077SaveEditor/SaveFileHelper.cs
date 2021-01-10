@@ -70,6 +70,7 @@ namespace CP2077SaveEditor
             var playerEquipAreas = equipSystem.OwnerData.Where(x => x.Value.OwnerID.Hash == 1).FirstOrDefault().Value.Equipment.EquipAreas;
 
             var equippedItems = new Dictionary<GameItemID, string>();
+            var weaponSlotNum = 1;
             foreach (GameSEquipArea area in playerEquipAreas)
             {
                 var areaName = area.AreaType.ToString();
@@ -79,6 +80,11 @@ namespace CP2077SaveEditor
                 {
                     foreach (GameSEquipSlot slot in area.EquipSlots)
                     {
+                        if (area.AreaType == gamedataEquipmentArea.Weapon)
+                        {
+                            areaName = "Weapon " + weaponSlotNum.ToString();
+                            weaponSlotNum++;
+                        }
                         if (slot.ItemID != null)
                         {
                             equippedItems.Add(slot.ItemID, areaName);
