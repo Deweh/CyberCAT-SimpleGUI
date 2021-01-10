@@ -49,6 +49,7 @@ namespace CP2077SaveEditor
             factsListView.ColumnClick += factsListView_ColumnClick;
             inventoryListView.DoubleClick += inventoryListView_DoubleClick;
             inventoryListView.ColumnClick += inventoryListView_ColumnClick;
+            inventoryListView.KeyDown += inventoryListView_KeyDown;
 
             inventoryColumnSorter = new ListViewColumnSorter();
             factsColumnSorter = new ListViewColumnSorter();
@@ -546,6 +547,27 @@ namespace CP2077SaveEditor
             }
 
             inventoryListView.Sort();
+        }
+
+        private void inventoryListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (inventoryListView.SelectedIndices.Count > 0 && e.KeyCode == Keys.Delete)
+            {
+                var activeItem = (ItemData) inventoryListView.SelectedItems[0].Tag;
+                var fullName = activeItem.Data.GetType().FullName;
+                if (fullName != null && fullName.EndsWith("SimpleItemData"))
+                {
+                    var name = activeItem.ItemGameName;
+                    if (name.Length < 1)
+                    {
+                        name = activeItem.ItemName;
+                    }
+                    
+                    ((ItemData.SimpleItemData) activeItem.Data).Quantity = 0;
+                    statusLabel.Text = "<" + name + "> quantity set to 0.";
+                    RefreshInventory();
+                }
+            }
         }
 
         private void factsListView_MouseUp(object sender, EventArgs e)
