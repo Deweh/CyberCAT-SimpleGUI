@@ -978,7 +978,7 @@ namespace CP2077SaveEditor
             this.perkPointsUpDown.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.perkPointsUpDown.Location = new System.Drawing.Point(44, 310);
             this.perkPointsUpDown.Maximum = new decimal(new int[] {
-            999,
+            99999999,
             0,
             0,
             0});
@@ -991,7 +991,7 @@ namespace CP2077SaveEditor
             this.attrPointsUpDown.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.attrPointsUpDown.Location = new System.Drawing.Point(44, 266);
             this.attrPointsUpDown.Maximum = new decimal(new int[] {
-            999,
+            99999999,
             0,
             0,
             0});
