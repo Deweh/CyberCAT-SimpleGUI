@@ -25,7 +25,6 @@ namespace CP2077SaveEditor
         private ListViewColumnSorter inventoryColumnSorter, factsColumnSorter;
 
         private Dictionary<string, string> itemClasses;
-        private ItemData activeItemEdit = null;
         private bool loadingSave = false;
 
         public Form1()
@@ -148,6 +147,12 @@ namespace CP2077SaveEditor
             containerGroupBox.Visible = true;
             containerGroupBox.Text = containerID;
             if (containerID == "Player Inventory") { containerID = "1"; }
+            ItemData activeItemEdit = null;
+
+            if (inventoryListView.SelectedItems.Count > 0)
+            {
+                activeItemEdit = (ItemData)inventoryListView.SelectedItems[0].Tag;
+            }
 
             ListViewItem selectItem = null;
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
@@ -240,12 +245,6 @@ namespace CP2077SaveEditor
             } else {
                 RefreshInventory("", -1);
             }
-            return true;
-        }
-
-        public bool ClearActiveItem()
-        {
-            activeItemEdit = null;
             return true;
         }
 
@@ -484,9 +483,8 @@ namespace CP2077SaveEditor
         {
             if (inventoryListView.SelectedIndices.Count > 0)
             {
-                activeItemEdit = (ItemData)inventoryListView.SelectedItems[0].Tag;
                 var activeDetails = new ItemDetails();
-                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, activeSaveFile, RefreshInventory, ClearActiveItem);
+                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, activeSaveFile, RefreshInventory);
             }
         }
 

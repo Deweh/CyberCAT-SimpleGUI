@@ -18,7 +18,6 @@ namespace CP2077SaveEditor
     public partial class ItemDetails : Form
     {
         private Func<bool> callbackFunc1;
-        private Func<bool> callbackFunc2;
         private ItemData activeItem;
         private DataType itemType;
         private SaveFileHelper activeSaveFile;
@@ -27,7 +26,6 @@ namespace CP2077SaveEditor
         public ItemDetails()
         {
             InitializeComponent();
-            this.FormClosing += ItemDetails_FormClosing;
 
             modsTreeView.NodeMouseDoubleClick += modsTreeView_DoubleClick;
             modsTreeView.KeyDown += modsTreeView_KeyDown;
@@ -40,11 +38,6 @@ namespace CP2077SaveEditor
         {
             SimpleItem,
             ModableItem
-        }
-
-        private void ItemDetails_FormClosing(object sender, EventArgs e)
-        {
-            callbackFunc2.Invoke();
         }
 
         private void IterativeBuildModTree(ItemData.ItemModData nodeData, TreeNode rootNode)
@@ -167,10 +160,9 @@ namespace CP2077SaveEditor
             return true;
         }
 
-        public void LoadItem(ItemData item, object _saveFile, Func<bool> callback1, Func<bool> callback2)
+        public void LoadItem(ItemData item, object _saveFile, Func<bool> callback1)
         {
             callbackFunc1 = callback1;
-            callbackFunc2 = callback2;
             activeItem = item;
             activeSaveFile = (SaveFileHelper)_saveFile;
             ReloadData();
@@ -181,7 +173,6 @@ namespace CP2077SaveEditor
         public void LoadStatsOnly(uint seed, object _saveFile, string name)
         {
             callbackFunc1 = delegate{ return true; };
-            callbackFunc2 = delegate{ return true; };
             var dummyItem = new ItemData();
             dummyItem.Header.Seed = seed;
             activeItem = dummyItem;
@@ -265,7 +256,6 @@ namespace CP2077SaveEditor
 
         private void closeButton_Click(object sender, EventArgs e)
         {
-            callbackFunc2.Invoke();
             this.Close();
         }
 
