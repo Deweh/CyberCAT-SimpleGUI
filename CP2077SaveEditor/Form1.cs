@@ -157,7 +157,7 @@ namespace CP2077SaveEditor
             ListViewItem selectItem = null;
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
-                var row = new string[] { item.ItemGameName, "Unknown", item.ItemName, "1", item.ItemGameDescription };
+                var row = new string[] { item.ItemGameName, "Unknown", item.ItemName, "", "1", item.ItemGameDescription };
 
                 if (item.ItemGameName.Length < 1)
                 {
@@ -166,7 +166,7 @@ namespace CP2077SaveEditor
 
                 if (item.Data.GetType().FullName.EndsWith("SimpleItemData") == true)
                 {
-                    row[3] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
+                    row[4] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
                 }
 
                 var id = item.ItemTdbId.ToString();
@@ -216,6 +216,19 @@ namespace CP2077SaveEditor
                 {
                     moneyUpDown.Value = ((ItemData.SimpleItemData)item.Data).Quantity;
                     moneyUpDown.Enabled = true;
+                }
+            }
+
+            foreach (KeyValuePair<CyberCAT.Core.Classes.DumpedClasses.GameItemID, string> equipInfo in activeSaveFile.GetEquippedItems().Reverse())
+            {
+                var equippedItem = listViewRows.Where(x => ((ItemData)x.Tag).ItemTdbId.Id == equipInfo.Key.Id.Id).FirstOrDefault();
+
+                if (equippedItem != null)
+                {
+                    equippedItem.SubItems[3].Text = equipInfo.Value;
+                    equippedItem.BackColor = Color.FromArgb(248, 248, 248);
+                    listViewRows.Remove(equippedItem);
+                    listViewRows.Insert(0, equippedItem);
                 }
             }
 

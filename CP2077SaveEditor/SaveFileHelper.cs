@@ -10,6 +10,7 @@ using CyberCAT.Core.Classes.DumpedClasses;
 using CyberCAT.Core.Classes.Interfaces;
 using CyberCAT.Core.Classes.Mapping;
 using CyberCAT.Core.Classes.NodeRepresentations;
+using CyberCAT.Core.DumpedEnums;
 using Newtonsoft.Json;
 
 namespace CP2077SaveEditor
@@ -61,6 +62,32 @@ namespace CP2077SaveEditor
         {
             var devSystem = (PlayerDevelopmentSystem)this.GetScriptableContainer().ClassList[Array.FindIndex(this.GetScriptableContainer().ClassList, x => x.GetType().Name == "PlayerDevelopmentSystem")];
             return devSystem.PlayerData[Array.FindIndex(devSystem.PlayerData, x => x.Value.OwnerID.Hash == 1)];
+        }
+
+        public Dictionary<GameItemID, string> GetEquippedItems()
+        {
+            var equipSystem = (EquipmentSystem)this.GetScriptableContainer().ClassList[Array.FindIndex(this.GetScriptableContainer().ClassList, x => x.GetType().Name == "EquipmentSystem")];
+            var playerEquipAreas = equipSystem.OwnerData.Where(x => x.Value.OwnerID.Hash == 1).FirstOrDefault().Value.Equipment.EquipAreas;
+
+            var equippedItems = new Dictionary<GameItemID, string>();
+            foreach (GameSEquipArea area in playerEquipAreas)
+            {
+                var areaName = area.AreaType.ToString();
+                if (area.AreaType == gamedataEquipmentArea.Weapon || area.AreaType == gamedataEquipmentArea.Head || area.AreaType == gamedataEquipmentArea.Face
+                    || area.AreaType == gamedataEquipmentArea.OuterChest || area.AreaType == gamedataEquipmentArea.Legs || area.AreaType == gamedataEquipmentArea.Feet
+                    || area.AreaType == gamedataEquipmentArea.QuickSlot || area.AreaType == gamedataEquipmentArea.Consumable || area.AreaType == gamedataEquipmentArea.Outfit)
+                {
+                    foreach (GameSEquipSlot slot in area.EquipSlots)
+                    {
+                        if (slot.ItemID != null)
+                        {
+                            equippedItems.Add(slot.ItemID, areaName);
+                        }
+                    }
+                }
+                
+            }
+            return equippedItems;
         }
 
         public GameStatsStateMapStructure GetStatsMap()
