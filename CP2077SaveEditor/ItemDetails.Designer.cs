@@ -37,24 +37,24 @@ namespace CP2077SaveEditor
             this.modsBaseIdBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.quickActionsGroupBox = new System.Windows.Forms.GroupBox();
+            this.pasteLegendaryIdButton = new CP2077SaveEditor.ModernButton();
             this.questItemCheckBox = new System.Windows.Forms.CheckBox();
             this.flagsGroupBox = new System.Windows.Forms.GroupBox();
             this.unknownFlag1CheckBox = new System.Windows.Forms.CheckBox();
             this.detailsTabControl = new System.Windows.Forms.TabControl();
             this.statsTab = new System.Windows.Forms.TabPage();
+            this.addCurveStatButton = new CP2077SaveEditor.ModernButton();
+            this.addCombinedStatButton = new CP2077SaveEditor.ModernButton();
             this.statsListView = new System.Windows.Forms.ListView();
             this.statTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statModifierHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.modInfoTab = new System.Windows.Forms.TabPage();
-            this.addCurveStatButton = new CP2077SaveEditor.ModernButton();
-            this.addCombinedStatButton = new CP2077SaveEditor.ModernButton();
             this.removeStatButton = new CP2077SaveEditor.ModernButton();
             this.addConstantStatButton = new CP2077SaveEditor.ModernButton();
+            this.modInfoTab = new System.Windows.Forms.TabPage();
             this.newModNodeButton = new CP2077SaveEditor.ModernButton();
             this.deleteModNodeButton = new CP2077SaveEditor.ModernButton();
-            this.pasteLegendaryIdButton = new CP2077SaveEditor.ModernButton();
             this.closeButton = new CP2077SaveEditor.ModernButton();
             this.applyButton = new CP2077SaveEditor.ModernButton();
             this.basicInfoGroupBox.SuspendLayout();
@@ -132,6 +132,22 @@ namespace CP2077SaveEditor
             this.quickActionsGroupBox.TabStop = false;
             this.quickActionsGroupBox.Text = "Quick Actions";
             // 
+            // pasteLegendaryIdButton
+            // 
+            this.pasteLegendaryIdButton.BackColor = System.Drawing.Color.White;
+            this.pasteLegendaryIdButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pasteLegendaryIdButton.ClickEffectEnabled = true;
+            this.pasteLegendaryIdButton.DefaultColor = System.Drawing.Color.White;
+            this.pasteLegendaryIdButton.HoverColor = System.Drawing.Color.LightGray;
+            this.pasteLegendaryIdButton.Location = new System.Drawing.Point(6, 21);
+            this.pasteLegendaryIdButton.Name = "pasteLegendaryIdButton";
+            this.pasteLegendaryIdButton.Size = new System.Drawing.Size(420, 24);
+            this.pasteLegendaryIdButton.TabIndex = 2;
+            this.pasteLegendaryIdButton.Text = "Make Legendary";
+            this.pasteLegendaryIdButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.pasteLegendaryIdButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pasteLegendaryIdButton.Click += new System.EventHandler(this.pasteLegendaryIdButton_Click);
+            // 
             // questItemCheckBox
             // 
             this.questItemCheckBox.AutoSize = true;
@@ -158,9 +174,9 @@ namespace CP2077SaveEditor
             this.unknownFlag1CheckBox.AutoSize = true;
             this.unknownFlag1CheckBox.Location = new System.Drawing.Point(73, 21);
             this.unknownFlag1CheckBox.Name = "unknownFlag1CheckBox";
-            this.unknownFlag1CheckBox.Size = new System.Drawing.Size(111, 17);
+            this.unknownFlag1CheckBox.Size = new System.Drawing.Size(133, 17);
             this.unknownFlag1CheckBox.TabIndex = 4;
-            this.unknownFlag1CheckBox.Text = "Unknown Flag 1";
+            this.unknownFlag1CheckBox.Text = "Is Not Unequippable";
             this.unknownFlag1CheckBox.UseVisualStyleBackColor = true;
             // 
             // detailsTabControl
@@ -187,6 +203,38 @@ namespace CP2077SaveEditor
             this.statsTab.TabIndex = 1;
             this.statsTab.Text = "Stats";
             this.statsTab.UseVisualStyleBackColor = true;
+            // 
+            // addCurveStatButton
+            // 
+            this.addCurveStatButton.BackColor = System.Drawing.Color.White;
+            this.addCurveStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.addCurveStatButton.ClickEffectEnabled = true;
+            this.addCurveStatButton.DefaultColor = System.Drawing.Color.White;
+            this.addCurveStatButton.HoverColor = System.Drawing.Color.LightGray;
+            this.addCurveStatButton.Location = new System.Drawing.Point(90, 10);
+            this.addCurveStatButton.Name = "addCurveStatButton";
+            this.addCurveStatButton.Size = new System.Drawing.Size(81, 20);
+            this.addCurveStatButton.TabIndex = 5;
+            this.addCurveStatButton.Text = "+ New Curve";
+            this.addCurveStatButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.addCurveStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addCurveStatButton.Click += new System.EventHandler(this.addCurveStatButton_Click);
+            // 
+            // addCombinedStatButton
+            // 
+            this.addCombinedStatButton.BackColor = System.Drawing.Color.White;
+            this.addCombinedStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.addCombinedStatButton.ClickEffectEnabled = true;
+            this.addCombinedStatButton.DefaultColor = System.Drawing.Color.White;
+            this.addCombinedStatButton.HoverColor = System.Drawing.Color.LightGray;
+            this.addCombinedStatButton.Location = new System.Drawing.Point(177, 10);
+            this.addCombinedStatButton.Name = "addCombinedStatButton";
+            this.addCombinedStatButton.Size = new System.Drawing.Size(107, 20);
+            this.addCombinedStatButton.TabIndex = 4;
+            this.addCombinedStatButton.Text = "+ New Combined";
+            this.addCombinedStatButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.addCombinedStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addCombinedStatButton.Click += new System.EventHandler(this.addCombinedStatButton_Click);
             // 
             // statsListView
             // 
@@ -227,53 +275,6 @@ namespace CP2077SaveEditor
             // 
             this.statValueHeader.Text = "Value";
             // 
-            // modInfoTab
-            // 
-            this.modInfoTab.Controls.Add(this.newModNodeButton);
-            this.modInfoTab.Controls.Add(this.deleteModNodeButton);
-            this.modInfoTab.Controls.Add(this.modsTreeView);
-            this.modInfoTab.Controls.Add(this.label2);
-            this.modInfoTab.Controls.Add(this.modsBaseIdBox);
-            this.modInfoTab.Location = new System.Drawing.Point(4, 22);
-            this.modInfoTab.Name = "modInfoTab";
-            this.modInfoTab.Padding = new System.Windows.Forms.Padding(3);
-            this.modInfoTab.Size = new System.Drawing.Size(424, 330);
-            this.modInfoTab.TabIndex = 0;
-            this.modInfoTab.Text = "Mods/Special";
-            this.modInfoTab.UseVisualStyleBackColor = true;
-            // 
-            // addCurveStatButton
-            // 
-            this.addCurveStatButton.BackColor = System.Drawing.Color.White;
-            this.addCurveStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.addCurveStatButton.ClickEffectEnabled = true;
-            this.addCurveStatButton.DefaultColor = System.Drawing.Color.White;
-            this.addCurveStatButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addCurveStatButton.Location = new System.Drawing.Point(90, 10);
-            this.addCurveStatButton.Name = "addCurveStatButton";
-            this.addCurveStatButton.Size = new System.Drawing.Size(81, 20);
-            this.addCurveStatButton.TabIndex = 5;
-            this.addCurveStatButton.Text = "+ New Curve";
-            this.addCurveStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.addCurveStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.addCurveStatButton.Click += new System.EventHandler(this.addCurveStatButton_Click);
-            // 
-            // addCombinedStatButton
-            // 
-            this.addCombinedStatButton.BackColor = System.Drawing.Color.White;
-            this.addCombinedStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.addCombinedStatButton.ClickEffectEnabled = true;
-            this.addCombinedStatButton.DefaultColor = System.Drawing.Color.White;
-            this.addCombinedStatButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addCombinedStatButton.Location = new System.Drawing.Point(177, 10);
-            this.addCombinedStatButton.Name = "addCombinedStatButton";
-            this.addCombinedStatButton.Size = new System.Drawing.Size(107, 20);
-            this.addCombinedStatButton.TabIndex = 4;
-            this.addCombinedStatButton.Text = "+ New Combined";
-            this.addCombinedStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.addCombinedStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.addCombinedStatButton.Click += new System.EventHandler(this.addCombinedStatButton_Click);
-            // 
             // removeStatButton
             // 
             this.removeStatButton.BackColor = System.Drawing.Color.White;
@@ -306,6 +307,21 @@ namespace CP2077SaveEditor
             this.addConstantStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.addConstantStatButton.Click += new System.EventHandler(this.addConstantStatButton_Click);
             // 
+            // modInfoTab
+            // 
+            this.modInfoTab.Controls.Add(this.newModNodeButton);
+            this.modInfoTab.Controls.Add(this.deleteModNodeButton);
+            this.modInfoTab.Controls.Add(this.modsTreeView);
+            this.modInfoTab.Controls.Add(this.label2);
+            this.modInfoTab.Controls.Add(this.modsBaseIdBox);
+            this.modInfoTab.Location = new System.Drawing.Point(4, 22);
+            this.modInfoTab.Name = "modInfoTab";
+            this.modInfoTab.Padding = new System.Windows.Forms.Padding(3);
+            this.modInfoTab.Size = new System.Drawing.Size(424, 330);
+            this.modInfoTab.TabIndex = 0;
+            this.modInfoTab.Text = "Mods/Special";
+            this.modInfoTab.UseVisualStyleBackColor = true;
+            // 
             // newModNodeButton
             // 
             this.newModNodeButton.BackColor = System.Drawing.Color.White;
@@ -337,22 +353,6 @@ namespace CP2077SaveEditor
             this.deleteModNodeButton.TextColor = System.Drawing.SystemColors.ControlText;
             this.deleteModNodeButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.deleteModNodeButton.Click += new System.EventHandler(this.deleteModNodeButton_Click);
-            // 
-            // pasteLegendaryIdButton
-            // 
-            this.pasteLegendaryIdButton.BackColor = System.Drawing.Color.White;
-            this.pasteLegendaryIdButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pasteLegendaryIdButton.ClickEffectEnabled = true;
-            this.pasteLegendaryIdButton.DefaultColor = System.Drawing.Color.White;
-            this.pasteLegendaryIdButton.HoverColor = System.Drawing.Color.LightGray;
-            this.pasteLegendaryIdButton.Location = new System.Drawing.Point(6, 21);
-            this.pasteLegendaryIdButton.Name = "pasteLegendaryIdButton";
-            this.pasteLegendaryIdButton.Size = new System.Drawing.Size(420, 24);
-            this.pasteLegendaryIdButton.TabIndex = 2;
-            this.pasteLegendaryIdButton.Text = "Make Legendary";
-            this.pasteLegendaryIdButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.pasteLegendaryIdButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pasteLegendaryIdButton.Click += new System.EventHandler(this.pasteLegendaryIdButton_Click);
             // 
             // closeButton
             // 

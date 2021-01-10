@@ -99,6 +99,7 @@ namespace CP2077SaveEditor
             // 
             // applyCloseButton
             // 
+            this.applyCloseButton.BackColor = System.Drawing.Color.White;
             this.applyCloseButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.applyCloseButton.ClickEffectEnabled = true;
             this.applyCloseButton.DefaultColor = System.Drawing.Color.White;
@@ -154,11 +155,11 @@ namespace CP2077SaveEditor
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 180);
+            this.label8.Location = new System.Drawing.Point(20, 180);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(113, 13);
+            this.label8.Size = new System.Drawing.Size(105, 13);
             this.label8.TabIndex = 16;
-            this.label8.Text = "Unknown 3 (UInt32):";
+            this.label8.Text = "Unknown 3 (Float):";
             // 
             // label3
             // 
