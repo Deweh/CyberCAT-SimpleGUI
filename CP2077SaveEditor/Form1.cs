@@ -159,7 +159,7 @@ namespace CP2077SaveEditor
             ListViewItem selectItem = null;
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
-                var row = new string[] { item.ItemGameName, "Unknown", item.ItemName, "", "1", item.ItemGameDescription };
+                var row = new string[] { item.ItemGameName, "", item.ItemName, "", "1", item.ItemGameDescription };
 
                 if (item.ItemGameName.Length < 1)
                 {
@@ -169,12 +169,17 @@ namespace CP2077SaveEditor
                 if (item.Data.GetType().FullName.EndsWith("SimpleItemData") == true)
                 {
                     row[4] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
+                    row[1] = "[S] ";
+                } else {
+                    row[1] = "[M] ";
                 }
 
                 var id = item.ItemTdbId.ToString();
                 if (itemClasses.ContainsKey(id))
                 {
-                    row[1] = itemClasses[id];
+                    row[1] += itemClasses[id];
+                } else {
+                    row[1] += "Unknown";
                 }
 
                 if (search != "")
