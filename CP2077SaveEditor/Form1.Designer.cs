@@ -115,6 +115,7 @@ namespace CP2077SaveEditor
             this.streetCredUpDown = new System.Windows.Forms.NumericUpDown();
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.inventorySlotHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -948,7 +949,7 @@ namespace CP2077SaveEditor
             this.openSaveButton.HoverColor = System.Drawing.Color.LightGray;
             this.openSaveButton.Location = new System.Drawing.Point(12, 12);
             this.openSaveButton.Name = "openSaveButton";
-            this.openSaveButton.Size = new System.Drawing.Size(143, 70);
+            this.openSaveButton.Size = new System.Drawing.Size(143, 55);
             this.openSaveButton.TabIndex = 0;
             this.openSaveButton.Text = "Load Save";
             this.openSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
@@ -1194,12 +1195,29 @@ namespace CP2077SaveEditor
             this.inventorySlotHeader.Text = "Slot";
             this.inventorySlotHeader.Width = 94;
             // 
+            // swapSaveType
+            // 
+            this.swapSaveType.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.swapSaveType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.swapSaveType.ClickEffectEnabled = true;
+            this.swapSaveType.DefaultColor = System.Drawing.Color.WhiteSmoke;
+            this.swapSaveType.HoverColor = System.Drawing.Color.LightGray;
+            this.swapSaveType.Location = new System.Drawing.Point(12, 66);
+            this.swapSaveType.Name = "swapSaveType";
+            this.swapSaveType.Size = new System.Drawing.Size(143, 15);
+            this.swapSaveType.TabIndex = 1;
+            this.swapSaveType.Text = "Save Type: PC";
+            this.swapSaveType.TextColor = System.Drawing.SystemColors.ControlText;
+            this.swapSaveType.TextFont = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.swapSaveType.Click += new System.EventHandler(this.swapSaveType_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(2757, 1179);
+            this.Controls.Add(this.swapSaveType);
             this.Controls.Add(this.statsPanel);
             this.Controls.Add(this.factsPanel);
             this.Controls.Add(this.inventoryPanel);
@@ -1336,6 +1354,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.NumericUpDown perkPointsUpDown;
         private System.Windows.Forms.NumericUpDown attrPointsUpDown;
         private System.Windows.Forms.ColumnHeader inventorySlotHeader;
+        private ModernButton swapSaveType;
     }
 }
 

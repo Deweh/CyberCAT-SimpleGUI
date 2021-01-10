@@ -27,6 +27,8 @@ namespace CP2077SaveEditor
         private Dictionary<string, string> itemClasses;
         private bool loadingSave = false;
 
+        private int saveType = 0;
+
         public Form1()
         {
             InitializeComponent();
@@ -313,7 +315,13 @@ namespace CP2077SaveEditor
                 });
 
                 var newSave = new SaveFileHelper(parsers);
-                newSave.LoadPCSaveFile(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                if (saveType == 0)
+                {
+                    newSave.LoadPCSaveFile(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                } else {
+                    newSave.LoadPS4SaveFile(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                }
+                
                 activeSaveFile = newSave;
 
                 //Appearance parsing
@@ -397,7 +405,14 @@ namespace CP2077SaveEditor
                 {
                     File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
                 }
-                var saveBytes = activeSaveFile.SaveToPCSaveFile();
+                byte[] saveBytes;
+                if (saveType == 0)
+                {
+                    saveBytes = activeSaveFile.SaveToPCSaveFile();
+                } else {
+                    saveBytes = activeSaveFile.SaveToPS4SaveFile();
+                }
+                
 
                 var parsers = new List<INodeParser>();
                 parsers.AddRange(new INodeParser[] {
@@ -409,7 +424,12 @@ namespace CP2077SaveEditor
                 var testFile = new SaveFileHelper(parsers);
                 try
                 {
-                    testFile.LoadPCSaveFile(new MemoryStream(saveBytes));
+                    if (saveType == 0)
+                    {
+                        testFile.LoadPCSaveFile(new MemoryStream(saveBytes));
+                    } else {
+                        testFile.LoadPS4SaveFile(new MemoryStream(saveBytes));
+                    }
                 } catch(Exception ex) {
                     File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
                     MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
@@ -684,6 +704,18 @@ namespace CP2077SaveEditor
                 }
             }
             MessageBox.Show("All item flags cleared.");
+        }
+
+        private void swapSaveType_Click(object sender, EventArgs e)
+        {
+            if (saveType == 0)
+            {
+                saveType = 1;
+                swapSaveType.Text = "Save Type: PS4";
+            } else {
+                saveType = 0;
+                swapSaveType.Text = "Save Type: PC";
+            }
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)
