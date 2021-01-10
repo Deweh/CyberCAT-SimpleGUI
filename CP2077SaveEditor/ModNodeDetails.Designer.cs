@@ -45,6 +45,8 @@ namespace CP2077SaveEditor
             this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.resolvedItemLabel = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // label1
@@ -104,7 +106,7 @@ namespace CP2077SaveEditor
             this.applyCloseButton.ClickEffectEnabled = true;
             this.applyCloseButton.DefaultColor = System.Drawing.Color.White;
             this.applyCloseButton.HoverColor = System.Drawing.Color.LightGray;
-            this.applyCloseButton.Location = new System.Drawing.Point(12, 213);
+            this.applyCloseButton.Location = new System.Drawing.Point(12, 244);
             this.applyCloseButton.Name = "applyCloseButton";
             this.applyCloseButton.Size = new System.Drawing.Size(359, 25);
             this.applyCloseButton.TabIndex = 9;
@@ -179,12 +181,34 @@ namespace CP2077SaveEditor
             this.label5.TabIndex = 20;
             this.label5.Text = "Mod ID:";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(90, 210);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(35, 13);
+            this.label7.TabIndex = 21;
+            this.label7.Text = "Stats:";
+            // 
+            // resolvedItemLabel
+            // 
+            this.resolvedItemLabel.AutoSize = true;
+            this.resolvedItemLabel.Location = new System.Drawing.Point(131, 210);
+            this.resolvedItemLabel.Name = "resolvedItemLabel";
+            this.resolvedItemLabel.Size = new System.Drawing.Size(35, 13);
+            this.resolvedItemLabel.TabIndex = 22;
+            this.resolvedItemLabel.TabStop = true;
+            this.resolvedItemLabel.Text = "None";
+            this.resolvedItemLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.resolvedItemLabel_LinkClicked);
+            // 
             // ModNodeDetails
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(383, 250);
+            this.ClientSize = new System.Drawing.Size(383, 281);
+            this.Controls.Add(this.resolvedItemLabel);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.unknown3Box);
@@ -229,5 +253,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.LinkLabel resolvedItemLabel;
     }
 }

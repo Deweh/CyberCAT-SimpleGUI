@@ -16,6 +16,7 @@ namespace CP2077SaveEditor
     {
         private ItemData.ItemModData activeNode;
         private Func<bool> callbackFunc;
+        private SaveFileHelper activeSaveFile;
 
         public ModNodeDetails()
         {
@@ -27,18 +28,37 @@ namespace CP2077SaveEditor
 
         }
 
-        public void LoadNode(ItemData.ItemModData node, Func<bool> callback)
+        public void LoadNode(ItemData.ItemModData node, Func<bool> callback, object saveFileObj)
         {
             activeNode = node;
             callbackFunc = callback;
+            activeSaveFile = (SaveFileHelper)saveFileObj;
 
             attachmentNameLabel.Text = node.AttachmentSlotName;
             attachmentIdBox.Text = node.AttachmentSlotTdbId.Raw64.ToString();
-            item1NameLabel.Text = node.ItemName;
+
+            if (node.ItemGameName.Length > 0)
+            {
+                item1NameLabel.Text = node.ItemGameName;
+            }
+            else
+            {
+                item1NameLabel.Text = node.ItemName;
+            }
+            
             item1IdBox.Text = node.ItemTdbId.Raw64.ToString();
             unknown1Box.Text = node.Unknown2.ToString();
             unknown2Box.Text = node.Unknown3.ToString();
             unknown3Box.Text = node.Unknown4.ToString();
+
+            var resolvedStats = activeSaveFile.GetStatsFromSeed(node.Header.Seed);
+
+            if (resolvedStats != null)
+            {
+                resolvedItemLabel.Text = "View Details";
+            } else {
+                resolvedItemLabel.Enabled = false;
+            }
 
             this.Text = node.AttachmentSlotName + " :: " + node.ItemName;
             this.ShowDialog();
@@ -66,6 +86,20 @@ namespace CP2077SaveEditor
 
             callbackFunc.Invoke();
             this.Close();
+        }
+
+        private void resolvedItemLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var details = new ItemDetails();
+            if (activeNode.ItemGameName.Length > 0)
+            {
+                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemGameName);
+            }
+            else
+            {
+                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, "Unknown");
+            }
+            
         }
     }
 }

@@ -22,6 +22,7 @@ namespace CP2077SaveEditor
         private ItemData activeItem;
         private DataType itemType;
         private SaveFileHelper activeSaveFile;
+        private bool statsOnly = false;
 
         public ItemDetails()
         {
@@ -78,42 +79,45 @@ namespace CP2077SaveEditor
 
         public bool ReloadData()
         {
-            if (activeItem.Data.GetType().FullName.EndsWith("SimpleItemData"))
+            if (!statsOnly)
             {
-                //SimpleItemData parsing
-                itemType = DataType.SimpleItem;
-                this.Text = activeItem.ItemName + " (Simple Item)";
-
-                basicInfoGroupBox.Enabled = true;
-                quickActionsGroupBox.Enabled = false;
-
-                if (detailsTabControl.TabPages.Contains(modInfoTab))
+                if (activeItem.Data.GetType().FullName.EndsWith("SimpleItemData"))
                 {
-                    detailsTabControl.TabPages.Remove(modInfoTab);
+                    //SimpleItemData parsing
+                    itemType = DataType.SimpleItem;
+                    this.Text = activeItem.ItemName + " (Simple Item)";
+
+                    basicInfoGroupBox.Enabled = true;
+                    quickActionsGroupBox.Enabled = false;
+
+                    if (detailsTabControl.TabPages.Contains(modInfoTab))
+                    {
+                        detailsTabControl.TabPages.Remove(modInfoTab);
+                    }
+
+                    var data = (ItemData.SimpleItemData)activeItem.Data;
+                    quantityUpDown.Value = data.Quantity;
                 }
+                else
+                {
+                    //ModableItemData parsing
+                    itemType = DataType.ModableItem;
+                    this.Text = activeItem.ItemName + " (Modable Item)";
 
-                var data = (ItemData.SimpleItemData)activeItem.Data;
-                quantityUpDown.Value = data.Quantity;
-            }
-            else
-            {
-                //ModableItemData parsing
-                itemType = DataType.ModableItem;
-                this.Text = activeItem.ItemName + " (Modable Item)";
+                    basicInfoGroupBox.Enabled = false;
+                    quickActionsGroupBox.Enabled = true;
 
-                basicInfoGroupBox.Enabled = false;
-                quickActionsGroupBox.Enabled = true;
+                    var data = (ItemData.ModableItemData)activeItem.Data;
+                    quantityUpDown.Value = 1;
+                    modsBaseIdBox.Text = data.TdbId1.Raw64.ToString();
 
-                var data = (ItemData.ModableItemData)activeItem.Data;
-                quantityUpDown.Value = 1;
-                modsBaseIdBox.Text = data.TdbId1.Raw64.ToString();
+                    modsTreeView.Nodes.Clear();
 
-                modsTreeView.Nodes.Clear();
+                    var rootNode = modsTreeView.Nodes.Add(data.RootNode.AttachmentSlotName, data.RootNode.AttachmentSlotName + " :: " + data.RootNode.ItemName + " [" + data.RootNode.ChildrenCount.ToString() + "]");
+                    rootNode.Tag = data.RootNode;
 
-                var rootNode = modsTreeView.Nodes.Add(data.RootNode.AttachmentSlotName, data.RootNode.AttachmentSlotName + " :: " + data.RootNode.ItemName + " [" + data.RootNode.ChildrenCount.ToString() + "]");
-                rootNode.Tag = data.RootNode;
-
-                IterativeBuildModTree(data.RootNode, rootNode);
+                    IterativeBuildModTree(data.RootNode, rootNode);
+                }
             }
 
             //Stats parsing
@@ -154,9 +158,12 @@ namespace CP2077SaveEditor
                 statsListView.Items.AddRange(listRows.ToArray());
                 statsListView.EndUpdate();
             }
-            
-            unknownFlag1CheckBox.Checked = activeItem.Flags.IsNotUnequippable;
-            questItemCheckBox.Checked = activeItem.Flags.IsQuestItem;
+
+            if (!statsOnly)
+            {
+                unknownFlag1CheckBox.Checked = activeItem.Flags.IsNotUnequippable;
+                questItemCheckBox.Checked = activeItem.Flags.IsQuestItem;
+            }
             return true;
         }
 
@@ -166,6 +173,26 @@ namespace CP2077SaveEditor
             callbackFunc2 = callback2;
             activeItem = item;
             activeSaveFile = (SaveFileHelper)_saveFile;
+            ReloadData();
+
+            this.ShowDialog();
+        }
+
+        public void LoadStatsOnly(uint seed, object _saveFile, string name)
+        {
+            callbackFunc1 = delegate{ return true; };
+            callbackFunc2 = delegate{ return true; };
+            var dummyItem = new ItemData();
+            dummyItem.Header.Seed = seed;
+            activeItem = dummyItem;
+            activeSaveFile = (SaveFileHelper)_saveFile;
+            this.Text = name;
+
+            basicInfoGroupBox.Enabled = false;
+            flagsGroupBox.Enabled = false;
+            detailsTabControl.TabPages.Remove(modInfoTab);
+
+            statsOnly = true;
             ReloadData();
 
             this.ShowDialog();
@@ -211,24 +238,29 @@ namespace CP2077SaveEditor
 
         private void applyButton_Click(object sender, EventArgs e)
         {
-            if (itemType == DataType.SimpleItem)
+            if (!statsOnly)
             {
-                ((ItemData.SimpleItemData)activeItem.Data).Quantity = (uint)quantityUpDown.Value;
-            } else {
-                try
+                if (itemType == DataType.SimpleItem)
                 {
-                    ulong.Parse(modsBaseIdBox.Text);
+                    ((ItemData.SimpleItemData)activeItem.Data).Quantity = (uint)quantityUpDown.Value;
                 }
-                catch (Exception)
+                else
                 {
-                    MessageBox.Show("ID must be a 64-bit unsigned integer.");
-                    return;
+                    try
+                    {
+                        ulong.Parse(modsBaseIdBox.Text);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("ID must be a 64-bit unsigned integer.");
+                        return;
+                    }
+                  ((ItemData.ModableItemData)activeItem.Data).TdbId1.Raw64 = ulong.Parse(modsBaseIdBox.Text);
                 }
-                ((ItemData.ModableItemData)activeItem.Data).TdbId1.Raw64 = ulong.Parse(modsBaseIdBox.Text);
+                activeItem.Flags.IsNotUnequippable = unknownFlag1CheckBox.Checked;
+                activeItem.Flags.IsQuestItem = questItemCheckBox.Checked;
+                callbackFunc1.Invoke();
             }
-            activeItem.Flags.IsNotUnequippable = unknownFlag1CheckBox.Checked;
-            activeItem.Flags.IsQuestItem = questItemCheckBox.Checked;
-            callbackFunc1.Invoke();
         }
 
         private void closeButton_Click(object sender, EventArgs e)
@@ -240,7 +272,7 @@ namespace CP2077SaveEditor
         private void modsTreeView_DoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             var nodeDetails = new ModNodeDetails();
-            nodeDetails.LoadNode(((ItemData.ItemModData)e.Node.Tag), ReloadData);
+            nodeDetails.LoadNode(((ItemData.ItemModData)e.Node.Tag), ReloadData, activeSaveFile);
         }
 
         private void statsListView_DoubleClick(object sender, EventArgs e)
@@ -400,7 +432,7 @@ namespace CP2077SaveEditor
                 ((ItemData.ItemModData)modsTreeView.SelectedNode.Tag).Children.Add(newNode);
                 ReloadData();
                 var nodeDialog = new ModNodeDetails();
-                nodeDialog.LoadNode(newNode, ReloadData);
+                nodeDialog.LoadNode(newNode, ReloadData, activeSaveFile);
             }
         }
     }
