@@ -70,7 +70,7 @@ namespace CP2077SaveEditor
 
         public GameSavedStatsData GetItemStatData(ItemData item)
         {
-            var i = Array.FindIndex(this.GetStatsMap().Values, x => x.Seed == item.Header.ItemId);
+            var i = Array.FindIndex(this.GetStatsMap().Values, x => x.Seed == item.Header.Seed);
             if (i > -1)
             {
                 return this.GetStatsMap().Values[i];

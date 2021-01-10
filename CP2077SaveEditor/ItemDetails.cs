@@ -155,7 +155,7 @@ namespace CP2077SaveEditor
                 statsListView.EndUpdate();
             }
             
-            unknownFlag1CheckBox.Checked = activeItem.Flags.Unknown2;
+            unknownFlag1CheckBox.Checked = activeItem.Flags.IsNotUnequippable;
             questItemCheckBox.Checked = activeItem.Flags.IsQuestItem;
             return true;
         }
@@ -226,7 +226,7 @@ namespace CP2077SaveEditor
                 }
                 ((ItemData.ModableItemData)activeItem.Data).TdbId1.Raw64 = ulong.Parse(modsBaseIdBox.Text);
             }
-            activeItem.Flags.Unknown2 = unknownFlag1CheckBox.Checked;
+            activeItem.Flags.IsNotUnequippable = unknownFlag1CheckBox.Checked;
             activeItem.Flags.IsQuestItem = questItemCheckBox.Checked;
             callbackFunc1.Invoke();
         }
