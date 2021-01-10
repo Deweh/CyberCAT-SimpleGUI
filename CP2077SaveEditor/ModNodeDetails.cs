@@ -52,7 +52,7 @@ namespace CP2077SaveEditor
                 ulong.Parse(item1IdBox.Text);
                 uint.Parse(unknown1Box.Text);
                 uint.Parse(unknown2Box.Text);
-                uint.Parse(unknown3Box.Text);
+                float.Parse(unknown3Box.Text);
             } catch(Exception) {
                 MessageBox.Show("Invalid value.");
                 return;
@@ -62,7 +62,7 @@ namespace CP2077SaveEditor
             activeNode.ItemTdbId.Raw64 = ulong.Parse(item1IdBox.Text);
             activeNode.Unknown2 = uint.Parse(unknown1Box.Text);
             activeNode.Unknown3 = uint.Parse(unknown2Box.Text);
-            activeNode.Unknown4 = uint.Parse(unknown3Box.Text);
+            activeNode.Unknown4 = float.Parse(unknown3Box.Text);
 
             callbackFunc.Invoke();
             this.Close();
