@@ -167,10 +167,15 @@ namespace CP2077SaveEditor
                     row[0] = "Unknown";
                 }
 
-                if (item.Data.GetType().FullName.EndsWith("SimpleItemData") == true)
+                if (item.Data.GetType() == typeof(ItemData.SimpleItemData))
                 {
                     row[4] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
                     row[1] = "[S] ";
+                }
+                else if(item.Data.GetType() == typeof(ItemData.ModableItemWithQuantityData))
+                {
+                    row[4] = ((ItemData.ModableItemWithQuantityData)item.Data).Quantity.ToString();
+                    row[1] = "[M+] ";
                 } else {
                     row[1] = "[M] ";
                 }
@@ -558,6 +563,12 @@ namespace CP2077SaveEditor
 
                 var activeItem = (ItemData)inventoryListView.SelectedItems[0].Tag;
                 activeSaveFile.GetInventory(ulong.Parse(containerID)).Items.Remove(activeItem);
+
+                if (((ItemData)inventoryListView.SelectedItems[0].Tag).ItemGameName == "Eddies" && containerID == "1")
+                {
+                    moneyUpDown.Enabled = false;
+                    moneyUpDown.Value = 0;
+                }
 
                 inventoryListView.Items.Remove(inventoryListView.SelectedItems[0]);
                 statusLabel.Text = "'" + (string.IsNullOrEmpty(activeItem.ItemGameName) ? activeItem.ItemName : activeItem.ItemGameName) + "' deleted.";

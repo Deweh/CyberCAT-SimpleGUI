@@ -19,7 +19,6 @@ namespace CP2077SaveEditor
     {
         private Func<bool> callbackFunc1;
         private ItemData activeItem;
-        private DataType itemType;
         private SaveFileHelper activeSaveFile;
         private bool statsOnly = false;
 
@@ -32,12 +31,6 @@ namespace CP2077SaveEditor
 
             statsListView.DoubleClick += statsListView_DoubleClick;
             statsListView.KeyDown += statsListView_KeyDown;
-        }
-
-        enum DataType
-        {
-            SimpleItem,
-            ModableItem
         }
 
         private void IterativeBuildModTree(ItemData.ItemModData nodeData, TreeNode rootNode)
@@ -77,7 +70,6 @@ namespace CP2077SaveEditor
                 if (activeItem.Data.GetType().FullName.EndsWith("SimpleItemData"))
                 {
                     //SimpleItemData parsing
-                    itemType = DataType.SimpleItem;
                     this.Text = activeItem.ItemName + " (Simple Item)";
 
                     basicInfoGroupBox.Enabled = true;
@@ -94,7 +86,6 @@ namespace CP2077SaveEditor
                 else
                 {
                     //ModableItemData parsing
-                    itemType = DataType.ModableItem;
                     this.Text = activeItem.ItemName + " (Modable Item)";
 
                     basicInfoGroupBox.Enabled = false;
@@ -110,6 +101,11 @@ namespace CP2077SaveEditor
                     rootNode.Tag = data.RootNode;
 
                     IterativeBuildModTree(data.RootNode, rootNode);
+                }
+                if (activeItem.Data.GetType() == typeof(ItemData.ModableItemWithQuantityData))
+                {
+                    basicInfoGroupBox.Enabled = true;
+                    quantityUpDown.Value = ((ItemData.ModableItemWithQuantityData)activeItem.Data).Quantity;
                 }
             }
 
@@ -231,7 +227,7 @@ namespace CP2077SaveEditor
         {
             if (!statsOnly)
             {
-                if (itemType == DataType.SimpleItem)
+                if (activeItem.Data.GetType() == typeof(ItemData.SimpleItemData))
                 {
                     ((ItemData.SimpleItemData)activeItem.Data).Quantity = (uint)quantityUpDown.Value;
                 }
@@ -246,7 +242,14 @@ namespace CP2077SaveEditor
                         MessageBox.Show("ID must be a 64-bit unsigned integer.");
                         return;
                     }
-                  ((ItemData.ModableItemData)activeItem.Data).TdbId1.Raw64 = ulong.Parse(modsBaseIdBox.Text);
+                    if (activeItem.Data.GetType() == typeof(ItemData.ModableItemData))
+                    {
+                        ((ItemData.ModableItemData)activeItem.Data).TdbId1.Raw64 = ulong.Parse(modsBaseIdBox.Text);
+                    } else {
+                        ((ItemData.ModableItemWithQuantityData)activeItem.Data).TdbId1.Raw64 = ulong.Parse(modsBaseIdBox.Text);
+                        ((ItemData.ModableItemWithQuantityData)activeItem.Data).Quantity = (uint)quantityUpDown.Value;
+                    }
+                  
                 }
                 activeItem.Flags.IsNotUnequippable = unknownFlag1CheckBox.Checked;
                 activeItem.Flags.IsQuestItem = questItemCheckBox.Checked;
