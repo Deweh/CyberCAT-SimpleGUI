@@ -25,8 +25,9 @@ namespace CP2077SaveEditor
         private ListViewColumnSorter inventoryColumnSorter, factsColumnSorter;
 
         private Dictionary<string, string> itemClasses;
-        private ItemData activeItemEdit = null;
         private bool loadingSave = false;
+
+        private int saveType = 0;
 
         public Form1()
         {
@@ -48,6 +49,7 @@ namespace CP2077SaveEditor
             factsListView.ColumnClick += factsListView_ColumnClick;
             inventoryListView.DoubleClick += inventoryListView_DoubleClick;
             inventoryListView.ColumnClick += inventoryListView_ColumnClick;
+            inventoryListView.KeyDown += inventoryListView_KeyDown;
 
             inventoryColumnSorter = new ListViewColumnSorter();
             factsColumnSorter = new ListViewColumnSorter();
@@ -148,11 +150,17 @@ namespace CP2077SaveEditor
             containerGroupBox.Visible = true;
             containerGroupBox.Text = containerID;
             if (containerID == "Player Inventory") { containerID = "1"; }
+            ItemData activeItemEdit = null;
+
+            if (inventoryListView.SelectedItems.Count > 0)
+            {
+                activeItemEdit = (ItemData)inventoryListView.SelectedItems[0].Tag;
+            }
 
             ListViewItem selectItem = null;
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
-                var row = new string[] { item.ItemGameName, "Unknown", item.ItemName, "1", item.ItemGameDescription };
+                var row = new string[] { item.ItemGameName, "", item.ItemName, "", "1", item.ItemGameDescription };
 
                 if (item.ItemGameName.Length < 1)
                 {
@@ -161,13 +169,18 @@ namespace CP2077SaveEditor
 
                 if (item.Data.GetType().FullName.EndsWith("SimpleItemData") == true)
                 {
-                    row[3] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
+                    row[4] = ((ItemData.SimpleItemData)item.Data).Quantity.ToString();
+                    row[1] = "[S] ";
+                } else {
+                    row[1] = "[M] ";
                 }
 
                 var id = item.ItemTdbId.ToString();
                 if (itemClasses.ContainsKey(id))
                 {
-                    row[1] = itemClasses[id];
+                    row[1] += itemClasses[id];
+                } else {
+                    row[1] += "Unknown";
                 }
 
                 if (search != "")
@@ -214,6 +227,19 @@ namespace CP2077SaveEditor
                 }
             }
 
+            foreach (KeyValuePair<CyberCAT.Core.Classes.DumpedClasses.GameItemID, string> equipInfo in activeSaveFile.GetEquippedItems().Reverse())
+            {
+                var equippedItem = listViewRows.Where(x => ((ItemData)x.Tag).ItemTdbId.Id == equipInfo.Key.Id.Id).FirstOrDefault();
+
+                if (equippedItem != null)
+                {
+                    equippedItem.SubItems[3].Text = equipInfo.Value;
+                    equippedItem.BackColor = Color.FromArgb(248, 248, 248);
+                    listViewRows.Remove(equippedItem);
+                    listViewRows.Insert(0, equippedItem);
+                }
+            }
+
             inventoryListView.BeginUpdate();
             inventoryListView.ListViewItemSorter = null;
 
@@ -240,12 +266,6 @@ namespace CP2077SaveEditor
             } else {
                 RefreshInventory("", -1);
             }
-            return true;
-        }
-
-        public bool ClearActiveItem()
-        {
-            activeItemEdit = null;
             return true;
         }
 
@@ -301,7 +321,13 @@ namespace CP2077SaveEditor
                 });
 
                 var newSave = new SaveFileHelper(parsers);
-                newSave.LoadPCSaveFile(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                if (saveType == 0)
+                {
+                    newSave.LoadPCSaveFile(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                } else {
+                    newSave.LoadPS4SaveFile(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                }
+                
                 activeSaveFile = newSave;
 
                 //Appearance parsing
@@ -385,7 +411,14 @@ namespace CP2077SaveEditor
                 {
                     File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
                 }
-                var saveBytes = activeSaveFile.SaveToPCSaveFile();
+                byte[] saveBytes;
+                if (saveType == 0)
+                {
+                    saveBytes = activeSaveFile.SaveToPCSaveFile();
+                } else {
+                    saveBytes = activeSaveFile.SaveToPS4SaveFile();
+                }
+                
 
                 var parsers = new List<INodeParser>();
                 parsers.AddRange(new INodeParser[] {
@@ -397,7 +430,12 @@ namespace CP2077SaveEditor
                 var testFile = new SaveFileHelper(parsers);
                 try
                 {
-                    testFile.LoadPCSaveFile(new MemoryStream(saveBytes));
+                    if (saveType == 0)
+                    {
+                        testFile.LoadPCSaveFile(new MemoryStream(saveBytes));
+                    } else {
+                        testFile.LoadPS4SaveFile(new MemoryStream(saveBytes));
+                    }
                 } catch(Exception ex) {
                     File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
                     MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
@@ -484,9 +522,8 @@ namespace CP2077SaveEditor
         {
             if (inventoryListView.SelectedIndices.Count > 0)
             {
-                activeItemEdit = (ItemData)inventoryListView.SelectedItems[0].Tag;
                 var activeDetails = new ItemDetails();
-                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, activeSaveFile, RefreshInventory, ClearActiveItem);
+                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, activeSaveFile, RefreshInventory);
             }
         }
 
@@ -510,6 +547,27 @@ namespace CP2077SaveEditor
             }
 
             inventoryListView.Sort();
+        }
+
+        private void inventoryListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (inventoryListView.SelectedIndices.Count > 0 && e.KeyCode == Keys.Delete)
+            {
+                var activeItem = (ItemData) inventoryListView.SelectedItems[0].Tag;
+                var fullName = activeItem.Data.GetType().FullName;
+                if (fullName != null && fullName.EndsWith("SimpleItemData"))
+                {
+                    var name = activeItem.ItemGameName;
+                    if (name.Length < 1)
+                    {
+                        name = activeItem.ItemName;
+                    }
+                    
+                    ((ItemData.SimpleItemData) activeItem.Data).Quantity = 0;
+                    statusLabel.Text = "<" + name + "> quantity set to 0.";
+                    RefreshInventory();
+                }
+            }
         }
 
         private void factsListView_MouseUp(object sender, EventArgs e)
@@ -673,6 +731,18 @@ namespace CP2077SaveEditor
                 }
             }
             MessageBox.Show("All item flags cleared.");
+        }
+
+        private void swapSaveType_Click(object sender, EventArgs e)
+        {
+            if (saveType == 0)
+            {
+                saveType = 1;
+                swapSaveType.Text = "Save Type: PS4";
+            } else {
+                saveType = 0;
+                swapSaveType.Text = "Save Type: PC";
+            }
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)
