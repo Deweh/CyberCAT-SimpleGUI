@@ -12,6 +12,7 @@ using CyberCAT.Core.Classes;
 using CyberCAT.Core.Classes.NodeRepresentations;
 using CyberCAT.Core.Classes.Parsers;
 using CyberCAT.Core.Classes.Interfaces;
+using CyberCAT.Core.DumpedEnums;
 using Newtonsoft.Json;
 
 namespace CP2077SaveEditor
@@ -26,8 +27,9 @@ namespace CP2077SaveEditor
 
         private Dictionary<string, string> itemClasses;
         private bool loadingSave = false;
-
         private int saveType = 0;
+
+        private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
 
         public Form1()
         {
@@ -71,6 +73,45 @@ namespace CP2077SaveEditor
             coolUpDown.ValueChanged += PlayerStatChanged;
             perkPointsUpDown.ValueChanged += PlayerStatChanged;
             attrPointsUpDown.ValueChanged += PlayerStatChanged;
+
+            athleticsUpDown.ValueChanged += PlayerStatChanged;
+            annihilationUpDown.ValueChanged += PlayerStatChanged;
+            streetBrawlerUpDown.ValueChanged += PlayerStatChanged;
+            assaultUpDown.ValueChanged += PlayerStatChanged;
+            handgunsUpDown.ValueChanged += PlayerStatChanged;
+            bladesUpDown.ValueChanged += PlayerStatChanged;
+            craftingUpDown.ValueChanged += PlayerStatChanged;
+            engineeringUpDown.ValueChanged += PlayerStatChanged;
+            breachProtocolUpDown.ValueChanged += PlayerStatChanged;
+            quickhackingUpDown.ValueChanged += PlayerStatChanged;
+            stealthUpDown.ValueChanged += PlayerStatChanged;
+            coldBloodUpDown.ValueChanged += PlayerStatChanged;
+
+            attrFields = new Dictionary<Enum, NumericUpDown>
+            {
+                {gamedataStatType.Strength, bodyUpDown},
+                {gamedataStatType.Reflexes, reflexesUpDown},
+                {gamedataStatType.TechnicalAbility, technicalAbilityUpDown},
+                {gamedataStatType.Intelligence, intelligenceUpDown},
+                {gamedataStatType.Cool, coolUpDown}
+            };
+
+            proficFields = new Dictionary<Enum, NumericUpDown> {
+                {gamedataProficiencyType.Level, levelUpDown},
+                {gamedataProficiencyType.StreetCred, streetCredUpDown},
+                {gamedataProficiencyType.Athletics, athleticsUpDown},
+                {gamedataProficiencyType.Demolition, annihilationUpDown},
+                {gamedataProficiencyType.Brawling, streetBrawlerUpDown},
+                {gamedataProficiencyType.Invalid, assaultUpDown},
+                {gamedataProficiencyType.Gunslinger, handgunsUpDown},
+                {gamedataProficiencyType.Kenjutsu, bladesUpDown},
+                {gamedataProficiencyType.Crafting, craftingUpDown},
+                {gamedataProficiencyType.Engineering, engineeringUpDown},
+                {gamedataProficiencyType.Hacking, breachProtocolUpDown},
+                {gamedataProficiencyType.CombatHacking, quickhackingUpDown},
+                {gamedataProficiencyType.Stealth, stealthUpDown},
+                {gamedataProficiencyType.ColdBlood, coldBloodUpDown}
+            };
 
             itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         }
@@ -364,35 +405,37 @@ namespace CP2077SaveEditor
                 factsSaveButton.Visible = true;
 
                 //Player stats parsing
-                var profics = activeSaveFile.GetPlayerDevelopmentData().Value.Proficiencies;
-
-                levelUpDown.Value = profics[Array.FindIndex(profics, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataProficiencyType.Level)].CurrentLevel;
-                streetCredUpDown.Value = profics[Array.FindIndex(profics, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataProficiencyType.StreetCred)].CurrentLevel;
-
-                var attrs = activeSaveFile.GetPlayerDevelopmentData().Value.Attributes;
-
-                bodyUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Strength)].Value;
-                reflexesUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Reflexes)].Value;
-                technicalAbilityUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.TechnicalAbility)].Value;
-                intelligenceUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Intelligence)].Value;
-                coolUpDown.Value = attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Cool)].Value;
-
-                if (activeSaveFile.GetPlayerDevelopmentData().Value.LifePath == CyberCAT.Core.DumpedEnums.gamedataLifePath.Nomad)
+                var playerData = activeSaveFile.GetPlayerDevelopmentData();
+                foreach (gamedataProficiencyType proficType in proficFields.Keys)
                 {
-                    lifePathBox.SelectedIndex = 0;
+                    if (proficType == gamedataProficiencyType.Invalid)
+                    {
+                        proficFields[proficType].Value = playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == null)].CurrentLevel;
+                    } else {
+                        proficFields[proficType].Value = playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == proficType)].CurrentLevel;
+                    }
                 }
-                else if (activeSaveFile.GetPlayerDevelopmentData().Value.LifePath == CyberCAT.Core.DumpedEnums.gamedataLifePath.StreetKid)
+
+                foreach (gamedataStatType attrType in attrFields.Keys)
                 {
-                    lifePathBox.SelectedIndex = 1;
+                    attrFields[attrType].Value = playerData.Value.Attributes[Array.FindIndex(playerData.Value.Attributes, x => x.AttributeName == attrType)].Value;
                 }
-                else
+
+                switch (activeSaveFile.GetPlayerDevelopmentData().Value.LifePath)
                 {
-                    lifePathBox.SelectedIndex = 2;
+                    case gamedataLifePath.Nomad:
+                        lifePathBox.SelectedIndex = 0;
+                        break;
+                    case gamedataLifePath.StreetKid:
+                        lifePathBox.SelectedIndex = 1;
+                        break;
+                    default:
+                        lifePathBox.SelectedIndex = 2;
+                        break;
                 }
 
                 var points = activeSaveFile.GetPlayerDevelopmentData().Value.DevPoints;
-
-                perkPointsUpDown.Value = points[Array.FindIndex(points, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataDevelopmentPointType.Primary)].Unspent;
+                perkPointsUpDown.Value = points[Array.FindIndex(points, x => x.Type == gamedataDevelopmentPointType.Primary)].Unspent;
                 attrPointsUpDown.Value = points[Array.FindIndex(points, x => x.Type == null)].Unspent;
 
                 //Update controls
@@ -712,17 +755,17 @@ namespace CP2077SaveEditor
             if (lifePathBox.SelectedIndex == 0)
             {
                 lifePathPictureBox.Image = CP2077SaveEditor.Properties.Resources.nomad;
-                activeSaveFile.GetPlayerDevelopmentData().Value.LifePath = CyberCAT.Core.DumpedEnums.gamedataLifePath.Nomad;
+                activeSaveFile.GetPlayerDevelopmentData().Value.LifePath = gamedataLifePath.Nomad;
             }
             else if (lifePathBox.SelectedIndex == 1)
             {
                 lifePathPictureBox.Image = CP2077SaveEditor.Properties.Resources.streetkid;
-                activeSaveFile.GetPlayerDevelopmentData().Value.LifePath = CyberCAT.Core.DumpedEnums.gamedataLifePath.StreetKid;
+                activeSaveFile.GetPlayerDevelopmentData().Value.LifePath = gamedataLifePath.StreetKid;
             }
             else if (lifePathBox.SelectedIndex == 2)
             {
                 lifePathPictureBox.Image = CP2077SaveEditor.Properties.Resources.corpo;
-                activeSaveFile.GetPlayerDevelopmentData().Value.LifePath = CyberCAT.Core.DumpedEnums.gamedataLifePath.Corporate;
+                activeSaveFile.GetPlayerDevelopmentData().Value.LifePath = gamedataLifePath.Corporate;
             }
         }
 
@@ -754,18 +797,23 @@ namespace CP2077SaveEditor
         {
             if (!loadingSave)
             {
-                var profics = activeSaveFile.GetPlayerDevelopmentData().Value.Proficiencies;
+                var playerData = activeSaveFile.GetPlayerDevelopmentData();
+                foreach (gamedataProficiencyType proficType in proficFields.Keys)
+                {
+                    if (proficType == gamedataProficiencyType.Invalid)
+                    {
+                        playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == null)].CurrentLevel = (int)proficFields[proficType].Value;
+                    }
+                    else
+                    {
+                         playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == proficType)].CurrentLevel = (int)proficFields[proficType].Value;
+                    }
+                }
 
-                profics[Array.FindIndex(profics, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataProficiencyType.Level)].CurrentLevel = (int)levelUpDown.Value;
-                profics[Array.FindIndex(profics, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataProficiencyType.StreetCred)].CurrentLevel = (int)streetCredUpDown.Value;
-
-                var attrs = activeSaveFile.GetPlayerDevelopmentData().Value.Attributes;
-
-                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Strength)].Value = (int)bodyUpDown.Value;
-                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Reflexes)].Value = (int)reflexesUpDown.Value;
-                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.TechnicalAbility)].Value = (int)technicalAbilityUpDown.Value;
-                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Intelligence)].Value = (int)intelligenceUpDown.Value;
-                attrs[Array.FindIndex(attrs, x => x.AttributeName == CyberCAT.Core.DumpedEnums.gamedataStatType.Cool)].Value = (int)coolUpDown.Value;
+                foreach (gamedataStatType attrType in attrFields.Keys)
+                {
+                     playerData.Value.Attributes[Array.FindIndex(playerData.Value.Attributes, x => x.AttributeName == attrType)].Value = (int)attrFields[attrType].Value;
+                }
 
                 var points = activeSaveFile.GetPlayerDevelopmentData().Value.DevPoints;
 
