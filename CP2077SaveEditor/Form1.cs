@@ -553,20 +553,14 @@ namespace CP2077SaveEditor
         {
             if (inventoryListView.SelectedIndices.Count > 0 && e.KeyCode == Keys.Delete)
             {
-                var activeItem = (ItemData) inventoryListView.SelectedItems[0].Tag;
-                var fullName = activeItem.Data.GetType().FullName;
-                if (fullName != null && fullName.EndsWith("SimpleItemData"))
-                {
-                    var name = activeItem.ItemGameName;
-                    if (name.Length < 1)
-                    {
-                        name = activeItem.ItemName;
-                    }
-                    
-                    ((ItemData.SimpleItemData) activeItem.Data).Quantity = 0;
-                    statusLabel.Text = "<" + name + "> quantity set to 0.";
-                    RefreshInventory();
-                }
+                var containerID = containersListBox.SelectedItem.ToString();
+                if (containerID == "Player Inventory") { containerID = "1"; }
+
+                var activeItem = (ItemData)inventoryListView.SelectedItems[0].Tag;
+                activeSaveFile.GetInventory(ulong.Parse(containerID)).Items.Remove(activeItem);
+
+                inventoryListView.Items.Remove(inventoryListView.SelectedItems[0]);
+                statusLabel.Text = "'" + (string.IsNullOrEmpty(activeItem.ItemGameName) ? activeItem.ItemName : activeItem.ItemGameName) + "' deleted.";
             }
         }
 
