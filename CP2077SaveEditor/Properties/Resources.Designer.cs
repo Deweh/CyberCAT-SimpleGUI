@@ -93,7 +93,25 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;8DF30100:18&quot;:&quot;ConsumableItem&quot;,&quot;00DF0200:18&quot;:&quot;Clothing&quot;,&quot;F0621E00:1D&quot;:&quot;Clothing&quot;,&quot;51C23200:1A&quot;:&quot;Item&quot;,&quot;F8513C00:13&quot;:&quot;WeaponItem&quot;,&quot;EBB66A00:24&quot;:&quot;Item&quot;,&quot;925D8D00:17&quot;:&quot;WeaponItem&quot;,&quot;3D35B500:1D&quot;:&quot;Item&quot;,&quot;AA06C200:14&quot;:&quot;Item&quot;,&quot;607AE000:28&quot;:&quot;Item&quot;,&quot;12A9E600:1D&quot;:&quot;Item&quot;,&quot;5021ED00:1E&quot;:&quot;Item&quot;,&quot;09A6F100:16&quot;:&quot;Clothing&quot;,&quot;3057FD00:15&quot;:&quot;ConsumableItem&quot;,&quot;749B0701:2E&quot;:&quot;Item&quot;,&quot;34441B01:17&quot;:&quot;Item&quot;,&quot;EA891E01:1A&quot;:&quot;WeaponItem&quot;,&quot;33992001:18&quot;:&quot;WeaponItem&quot;,&quot;E5BF2001:1A&quot;:&quot;WeaponItem&quot;,&quot;56AD2A01:23&quot;:&quot;Item&quot;,&quot;43844301:1F&quot;:&quot;Item&quot;,&quot;2140600 [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {
+        ///  &quot;0001F38D:18&quot;: &quot;ConsumableItem&quot;,
+        ///  &quot;0002DF00:18&quot;: &quot;Clothing&quot;,
+        ///  &quot;001E62F0:1D&quot;: &quot;Clothing&quot;,
+        ///  &quot;0032C251:1A&quot;: &quot;Item&quot;,
+        ///  &quot;003C51F8:13&quot;: &quot;WeaponItem&quot;,
+        ///  &quot;006AB6EB:24&quot;: &quot;Item&quot;,
+        ///  &quot;008D5D92:17&quot;: &quot;WeaponItem&quot;,
+        ///  &quot;00B5353D:1D&quot;: &quot;Item&quot;,
+        ///  &quot;00C206AA:14&quot;: &quot;Item&quot;,
+        ///  &quot;00E07A60:28&quot;: &quot;Item&quot;,
+        ///  &quot;00E6A912:1D&quot;: &quot;Item&quot;,
+        ///  &quot;00ED2150:1E&quot;: &quot;Item&quot;,
+        ///  &quot;00F1A609:16&quot;: &quot;Clothing&quot;,
+        ///  &quot;00FD5730:15&quot;: &quot;ConsumableItem&quot;,
+        ///  &quot;01079B74:2E&quot;: &quot;Item&quot;,
+        ///  &quot;011B4434:17&quot;: &quot;Item&quot;,
+        ///  &quot;011E89EA:1A&quot;: &quot;WeaponItem&quot;,
+        ///  &quot;01209933:18&quot;:  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ItemClasses {
             get {
@@ -106,28 +124,55 @@ namespace CP2077SaveEditor.Properties {
         ///  &quot;0&quot;: {
         ///    &quot;gameDescription&quot;: &quot;&quot;,
         ///    &quot;gameName&quot;: &quot;&quot;,
-        ///    &quot;name&quot;: &quot;&quot;
+        ///    &quot;guessed&quot;: true,
+        ///    &quot;name&quot;: &quot;None&quot;
         ///  },
         ///  &quot;100003754986&quot;: {
         ///    &quot;gameDescription&quot;: &quot;&quot;,
         ///    &quot;gameName&quot;: &quot;8L-OODY Tungsten-Steel Military Helmet&quot;,
+        ///    &quot;guessed&quot;: false,
         ///    &quot;name&quot;: &quot;Items.Helmet_02_rich_02&quot;
         ///  },
         ///  &quot;100011957978&quot;: {
         ///    &quot;gameDescription&quot;: &quot;With long-lasting, sythentic mint flavors and sweetners.&quot;,
         ///    &quot;gameName&quot;: &quot;Bubble Gum&quot;,
+        ///    &quot;guessed&quot;: false,
         ///    &quot;name&quot;: &quot;Items.GenericJunkItem30&quot;
         ///  },
         ///  &quot;100025052306&quot;: {
-        ///    &quot;gameDescription&quot;: &quot;&quot;,
-        ///    &quot;gameName&quot;: &quot;&quot;,
-        ///    &quot;name&quot;: &quot;Items.crowd_bucket_Epic&quot;
-        ///  },
-        /// [rest of string was truncated]&quot;;.
+        ///  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ItemNames {
             get {
                 return ResourceManager.GetString("ItemNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///	&quot;Clothing&quot;:{
+        ///		&quot;Slots&quot;:[
+        ///			&quot;OuterChestFabricEnhancer1&quot;,
+        ///			&quot;OuterChestFabricEnhancer2&quot;,
+        ///			&quot;OuterChestFabricEnhancer3&quot;,
+        ///			&quot;OuterChestFabricEnhancer4&quot;,
+        ///			&quot;InnerChestFabricEnhancer1&quot;,
+        ///			&quot;InnerChestFabricEnhancer2&quot;,
+        ///			&quot;InnerChestFabricEnhancer3&quot;,
+        ///			&quot;InnerChestFabricEnhancer4&quot;,
+        ///			&quot;LegsFabricEnhancer1&quot;,
+        ///			&quot;LegsFabricEnhancer2&quot;,
+        ///			&quot;LegsFabricEnhancer3&quot;,
+        ///			&quot;LegsFabricEnhancer4&quot;,
+        ///			&quot;FaceFabricEnhancer1&quot;,
+        ///			&quot;FaceFabricEnhancer2&quot;,
+        ///			&quot;FaceFabricEnhancer3&quot;,
+        ///			&quot;FaceFabricEnhancer4&quot;,
+        ///	 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Mods {
+            get {
+                return ResourceManager.GetString("Mods", resourceCulture);
             }
         }
         

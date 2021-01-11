@@ -168,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="IaKy3w-m_400x400.ico" />
+    <None Include="Resources\Mods.json" />
     <None Include="Resources\streetkid.png" />
     <None Include="Resources\nomad.png" />
     <None Include="Resources\corpo.png" />
