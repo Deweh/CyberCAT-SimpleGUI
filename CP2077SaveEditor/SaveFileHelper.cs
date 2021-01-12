@@ -75,8 +75,9 @@ namespace CP2077SaveEditor
             {
                 var areaName = area.AreaType.ToString();
                 if (area.AreaType == gamedataEquipmentArea.Weapon || area.AreaType == gamedataEquipmentArea.Head || area.AreaType == gamedataEquipmentArea.Face
-                    || area.AreaType == gamedataEquipmentArea.OuterChest || area.AreaType == gamedataEquipmentArea.Legs || area.AreaType == gamedataEquipmentArea.Feet
-                    || area.AreaType == gamedataEquipmentArea.QuickSlot || area.AreaType == gamedataEquipmentArea.Consumable || area.AreaType == gamedataEquipmentArea.Outfit)
+                    || area.AreaType == gamedataEquipmentArea.OuterChest || area.AreaType == gamedataEquipmentArea.InnerChest || area.AreaType == gamedataEquipmentArea.Legs
+                    || area.AreaType == gamedataEquipmentArea.Feet || area.AreaType == gamedataEquipmentArea.QuickSlot || area.AreaType == gamedataEquipmentArea.Consumable
+                    || area.AreaType == gamedataEquipmentArea.Outfit)
                 {
                     foreach (GameSEquipSlot slot in area.EquipSlots)
                     {
