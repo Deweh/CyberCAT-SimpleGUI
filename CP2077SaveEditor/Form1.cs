@@ -802,6 +802,13 @@ namespace CP2077SaveEditor
             MessageBox.Show("All item flags cleared.");
         }
 
+        private void additionalPlayerStatsButton_Click(object sender, EventArgs e)
+        {
+            var i = Array.FindIndex(activeSaveFile.GetStatsMap().Keys, x => x.EntityHash == 1);
+            var details = new ItemDetails();
+            details.LoadStatsOnly(activeSaveFile.GetStatsMap().Values[i].Seed, activeSaveFile, "Player");
+        }
+
         private void swapSaveType_Click(object sender, EventArgs e)
         {
             if (saveType == 0)

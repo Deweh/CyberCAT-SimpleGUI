@@ -128,6 +128,7 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
+            this.additionalPlayerStatsButton = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -973,6 +974,7 @@ namespace CP2077SaveEditor
             // 
             this.statsPanel.BackgroundImage = global::CP2077SaveEditor.Properties.Resources.player_stats;
             this.statsPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.statsPanel.Controls.Add(this.additionalPlayerStatsButton);
             this.statsPanel.Controls.Add(this.coldBloodUpDown);
             this.statsPanel.Controls.Add(this.stealthUpDown);
             this.statsPanel.Controls.Add(this.quickhackingUpDown);
@@ -1368,6 +1370,21 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
+            // additionalPlayerStatsButton
+            // 
+            this.additionalPlayerStatsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.additionalPlayerStatsButton.ClickEffectEnabled = true;
+            this.additionalPlayerStatsButton.DefaultColor = System.Drawing.Color.White;
+            this.additionalPlayerStatsButton.HoverColor = System.Drawing.Color.LightGray;
+            this.additionalPlayerStatsButton.Location = new System.Drawing.Point(683, 28);
+            this.additionalPlayerStatsButton.Name = "additionalPlayerStatsButton";
+            this.additionalPlayerStatsButton.Size = new System.Drawing.Size(131, 24);
+            this.additionalPlayerStatsButton.TabIndex = 34;
+            this.additionalPlayerStatsButton.Text = "Additional Stats";
+            this.additionalPlayerStatsButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.additionalPlayerStatsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.additionalPlayerStatsButton.Click += new System.EventHandler(this.additionalPlayerStatsButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1536,6 +1553,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.NumericUpDown coldBloodUpDown;
         private System.Windows.Forms.NumericUpDown stealthUpDown;
         private System.Windows.Forms.NumericUpDown quickhackingUpDown;
+        private ModernButton additionalPlayerStatsButton;
     }
 }
 

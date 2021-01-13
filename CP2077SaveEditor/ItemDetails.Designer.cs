@@ -124,6 +124,7 @@ namespace CP2077SaveEditor
             // 
             // quickActionsGroupBox
             // 
+            this.quickActionsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.quickActionsGroupBox.Controls.Add(this.pasteLegendaryIdButton);
             this.quickActionsGroupBox.Location = new System.Drawing.Point(12, 138);
             this.quickActionsGroupBox.Name = "quickActionsGroupBox";
@@ -181,6 +182,7 @@ namespace CP2077SaveEditor
             // 
             // detailsTabControl
             // 
+            this.detailsTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.detailsTabControl.Controls.Add(this.statsTab);
             this.detailsTabControl.Controls.Add(this.modInfoTab);
             this.detailsTabControl.Location = new System.Drawing.Point(12, 201);
@@ -356,6 +358,7 @@ namespace CP2077SaveEditor
             // 
             // closeButton
             // 
+            this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.closeButton.BackColor = System.Drawing.Color.White;
             this.closeButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.closeButton.ClickEffectEnabled = true;
@@ -372,6 +375,7 @@ namespace CP2077SaveEditor
             // 
             // applyButton
             // 
+            this.applyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.applyButton.BackColor = System.Drawing.Color.White;
             this.applyButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.applyButton.ClickEffectEnabled = true;

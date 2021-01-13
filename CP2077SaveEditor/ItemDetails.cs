@@ -120,32 +120,37 @@ namespace CP2077SaveEditor
                 statsListView.Items.Clear();
                 var listRows = new List<ListViewItem>();
                 var statsData = activeSaveFile.GetItemStatData(activeItem);
-                foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
+                if (statsData.StatModifiers != null)
                 {
-                    var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
+                    foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
+                    {
+                        var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
 
-                    if (modifier.Value.GetType().Name == "GameCombinedStatModifierData")
-                    {
-                        row[0] = "Combined";
-                        row[3] = ((GameCombinedStatModifierData)modifier.Value).Value.ToString();
-                    }
-                    else if(modifier.Value.GetType().Name == "GameConstantStatModifierData")
-                    {
-                        row[3] = ((GameConstantStatModifierData)modifier.Value).Value.ToString();
-                    }
-                    else
-                    {
-                        row[0] = "Curve";
+                        if (modifier.Value.GetType().Name == "GameCombinedStatModifierData")
+                        {
+                            row[0] = "Combined";
+                            row[3] = ((GameCombinedStatModifierData)modifier.Value).Value.ToString();
+                        }
+                        else if (modifier.Value.GetType().Name == "GameConstantStatModifierData")
+                        {
+                            row[3] = ((GameConstantStatModifierData)modifier.Value).Value.ToString();
+                        }
+                        else
+                        {
+                            row[0] = "Curve";
+                        }
+
+                        var newItem = new ListViewItem(row);
+                        newItem.Tag = modifier;
+                        listRows.Add(newItem);
                     }
 
-                    var newItem = new ListViewItem(row);
-                    newItem.Tag = modifier;
-                    listRows.Add(newItem);
+                    statsListView.BeginUpdate();
+                    statsListView.Items.AddRange(listRows.ToArray());
+                    statsListView.EndUpdate();
+                } else {
+                    statsData.StatModifiers = new Handle<GameStatModifierData>[0];
                 }
-
-                statsListView.BeginUpdate();
-                statsListView.Items.AddRange(listRows.ToArray());
-                statsListView.EndUpdate();
             }
 
             if (!statsOnly)
@@ -175,13 +180,24 @@ namespace CP2077SaveEditor
             activeSaveFile = (SaveFileHelper)_saveFile;
             this.Text = name;
 
-            basicInfoGroupBox.Enabled = false;
-            flagsGroupBox.Enabled = false;
+            var newHeight = this.Height - 190;
+            basicInfoGroupBox.Visible = false;
+            flagsGroupBox.Visible = false;
+            applyButton.Visible = false;
             detailsTabControl.TabPages.Remove(modInfoTab);
 
+            if (name == "Player")
+            {
+                quickActionsGroupBox.Visible = false;
+            } else {
+                newHeight += 60;
+            }
+
+            this.Height = newHeight;
             statsOnly = true;
             ReloadData();
 
+            this.CenterToParent();
             this.ShowDialog();
         }
 
