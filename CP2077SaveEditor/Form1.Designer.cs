@@ -1372,15 +1372,16 @@ namespace CP2077SaveEditor
             // 
             // additionalPlayerStatsButton
             // 
+            this.additionalPlayerStatsButton.BackColor = System.Drawing.Color.LightGray;
             this.additionalPlayerStatsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.additionalPlayerStatsButton.ClickEffectEnabled = true;
-            this.additionalPlayerStatsButton.DefaultColor = System.Drawing.Color.White;
-            this.additionalPlayerStatsButton.HoverColor = System.Drawing.Color.LightGray;
-            this.additionalPlayerStatsButton.Location = new System.Drawing.Point(683, 28);
+            this.additionalPlayerStatsButton.DefaultColor = System.Drawing.Color.LightGray;
+            this.additionalPlayerStatsButton.HoverColor = System.Drawing.Color.Silver;
+            this.additionalPlayerStatsButton.Location = new System.Drawing.Point(366, 411);
             this.additionalPlayerStatsButton.Name = "additionalPlayerStatsButton";
-            this.additionalPlayerStatsButton.Size = new System.Drawing.Size(131, 24);
+            this.additionalPlayerStatsButton.Size = new System.Drawing.Size(124, 24);
             this.additionalPlayerStatsButton.TabIndex = 34;
-            this.additionalPlayerStatsButton.Text = "Additional Stats";
+            this.additionalPlayerStatsButton.Text = "Edit Additional Stats";
             this.additionalPlayerStatsButton.TextColor = System.Drawing.SystemColors.ControlText;
             this.additionalPlayerStatsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.additionalPlayerStatsButton.Click += new System.EventHandler(this.additionalPlayerStatsButton_Click);
