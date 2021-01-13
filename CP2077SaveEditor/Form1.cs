@@ -415,17 +415,9 @@ namespace CP2077SaveEditor
                     } else {
                         profic = playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == proficType)];
                     }
-                    if (profic.Type == gamedataProficiencyType.Level || profic.Type == gamedataProficiencyType.StreetCred)
+                    if (profic.CurrentLevel > (int)proficFields[proficType].Maximum)
                     {
-                        if (profic.CurrentLevel > 50)
-                        {
-                            profic.CurrentLevel = 50;
-                        }
-                    } else {
-                        if (profic.CurrentLevel > 20)
-                        {
-                            profic.CurrentLevel = 20;
-                        }
+                        proficFields[proficType].Maximum = profic.CurrentLevel;
                     }
                     
                     proficFields[proficType].Value = profic.CurrentLevel;
@@ -434,9 +426,9 @@ namespace CP2077SaveEditor
                 foreach (gamedataStatType attrType in attrFields.Keys)
                 {
                     CyberCAT.Core.Classes.DumpedClasses.SAttribute attr = playerData.Value.Attributes[Array.FindIndex(playerData.Value.Attributes, x => x.AttributeName == attrType)];
-                    if (attr.Value > 20)
+                    if (attr.Value > (int)attrFields[attrType].Maximum)
                     {
-                        attr.Value = 20;
+                        attrFields[attrType].Maximum = attr.Value;
                     }
 
                     attrFields[attrType].Value = attr.Value;
