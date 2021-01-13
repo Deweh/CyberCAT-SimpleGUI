@@ -75,14 +75,8 @@ namespace CP2077SaveEditor
             textLabel.Dock = DockStyle.Fill;
             textLabel.MouseEnter += TextMouseEnter;
             textLabel.MouseLeave += TextMouseLeave;
-            textLabel.Click += TextClick;
             textLabel.MouseDown += TextMouseDown;
             textLabel.MouseUp += TextMouseUp;
-        }
-
-        private void TextClick(object sender, EventArgs e)
-        {
-            base.OnClick(e);
         }
 
         private void TextMouseEnter(object sender, EventArgs e)
@@ -108,6 +102,7 @@ namespace CP2077SaveEditor
         private void TextMouseUp(object sender, EventArgs e)
         {
             this.BorderStyle = BorderStyle.FixedSingle;
+            base.OnClick(e);
         }
     }
 }
