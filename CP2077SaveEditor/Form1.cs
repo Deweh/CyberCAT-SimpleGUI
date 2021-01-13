@@ -355,6 +355,8 @@ namespace CP2077SaveEditor
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 loadingSave = true;
+                statusLabel.Text = "Loading save...";
+                this.Refresh();
                 //Initialize NameResolver & FactResolver dictionaries, build parsers list & load save file
                 NameResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, NameResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames));
                 FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
@@ -468,6 +470,8 @@ namespace CP2077SaveEditor
             saveWindow.Filter = "Cyberpunk 2077 Save File|*.dat";
             if (saveWindow.ShowDialog() == DialogResult.OK)
             {
+                statusLabel.Text = "Saving changes...";
+                this.Refresh();
                 if (File.Exists(saveWindow.FileName) && !File.Exists(Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old"))
                 {
                     File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
@@ -498,6 +502,7 @@ namespace CP2077SaveEditor
                         testFile.LoadPS4SaveFile(new MemoryStream(saveBytes));
                     }
                 } catch(Exception ex) {
+                    statusLabel.Text = "Save cancelled.";
                     File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
                     MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
                     return;
