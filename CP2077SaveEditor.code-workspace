@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"tasks":{
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "run",
+				"type": "shell",
+				"command": "dotnet run --project CP2077SaveEditor/CP2077SaveEditor.csproj",
+			},
+			{
+				"label": "build",
+				"type": "shell",
+				"command": "dotnet publish --nologo --verbosity minimal --runtime win10-x64 --configuration Release -p:PublishSingleFile=true --no-self-contained --output build/; Remove-Item Build/CP2077SaveEditor.pdb",
+				"group": {
+					"kind": "build",
+					"isDefault": true
+				}
+			}
+		]
+	},
+	"extensions": {
+		"recommendations": [
+			"mhutchie.git-graph"
+		]
+	},
+	"settings": {
+		"window.title": "Cyberpunk 2077 Save Editor - Simple GUI",
+		"git-graph.commitDetailsView.location": "Docked to Bottom"
+	}
+}
