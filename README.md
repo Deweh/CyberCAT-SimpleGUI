@@ -4,12 +4,14 @@ A simplified offshoot of SirBitesalot's CyberCAT.
 
 ## Features
 
-- Save and load presets for your character's appearance. (Stable as of v0.01a_r1)
-- Edit the quantity, flags, & mod tree of items in your inventory. (Stable)
-- Edit quest facts. (Stable)
-- Quick actions - dedicated controls for changing money & making items legendary. (Semi-Stable)
+**Feature**                                                                     | **Stability**
+------------------------------------------------------------------------------- | -----------
+Save and load presets for your character's appearance.                          | Stable
+Edit the quantity, flags, & mod tree of items in your inventory.                | Stable
+Edit quest facts.                                                               | Stable
+Quick actions - dedicated controls for changing money & making items legendary. | Semi-Stable
 
-## How to Use
+## Usage
 
 1. Run **CP2077SaveEditor.exe**
 2. Click **"Load Save"**
@@ -23,7 +25,30 @@ A simplified offshoot of SirBitesalot's CyberCAT.
 - Refactor, refactor, refactor.
 - Eat some of the spaghetti.
 - Improve the functionality of the appearance tab.
+- Move contribution section from readme to github wiki
 
 ## Credits
 
 [CyberCAT by SirBitesalot and other contributors](https://github.com/WolvenKit/CyberCAT)
+
+## Contribution
+
+### Visual Studio 2019
+
+Requires:
+
+- C# Desktop workspace
+- .NET 5.0 SDK
+
+Setup:
+
+1. Open `CP2077SaveEditor.sln`
+2. Solution > Restore NuGet Packages
+
+Build: Build > Rebuild solution
+
+### Visual Studio Code
+
+Requires: `.NET 5.0 SDK`
+
+Build:  `dotnet build CP2077SaveEditor.sln`
