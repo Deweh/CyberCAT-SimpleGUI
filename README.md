@@ -33,12 +33,15 @@ Quick actions - dedicated controls for changing money & making items legendary. 
 
 ## Contribution
 
+### VSCodium
+
+Requires: .NET 5.0 SDK
+
+Build: Terminal > Run Build Task...
+
 ### Visual Studio 2019
 
-Requires:
-
-- C# Desktop workspace
-- .NET 5.0 SDK
+Requires: .NET 5.0 SDK, C# Desktop workspace
 
 Setup:
 
@@ -46,9 +49,3 @@ Setup:
 2. Solution > Restore NuGet Packages
 
 Build: Build > Rebuild solution
-
-### Visual Studio Code
-
-Requires: `.NET 5.0 SDK`
-
-Build:  `dotnet build CP2077SaveEditor.sln`
