@@ -85,12 +85,12 @@ namespace CP2077SaveEditor
             this.containerGroupBox = new System.Windows.Forms.GroupBox();
             this.inventorySearchBox = new System.Windows.Forms.TextBox();
             this.inventoryListView = new System.Windows.Forms.ListView();
-            this.inventoryNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.inventoryTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.inventoryIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.inventorySlotHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.inventoryQuantityHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.inventoryDescriptionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.inventoryNameHeader = new System.Windows.Forms.ColumnHeader();
+            this.inventoryTypeHeader = new System.Windows.Forms.ColumnHeader();
+            this.inventoryIdHeader = new System.Windows.Forms.ColumnHeader();
+            this.inventorySlotHeader = new System.Windows.Forms.ColumnHeader();
+            this.inventoryQuantityHeader = new System.Windows.Forms.ColumnHeader();
+            this.inventoryDescriptionHeader = new System.Windows.Forms.ColumnHeader();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.clearQuestFlagsButton = new CP2077SaveEditor.ModernButton();
             this.label2 = new System.Windows.Forms.Label();
@@ -100,9 +100,10 @@ namespace CP2077SaveEditor
             this.addFactButton = new CP2077SaveEditor.ModernButton();
             this.factsSearchBox = new System.Windows.Forms.TextBox();
             this.factsListView = new System.Windows.Forms.ListView();
-            this.factsValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.factsNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.factsValueHeader = new System.Windows.Forms.ColumnHeader();
+            this.factsNameHeader = new System.Windows.Forms.ColumnHeader();
             this.statsPanel = new System.Windows.Forms.Panel();
+            this.additionalPlayerStatsButton = new CP2077SaveEditor.ModernButton();
             this.coldBloodUpDown = new System.Windows.Forms.NumericUpDown();
             this.stealthUpDown = new System.Windows.Forms.NumericUpDown();
             this.quickhackingUpDown = new System.Windows.Forms.NumericUpDown();
@@ -128,7 +129,6 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.additionalPlayerStatsButton = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -196,7 +196,7 @@ namespace CP2077SaveEditor
             this.statsButton.TabIndex = 3;
             this.statsButton.Text = "Player Stats";
             this.statsButton.TextColor = System.Drawing.Color.Black;
-            this.statsButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statsButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.statsButton.Click += new System.EventHandler(this.statsButton_Click);
             // 
             // factsButton
@@ -212,7 +212,7 @@ namespace CP2077SaveEditor
             this.factsButton.TabIndex = 2;
             this.factsButton.Text = "Quest Facts";
             this.factsButton.TextColor = System.Drawing.Color.Black;
-            this.factsButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.factsButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.factsButton.Click += new System.EventHandler(this.factsButton_Click);
             // 
             // inventoryButton
@@ -228,7 +228,7 @@ namespace CP2077SaveEditor
             this.inventoryButton.TabIndex = 1;
             this.inventoryButton.Text = "Inventory";
             this.inventoryButton.TextColor = System.Drawing.Color.Black;
-            this.inventoryButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.inventoryButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.inventoryButton.Click += new System.EventHandler(this.inventoryButton_Click);
             // 
             // saveChangesButton
@@ -245,7 +245,7 @@ namespace CP2077SaveEditor
             this.saveChangesButton.TabIndex = 1;
             this.saveChangesButton.Text = "Save Changes";
             this.saveChangesButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.saveChangesButton.Click += new System.EventHandler(this.saveChangesButton_Click);
             // 
             // appearanceButton
@@ -261,7 +261,7 @@ namespace CP2077SaveEditor
             this.appearanceButton.TabIndex = 0;
             this.appearanceButton.Text = "Appearance";
             this.appearanceButton.TextColor = System.Drawing.Color.Black;
-            this.appearanceButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.appearanceButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.appearanceButton.Click += new System.EventHandler(this.appearanceButton_Click);
             // 
             // editorPanel
@@ -275,7 +275,7 @@ namespace CP2077SaveEditor
             // 
             // filePathLabel
             // 
-            this.filePathLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.filePathLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.filePathLabel.Location = new System.Drawing.Point(12, 85);
             this.filePathLabel.Name = "filePathLabel";
             this.filePathLabel.Size = new System.Drawing.Size(143, 15);
@@ -693,7 +693,7 @@ namespace CP2077SaveEditor
             this.loadAppearButton.TabIndex = 11;
             this.loadAppearButton.Text = "Load Preset";
             this.loadAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.loadAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.loadAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.loadAppearButton.Click += new System.EventHandler(this.loadAppearButton_Click);
             // 
             // saveAppearButton
@@ -710,7 +710,7 @@ namespace CP2077SaveEditor
             this.saveAppearButton.TabIndex = 10;
             this.saveAppearButton.Text = "Save Preset";
             this.saveAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.saveAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.saveAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.saveAppearButton.Click += new System.EventHandler(this.saveAppearButton_Click);
             // 
             // inventoryPanel
@@ -800,31 +800,37 @@ namespace CP2077SaveEditor
             // 
             // inventoryNameHeader
             // 
+            this.inventoryNameHeader.Name = "inventoryNameHeader";
             this.inventoryNameHeader.Text = "Item Name";
             this.inventoryNameHeader.Width = 171;
             // 
             // inventoryTypeHeader
             // 
+            this.inventoryTypeHeader.Name = "inventoryTypeHeader";
             this.inventoryTypeHeader.Text = "Type";
             this.inventoryTypeHeader.Width = 119;
             // 
             // inventoryIdHeader
             // 
+            this.inventoryIdHeader.Name = "inventoryIdHeader";
             this.inventoryIdHeader.Text = "ID";
             this.inventoryIdHeader.Width = 127;
             // 
             // inventorySlotHeader
             // 
+            this.inventorySlotHeader.Name = "inventorySlotHeader";
             this.inventorySlotHeader.Text = "Slot";
             this.inventorySlotHeader.Width = 94;
             // 
             // inventoryQuantityHeader
             // 
+            this.inventoryQuantityHeader.Name = "inventoryQuantityHeader";
             this.inventoryQuantityHeader.Text = "Quantity";
             this.inventoryQuantityHeader.Width = 64;
             // 
             // inventoryDescriptionHeader
             // 
+            this.inventoryDescriptionHeader.Name = "inventoryDescriptionHeader";
             this.inventoryDescriptionHeader.Text = "Description";
             this.inventoryDescriptionHeader.Width = 240;
             // 
@@ -855,7 +861,7 @@ namespace CP2077SaveEditor
             this.clearQuestFlagsButton.TabIndex = 2;
             this.clearQuestFlagsButton.Text = "Clear All Item Flags";
             this.clearQuestFlagsButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.clearQuestFlagsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.clearQuestFlagsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.clearQuestFlagsButton.Click += new System.EventHandler(this.clearQuestFlagsButton_Click);
             // 
             // label2
@@ -906,7 +912,7 @@ namespace CP2077SaveEditor
             this.factsSaveButton.TabIndex = 3;
             this.factsSaveButton.Text = "Save to File";
             this.factsSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.factsSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.factsSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.factsSaveButton.Click += new System.EventHandler(this.factsSaveButton_Click);
             // 
             // addFactButton
@@ -922,7 +928,7 @@ namespace CP2077SaveEditor
             this.addFactButton.TabIndex = 2;
             this.addFactButton.Text = "+";
             this.addFactButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.addFactButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addFactButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.addFactButton.Visible = false;
             this.addFactButton.Click += new System.EventHandler(this.addFactButton_Click);
             // 
@@ -962,17 +968,19 @@ namespace CP2077SaveEditor
             // 
             // factsValueHeader
             // 
+            this.factsValueHeader.Name = "factsValueHeader";
             this.factsValueHeader.Text = "Value";
             this.factsValueHeader.Width = 59;
             // 
             // factsNameHeader
             // 
+            this.factsNameHeader.Name = "factsNameHeader";
             this.factsNameHeader.Text = "Name";
             this.factsNameHeader.Width = 764;
             // 
             // statsPanel
             // 
-            this.statsPanel.BackgroundImage = global::CP2077SaveEditor.Properties.Resources.player_stats;
+            this.statsPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("statsPanel.BackgroundImage")));
             this.statsPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.statsPanel.Controls.Add(this.additionalPlayerStatsButton);
             this.statsPanel.Controls.Add(this.coldBloodUpDown);
@@ -1004,9 +1012,25 @@ namespace CP2077SaveEditor
             this.statsPanel.Size = new System.Drawing.Size(851, 548);
             this.statsPanel.TabIndex = 14;
             // 
+            // additionalPlayerStatsButton
+            // 
+            this.additionalPlayerStatsButton.BackColor = System.Drawing.Color.LightGray;
+            this.additionalPlayerStatsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.additionalPlayerStatsButton.ClickEffectEnabled = true;
+            this.additionalPlayerStatsButton.DefaultColor = System.Drawing.Color.LightGray;
+            this.additionalPlayerStatsButton.HoverColor = System.Drawing.Color.Silver;
+            this.additionalPlayerStatsButton.Location = new System.Drawing.Point(366, 411);
+            this.additionalPlayerStatsButton.Name = "additionalPlayerStatsButton";
+            this.additionalPlayerStatsButton.Size = new System.Drawing.Size(124, 24);
+            this.additionalPlayerStatsButton.TabIndex = 34;
+            this.additionalPlayerStatsButton.Text = "Edit Additional Stats";
+            this.additionalPlayerStatsButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.additionalPlayerStatsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.additionalPlayerStatsButton.Click += new System.EventHandler(this.additionalPlayerStatsButton_Click);
+            // 
             // coldBloodUpDown
             // 
-            this.coldBloodUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.coldBloodUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.coldBloodUpDown.Location = new System.Drawing.Point(704, 459);
             this.coldBloodUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1019,7 +1043,7 @@ namespace CP2077SaveEditor
             // 
             // stealthUpDown
             // 
-            this.stealthUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stealthUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.stealthUpDown.Location = new System.Drawing.Point(704, 433);
             this.stealthUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1032,7 +1056,7 @@ namespace CP2077SaveEditor
             // 
             // quickhackingUpDown
             // 
-            this.quickhackingUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.quickhackingUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.quickhackingUpDown.Location = new System.Drawing.Point(704, 408);
             this.quickhackingUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1045,7 +1069,7 @@ namespace CP2077SaveEditor
             // 
             // breachProtocolUpDown
             // 
-            this.breachProtocolUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.breachProtocolUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.breachProtocolUpDown.Location = new System.Drawing.Point(704, 382);
             this.breachProtocolUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1058,7 +1082,7 @@ namespace CP2077SaveEditor
             // 
             // engineeringUpDown
             // 
-            this.engineeringUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.engineeringUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.engineeringUpDown.Location = new System.Drawing.Point(704, 356);
             this.engineeringUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1071,7 +1095,7 @@ namespace CP2077SaveEditor
             // 
             // craftingUpDown
             // 
-            this.craftingUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.craftingUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.craftingUpDown.Location = new System.Drawing.Point(704, 331);
             this.craftingUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1084,7 +1108,7 @@ namespace CP2077SaveEditor
             // 
             // bladesUpDown
             // 
-            this.bladesUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bladesUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.bladesUpDown.Location = new System.Drawing.Point(704, 306);
             this.bladesUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1097,7 +1121,7 @@ namespace CP2077SaveEditor
             // 
             // handgunsUpDown
             // 
-            this.handgunsUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.handgunsUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.handgunsUpDown.Location = new System.Drawing.Point(704, 279);
             this.handgunsUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1110,7 +1134,7 @@ namespace CP2077SaveEditor
             // 
             // assaultUpDown
             // 
-            this.assaultUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.assaultUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.assaultUpDown.Location = new System.Drawing.Point(704, 253);
             this.assaultUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1123,7 +1147,7 @@ namespace CP2077SaveEditor
             // 
             // streetBrawlerUpDown
             // 
-            this.streetBrawlerUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.streetBrawlerUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.streetBrawlerUpDown.Location = new System.Drawing.Point(704, 225);
             this.streetBrawlerUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1136,7 +1160,7 @@ namespace CP2077SaveEditor
             // 
             // annihilationUpDown
             // 
-            this.annihilationUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.annihilationUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.annihilationUpDown.Location = new System.Drawing.Point(704, 198);
             this.annihilationUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1149,7 +1173,7 @@ namespace CP2077SaveEditor
             // 
             // athleticsUpDown
             // 
-            this.athleticsUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.athleticsUpDown.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.athleticsUpDown.Location = new System.Drawing.Point(704, 169);
             this.athleticsUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1162,7 +1186,7 @@ namespace CP2077SaveEditor
             // 
             // perkPointsUpDown
             // 
-            this.perkPointsUpDown.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.perkPointsUpDown.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.perkPointsUpDown.Location = new System.Drawing.Point(44, 310);
             this.perkPointsUpDown.Maximum = new decimal(new int[] {
             99999999,
@@ -1175,7 +1199,7 @@ namespace CP2077SaveEditor
             // 
             // attrPointsUpDown
             // 
-            this.attrPointsUpDown.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.attrPointsUpDown.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.attrPointsUpDown.Location = new System.Drawing.Point(44, 266);
             this.attrPointsUpDown.Maximum = new decimal(new int[] {
             99999999,
@@ -1189,7 +1213,7 @@ namespace CP2077SaveEditor
             // lifePathBox
             // 
             this.lifePathBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.lifePathBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lifePathBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lifePathBox.FormattingEnabled = true;
             this.lifePathBox.Items.AddRange(new object[] {
             "Nomad",
@@ -1204,7 +1228,7 @@ namespace CP2077SaveEditor
             // lifePathPictureBox
             // 
             this.lifePathPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lifePathPictureBox.Image = global::CP2077SaveEditor.Properties.Resources.nomad;
+            this.lifePathPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("lifePathPictureBox.Image")));
             this.lifePathPictureBox.Location = new System.Drawing.Point(366, 217);
             this.lifePathPictureBox.Name = "lifePathPictureBox";
             this.lifePathPictureBox.Size = new System.Drawing.Size(124, 188);
@@ -1214,7 +1238,7 @@ namespace CP2077SaveEditor
             // 
             // coolUpDown
             // 
-            this.coolUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.coolUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.coolUpDown.Location = new System.Drawing.Point(583, 448);
             this.coolUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1232,7 +1256,7 @@ namespace CP2077SaveEditor
             // 
             // intelligenceUpDown
             // 
-            this.intelligenceUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.intelligenceUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.intelligenceUpDown.Location = new System.Drawing.Point(279, 448);
             this.intelligenceUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1250,7 +1274,7 @@ namespace CP2077SaveEditor
             // 
             // technicalAbilityUpDown
             // 
-            this.technicalAbilityUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.technicalAbilityUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.technicalAbilityUpDown.Location = new System.Drawing.Point(583, 159);
             this.technicalAbilityUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1268,7 +1292,7 @@ namespace CP2077SaveEditor
             // 
             // bodyUpDown
             // 
-            this.bodyUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bodyUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.bodyUpDown.Location = new System.Drawing.Point(282, 159);
             this.bodyUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1286,7 +1310,7 @@ namespace CP2077SaveEditor
             // 
             // reflexesUpDown
             // 
-            this.reflexesUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.reflexesUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.reflexesUpDown.Location = new System.Drawing.Point(425, 73);
             this.reflexesUpDown.Maximum = new decimal(new int[] {
             20,
@@ -1304,7 +1328,7 @@ namespace CP2077SaveEditor
             // 
             // streetCredUpDown
             // 
-            this.streetCredUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.streetCredUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.streetCredUpDown.Location = new System.Drawing.Point(116, 25);
             this.streetCredUpDown.Maximum = new decimal(new int[] {
             50,
@@ -1322,7 +1346,7 @@ namespace CP2077SaveEditor
             // 
             // levelUpDown
             // 
-            this.levelUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.levelUpDown.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.levelUpDown.Location = new System.Drawing.Point(15, 25);
             this.levelUpDown.Maximum = new decimal(new int[] {
             50,
@@ -1351,7 +1375,7 @@ namespace CP2077SaveEditor
             this.swapSaveType.TabIndex = 1;
             this.swapSaveType.Text = "Save Type: PC";
             this.swapSaveType.TextColor = System.Drawing.SystemColors.ControlText;
-            this.swapSaveType.TextFont = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.swapSaveType.TextFont = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.swapSaveType.Click += new System.EventHandler(this.swapSaveType_Click);
             // 
             // openSaveButton
@@ -1367,24 +1391,8 @@ namespace CP2077SaveEditor
             this.openSaveButton.TabIndex = 0;
             this.openSaveButton.Text = "Load Save";
             this.openSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
-            // 
-            // additionalPlayerStatsButton
-            // 
-            this.additionalPlayerStatsButton.BackColor = System.Drawing.Color.LightGray;
-            this.additionalPlayerStatsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.additionalPlayerStatsButton.ClickEffectEnabled = true;
-            this.additionalPlayerStatsButton.DefaultColor = System.Drawing.Color.LightGray;
-            this.additionalPlayerStatsButton.HoverColor = System.Drawing.Color.Silver;
-            this.additionalPlayerStatsButton.Location = new System.Drawing.Point(366, 411);
-            this.additionalPlayerStatsButton.Name = "additionalPlayerStatsButton";
-            this.additionalPlayerStatsButton.Size = new System.Drawing.Size(124, 24);
-            this.additionalPlayerStatsButton.TabIndex = 34;
-            this.additionalPlayerStatsButton.Text = "Edit Additional Stats";
-            this.additionalPlayerStatsButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.additionalPlayerStatsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.additionalPlayerStatsButton.Click += new System.EventHandler(this.additionalPlayerStatsButton_Click);
             // 
             // Form1
             // 
@@ -1403,7 +1411,7 @@ namespace CP2077SaveEditor
             this.Controls.Add(this.editorPanel);
             this.Controls.Add(this.openSaveButton);
             this.Controls.Add(this.optionsPanel);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
