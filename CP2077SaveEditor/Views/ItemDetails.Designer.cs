@@ -46,10 +46,10 @@ namespace CP2077SaveEditor
             this.addCurveStatButton = new CP2077SaveEditor.ModernButton();
             this.addCombinedStatButton = new CP2077SaveEditor.ModernButton();
             this.statsListView = new System.Windows.Forms.ListView();
-            this.statTypeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.statModifierHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.statNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.statValueHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.statTypeHeader = new System.Windows.Forms.ColumnHeader();
+            this.statModifierHeader = new System.Windows.Forms.ColumnHeader();
+            this.statNameHeader = new System.Windows.Forms.ColumnHeader();
+            this.statValueHeader = new System.Windows.Forms.ColumnHeader();
             this.removeStatButton = new CP2077SaveEditor.ModernButton();
             this.addConstantStatButton = new CP2077SaveEditor.ModernButton();
             this.modInfoTab = new System.Windows.Forms.TabPage();
@@ -57,6 +57,7 @@ namespace CP2077SaveEditor
             this.deleteModNodeButton = new CP2077SaveEditor.ModernButton();
             this.closeButton = new CP2077SaveEditor.ModernButton();
             this.applyButton = new CP2077SaveEditor.ModernButton();
+            this.infuseLegendaryComponentsButton = new CP2077SaveEditor.ModernButton();
             this.basicInfoGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.quantityUpDown)).BeginInit();
             this.quickActionsGroupBox.SuspendLayout();
@@ -125,6 +126,7 @@ namespace CP2077SaveEditor
             // quickActionsGroupBox
             // 
             this.quickActionsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.quickActionsGroupBox.Controls.Add(this.infuseLegendaryComponentsButton);
             this.quickActionsGroupBox.Controls.Add(this.pasteLegendaryIdButton);
             this.quickActionsGroupBox.Location = new System.Drawing.Point(12, 138);
             this.quickActionsGroupBox.Name = "quickActionsGroupBox";
@@ -142,11 +144,11 @@ namespace CP2077SaveEditor
             this.pasteLegendaryIdButton.HoverColor = System.Drawing.Color.LightGray;
             this.pasteLegendaryIdButton.Location = new System.Drawing.Point(6, 21);
             this.pasteLegendaryIdButton.Name = "pasteLegendaryIdButton";
-            this.pasteLegendaryIdButton.Size = new System.Drawing.Size(420, 24);
+            this.pasteLegendaryIdButton.Size = new System.Drawing.Size(200, 24);
             this.pasteLegendaryIdButton.TabIndex = 2;
             this.pasteLegendaryIdButton.Text = "Make Legendary";
             this.pasteLegendaryIdButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.pasteLegendaryIdButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pasteLegendaryIdButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.pasteLegendaryIdButton.Click += new System.EventHandler(this.pasteLegendaryIdButton_Click);
             // 
             // questItemCheckBox
@@ -219,7 +221,7 @@ namespace CP2077SaveEditor
             this.addCurveStatButton.TabIndex = 5;
             this.addCurveStatButton.Text = "+ New Curve";
             this.addCurveStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.addCurveStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addCurveStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.addCurveStatButton.Click += new System.EventHandler(this.addCurveStatButton_Click);
             // 
             // addCombinedStatButton
@@ -235,7 +237,7 @@ namespace CP2077SaveEditor
             this.addCombinedStatButton.TabIndex = 4;
             this.addCombinedStatButton.Text = "+ New Combined";
             this.addCombinedStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.addCombinedStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addCombinedStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.addCombinedStatButton.Click += new System.EventHandler(this.addCombinedStatButton_Click);
             // 
             // statsListView
@@ -258,23 +260,27 @@ namespace CP2077SaveEditor
             // 
             // statTypeHeader
             // 
+            this.statTypeHeader.Name = "statTypeHeader";
             this.statTypeHeader.Text = "Type";
             this.statTypeHeader.Width = 77;
             // 
             // statModifierHeader
             // 
             this.statModifierHeader.DisplayIndex = 2;
+            this.statModifierHeader.Name = "statModifierHeader";
             this.statModifierHeader.Text = "Modifier";
             this.statModifierHeader.Width = 87;
             // 
             // statNameHeader
             // 
             this.statNameHeader.DisplayIndex = 1;
+            this.statNameHeader.Name = "statNameHeader";
             this.statNameHeader.Text = "Stat";
             this.statNameHeader.Width = 131;
             // 
             // statValueHeader
             // 
+            this.statValueHeader.Name = "statValueHeader";
             this.statValueHeader.Text = "Value";
             // 
             // removeStatButton
@@ -290,7 +296,7 @@ namespace CP2077SaveEditor
             this.removeStatButton.TabIndex = 4;
             this.removeStatButton.Text = "- Delete";
             this.removeStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.removeStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.removeStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.removeStatButton.Click += new System.EventHandler(this.removeStatButton_Click);
             // 
             // addConstantStatButton
@@ -306,7 +312,7 @@ namespace CP2077SaveEditor
             this.addConstantStatButton.TabIndex = 3;
             this.addConstantStatButton.Text = "+ New Constant";
             this.addConstantStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.addConstantStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addConstantStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.addConstantStatButton.Click += new System.EventHandler(this.addConstantStatButton_Click);
             // 
             // modInfoTab
@@ -337,7 +343,7 @@ namespace CP2077SaveEditor
             this.newModNodeButton.TabIndex = 7;
             this.newModNodeButton.Text = "+ New Node";
             this.newModNodeButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.newModNodeButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.newModNodeButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.newModNodeButton.Click += new System.EventHandler(this.newModNodeButton_Click);
             // 
             // deleteModNodeButton
@@ -353,7 +359,7 @@ namespace CP2077SaveEditor
             this.deleteModNodeButton.TabIndex = 6;
             this.deleteModNodeButton.Text = "- Delete Node";
             this.deleteModNodeButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.deleteModNodeButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.deleteModNodeButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.deleteModNodeButton.Click += new System.EventHandler(this.deleteModNodeButton_Click);
             // 
             // closeButton
@@ -370,7 +376,7 @@ namespace CP2077SaveEditor
             this.closeButton.TabIndex = 3;
             this.closeButton.Text = "Close";
             this.closeButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.closeButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.closeButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
             // applyButton
@@ -387,8 +393,24 @@ namespace CP2077SaveEditor
             this.applyButton.TabIndex = 2;
             this.applyButton.Text = "Apply";
             this.applyButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.applyButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.applyButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
+            // 
+            // infuseLegendaryComponentsButton
+            // 
+            this.infuseLegendaryComponentsButton.BackColor = System.Drawing.Color.White;
+            this.infuseLegendaryComponentsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.infuseLegendaryComponentsButton.ClickEffectEnabled = true;
+            this.infuseLegendaryComponentsButton.DefaultColor = System.Drawing.Color.White;
+            this.infuseLegendaryComponentsButton.HoverColor = System.Drawing.Color.LightGray;
+            this.infuseLegendaryComponentsButton.Location = new System.Drawing.Point(212, 21);
+            this.infuseLegendaryComponentsButton.Name = "infuseLegendaryComponentsButton";
+            this.infuseLegendaryComponentsButton.Size = new System.Drawing.Size(214, 24);
+            this.infuseLegendaryComponentsButton.TabIndex = 3;
+            this.infuseLegendaryComponentsButton.Text = "Infuse Legendary Components";
+            this.infuseLegendaryComponentsButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.infuseLegendaryComponentsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.infuseLegendaryComponentsButton.Click += new System.EventHandler(this.infuseLegendaryComponentsButton_Click);
             // 
             // ItemDetails
             // 
@@ -402,7 +424,7 @@ namespace CP2077SaveEditor
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.basicInfoGroupBox);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ItemDetails";
@@ -451,5 +473,6 @@ namespace CP2077SaveEditor
         private ModernButton addCombinedStatButton;
         private ModernButton newModNodeButton;
         private ModernButton deleteModNodeButton;
+        private ModernButton infuseLegendaryComponentsButton;
     }
 }

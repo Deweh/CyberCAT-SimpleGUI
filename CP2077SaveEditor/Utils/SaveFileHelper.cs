@@ -117,6 +117,77 @@ namespace CP2077SaveEditor
             return null;
         }
 
+        public void SetConstantStat(gamedataStatType stat, float value, GameSavedStatsData statsData)
+        {
+            var foundStat = false;
+            foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
+            {
+                if (modifier.Value.GetType() == typeof(GameConstantStatModifierData))
+                {
+                    if (((GameConstantStatModifierData)modifier.Value).StatType == stat)
+                    {
+                        ((GameConstantStatModifierData)modifier.Value).Value = value;
+                        foundStat = true;
+                    }
+                }
+            }
+
+            if (!foundStat)
+            {
+                var newModifierData = new GameConstantStatModifierData();
+                newModifierData.ModifierType = gameStatModifierType.Additive;
+                newModifierData.StatType = gamedataStatType.Quality;
+                newModifierData.Value = 4;
+
+                this.AddStat(typeof(GameConstantStatModifierData), statsData, newModifierData);
+            }
+        }
+
+        public uint AddStat(Type statType, GameSavedStatsData statsData, GameStatModifierData modifierData = null)
+        {
+            var newModifierData = Activator.CreateInstance(statType);
+
+            if (statType == typeof(GameCurveStatModifierData))
+            {
+                ((GameCurveStatModifierData)newModifierData).ColumnName = "<null>";
+                ((GameCurveStatModifierData)newModifierData).CurveName = "<null>";
+
+            }
+
+            if (modifierData != null)
+            {
+                newModifierData = modifierData;
+            }
+
+            var newModifier = this.GetStatsContainer().CreateHandle<GameStatModifierData>((GameStatModifierData)newModifierData);
+            statsData.StatModifiers = statsData.StatModifiers.Append(newModifier).ToArray();
+
+            return newModifier.Id;
+        }
+
+        public void RemoveStat(Handle<GameStatModifierData> statsHandle, GameSavedStatsData statsData)
+        {
+            var modifiersList = statsData.StatModifiers.ToList();
+            modifiersList.Remove(statsHandle);
+            statsData.StatModifiers = modifiersList.ToArray();
+
+            this.GetStatsContainer().RemoveHandle((int)statsHandle.Id);
+
+            foreach (GameSavedStatsData value in this.GetStatsMap().Values)
+            {
+                if (value.StatModifiers != null)
+                {
+                    foreach (Handle<GameStatModifierData> modifierData in value.StatModifiers)
+                    {
+                        if (modifierData.Id > statsHandle.Id)
+                        {
+                            modifierData.SetId(modifierData.Id - 1);
+                        }
+                    }
+                }
+            }
+        }
+
         public List<FactsTable.FactEntry> GetKnownFacts()
         {
             var factsList = new List<FactsTable.FactEntry>();

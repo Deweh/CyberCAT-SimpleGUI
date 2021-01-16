@@ -205,34 +205,12 @@ namespace CP2077SaveEditor
         {
             if (activeSaveFile.GetItemStatData(activeItem) == null)
             {
-                if (MessageBox.Show("Item has no stat data. Fallback to old method?", "Notice", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show("Item has no stat data. To fix this, please upgrade the item in-game at least once. Fallback to old method?", "Notice", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     modsBaseIdBox.Text = ((ulong)88400986533).ToString();
                 }
             } else {
-                var foundQualityStat = false;
-                foreach (Handle<GameStatModifierData> modifier in activeSaveFile.GetItemStatData(activeItem).StatModifiers)
-                {
-                    if (modifier.Value.GetType().Name == "GameConstantStatModifierData")
-                    {
-                        if (((GameConstantStatModifierData)modifier.Value).StatType == gamedataStatType.Quality)
-                        {
-                            ((GameConstantStatModifierData)modifier.Value).Value = 4;
-                            foundQualityStat = true;
-                        }
-                    }
-                }
-
-                if (!foundQualityStat)
-                {
-                    var newModifierData = new GameConstantStatModifierData();
-                    newModifierData.ModifierType = gameStatModifierType.Additive;
-                    newModifierData.StatType = gamedataStatType.Quality;
-                    newModifierData.Value = 4;
-
-                    var newModifier = activeSaveFile.GetStatsContainer().CreateHandle<GameStatModifierData>(newModifierData);
-                    activeSaveFile.GetItemStatData(activeItem).StatModifiers = activeSaveFile.GetItemStatData(activeItem).StatModifiers.Append(newModifier).ToArray();
-                }
+                activeSaveFile.SetConstantStat(gamedataStatType.Quality, 4, activeSaveFile.GetItemStatData(activeItem));
 
                 ReloadData();
                 MessageBox.Show("Legendary quality stat applied.");
@@ -317,60 +295,20 @@ namespace CP2077SaveEditor
             }
         }
 
-        private void RemoveStat(Handle<GameStatModifierData> statsHandle)
-        {
-            var modifiersList = activeSaveFile.GetItemStatData(activeItem).StatModifiers.ToList();
-            modifiersList.Remove(statsHandle);
-            activeSaveFile.GetItemStatData(activeItem).StatModifiers = modifiersList.ToArray();
-
-            activeSaveFile.GetStatsContainer().RemoveHandle((int)statsHandle.Id);
-
-            foreach (GameSavedStatsData value in activeSaveFile.GetStatsMap().Values)
-            {
-                if (value.StatModifiers != null)
-                {
-                    foreach (Handle<GameStatModifierData> modifierData in value.StatModifiers)
-                    {
-                        if (modifierData.Id > statsHandle.Id)
-                        {
-                            modifierData.SetId(modifierData.Id - 1);
-                        }
-                    }
-                }
-            }
-        }
-
-        private uint AddStat(Type statType)
-        {
-            var newModifierData = Activator.CreateInstance(statType);
-
-            if (statType == typeof(GameCurveStatModifierData))
-            {
-                ((GameCurveStatModifierData)newModifierData).ColumnName = "<null>";
-                ((GameCurveStatModifierData)newModifierData).CurveName = "<null>";
-
-            }
-
-            var newModifier = activeSaveFile.GetStatsContainer().CreateHandle<GameStatModifierData>((GameStatModifierData)newModifierData);
-            activeSaveFile.GetItemStatData(activeItem).StatModifiers = activeSaveFile.GetItemStatData(activeItem).StatModifiers.Append(newModifier).ToArray();
-
-            return newModifier.Id;
-        }
-
         private void statsListView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete && statsListView.SelectedItems.Count > 0)
             {
                 e.Handled = true;
                 e.SuppressKeyPress = true;
-                RemoveStat((Handle<GameStatModifierData>)statsListView.SelectedItems[0].Tag);
+                activeSaveFile.RemoveStat((Handle<GameStatModifierData>)statsListView.SelectedItems[0].Tag, activeSaveFile.GetItemStatData(activeItem));
                 statsListView.Items.Remove(statsListView.SelectedItems[0]);
             }
         }
 
         private void addConstantStatButton_Click(object sender, EventArgs e)
         {
-            var newId = AddStat(typeof(GameConstantStatModifierData));
+            var newId = activeSaveFile.AddStat(typeof(GameConstantStatModifierData), activeSaveFile.GetItemStatData(activeItem));
             ReloadData();
 
             var statDialog = new StatDetails();
@@ -380,7 +318,7 @@ namespace CP2077SaveEditor
         private void removeStatButton_Click(object sender, EventArgs e)
         {
             if (statsListView.SelectedItems.Count > 0) {
-                RemoveStat((Handle<GameStatModifierData>)statsListView.SelectedItems[0].Tag);
+                activeSaveFile.RemoveStat((Handle<GameStatModifierData>)statsListView.SelectedItems[0].Tag, activeSaveFile.GetItemStatData(activeItem));
                 statsListView.Items.Remove(statsListView.SelectedItems[0]);
             }
             
@@ -388,7 +326,7 @@ namespace CP2077SaveEditor
 
         private void addCombinedStatButton_Click(object sender, EventArgs e)
         {
-            var newId = AddStat(typeof(GameCombinedStatModifierData));
+            var newId = activeSaveFile.AddStat(typeof(GameCombinedStatModifierData), activeSaveFile.GetItemStatData(activeItem));
             ReloadData();
 
             var statDialog = new StatDetails();
@@ -397,7 +335,7 @@ namespace CP2077SaveEditor
 
         private void addCurveStatButton_Click(object sender, EventArgs e)
         {
-            var newId = AddStat(typeof(GameCurveStatModifierData));
+            var newId = activeSaveFile.AddStat(typeof(GameCurveStatModifierData), activeSaveFile.GetItemStatData(activeItem));
             ReloadData();
 
             var statDialog = new StatDetails();
@@ -442,6 +380,36 @@ namespace CP2077SaveEditor
                 ReloadData();
                 var nodeDialog = new ModNodeDetails();
                 nodeDialog.LoadNode(newNode, ReloadData, activeSaveFile);
+            }
+        }
+
+        private void infuseLegendaryComponentsButton_Click(object sender, EventArgs e)
+        {
+            var components = activeSaveFile.GetInventory(1).Items.Where(x => x.ItemGameName == "Legendary Upgrade Components").FirstOrDefault();
+            if (components == null || ((ItemData.SimpleItemData)components.Data).Quantity < 5)
+            {
+                MessageBox.Show("Insufficient Legendary Upgrade Components. (5) required.");
+                return;
+            }
+
+            if (activeSaveFile.GetItemStatData(activeItem) == null)
+            {
+                MessageBox.Show("Item has no stat data. To fix this, please upgrade the item in-game at least once.");
+                return;
+            }
+
+            if (MessageBox.Show("This process will remove (5) Legendary Upgrade Components from your inventory in exchange for upgrading the selected item to legendary quality. The selected item's level will also be upgraded to your current level. Do you wish to continue?", "Infuse Legendary Components", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                var playerData = activeSaveFile.GetPlayerDevelopmentData();
+                var level = playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == gamedataProficiencyType.Level)].CurrentLevel;
+
+                ((ItemData.SimpleItemData)components.Data).Quantity -= 5;
+                activeSaveFile.SetConstantStat(gamedataStatType.Quality, 4, activeSaveFile.GetItemStatData(activeItem));
+                activeSaveFile.SetConstantStat(gamedataStatType.ItemLevel, level * 10, activeSaveFile.GetItemStatData(activeItem));
+                activeSaveFile.SetConstantStat(gamedataStatType.PowerLevel, level, activeSaveFile.GetItemStatData(activeItem));
+                ReloadData();
+
+                MessageBox.Show("Legendary components infused.");
             }
         }
     }
