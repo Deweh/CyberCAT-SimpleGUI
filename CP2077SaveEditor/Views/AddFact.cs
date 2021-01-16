@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,6 +29,22 @@ namespace CP2077SaveEditor
 
         private void addFactButton_Click(object sender, EventArgs e)
         {
+            if (factTypeBox.SelectedIndex == 1)
+            {
+                if (!uint.TryParse(factEntryBox.Text, out _))
+                {
+                    MessageBox.Show("Hash must be a valid 32-bit unsigned integer.");
+                    return;
+                }
+            } else {
+                var factsList = JsonConvert.DeserializeObject<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
+                if (!factsList.Values.Contains(factEntryBox.Text))
+                {
+                    MessageBox.Show("Fact name '" + factEntryBox.Text + "' could not be found on the known facts list.");
+                    return;
+                }
+            }
+            
             callbackFunc(factEntryBox.Text, factTypeBox.SelectedIndex, (int)factValueUpDown.Value);
             this.Close();
         }

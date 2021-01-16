@@ -922,14 +922,13 @@ namespace CP2077SaveEditor
             this.addFactButton.ClickEffectEnabled = true;
             this.addFactButton.DefaultColor = System.Drawing.Color.White;
             this.addFactButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addFactButton.Location = new System.Drawing.Point(728, -1);
+            this.addFactButton.Location = new System.Drawing.Point(656, -1);
             this.addFactButton.Name = "addFactButton";
-            this.addFactButton.Size = new System.Drawing.Size(20, 18);
+            this.addFactButton.Size = new System.Drawing.Size(92, 18);
             this.addFactButton.TabIndex = 2;
-            this.addFactButton.Text = "+";
+            this.addFactButton.Text = "+ New Fact";
             this.addFactButton.TextColor = System.Drawing.SystemColors.ControlText;
             this.addFactButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.addFactButton.Visible = false;
             this.addFactButton.Click += new System.EventHandler(this.addFactButton_Click);
             // 
             // factsSearchBox

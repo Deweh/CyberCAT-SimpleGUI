@@ -134,16 +134,17 @@ namespace CP2077SaveEditor
             return (factsList);
         }
 
-        public void AddFactByName(string factName, uint factValue)
+        public bool AddFactByName(string factName, uint factValue)
         {
             var factsList = JsonConvert.DeserializeObject<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
             if (!factsList.Values.Contains(factName))
             {
-                MessageBox.Show("Fact name '" + factName + "' could not be found on the known facts list.");
+                return false;
             }
 
             var factHash = factsList.FirstOrDefault(x => x.Value == factName).Key;
             AddFactByHash(factHash, factValue);
+            return true;
         }
 
         public void AddFactByHash(uint factHash, uint factValue)
@@ -152,7 +153,25 @@ namespace CP2077SaveEditor
             newFact.Hash = factHash;
             newFact.Value = factValue;
 
-            ((FactsTable)this.GetFactsContainer().Children[0].Value).FactEntries.Add(newFact);
+            var hashesList = new List<uint>();
+            var currentFacts = ((FactsDB)this.GetFactsContainer().Value).FactsTables[0].FactEntries;
+
+            foreach (FactsTable.FactEntry fact in currentFacts)
+            {
+                hashesList.Add(fact.Hash);
+            }
+            hashesList.Sort();
+
+            foreach (uint hash in hashesList)
+            {
+                if (hash > factHash)
+                {
+                    var i = currentFacts.IndexOf(currentFacts.Where(x => x.Hash == hash).FirstOrDefault());
+                    currentFacts.Insert(i, newFact);
+                    return;
+                }
+            }
+            currentFacts.Add(newFact);
         }
 
         public Inventory.SubInventory GetInventory(ulong id)

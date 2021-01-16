@@ -61,7 +61,7 @@
   <data name="statsPanel.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing.Common" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAA1MAAAIkCAYAAAD76HFRAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vwAADr8BOAVTJAAA/7JJREFUeF7snQecHMWV//E53Z3t8935Dw44YAzGGAwYMNFgwIDAgBGIjAnCgiMa
+        vAAADrwBlbxySQAA/7JJREFUeF7snQecHMWV//E53Z3t8935Dw44YAzGGAwYMNFgwIDAgBGIjAnCgiMa
         TBAGTAaTwQSJnCySAYNJwmCEAUkoZ2mVVnml1WqjtFkr6f3rWzNvKTUzuzM7M7sT3vez79Pd1d3VYXqr
         61ev6vUmYhiGYRiGYRiGYaSNiSnDMAzDMAzDMIweYGLKMAzDMAzDMAyjB5iYMgzDMAzDMAzD6AEmpgzD
         MAzDMAzDMHqAiSnDMAzDMAzDMIweYGLKMAzDMAzDMAyjB5iYMgzDMAzDMAzD6AEmpgzDMAzDMAzDMHqA
@@ -1347,7 +1347,7 @@
   <data name="lifePathPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing.Common" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAKYAAAD7CAYAAADgmO9eAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wgAADsIBFShKgAAAr8FJREFUeF7t3WXULdlVr/E9GANGIAkJDiG4NO7auLu7W+Pu7u7uTuPu7u4SIAkJ
+        vgAADr4B6kKxwAAAr8FJREFUeF7t3WXULdlVr/E9GANGIAkJDiG4NO7auLu7W+Pu7u7uTuPu7u4SIAkJ
         FiAEdyewb//q3ucds1dq7/ec091Jn779YaaqVi2fz/rPtWq/p3P4sz/7s+Odzf7kT/7krP3pn/7pWdur
         89Fpj3jEI87awx72sLO2N46HP/zhF/aXf/mXm/3FX/zFVt+f//mfb7a+3zNl2N677G/+5m8u7K//+q+P
         f/VXf/Uo76Vn3s88PZ+yv/3bv91slq+svhnv3WDu2IRgz/74j//4rO3BNm2vz9PK11hnnwD4h3/4h8c/
