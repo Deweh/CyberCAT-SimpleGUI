@@ -13,16 +13,18 @@ namespace CP2077SaveEditor
 {
     public partial class AddFact : Form
     {
-        private Action<string, int, int> callbackFunc;
+        private Action<string> callbackFunc;
+        private SaveFileHelper activeSaveFile;
 
         public AddFact()
         {
             InitializeComponent();
         }
 
-        public void LoadFactDialog(Action<string, int, int> callback)
+        public void LoadFactDialog(Action<string> callback, object _saveFile)
         {
             callbackFunc = callback;
+            activeSaveFile = (SaveFileHelper)_saveFile;
             factTypeBox.SelectedIndex = 0;
             this.ShowDialog();
         }
@@ -36,6 +38,7 @@ namespace CP2077SaveEditor
                     MessageBox.Show("Hash must be a valid 32-bit unsigned integer.");
                     return;
                 }
+                activeSaveFile.AddFactByName(factEntryBox.Text, (uint)factValueUpDown.Value);
             } else {
                 var factsList = JsonConvert.DeserializeObject<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
                 if (!factsList.Values.Contains(factEntryBox.Text))
@@ -43,9 +46,10 @@ namespace CP2077SaveEditor
                     MessageBox.Show("Fact name '" + factEntryBox.Text + "' could not be found on the known facts list.");
                     return;
                 }
+                activeSaveFile.AddFactByHash(uint.Parse(factEntryBox.Text), (uint)factValueUpDown.Value);
             }
-            
-            callbackFunc(factEntryBox.Text, factTypeBox.SelectedIndex, (int)factValueUpDown.Value);
+
+            callbackFunc("");
             this.Close();
         }
     }

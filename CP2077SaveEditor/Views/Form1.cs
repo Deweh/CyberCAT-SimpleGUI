@@ -48,6 +48,7 @@ namespace CP2077SaveEditor
 
             factsListView.AfterLabelEdit += factsListView_AfterLabelEdit;
             factsListView.MouseUp += factsListView_MouseUp;
+            factsListView.KeyDown += factsListView_KeyDown;
             factsListView.ColumnClick += factsListView_ColumnClick;
             inventoryListView.DoubleClick += inventoryListView_DoubleClick;
             inventoryListView.ColumnClick += inventoryListView_ColumnClick;
@@ -638,6 +639,16 @@ namespace CP2077SaveEditor
             }
         }
 
+        private void factsListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (factsListView.SelectedIndices.Count > 0 && e.KeyCode == Keys.Delete)
+            {
+                ((FactsTable)activeSaveFile.GetFactsContainer().Children[0].Value).FactEntries.Remove((FactsTable.FactEntry)factsListView.SelectedItems[0].Tag);
+                statusLabel.Text = "'" + factsListView.SelectedItems[0].SubItems[1].Text + "' deleted.";
+                factsListView.Items.Remove(factsListView.SelectedItems[0]);
+            }
+        }
+
         private void factsListView_MouseUp(object sender, EventArgs e)
         {
             if (factsListView.SelectedItems.Count > 0)
@@ -735,18 +746,7 @@ namespace CP2077SaveEditor
         private void addFactButton_Click(object sender, EventArgs e)
         {
             var factDialog = new AddFact();
-            factDialog.LoadFactDialog(AddFactCallback);
-        }
-
-        public void AddFactCallback(string factEntry, int factType, int factValue)
-        {
-            if (factType == 0)
-            {
-                activeSaveFile.AddFactByName(factEntry, (uint)factValue);
-            } else {
-                activeSaveFile.AddFactByHash(uint.Parse(factEntry), (uint)factValue);
-            }
-            RefreshFacts();
+            factDialog.LoadFactDialog(RefreshFacts, activeSaveFile);
         }
 
         private void factsSaveButton_Click(object sender, EventArgs e)
