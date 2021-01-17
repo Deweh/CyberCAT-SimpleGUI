@@ -30,6 +30,19 @@ namespace CP2077SaveEditor
         private int saveType = 0;
 
         private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
+        private static readonly Dictionary<ulong, string> inventoryNames = new()
+        {
+            { 0x1, "V's Inventory" },
+            { 0xF4240, "Car Stash" },
+            { 0x895724, "Nomad Intro Items" },
+            { 0x895956, "Street Kid Intro Items" },
+            { 0x8959E8, "Corpo Intro Items" },
+            { 0x38E8D0C9F9A087AE, "Panam's Stash" },
+            { 0x6E48C594562422DE, "Judy's Stash" },
+            { 0x7901DE03D136A5AF, "V's Wardrobe" },
+            { 0xE5F556FCBB62A706, "V's Stash" },
+            { 0xEDAD8C9B086A615E, "River's Stash" }
+        };
 
         public Form1()
         {
@@ -116,7 +129,7 @@ namespace CP2077SaveEditor
                 {gamedataProficiencyType.ColdBlood, coldBloodUpDown}
             };
 
-            itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
+        itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         }
 
         //This function & other functions related to managing tabs need to be refactored.
@@ -193,7 +206,11 @@ namespace CP2077SaveEditor
             var containerID = containersListBox.SelectedItem.ToString();
             containerGroupBox.Visible = true;
             containerGroupBox.Text = containerID;
-            if (containerID == "Player Inventory") { containerID = "1"; }
+            if (inventoryNames.Values.Contains(containerID))
+            {
+                containerID = inventoryNames.Where(x => x.Value == containerID).FirstOrDefault().Key.ToString();
+            }
+
             ItemData activeItemEdit = null;
 
             if (inventoryListView.SelectedItems.Count > 0)
@@ -276,18 +293,22 @@ namespace CP2077SaveEditor
                 }
             }
 
-            foreach (KeyValuePair<CyberCAT.Core.Classes.DumpedClasses.GameItemID, string> equipInfo in activeSaveFile.GetEquippedItems().Reverse())
+            if (containerID == "1")
             {
-                var equippedItem = listViewRows.Where(x => ((ItemData)x.Tag).ItemTdbId.Id == equipInfo.Key.Id.Id).FirstOrDefault();
-
-                if (equippedItem != null)
+                foreach (KeyValuePair<CyberCAT.Core.Classes.DumpedClasses.GameItemID, string> equipInfo in activeSaveFile.GetEquippedItems().Reverse())
                 {
-                    equippedItem.SubItems[3].Text = equipInfo.Value;
-                    equippedItem.BackColor = Color.FromArgb(248, 248, 248);
-                    listViewRows.Remove(equippedItem);
-                    listViewRows.Insert(0, equippedItem);
+                    var equippedItem = listViewRows.Where(x => ((ItemData)x.Tag).ItemTdbId.Id == equipInfo.Key.Id.Id).FirstOrDefault();
+
+                    if (equippedItem != null)
+                    {
+                        equippedItem.SubItems[3].Text = equipInfo.Value;
+                        equippedItem.BackColor = Color.FromArgb(248, 248, 248);
+                        listViewRows.Remove(equippedItem);
+                        listViewRows.Insert(0, equippedItem);
+                    }
                 }
             }
+            
 
             inventoryListView.BeginUpdate();
             inventoryListView.ListViewItemSorter = null;
@@ -391,7 +412,11 @@ namespace CP2077SaveEditor
                 containersListBox.Items.Clear();
                 foreach (Inventory.SubInventory container in activeSaveFile.GetInventoriesContainer().SubInventories)
                 {
-                    var containerID = container.InventoryId.ToString(); if (containerID == "1") { containerID = "Player Inventory"; }
+                    var containerID = container.InventoryId.ToString();
+                    if (inventoryNames.Keys.Contains(container.InventoryId))
+                    {
+                        containerID = inventoryNames[container.InventoryId];
+                    }
                     containersListBox.Items.Add(containerID);
                 }
 
@@ -629,7 +654,10 @@ namespace CP2077SaveEditor
             if (inventoryListView.SelectedIndices.Count > 0 && e.KeyCode == Keys.Delete)
             {
                 var containerID = containersListBox.SelectedItem.ToString();
-                if (containerID == "Player Inventory") { containerID = "1"; }
+                if (inventoryNames.Values.Contains(containerID))
+                {
+                    containerID = inventoryNames.Where(x => x.Value == containerID).FirstOrDefault().Key.ToString();
+                }
 
                 var activeItem = (ItemData)inventoryListView.SelectedItems[0].Tag;
                 activeSaveFile.GetInventory(ulong.Parse(containerID)).Items.Remove(activeItem);
