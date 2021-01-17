@@ -402,12 +402,16 @@ namespace CP2077SaveEditor
                 RefreshFacts();
                 //These lines may look redundant, but they initialize the factsListView so that the render thread doesn't freeze when selecting the Quest Facts tab for the first time.
                 //Since the render thread will be frozen here anyways while everything loads, it's best to do this here.
+                enableSecretEndingButton.Visible = false;
+                makeAllRomanceableButton.Visible = false;
                 addFactButton.Visible = false;
                 factsSaveButton.Visible = false;
                 factsPanel.Visible = true;
                 factsPanel.Visible = false;
                 factsSaveButton.Visible = true;
                 addFactButton.Visible = true;
+                makeAllRomanceableButton.Visible = true;
+                enableSecretEndingButton.Visible = true;
 
                 //Player stats parsing
                 var playerData = activeSaveFile.GetPlayerDevelopmentData();
@@ -800,6 +804,23 @@ namespace CP2077SaveEditor
             var i = Array.FindIndex(activeSaveFile.GetStatsMap().Keys, x => x.EntityHash == 1);
             var details = new ItemDetails();
             details.LoadStatsOnly(activeSaveFile.GetStatsMap().Values[i].Seed, activeSaveFile, "Player");
+        }
+
+        private void enableSecretEndingButton_Click(object sender, EventArgs e)
+        {
+            activeSaveFile.SetFactByName("sq032_johnny_friend", 1);
+            RefreshFacts();
+            MessageBox.Show("Secret ending enabled.");
+        }
+
+        private void makeAllRomanceableButton_Click(object sender, EventArgs e)
+        {
+            activeSaveFile.SetFactByName("judy_romanceable", 1);
+            activeSaveFile.SetFactByName("river_romanceable", 1);
+            activeSaveFile.SetFactByName("panam_romanceable", 1);
+            activeSaveFile.SetFactByName("kerry_romanceable", 1);
+            RefreshFacts();
+            MessageBox.Show("All characters are now romanceable.");
         }
 
         private void swapSaveType_Click(object sender, EventArgs e)

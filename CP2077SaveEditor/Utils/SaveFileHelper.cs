@@ -205,6 +205,19 @@ namespace CP2077SaveEditor
             return (factsList);
         }
 
+        public bool SetFactByName(string factName, uint factValue)
+        {
+            var existingFact = this.GetKnownFacts().Where(x => x.FactName == factName).FirstOrDefault();
+
+            if (existingFact != null)
+            {
+                existingFact.Value = factValue;
+                return true;
+            }
+
+            return this.AddFactByName(factName, factValue);
+        }
+
         public bool AddFactByName(string factName, uint factValue)
         {
             var factsList = JsonConvert.DeserializeObject<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
