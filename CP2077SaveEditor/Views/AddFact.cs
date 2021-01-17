@@ -38,7 +38,7 @@ namespace CP2077SaveEditor
                     MessageBox.Show("Hash must be a valid 32-bit unsigned integer.");
                     return;
                 }
-                activeSaveFile.AddFactByName(factEntryBox.Text, (uint)factValueUpDown.Value);
+                activeSaveFile.AddFactByHash(uint.Parse(factEntryBox.Text), (uint)factValueUpDown.Value);
             } else {
                 var factsList = JsonConvert.DeserializeObject<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
                 if (!factsList.Values.Contains(factEntryBox.Text))
@@ -46,7 +46,7 @@ namespace CP2077SaveEditor
                     MessageBox.Show("Fact name '" + factEntryBox.Text + "' could not be found on the known facts list.");
                     return;
                 }
-                activeSaveFile.AddFactByHash(uint.Parse(factEntryBox.Text), (uint)factValueUpDown.Value);
+                activeSaveFile.AddFactByName(factEntryBox.Text, (uint)factValueUpDown.Value);
             }
 
             callbackFunc("");
