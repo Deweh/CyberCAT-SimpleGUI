@@ -88,6 +88,8 @@ namespace CP2077SaveEditor
             stealthUpDown.ValueChanged += PlayerStatChanged;
             coldBloodUpDown.ValueChanged += PlayerStatChanged;
 
+            statsPanel.BackgroundImage = CP2077SaveEditor.Properties.Resources.player_stats;
+
             attrFields = new Dictionary<Enum, NumericUpDown>
             {
                 {gamedataStatType.Strength, bodyUpDown},

@@ -1018,7 +1018,6 @@ namespace CP2077SaveEditor
             // 
             // statsPanel
             // 
-            this.statsPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("statsPanel.BackgroundImage")));
             this.statsPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.statsPanel.Controls.Add(this.additionalPlayerStatsButton);
             this.statsPanel.Controls.Add(this.coldBloodUpDown);
@@ -1266,7 +1265,6 @@ namespace CP2077SaveEditor
             // lifePathPictureBox
             // 
             this.lifePathPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lifePathPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("lifePathPictureBox.Image")));
             this.lifePathPictureBox.Location = new System.Drawing.Point(366, 217);
             this.lifePathPictureBox.Name = "lifePathPictureBox";
             this.lifePathPictureBox.Size = new System.Drawing.Size(124, 188);
