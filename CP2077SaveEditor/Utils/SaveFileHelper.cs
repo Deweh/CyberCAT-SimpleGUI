@@ -388,7 +388,7 @@ namespace CP2077SaveEditor
                 list.Add(newEntry);
                 SetLinearAppearanceValue(fieldName, fieldNum, value);
             } else {
-                if (fieldNum == 1)
+                if (value == 1)
                 {
                     list.Remove(existingEntry);
                 }
