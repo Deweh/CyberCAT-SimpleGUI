@@ -42,6 +42,8 @@ namespace CP2077SaveEditor
             this.statusLabel = new System.Windows.Forms.Label();
             this.appearancePanel = new System.Windows.Forms.Panel();
             this.appearanceCompareValuesBox = new System.Windows.Forms.GroupBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.appearanceCompareNameBox = new System.Windows.Forms.TextBox();
             this.appearanceCompareSaveButton = new CP2077SaveEditor.ModernButton();
             this.appearanceCompareListBox = new System.Windows.Forms.ListBox();
             this.appearanceCompareLoadButton = new CP2077SaveEditor.ModernButton();
@@ -71,15 +73,10 @@ namespace CP2077SaveEditor
             this.label10 = new System.Windows.Forms.Label();
             this.eyesColorBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.eyesBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.earsBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.jawBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.mouthBox = new System.Windows.Forms.TextBox();
-            this.noseBox = new System.Windows.Forms.TextBox();
             this.appearanceTreeView = new System.Windows.Forms.TreeView();
             this.loadAppearButton = new CP2077SaveEditor.ModernButton();
             this.saveAppearButton = new CP2077SaveEditor.ModernButton();
@@ -135,8 +132,11 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.appearanceCompareNameBox = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
+            this.eyesUpDown = new System.Windows.Forms.NumericUpDown();
+            this.noseUpDown = new System.Windows.Forms.NumericUpDown();
+            this.mouthUpDown = new System.Windows.Forms.NumericUpDown();
+            this.jawUpDown = new System.Windows.Forms.NumericUpDown();
+            this.earsUpDown = new System.Windows.Forms.NumericUpDown();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.appearanceCompareValuesBox.SuspendLayout();
@@ -173,6 +173,11 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.reflexesUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.streetCredUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.eyesUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.noseUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mouthUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.jawUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.earsUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // optionsPanel
@@ -348,6 +353,22 @@ namespace CP2077SaveEditor
             this.appearanceCompareValuesBox.TabStop = false;
             this.appearanceCompareValuesBox.Text = "Compare Values";
             this.appearanceCompareValuesBox.Visible = false;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(715, 21);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(67, 13);
+            this.label19.TabIndex = 3;
+            this.label19.Text = "Field Name:";
+            // 
+            // appearanceCompareNameBox
+            // 
+            this.appearanceCompareNameBox.Location = new System.Drawing.Point(717, 37);
+            this.appearanceCompareNameBox.Name = "appearanceCompareNameBox";
+            this.appearanceCompareNameBox.Size = new System.Drawing.Size(100, 22);
+            this.appearanceCompareNameBox.TabIndex = 2;
             // 
             // appearanceCompareSaveButton
             // 
@@ -618,18 +639,18 @@ namespace CP2077SaveEditor
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.earsUpDown);
+            this.groupBox3.Controls.Add(this.jawUpDown);
+            this.groupBox3.Controls.Add(this.mouthUpDown);
+            this.groupBox3.Controls.Add(this.noseUpDown);
+            this.groupBox3.Controls.Add(this.eyesUpDown);
             this.groupBox3.Controls.Add(this.label10);
             this.groupBox3.Controls.Add(this.eyesColorBox);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.eyesBox);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.earsBox);
             this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.jawBox);
             this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Controls.Add(this.mouthBox);
-            this.groupBox3.Controls.Add(this.noseBox);
             this.groupBox3.Location = new System.Drawing.Point(15, 15);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(311, 188);
@@ -640,7 +661,7 @@ namespace CP2077SaveEditor
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(123, 27);
+            this.label10.Location = new System.Drawing.Point(110, 27);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(38, 13);
             this.label10.TabIndex = 4;
@@ -650,10 +671,10 @@ namespace CP2077SaveEditor
             // 
             this.eyesColorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.eyesColorBox.Location = new System.Drawing.Point(167, 24);
+            this.eyesColorBox.Location = new System.Drawing.Point(154, 24);
             this.eyesColorBox.Name = "eyesColorBox";
             this.eyesColorBox.ReadOnly = true;
-            this.eyesColorBox.Size = new System.Drawing.Size(125, 22);
+            this.eyesColorBox.Size = new System.Drawing.Size(138, 22);
             this.eyesColorBox.TabIndex = 5;
             // 
             // label3
@@ -664,14 +685,6 @@ namespace CP2077SaveEditor
             this.label3.Size = new System.Drawing.Size(32, 13);
             this.label3.TabIndex = 0;
             this.label3.Text = "Eyes:";
-            // 
-            // eyesBox
-            // 
-            this.eyesBox.Location = new System.Drawing.Point(66, 24);
-            this.eyesBox.Name = "eyesBox";
-            this.eyesBox.ReadOnly = true;
-            this.eyesBox.Size = new System.Drawing.Size(51, 22);
-            this.eyesBox.TabIndex = 1;
             // 
             // label4
             // 
@@ -691,14 +704,6 @@ namespace CP2077SaveEditor
             this.label5.TabIndex = 3;
             this.label5.Text = "Mouth:";
             // 
-            // earsBox
-            // 
-            this.earsBox.Location = new System.Drawing.Point(66, 136);
-            this.earsBox.Name = "earsBox";
-            this.earsBox.ReadOnly = true;
-            this.earsBox.Size = new System.Drawing.Size(51, 22);
-            this.earsBox.TabIndex = 9;
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -708,14 +713,6 @@ namespace CP2077SaveEditor
             this.label6.TabIndex = 4;
             this.label6.Text = "Jaw:";
             // 
-            // jawBox
-            // 
-            this.jawBox.Location = new System.Drawing.Point(66, 108);
-            this.jawBox.Name = "jawBox";
-            this.jawBox.ReadOnly = true;
-            this.jawBox.Size = new System.Drawing.Size(51, 22);
-            this.jawBox.TabIndex = 8;
-            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -724,22 +721,6 @@ namespace CP2077SaveEditor
             this.label7.Size = new System.Drawing.Size(31, 13);
             this.label7.TabIndex = 5;
             this.label7.Text = "Ears:";
-            // 
-            // mouthBox
-            // 
-            this.mouthBox.Location = new System.Drawing.Point(66, 80);
-            this.mouthBox.Name = "mouthBox";
-            this.mouthBox.ReadOnly = true;
-            this.mouthBox.Size = new System.Drawing.Size(51, 22);
-            this.mouthBox.TabIndex = 7;
-            // 
-            // noseBox
-            // 
-            this.noseBox.Location = new System.Drawing.Point(66, 52);
-            this.noseBox.Name = "noseBox";
-            this.noseBox.ReadOnly = true;
-            this.noseBox.Size = new System.Drawing.Size(51, 22);
-            this.noseBox.TabIndex = 6;
             // 
             // appearanceTreeView
             // 
@@ -1498,21 +1479,115 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
-            // appearanceCompareNameBox
+            // eyesUpDown
             // 
-            this.appearanceCompareNameBox.Location = new System.Drawing.Point(717, 37);
-            this.appearanceCompareNameBox.Name = "appearanceCompareNameBox";
-            this.appearanceCompareNameBox.Size = new System.Drawing.Size(100, 22);
-            this.appearanceCompareNameBox.TabIndex = 2;
+            this.eyesUpDown.Location = new System.Drawing.Point(66, 25);
+            this.eyesUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.eyesUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.eyesUpDown.Name = "eyesUpDown";
+            this.eyesUpDown.Size = new System.Drawing.Size(38, 22);
+            this.eyesUpDown.TabIndex = 6;
+            this.eyesUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
-            // label19
+            // noseUpDown
             // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(715, 21);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(67, 13);
-            this.label19.TabIndex = 3;
-            this.label19.Text = "Field Name:";
+            this.noseUpDown.Location = new System.Drawing.Point(66, 53);
+            this.noseUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.noseUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.noseUpDown.Name = "noseUpDown";
+            this.noseUpDown.Size = new System.Drawing.Size(38, 22);
+            this.noseUpDown.TabIndex = 7;
+            this.noseUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // mouthUpDown
+            // 
+            this.mouthUpDown.Location = new System.Drawing.Point(66, 81);
+            this.mouthUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.mouthUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.mouthUpDown.Name = "mouthUpDown";
+            this.mouthUpDown.Size = new System.Drawing.Size(38, 22);
+            this.mouthUpDown.TabIndex = 8;
+            this.mouthUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // jawUpDown
+            // 
+            this.jawUpDown.Location = new System.Drawing.Point(66, 109);
+            this.jawUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.jawUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.jawUpDown.Name = "jawUpDown";
+            this.jawUpDown.Size = new System.Drawing.Size(38, 22);
+            this.jawUpDown.TabIndex = 9;
+            this.jawUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // earsUpDown
+            // 
+            this.earsUpDown.Location = new System.Drawing.Point(66, 137);
+            this.earsUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.earsUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.earsUpDown.Name = "earsUpDown";
+            this.earsUpDown.Size = new System.Drawing.Size(38, 22);
+            this.earsUpDown.TabIndex = 10;
+            this.earsUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // Form1
             // 
@@ -1581,6 +1656,11 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.reflexesUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.streetCredUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.eyesUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.noseUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mouthUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.jawUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.earsUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1599,12 +1679,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Panel inventoryPanel;
         private System.Windows.Forms.NumericUpDown moneyUpDown;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox eyesBox;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox earsBox;
-        private System.Windows.Forms.TextBox jawBox;
-        private System.Windows.Forms.TextBox mouthBox;
-        private System.Windows.Forms.TextBox noseBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
@@ -1693,6 +1768,11 @@ namespace CP2077SaveEditor
         private ModernButton appearanceCompareLoadButton;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.TextBox appearanceCompareNameBox;
+        private System.Windows.Forms.NumericUpDown earsUpDown;
+        private System.Windows.Forms.NumericUpDown jawUpDown;
+        private System.Windows.Forms.NumericUpDown mouthUpDown;
+        private System.Windows.Forms.NumericUpDown noseUpDown;
+        private System.Windows.Forms.NumericUpDown eyesUpDown;
     }
 }
 

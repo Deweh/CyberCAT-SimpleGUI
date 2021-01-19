@@ -374,6 +374,31 @@ namespace CP2077SaveEditor
             }
         }
 
+        public void SetLinearAppearanceValue(string fieldName, int fieldNum, int value)
+        {
+            var list = this.GetAppearanceContainer().FirstSection.AppearanceSections[0].AdditionalList;
+            var existingEntry = list.Where(x => x.FirstString == fieldName).FirstOrDefault();
+
+            if (existingEntry == null)
+            {
+                var newEntry = new CharacterCustomizationAppearances.ValueEntry();
+                newEntry.FirstString = fieldName;
+                newEntry.SecondString = "h000";
+
+                list.Add(newEntry);
+                SetLinearAppearanceValue(fieldName, fieldNum, value);
+            } else {
+                if (fieldNum == 1)
+                {
+                    list.Remove(existingEntry);
+                }
+                else
+                {
+                    existingEntry.SecondString = "h" + (value - 1).ToString("00") + fieldNum.ToString();
+                }
+            }
+        }
+
         public bool CompareMainListAppearanceEntries(string entry1, string entry2)
         {
             return Regex.Replace(entry1, @"[\d-]", string.Empty) == Regex.Replace(entry2, @"[\d-]", string.Empty);

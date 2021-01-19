@@ -34,6 +34,7 @@ namespace CP2077SaveEditor
         //Lookup Dictionaries
         private Dictionary<string, CharacterCustomizationAppearances> appearanceCompareNodes;
         private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
+        private Dictionary<string, NumericUpDown> linearAppearanceFeatures;
         private static readonly Dictionary<string, string> itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         private static readonly Dictionary<ulong, string> inventoryNames = new()
         {
@@ -134,6 +135,20 @@ namespace CP2077SaveEditor
                 {gamedataProficiencyType.ColdBlood, coldBloodUpDown}
             };
 
+            linearAppearanceFeatures = new Dictionary<string, NumericUpDown>
+            {
+                {"first.additional.second.eyes", eyesUpDown},
+                {"first.additional.second.nose", noseUpDown},
+                {"first.additional.second.mouth", mouthUpDown},
+                {"first.additional.second.jaw", jawUpDown},
+                {"first.additional.second.ear", earsUpDown}
+            };
+
+            foreach (NumericUpDown control in linearAppearanceFeatures.Values)
+            {
+                control.ValueChanged += LinearAppearanceValueChanged;
+            }
+
 #if DEBUG
             appearanceCompareValuesBox.Visible = true;
 #endif
@@ -169,7 +184,7 @@ namespace CP2077SaveEditor
             var valueFields = new Dictionary<string, TextBox>
             {
                 //Facial Features
-                {"first.additional.second.eyes", eyesBox}, {"first.main.first.eyes_color", eyesColorBox }, {"first.additional.second.nose", noseBox}, {"first.additional.second.mouth", mouthBox}, {"first.additional.second.jaw", jawBox}, {"first.additional.second.ear", earsBox},
+                {"first.main.first.eyes_color", eyesColorBox },
                 //Hair
                 {"first.main.hash.hair_color", hairStyleBox}, {"first.main.first.hair_color", hairColorBox},
                 //Makeup
@@ -181,6 +196,35 @@ namespace CP2077SaveEditor
             foreach(string searchString in valueFields.Keys)
             {
                 valueFields[searchString].Text = activeSaveFile.GetAppearanceValue(searchString);
+            }
+
+            foreach (string searchString in linearAppearanceFeatures.Keys)
+            {
+                var result = activeSaveFile.GetAppearanceValue(searchString);
+
+                if (result == "default")
+                {
+                    linearAppearanceFeatures[searchString].Value = 1;
+                }
+                else
+                {
+                    result = result.Substring(1, 2);
+                    linearAppearanceFeatures[searchString].Value = int.Parse(result) + 1;
+                }
+            }
+        }
+
+        private void LinearAppearanceValueChanged(object sender, EventArgs e)
+        {
+            var i = 1;
+            foreach (string searchString in linearAppearanceFeatures.Keys)
+            {
+                if (linearAppearanceFeatures[searchString] == sender)
+                {
+                    var stringParts = searchString.Split('.');
+                    activeSaveFile.SetLinearAppearanceValue(searchString.Split('.')[3], i, (int)((NumericUpDown)sender).Value);
+                }
+                i++;
             }
         }
 
