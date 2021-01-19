@@ -376,25 +376,41 @@ namespace CP2077SaveEditor
 
         public void SetLinearAppearanceValue(string fieldName, int fieldNum, int value)
         {
-            var list = this.GetAppearanceContainer().FirstSection.AppearanceSections[0].AdditionalList;
-            var existingEntry = list.Where(x => x.FirstString == fieldName).FirstOrDefault();
+            var lists = new[] { this.GetAppearanceContainer().FirstSection.AppearanceSections[0], this.GetAppearanceContainer().FirstSection.AppearanceSections[3] };
+            var entries = new List<CharacterCustomizationAppearances.ValueEntry>();
 
-            if (existingEntry == null)
+            foreach (CharacterCustomizationAppearances.AppearanceSection section in lists)
+            {
+                entries.Add(section.AdditionalList.Where(x => x.FirstString == fieldName).FirstOrDefault());
+            }
+
+            if (entries[0] == null)
             {
                 var newEntry = new CharacterCustomizationAppearances.ValueEntry();
                 newEntry.FirstString = fieldName;
                 newEntry.SecondString = "h000";
 
-                list.Add(newEntry);
+                foreach (CharacterCustomizationAppearances.AppearanceSection section in lists)
+                {
+                    section.AdditionalList.Add(newEntry);
+                }
                 SetLinearAppearanceValue(fieldName, fieldNum, value);
             } else {
                 if (value == 1)
                 {
-                    list.Remove(existingEntry);
+                    var i = 0;
+                    foreach (CharacterCustomizationAppearances.AppearanceSection section in lists)
+                    {
+                        section.AdditionalList.Remove(entries[i]);
+                        i++;
+                    }
                 }
                 else
                 {
-                    existingEntry.SecondString = "h" + (value - 1).ToString("00") + fieldNum.ToString();
+                    foreach (CharacterCustomizationAppearances.ValueEntry entry in entries)
+                    {
+                        entry.SecondString = "h" + (value - 1).ToString("00") + fieldNum.ToString();
+                    }
                 }
             }
         }
