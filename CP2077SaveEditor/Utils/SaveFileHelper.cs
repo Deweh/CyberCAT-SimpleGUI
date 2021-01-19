@@ -374,7 +374,7 @@ namespace CP2077SaveEditor
             }
         }
 
-        private bool CompareMainListAppearanceEntries(string entry1, string entry2)
+        public bool CompareMainListAppearanceEntries(string entry1, string entry2)
         {
             return Regex.Replace(entry1, @"[\d-]", string.Empty) == Regex.Replace(entry2, @"[\d-]", string.Empty);
         }

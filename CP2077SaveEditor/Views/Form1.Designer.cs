@@ -41,6 +41,10 @@ namespace CP2077SaveEditor
             this.label1 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.appearancePanel = new System.Windows.Forms.Panel();
+            this.appearanceCompareValuesBox = new System.Windows.Forms.GroupBox();
+            this.appearanceCompareSaveButton = new CP2077SaveEditor.ModernButton();
+            this.appearanceCompareListBox = new System.Windows.Forms.ListBox();
+            this.appearanceCompareLoadButton = new CP2077SaveEditor.ModernButton();
             this.label18 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
@@ -131,8 +135,11 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
+            this.appearanceCompareNameBox = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
+            this.appearanceCompareValuesBox.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -309,6 +316,7 @@ namespace CP2077SaveEditor
             // 
             // appearancePanel
             // 
+            this.appearancePanel.Controls.Add(this.appearanceCompareValuesBox);
             this.appearancePanel.Controls.Add(this.label18);
             this.appearancePanel.Controls.Add(this.groupBox6);
             this.appearancePanel.Controls.Add(this.groupBox5);
@@ -322,6 +330,66 @@ namespace CP2077SaveEditor
             this.appearancePanel.Name = "appearancePanel";
             this.appearancePanel.Size = new System.Drawing.Size(851, 548);
             this.appearancePanel.TabIndex = 4;
+            // 
+            // appearanceCompareValuesBox
+            // 
+            this.appearanceCompareValuesBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.appearanceCompareValuesBox.Controls.Add(this.label19);
+            this.appearanceCompareValuesBox.Controls.Add(this.appearanceCompareNameBox);
+            this.appearanceCompareValuesBox.Controls.Add(this.appearanceCompareSaveButton);
+            this.appearanceCompareValuesBox.Controls.Add(this.appearanceCompareListBox);
+            this.appearanceCompareValuesBox.Controls.Add(this.appearanceCompareLoadButton);
+            this.appearanceCompareValuesBox.Location = new System.Drawing.Point(15, 363);
+            this.appearanceCompareValuesBox.Name = "appearanceCompareValuesBox";
+            this.appearanceCompareValuesBox.Size = new System.Drawing.Size(823, 100);
+            this.appearanceCompareValuesBox.TabIndex = 18;
+            this.appearanceCompareValuesBox.TabStop = false;
+            this.appearanceCompareValuesBox.Text = "Compare Values";
+            this.appearanceCompareValuesBox.Visible = false;
+            // 
+            // appearanceCompareSaveButton
+            // 
+            this.appearanceCompareSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.appearanceCompareSaveButton.BackColor = System.Drawing.Color.White;
+            this.appearanceCompareSaveButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.appearanceCompareSaveButton.ClickEffectEnabled = true;
+            this.appearanceCompareSaveButton.DefaultColor = System.Drawing.Color.White;
+            this.appearanceCompareSaveButton.HoverColor = System.Drawing.Color.LightGray;
+            this.appearanceCompareSaveButton.Location = new System.Drawing.Point(544, 58);
+            this.appearanceCompareSaveButton.Name = "appearanceCompareSaveButton";
+            this.appearanceCompareSaveButton.Size = new System.Drawing.Size(165, 32);
+            this.appearanceCompareSaveButton.TabIndex = 1;
+            this.appearanceCompareSaveButton.Text = "Compare && Save";
+            this.appearanceCompareSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.appearanceCompareSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.appearanceCompareSaveButton.Click += new System.EventHandler(this.appearanceCompareSaveButton_Click);
+            // 
+            // appearanceCompareListBox
+            // 
+            this.appearanceCompareListBox.FormattingEnabled = true;
+            this.appearanceCompareListBox.Location = new System.Drawing.Point(11, 21);
+            this.appearanceCompareListBox.Name = "appearanceCompareListBox";
+            this.appearanceCompareListBox.Size = new System.Drawing.Size(525, 69);
+            this.appearanceCompareListBox.TabIndex = 1;
+            // 
+            // appearanceCompareLoadButton
+            // 
+            this.appearanceCompareLoadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.appearanceCompareLoadButton.BackColor = System.Drawing.Color.White;
+            this.appearanceCompareLoadButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.appearanceCompareLoadButton.ClickEffectEnabled = true;
+            this.appearanceCompareLoadButton.DefaultColor = System.Drawing.Color.White;
+            this.appearanceCompareLoadButton.HoverColor = System.Drawing.Color.LightGray;
+            this.appearanceCompareLoadButton.Location = new System.Drawing.Point(544, 21);
+            this.appearanceCompareLoadButton.Name = "appearanceCompareLoadButton";
+            this.appearanceCompareLoadButton.Size = new System.Drawing.Size(165, 32);
+            this.appearanceCompareLoadButton.TabIndex = 0;
+            this.appearanceCompareLoadButton.Text = "Load Saves from Folder";
+            this.appearanceCompareLoadButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.appearanceCompareLoadButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.appearanceCompareLoadButton.Click += new System.EventHandler(this.appearanceCompareLoadButton_Click);
             // 
             // label18
             // 
@@ -1430,6 +1498,22 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
+            // appearanceCompareNameBox
+            // 
+            this.appearanceCompareNameBox.Location = new System.Drawing.Point(717, 37);
+            this.appearanceCompareNameBox.Name = "appearanceCompareNameBox";
+            this.appearanceCompareNameBox.Size = new System.Drawing.Size(100, 22);
+            this.appearanceCompareNameBox.TabIndex = 2;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(715, 21);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(67, 13);
+            this.label19.TabIndex = 3;
+            this.label19.Text = "Field Name:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1455,6 +1539,8 @@ namespace CP2077SaveEditor
             this.optionsPanel.ResumeLayout(false);
             this.appearancePanel.ResumeLayout(false);
             this.appearancePanel.PerformLayout();
+            this.appearanceCompareValuesBox.ResumeLayout(false);
+            this.appearanceCompareValuesBox.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -1601,6 +1687,12 @@ namespace CP2077SaveEditor
         private ModernButton additionalPlayerStatsButton;
         private ModernButton makeAllRomanceableButton;
         private ModernButton enableSecretEndingButton;
+        private System.Windows.Forms.GroupBox appearanceCompareValuesBox;
+        private ModernButton appearanceCompareSaveButton;
+        private System.Windows.Forms.ListBox appearanceCompareListBox;
+        private ModernButton appearanceCompareLoadButton;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox appearanceCompareNameBox;
     }
 }
 

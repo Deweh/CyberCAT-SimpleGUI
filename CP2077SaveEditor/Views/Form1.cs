@@ -19,17 +19,22 @@ namespace CP2077SaveEditor
 {
     public partial class Form1 : Form
     {
+        //Save File Object
         private SaveFileHelper activeSaveFile;
 
+        //Save Info
+        private bool loadingSave = false;
+        private int saveType = 0;
+
+        //GUI
         private ModernButton activeTabButton = new ModernButton();
         private Panel activeTabPanel = new Panel();
         private ListViewColumnSorter inventoryColumnSorter, factsColumnSorter;
 
-        private Dictionary<string, string> itemClasses;
-        private bool loadingSave = false;
-        private int saveType = 0;
-
+        //Lookup Dictionaries
+        private Dictionary<string, CharacterCustomizationAppearances> appearanceCompareNodes;
         private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
+        private static readonly Dictionary<string, string> itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         private static readonly Dictionary<ulong, string> inventoryNames = new()
         {
             { 0x1, "V's Inventory" },
@@ -129,7 +134,9 @@ namespace CP2077SaveEditor
                 {gamedataProficiencyType.ColdBlood, coldBloodUpDown}
             };
 
-        itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
+#if DEBUG
+            appearanceCompareValuesBox.Visible = true;
+#endif
         }
 
         //This function & other functions related to managing tabs need to be refactored.
@@ -851,6 +858,101 @@ namespace CP2077SaveEditor
             activeSaveFile.SetFactByName("kerry_romanceable", 1);
             RefreshFacts();
             MessageBox.Show("All characters are now romanceable.");
+        }
+
+        private void appearanceCompareLoadButton_Click(object sender, EventArgs e)
+        {
+            var fileWindow = new OpenFileDialog();
+            fileWindow.Filter = "Cyberpunk 2077 Save File|*.dat";
+            if (fileWindow.ShowDialog() == DialogResult.OK)
+            {
+                appearanceCompareListBox.Items.Clear();
+                appearanceCompareNodes = new Dictionary<string, CharacterCustomizationAppearances>();
+
+                foreach (string fileName in Directory.GetFiles(Path.GetDirectoryName(fileWindow.FileName)))
+                {
+                    if (fileName.EndsWith(".dat"))
+                    {
+                        var tempSave = new SaveFileHelper(new List<INodeParser> { new CharacterCustomizationAppearancesParser() });
+                        tempSave.LoadPCSaveFile(new MemoryStream(File.ReadAllBytes(fileName)));
+                        appearanceCompareNodes.Add(Path.GetFileNameWithoutExtension(fileName), tempSave.GetAppearanceContainer());
+                        appearanceCompareListBox.Items.Add(fileName);
+                    }
+                }
+            }
+        }
+
+        private void appearanceCompareSaveButton_Click(object sender, EventArgs e)
+        {
+            var values = new List<AppearanceConstructor.ValueRepresentation>();
+
+            foreach (string appearanceName in appearanceCompareNodes.Keys)
+            {
+                var singleValue = new AppearanceConstructor.ValueRepresentation(appearanceCompareNameBox.Text, appearanceName);
+                var currentAppearance = appearanceCompareNodes[appearanceName];
+
+                var mainSections = new[] { currentAppearance.FirstSection, currentAppearance.SecondSection, currentAppearance.ThirdSection };
+                var sectionName = "First";
+
+                foreach (CharacterCustomizationAppearances.Section mainSection in mainSections)
+                {
+                    foreach (CharacterCustomizationAppearances.AppearanceSection section in currentAppearance.FirstSection.AppearanceSections)
+                    {
+                        var appearanceSectionName = section.SectionName;
+                        var baseSection = activeSaveFile.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == section.SectionName).FirstOrDefault();
+
+                        foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in section.MainList)
+                        {
+                            var baseMainEntry = baseSection.MainList.Where(x => activeSaveFile.CompareMainListAppearanceEntries(x.SecondString, mainEntry.SecondString)).FirstOrDefault();
+
+                            if (baseMainEntry != null)
+                            {
+                                if (baseMainEntry.FirstString != mainEntry.FirstString || baseMainEntry.Hash != mainEntry.Hash || baseMainEntry.SecondString != mainEntry.SecondString)
+                                {
+                                    singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), mainEntry));
+                                }
+                            }
+                            else
+                            {
+                                singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), mainEntry));
+                            }
+                        }
+
+                        foreach (CharacterCustomizationAppearances.ValueEntry additionalEntry in section.AdditionalList)
+                        {
+                            var baseAdditionalEntry = baseSection.AdditionalList.Where(x => x.FirstString == additionalEntry.FirstString).FirstOrDefault();
+
+                            if (baseAdditionalEntry != null)
+                            {
+                                if (baseAdditionalEntry.SecondString != additionalEntry.SecondString)
+                                {
+                                    singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), additionalEntry));
+                                }
+                            }
+                            else
+                            {
+                                singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), additionalEntry));
+                            }
+                        }
+                    }
+
+                    if (sectionName == "First")
+                    {
+                        sectionName = "Second";
+                    } else {
+                        sectionName = "Third";
+                    }
+                }
+
+                values.Add(singleValue);
+            }
+
+            var fileWindow = new SaveFileDialog();
+            fileWindow.Filter = "JSON File|*.json";
+            if (fileWindow.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(fileWindow.FileName, JsonConvert.SerializeObject(values, Formatting.Indented));
+            }
         }
 
         private void swapSaveType_Click(object sender, EventArgs e)
