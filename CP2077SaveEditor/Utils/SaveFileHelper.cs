@@ -136,8 +136,8 @@ namespace CP2077SaveEditor
             {
                 var newModifierData = new GameConstantStatModifierData();
                 newModifierData.ModifierType = gameStatModifierType.Additive;
-                newModifierData.StatType = gamedataStatType.Quality;
-                newModifierData.Value = 4;
+                newModifierData.StatType = stat;
+                newModifierData.Value = value;
 
                 this.AddStat(typeof(GameConstantStatModifierData), statsData, newModifierData);
             }
