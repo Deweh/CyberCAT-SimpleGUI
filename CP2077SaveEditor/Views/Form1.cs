@@ -21,7 +21,7 @@ namespace CP2077SaveEditor
     public partial class Form1 : Form
     {
         //Save File Object
-        private SaveFileHelper activeSaveFile;
+        private SaveFileHelper activeSaveFile = new SaveFileHelper(new INodeParser[] {});
 
         //Save Info
         private bool loadingSave = false;
@@ -147,8 +147,10 @@ namespace CP2077SaveEditor
                 control.ValueChanged += LinearAppearanceValueChanged;
             }
 
+            hairStyleBox.Items.AddRange(activeSaveFile.Appearance.HairStyles.Keys.ToArray());
+
 #if DEBUG
-            appearanceCompareValuesBox.Visible = true;
+                appearanceCompareValuesBox.Visible = true;
 #endif
         }
 
@@ -184,7 +186,7 @@ namespace CP2077SaveEditor
                 //Facial Features
                 {"first.main.first.eyes_color", eyesColorBox },
                 //Hair
-                {"first.main.hash.hair_color", hairStyleBox}, {"first.main.first.hair_color", hairColorBox},
+                {"first.main.first.hair_color", hairColorBox},
                 //Makeup
                 {"first.main.first.makeupEyes_", eyeMakeupBox}, {"first.main.first.makeupLips_", lipMakeupBox}, {"first.main.first.makeupCheeks_", cheekMakeupBox},
                 //Body
@@ -208,6 +210,15 @@ namespace CP2077SaveEditor
                 {
                     result = result.Substring(1, 2);
                     linearAppearanceFeatures[searchString].Value = int.Parse(result) + 1;
+                }
+            }
+
+            var hairHash = ulong.Parse(activeSaveFile.GetAppearanceValue("first.main.hash.hair_color"));
+            foreach (string styleName in activeSaveFile.Appearance.HairStyles.Keys)
+            {
+                if (activeSaveFile.Appearance.HairStyles[styleName] == hairHash)
+                {
+                    hairStyleBox.Text = styleName;
                 }
             }
         }
@@ -903,7 +914,7 @@ namespace CP2077SaveEditor
 
                         foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in section.MainList)
                         {
-                            var baseMainEntry = baseSection.MainList.Where(x => activeSaveFile.CompareMainListAppearanceEntries(x.SecondString, mainEntry.SecondString)).FirstOrDefault();
+                            var baseMainEntry = baseSection.MainList.Where(x => activeSaveFile.Appearance.CompareMainListAppearanceEntries(x.SecondString, mainEntry.SecondString)).FirstOrDefault();
 
                             if (baseMainEntry != null)
                             {
@@ -965,6 +976,11 @@ namespace CP2077SaveEditor
                 saveType = 0;
                 swapSaveType.Text = "Save Type: PC";
             }
+        }
+
+        private void hairStyleBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            activeSaveFile.Appearance.SetHairStyle(hairStyleBox.Text);
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)

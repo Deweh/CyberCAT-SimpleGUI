@@ -65,10 +65,10 @@ namespace CP2077SaveEditor
             this.label12 = new System.Windows.Forms.Label();
             this.eyeMakeupBox = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.hairStyleBox = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.hairColorBox = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.hairStyleBox = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.earsUpDown = new System.Windows.Forms.NumericUpDown();
             this.jawUpDown = new System.Windows.Forms.NumericUpDown();
@@ -589,16 +589,26 @@ namespace CP2077SaveEditor
             // groupBox4
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.hairStyleBox);
             this.groupBox4.Controls.Add(this.label9);
             this.groupBox4.Controls.Add(this.hairColorBox);
             this.groupBox4.Controls.Add(this.label8);
-            this.groupBox4.Controls.Add(this.hairStyleBox);
             this.groupBox4.Location = new System.Drawing.Point(332, 15);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(506, 63);
             this.groupBox4.TabIndex = 14;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Hair";
+            // 
+            // hairStyleBox
+            // 
+            this.hairStyleBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.hairStyleBox.FormattingEnabled = true;
+            this.hairStyleBox.Location = new System.Drawing.Point(64, 24);
+            this.hairStyleBox.Name = "hairStyleBox";
+            this.hairStyleBox.Size = new System.Drawing.Size(200, 21);
+            this.hairStyleBox.TabIndex = 4;
+            this.hairStyleBox.SelectedIndexChanged += new System.EventHandler(this.hairStyleBox_SelectedIndexChanged);
             // 
             // label9
             // 
@@ -625,14 +635,6 @@ namespace CP2077SaveEditor
             this.label8.Size = new System.Drawing.Size(34, 13);
             this.label8.TabIndex = 0;
             this.label8.Text = "Style:";
-            // 
-            // hairStyleBox
-            // 
-            this.hairStyleBox.Location = new System.Drawing.Point(64, 24);
-            this.hairStyleBox.Name = "hairStyleBox";
-            this.hairStyleBox.ReadOnly = true;
-            this.hairStyleBox.Size = new System.Drawing.Size(200, 22);
-            this.hairStyleBox.TabIndex = 1;
             // 
             // groupBox3
             // 
@@ -1706,7 +1708,6 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox hairColorBox;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox hairStyleBox;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox eyesColorBox;
@@ -1774,6 +1775,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.NumericUpDown mouthUpDown;
         private System.Windows.Forms.NumericUpDown noseUpDown;
         private System.Windows.Forms.NumericUpDown eyesUpDown;
+        private System.Windows.Forms.ComboBox hairStyleBox;
     }
 }
 
