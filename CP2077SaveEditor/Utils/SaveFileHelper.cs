@@ -421,6 +421,8 @@ namespace CP2077SaveEditor
         public class AppearanceHelper {
 
             public Dictionary<string, ulong> HairStyles { get; } = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(CP2077SaveEditor.Properties.Resources.HairStyles);
+            public List<string> HairColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.HairColors);
+
             private SaveFileHelper activeSave;
 
             public AppearanceHelper(SaveFileHelper _saveFile)
@@ -521,6 +523,12 @@ namespace CP2077SaveEditor
             public void SetHairStyle(string friendlyName)
             {
                 SetEntryField(AppearanceField.Hash, "first.main.hair_color", HairStyles[friendlyName]);
+            }
+
+            public void SetHairColor(string colorString)
+            {
+                SetEntryField(AppearanceField.FirstString, "first.main.hair_color", colorString);
+                activeSave.GetAppearanceContainer().Strings[0] = colorString.Substring(3);
             }
 
             public bool CompareMainListAppearanceEntries(string entry1, string entry2)
