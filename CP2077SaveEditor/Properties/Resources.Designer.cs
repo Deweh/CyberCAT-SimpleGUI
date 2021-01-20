@@ -94,6 +94,30 @@ namespace CP2077SaveEditor.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to {
+        ///  &quot;Male 01&quot;: 15380579400599425026,
+        ///  &quot;Male 02&quot;: 5984812588040213129,
+        ///  &quot;Male 03&quot;: 3969157183659188110,
+        ///  &quot;Male 04&quot;: 8293982515479886033,
+        ///  &quot;Male 05&quot;: 489179940800955688,
+        ///  &quot;Male 06&quot;: 17869284528227924120,
+        ///  &quot;Male 07&quot;: 9218839545645238688,
+        ///  &quot;Male 08&quot;: 14289422152790764376,
+        ///  &quot;Male 09&quot;: 12576467769371085804,
+        ///  &quot;Male 10&quot;: 17460733649327649186,
+        ///  &quot;Male 11&quot;: 15034475787780468953,
+        ///  &quot;Male 12&quot;: 7355532851366951590,
+        ///  &quot;Male 13&quot;: 11759469743560328903,
+        ///  &quot;Male 14&quot;: 3500425191302231725,
+        ///  &quot;Male 15&quot;:  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Hairstyles {
+            get {
+                return ResourceManager.GetString("Hairstyles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
         ///  &quot;0001F38D:18&quot;: &quot;ConsumableItem&quot;,
         ///  &quot;0002DF00:18&quot;: &quot;Clothing&quot;,
         ///  &quot;001E62F0:1D&quot;: &quot;Clothing&quot;,
