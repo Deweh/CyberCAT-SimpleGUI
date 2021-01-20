@@ -149,6 +149,7 @@ namespace CP2077SaveEditor
 
             hairStyleBox.Items.AddRange(activeSaveFile.Appearance.HairStyles.Keys.ToArray());
             hairColorBox.Items.AddRange(activeSaveFile.Appearance.HairColors.ToArray());
+            skinColorBox.Items.AddRange(activeSaveFile.Appearance.SkinColors.ToArray());
 
 #if DEBUG
             appearanceCompareValuesBox.Visible = true;
@@ -189,7 +190,7 @@ namespace CP2077SaveEditor
                 //Makeup
                 {"first.main.first.makeupEyes_", eyeMakeupBox}, {"first.main.first.makeupLips_", lipMakeupBox}, {"first.main.first.makeupCheeks_", cheekMakeupBox},
                 //Body
-                {"third.main.first.body_color", skinColorBox}, {"third.main.first.nipples_", nipplesBox}, {"third.main.first.genitals_", genitalsBox}, {"third.additional.second.breast", breastsBox}
+                {"third.main.first.nipples_", nipplesBox}, {"third.main.first.genitals_", genitalsBox}, {"third.additional.second.breast", breastsBox}
             };
 
             foreach(string searchString in valueFields.Keys)
@@ -198,6 +199,7 @@ namespace CP2077SaveEditor
             }
 
             hairColorBox.Text = activeSaveFile.GetAppearanceValue("first.main.first.hair_color");
+            skinColorBox.Text = activeSaveFile.GetAppearanceValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
 
             foreach (string searchString in linearAppearanceFeatures.Keys)
             {
@@ -987,6 +989,11 @@ namespace CP2077SaveEditor
         private void hairColorBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             activeSaveFile.Appearance.SetHairColor(hairColorBox.Text);
+        }
+
+        private void skinColorBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            activeSaveFile.Appearance.SetSkinColor(skinColorBox.Text);
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)

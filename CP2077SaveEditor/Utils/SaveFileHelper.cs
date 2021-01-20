@@ -422,6 +422,7 @@ namespace CP2077SaveEditor
 
             public Dictionary<string, ulong> HairStyles { get; } = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(CP2077SaveEditor.Properties.Resources.HairStyles);
             public List<string> HairColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.HairColors);
+            public List<string> SkinColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.SkinColors);
 
             private SaveFileHelper activeSave;
 
@@ -529,6 +530,29 @@ namespace CP2077SaveEditor
             {
                 SetEntryField(AppearanceField.FirstString, "first.main.hair_color", colorString);
                 activeSave.GetAppearanceContainer().Strings[0] = colorString.Substring(3);
+            }
+
+            public void SetSkinColor(string colorString)
+            {
+                var currentColor = activeSave.GetAppearanceValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
+
+                var sections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
+                foreach (CharacterCustomizationAppearances.Section section in sections)
+                {
+                    foreach (CharacterCustomizationAppearances.AppearanceSection subSection in section.AppearanceSections)
+                    {
+                        foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in subSection.MainList)
+                        {
+                            if (mainEntry.FirstString.EndsWith(currentColor))
+                            {
+                                var valueParts = mainEntry.FirstString.Split("__", StringSplitOptions.None);
+                                valueParts[valueParts.Length - 1] = colorString;
+
+                                mainEntry.FirstString = string.Join("__", valueParts);
+                            }
+                        }
+                    }
+                }
             }
 
             public bool CompareMainListAppearanceEntries(string entry1, string entry2)

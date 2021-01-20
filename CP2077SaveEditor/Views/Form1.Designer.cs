@@ -56,7 +56,6 @@ namespace CP2077SaveEditor
             this.genitalsBox = new System.Windows.Forms.TextBox();
             this.nipplesBox = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
-            this.skinColorBox = new System.Windows.Forms.TextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -137,6 +136,7 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
+            this.skinColorBox = new System.Windows.Forms.ComboBox();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.appearanceCompareValuesBox.SuspendLayout();
@@ -427,6 +427,7 @@ namespace CP2077SaveEditor
             // 
             this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox6.Controls.Add(this.skinColorBox);
             this.groupBox6.Controls.Add(this.label17);
             this.groupBox6.Controls.Add(this.breastsBox);
             this.groupBox6.Controls.Add(this.label14);
@@ -434,7 +435,6 @@ namespace CP2077SaveEditor
             this.groupBox6.Controls.Add(this.genitalsBox);
             this.groupBox6.Controls.Add(this.nipplesBox);
             this.groupBox6.Controls.Add(this.label16);
-            this.groupBox6.Controls.Add(this.skinColorBox);
             this.groupBox6.Location = new System.Drawing.Point(15, 209);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(823, 148);
@@ -507,16 +507,6 @@ namespace CP2077SaveEditor
             this.label16.Size = new System.Drawing.Size(63, 13);
             this.label16.TabIndex = 0;
             this.label16.Text = "Skin Color:";
-            // 
-            // skinColorBox
-            // 
-            this.skinColorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.skinColorBox.Location = new System.Drawing.Point(80, 24);
-            this.skinColorBox.Name = "skinColorBox";
-            this.skinColorBox.ReadOnly = true;
-            this.skinColorBox.Size = new System.Drawing.Size(717, 22);
-            this.skinColorBox.TabIndex = 1;
             // 
             // groupBox5
             // 
@@ -1594,6 +1584,16 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
+            // skinColorBox
+            // 
+            this.skinColorBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.skinColorBox.FormattingEnabled = true;
+            this.skinColorBox.Location = new System.Drawing.Point(80, 24);
+            this.skinColorBox.Name = "skinColorBox";
+            this.skinColorBox.Size = new System.Drawing.Size(200, 21);
+            this.skinColorBox.TabIndex = 6;
+            this.skinColorBox.SelectedIndexChanged += new System.EventHandler(this.skinColorBox_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1727,7 +1727,6 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.TextBox genitalsBox;
         private System.Windows.Forms.TextBox nipplesBox;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.TextBox skinColorBox;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.ColumnHeader inventoryTypeHeader;
         private System.Windows.Forms.TextBox factsSearchBox;
@@ -1778,6 +1777,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.NumericUpDown eyesUpDown;
         private System.Windows.Forms.ComboBox hairStyleBox;
         private System.Windows.Forms.ComboBox hairColorBox;
+        private System.Windows.Forms.ComboBox skinColorBox;
     }
 }
 

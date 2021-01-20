@@ -94,31 +94,29 @@ namespace CP2077SaveEditor.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to [
-        ///  &quot;blonde_platinum&quot;,
-        ///  &quot;red_merlot&quot;,
-        ///  &quot;ginger_copper&quot;,
-        ///  &quot;teal_ombre&quot;,
-        ///  &quot;brown_liquorice&quot;,
-        ///  &quot;black_carbon&quot;,
-        ///  &quot;blonde_golden&quot;,
-        ///  &quot;blonde_dishwater&quot;,
-        ///  &quot;blue_sapphire&quot;,
-        ///  &quot;brown_ombre&quot;,
-        ///  &quot;red_apple&quot;,
-        ///  &quot;gray_gunmetal&quot;,
-        ///  &quot;ginger_strawberry&quot;,
-        ///  &quot;teal_ash&quot;,
-        ///  &quot;pink_magenta&quot;,
-        ///  &quot;pink_rose&quot;,
-        ///  &quot;blue_steel&quot;,
-        ///  &quot;blue_red_ombre&quot;,
-        ///  &quot;cold_white&quot;,
-        ///  &quot;cyberpunk_yellow&quot;,
-        ///  &quot;goblin_green&quot;,
-        ///  &quot;liliac&quot;,
-        ///  &quot;mermaid_aquamarine&quot;,
-        ///  &quot;purple_ombre&quot;
-        ///].
+        ///  &quot;01_blonde_platinum&quot;,
+        ///  &quot;02_red_merlot&quot;,
+        ///  &quot;03_ginger_copper&quot;,
+        ///  &quot;04_teal_ombre&quot;,
+        ///  &quot;05_brown_liquorice&quot;,
+        ///  &quot;06_black_carbon&quot;,
+        ///  &quot;07_blonde_golden&quot;,
+        ///  &quot;08_blonde_dishwater&quot;,
+        ///  &quot;09_blue_sapphire&quot;,
+        ///  &quot;10_brown_ombre&quot;,
+        ///  &quot;11_red_apple&quot;,
+        ///  &quot;12_gray_gunmetal&quot;,
+        ///  &quot;13_ginger_strawberry&quot;,
+        ///  &quot;14_teal_ash&quot;,
+        ///  &quot;15_pink_magenta&quot;,
+        ///  &quot;16_pink_rose&quot;,
+        ///  &quot;17_blue_steel&quot;,
+        ///  &quot;18_blue_red_ombre&quot;,
+        ///  &quot;19_cold_white&quot;,
+        ///  &quot;20_cyberpunk_yellow&quot;,
+        ///  &quot;21_goblin_green&quot;,
+        ///  &quot;22_liliac&quot;,
+        ///  &quot;23_mermaid_aquamarine&quot; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string HairColors {
             get {
@@ -251,6 +249,28 @@ namespace CP2077SaveEditor.Properties {
             get {
                 object obj = ResourceManager.GetObject("player_stats", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///	&quot;01_ca_pale&quot;,
+        ///	&quot;01_ca_pale_00_warm_ivory&quot;,
+        ///	&quot;02_ca_limestone&quot;,
+        ///	&quot;02_ca_limestone_00_beige&quot;,
+        ///	&quot;03_ca_senna&quot;,
+        ///	&quot;03_ca_senna_00_amber&quot;,
+        ///	&quot;03_ca_senna_01_honey&quot;,
+        ///	&quot;03_ca_senna_02_band&quot;,
+        ///	&quot;04_ca_almond&quot;,
+        ///	&quot;04_ca_almond_00_umber&quot;,
+        ///	&quot;05_bl_espresso&quot;,
+        ///	&quot;06_bl_dark&quot;
+        ///].
+        /// </summary>
+        internal static string SkinColors {
+            get {
+                return ResourceManager.GetString("SkinColors", resourceCulture);
             }
         }
         
