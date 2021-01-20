@@ -70,6 +70,11 @@ namespace CP2077SaveEditor
             this.label8 = new System.Windows.Forms.Label();
             this.hairStyleBox = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.earsUpDown = new System.Windows.Forms.NumericUpDown();
+            this.jawUpDown = new System.Windows.Forms.NumericUpDown();
+            this.mouthUpDown = new System.Windows.Forms.NumericUpDown();
+            this.noseUpDown = new System.Windows.Forms.NumericUpDown();
+            this.eyesUpDown = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
             this.eyesColorBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -132,11 +137,6 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.eyesUpDown = new System.Windows.Forms.NumericUpDown();
-            this.noseUpDown = new System.Windows.Forms.NumericUpDown();
-            this.mouthUpDown = new System.Windows.Forms.NumericUpDown();
-            this.jawUpDown = new System.Windows.Forms.NumericUpDown();
-            this.earsUpDown = new System.Windows.Forms.NumericUpDown();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.appearanceCompareValuesBox.SuspendLayout();
@@ -144,6 +144,11 @@ namespace CP2077SaveEditor
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.earsUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.jawUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mouthUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.noseUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.eyesUpDown)).BeginInit();
             this.inventoryPanel.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.containerGroupBox.SuspendLayout();
@@ -173,11 +178,6 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.reflexesUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.streetCredUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.eyesUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.noseUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mouthUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.jawUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.earsUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // optionsPanel
@@ -658,6 +658,116 @@ namespace CP2077SaveEditor
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Facial Features";
             // 
+            // earsUpDown
+            // 
+            this.earsUpDown.Location = new System.Drawing.Point(66, 137);
+            this.earsUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.earsUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.earsUpDown.Name = "earsUpDown";
+            this.earsUpDown.Size = new System.Drawing.Size(38, 22);
+            this.earsUpDown.TabIndex = 10;
+            this.earsUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // jawUpDown
+            // 
+            this.jawUpDown.Location = new System.Drawing.Point(66, 109);
+            this.jawUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.jawUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.jawUpDown.Name = "jawUpDown";
+            this.jawUpDown.Size = new System.Drawing.Size(38, 22);
+            this.jawUpDown.TabIndex = 9;
+            this.jawUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // mouthUpDown
+            // 
+            this.mouthUpDown.Location = new System.Drawing.Point(66, 81);
+            this.mouthUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.mouthUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.mouthUpDown.Name = "mouthUpDown";
+            this.mouthUpDown.Size = new System.Drawing.Size(38, 22);
+            this.mouthUpDown.TabIndex = 8;
+            this.mouthUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // noseUpDown
+            // 
+            this.noseUpDown.Location = new System.Drawing.Point(66, 53);
+            this.noseUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.noseUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.noseUpDown.Name = "noseUpDown";
+            this.noseUpDown.Size = new System.Drawing.Size(38, 22);
+            this.noseUpDown.TabIndex = 7;
+            this.noseUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // eyesUpDown
+            // 
+            this.eyesUpDown.Location = new System.Drawing.Point(66, 25);
+            this.eyesUpDown.Maximum = new decimal(new int[] {
+            21,
+            0,
+            0,
+            0});
+            this.eyesUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.eyesUpDown.Name = "eyesUpDown";
+            this.eyesUpDown.Size = new System.Drawing.Size(38, 22);
+            this.eyesUpDown.TabIndex = 6;
+            this.eyesUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -1052,6 +1162,7 @@ namespace CP2077SaveEditor
             this.factsListView.TabIndex = 0;
             this.factsListView.UseCompatibleStateImageBehavior = false;
             this.factsListView.View = System.Windows.Forms.View.Details;
+            this.factsListView.VirtualMode = true;
             // 
             // factsValueHeader
             // 
@@ -1479,116 +1590,6 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
-            // eyesUpDown
-            // 
-            this.eyesUpDown.Location = new System.Drawing.Point(66, 25);
-            this.eyesUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.eyesUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.eyesUpDown.Name = "eyesUpDown";
-            this.eyesUpDown.Size = new System.Drawing.Size(38, 22);
-            this.eyesUpDown.TabIndex = 6;
-            this.eyesUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // noseUpDown
-            // 
-            this.noseUpDown.Location = new System.Drawing.Point(66, 53);
-            this.noseUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.noseUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.noseUpDown.Name = "noseUpDown";
-            this.noseUpDown.Size = new System.Drawing.Size(38, 22);
-            this.noseUpDown.TabIndex = 7;
-            this.noseUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // mouthUpDown
-            // 
-            this.mouthUpDown.Location = new System.Drawing.Point(66, 81);
-            this.mouthUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.mouthUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.mouthUpDown.Name = "mouthUpDown";
-            this.mouthUpDown.Size = new System.Drawing.Size(38, 22);
-            this.mouthUpDown.TabIndex = 8;
-            this.mouthUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // jawUpDown
-            // 
-            this.jawUpDown.Location = new System.Drawing.Point(66, 109);
-            this.jawUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.jawUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.jawUpDown.Name = "jawUpDown";
-            this.jawUpDown.Size = new System.Drawing.Size(38, 22);
-            this.jawUpDown.TabIndex = 9;
-            this.jawUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // earsUpDown
-            // 
-            this.earsUpDown.Location = new System.Drawing.Point(66, 137);
-            this.earsUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.earsUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.earsUpDown.Name = "earsUpDown";
-            this.earsUpDown.Size = new System.Drawing.Size(38, 22);
-            this.earsUpDown.TabIndex = 10;
-            this.earsUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1624,6 +1625,11 @@ namespace CP2077SaveEditor
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.earsUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.jawUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mouthUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.noseUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.eyesUpDown)).EndInit();
             this.inventoryPanel.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.containerGroupBox.ResumeLayout(false);
@@ -1656,11 +1662,6 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.reflexesUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.streetCredUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.eyesUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.noseUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mouthUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.jawUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.earsUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }

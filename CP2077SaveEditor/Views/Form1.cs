@@ -69,6 +69,7 @@ namespace CP2077SaveEditor
             factsListView.MouseUp += factsListView_MouseUp;
             factsListView.KeyDown += factsListView_KeyDown;
             factsListView.ColumnClick += factsListView_ColumnClick;
+            factsListView.RetrieveVirtualItem += factsListView_RetrieveVirtualItem;
             inventoryListView.DoubleClick += inventoryListView_DoubleClick;
             inventoryListView.ColumnClick += inventoryListView_ColumnClick;
             inventoryListView.KeyDown += inventoryListView_KeyDown;
@@ -414,13 +415,18 @@ namespace CP2077SaveEditor
             factsListView.BeginUpdate();
             factsListView.ListViewItemSorter = null;
 
-            factsListView.Items.Clear();
-            factsListView.Items.AddRange(listViewRows.ToArray());
+            factsListView.Tag = listViewRows;
+            factsListView.VirtualListSize = listViewRows.Count();
 
-            factsListView.ListViewItemSorter = factsColumnSorter;
-            factsListView.Sort();
             factsListView.EndUpdate();
         }
+
+        private void factsListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            e.Item = ((List<ListViewItem>)factsListView.Tag)[e.ItemIndex];
+        }
+
+
 
         private void openSaveButton_Click(object sender, EventArgs e)
         {
@@ -480,16 +486,16 @@ namespace CP2077SaveEditor
                 RefreshFacts();
                 //These lines may look redundant, but they initialize the factsListView so that the render thread doesn't freeze when selecting the Quest Facts tab for the first time.
                 //Since the render thread will be frozen here anyways while everything loads, it's best to do this here.
-                enableSecretEndingButton.Visible = false;
-                makeAllRomanceableButton.Visible = false;
-                addFactButton.Visible = false;
-                factsSaveButton.Visible = false;
-                factsPanel.Visible = true;
-                factsPanel.Visible = false;
-                factsSaveButton.Visible = true;
-                addFactButton.Visible = true;
-                makeAllRomanceableButton.Visible = true;
-                enableSecretEndingButton.Visible = true;
+                //enableSecretEndingButton.Visible = false;
+                //makeAllRomanceableButton.Visible = false;
+                //addFactButton.Visible = false;
+                //factsSaveButton.Visible = false;
+                //factsPanel.Visible = true;
+                //factsPanel.Visible = false;
+                //factsSaveButton.Visible = true;
+                //addFactButton.Visible = true;
+                //makeAllRomanceableButton.Visible = true;
+                //enableSecretEndingButton.Visible = true;
 
                 //Player stats parsing
                 var playerData = activeSaveFile.GetPlayerDevelopmentData();
@@ -666,7 +672,7 @@ namespace CP2077SaveEditor
                 e.CancelEdit = true;
                 return;
             }
-            ((FactsTable.FactEntry)factsListView.SelectedItems[0].Tag).Value = UInt32.Parse(e.Label);
+            ((FactsTable.FactEntry)factsListView.Items[factsListView.SelectedIndices[0]].Tag).Value = UInt32.Parse(e.Label);
         }
 
         private void inventoryListView_DoubleClick(object sender, EventArgs e)
@@ -728,40 +734,41 @@ namespace CP2077SaveEditor
         {
             if (factsListView.SelectedIndices.Count > 0 && e.KeyCode == Keys.Delete)
             {
-                ((FactsTable)activeSaveFile.GetFactsContainer().Children[0].Value).FactEntries.Remove((FactsTable.FactEntry)factsListView.SelectedItems[0].Tag);
-                statusLabel.Text = "'" + factsListView.SelectedItems[0].SubItems[1].Text + "' deleted.";
-                factsListView.Items.Remove(factsListView.SelectedItems[0]);
+                ((FactsTable)activeSaveFile.GetFactsContainer().Children[0].Value).FactEntries.Remove((FactsTable.FactEntry)factsListView.Items[factsListView.SelectedIndices[0]].Tag);
+                statusLabel.Text = "'" + factsListView.Items[factsListView.SelectedIndices[0]].SubItems[1].Text + "' deleted.";
+
+                RefreshFacts();
             }
         }
 
         private void factsListView_MouseUp(object sender, EventArgs e)
         {
-            if (factsListView.SelectedItems.Count > 0)
+            if (factsListView.SelectedIndices.Count > 0)
             {
-                factsListView.SelectedItems[0].BeginEdit();
+                factsListView.Items[factsListView.SelectedIndices[0]].BeginEdit();
             }
         }
 
         private void factsListView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            if (e.Column == factsColumnSorter.SortColumn)
-            {
-                if (factsColumnSorter.Order == SortOrder.Ascending)
-                {
-                    factsColumnSorter.Order = SortOrder.Descending;
-                }
-                else
-                {
-                    factsColumnSorter.Order = SortOrder.Ascending;
-                }
-            }
-            else
-            {
-                factsColumnSorter.SortColumn = e.Column;
-                factsColumnSorter.Order = SortOrder.Ascending;
-            }
+            //if (e.Column == factsColumnSorter.SortColumn)
+            //{
+            //    if (factsColumnSorter.Order == SortOrder.Ascending)
+            //    {
+            //        factsColumnSorter.Order = SortOrder.Descending;
+            //    }
+            //    else
+            //    {
+            //        factsColumnSorter.Order = SortOrder.Ascending;
+            //    }
+            //}
+            //else
+            //{
+            //    factsColumnSorter.SortColumn = e.Column;
+            //    factsColumnSorter.Order = SortOrder.Ascending;
+            //}
 
-            factsListView.Sort();
+            //factsListView.Sort();
         }
 
         private void factsSearchBox_TextChanged(object sender, EventArgs e)
