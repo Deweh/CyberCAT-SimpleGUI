@@ -420,7 +420,7 @@ namespace CP2077SaveEditor
 
         public class AppearanceHelper {
 
-            public Dictionary<string, ulong> HairStyles { get; } = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(CP2077SaveEditor.Properties.Resources.Hairstyles);
+            public Dictionary<string, ulong> HairStyles { get; } = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(CP2077SaveEditor.Properties.Resources.HairStyles);
             private SaveFileHelper activeSave;
 
             public AppearanceHelper(SaveFileHelper _saveFile)

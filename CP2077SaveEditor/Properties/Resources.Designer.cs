@@ -93,6 +93,40 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [
+        ///  &quot;blonde_platinum&quot;,
+        ///  &quot;red_merlot&quot;,
+        ///  &quot;ginger_copper&quot;,
+        ///  &quot;teal_ombre&quot;,
+        ///  &quot;brown_liquorice&quot;,
+        ///  &quot;black_carbon&quot;,
+        ///  &quot;blonde_golden&quot;,
+        ///  &quot;blonde_dishwater&quot;,
+        ///  &quot;blue_sapphire&quot;,
+        ///  &quot;brown_ombre&quot;,
+        ///  &quot;red_apple&quot;,
+        ///  &quot;gray_gunmetal&quot;,
+        ///  &quot;ginger_strawberry&quot;,
+        ///  &quot;teal_ash&quot;,
+        ///  &quot;pink_magenta&quot;,
+        ///  &quot;pink_rose&quot;,
+        ///  &quot;blue_steel&quot;,
+        ///  &quot;blue_red_ombre&quot;,
+        ///  &quot;cold_white&quot;,
+        ///  &quot;cyberpunk_yellow&quot;,
+        ///  &quot;goblin_green&quot;,
+        ///  &quot;liliac&quot;,
+        ///  &quot;mermaid_aquamarine&quot;,
+        ///  &quot;purple_ombre&quot;
+        ///].
+        /// </summary>
+        internal static string HairColors {
+            get {
+                return ResourceManager.GetString("HairColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {
         ///  &quot;Male 01&quot;: 15380579400599425026,
         ///  &quot;Male 02&quot;: 5984812588040213129,
@@ -110,9 +144,9 @@ namespace CP2077SaveEditor.Properties {
         ///  &quot;Male 14&quot;: 3500425191302231725,
         ///  &quot;Male 15&quot;:  [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Hairstyles {
+        internal static string HairStyles {
             get {
-                return ResourceManager.GetString("Hairstyles", resourceCulture);
+                return ResourceManager.GetString("HairStyles", resourceCulture);
             }
         }
         
