@@ -76,7 +76,6 @@ namespace CP2077SaveEditor
             this.noseUpDown = new System.Windows.Forms.NumericUpDown();
             this.eyesUpDown = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
-            this.eyesColorBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -137,6 +136,7 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
+            this.eyesColorBox = new System.Windows.Forms.ComboBox();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.appearanceCompareValuesBox.SuspendLayout();
@@ -643,13 +643,13 @@ namespace CP2077SaveEditor
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.eyesColorBox);
             this.groupBox3.Controls.Add(this.earsUpDown);
             this.groupBox3.Controls.Add(this.jawUpDown);
             this.groupBox3.Controls.Add(this.mouthUpDown);
             this.groupBox3.Controls.Add(this.noseUpDown);
             this.groupBox3.Controls.Add(this.eyesUpDown);
             this.groupBox3.Controls.Add(this.label10);
-            this.groupBox3.Controls.Add(this.eyesColorBox);
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.label5);
@@ -780,16 +780,6 @@ namespace CP2077SaveEditor
             this.label10.Size = new System.Drawing.Size(38, 13);
             this.label10.TabIndex = 4;
             this.label10.Text = "Color:";
-            // 
-            // eyesColorBox
-            // 
-            this.eyesColorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.eyesColorBox.Location = new System.Drawing.Point(154, 24);
-            this.eyesColorBox.Name = "eyesColorBox";
-            this.eyesColorBox.ReadOnly = true;
-            this.eyesColorBox.Size = new System.Drawing.Size(138, 22);
-            this.eyesColorBox.TabIndex = 5;
             // 
             // label3
             // 
@@ -1595,6 +1585,16 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
+            // eyesColorBox
+            // 
+            this.eyesColorBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.eyesColorBox.FormattingEnabled = true;
+            this.eyesColorBox.Location = new System.Drawing.Point(154, 24);
+            this.eyesColorBox.Name = "eyesColorBox";
+            this.eyesColorBox.Size = new System.Drawing.Size(138, 21);
+            this.eyesColorBox.TabIndex = 8;
+            this.eyesColorBox.SelectedIndexChanged += new System.EventHandler(this.eyesColorBox_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1712,7 +1712,6 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox eyesColorBox;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox cheekMakeupBox;
@@ -1779,6 +1778,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.ComboBox hairStyleBox;
         private System.Windows.Forms.ComboBox hairColorBox;
         private System.Windows.Forms.ComboBox skinColorBox;
+        private System.Windows.Forms.ComboBox eyesColorBox;
     }
 }
 

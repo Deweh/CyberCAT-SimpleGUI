@@ -423,6 +423,7 @@ namespace CP2077SaveEditor
             public Dictionary<string, ulong> HairStyles { get; } = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(CP2077SaveEditor.Properties.Resources.HairStyles);
             public List<string> HairColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.HairColors);
             public List<string> SkinColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.SkinColors);
+            public List<string> EyeColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.EyeColors);
 
             private SaveFileHelper activeSave;
 
@@ -570,9 +571,16 @@ namespace CP2077SaveEditor
                 }
             }
 
-            public void SetSkinColor(string colorString)
+            public void SetConcatedValue(string searchString, string newValue, int position = -1)
             {
-                var currentColor = activeSave.GetAppearanceValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
+                string currentValue;
+
+                if (position < 0)
+                {
+                    currentValue = activeSave.GetAppearanceValue(searchString).Split("__", StringSplitOptions.None).Last();
+                } else {
+                    currentValue = activeSave.GetAppearanceValue(searchString).Split("__", StringSplitOptions.None)[position];
+                }
 
                 var sections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
                 foreach (CharacterCustomizationAppearances.Section section in sections)
@@ -581,16 +589,47 @@ namespace CP2077SaveEditor
                     {
                         foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in subSection.MainList)
                         {
-                            if (mainEntry.FirstString.EndsWith(currentColor))
+                            try
                             {
                                 var valueParts = mainEntry.FirstString.Split("__", StringSplitOptions.None);
-                                valueParts[valueParts.Length - 1] = colorString;
+                                var targetPart = valueParts.Last();
 
-                                mainEntry.FirstString = string.Join("__", valueParts);
+                                if (position > -1)
+                                {
+                                    targetPart = valueParts[position];
+                                }
+
+                                if (targetPart == currentValue)
+                                {
+                                    if (position < 0)
+                                    {
+                                        valueParts[valueParts.Length - 1] = newValue;
+                                    }
+                                    else
+                                    {
+                                        valueParts[position] = newValue;
+                                    }
+
+                                    mainEntry.FirstString = string.Join("__", valueParts);
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                continue;
                             }
                         }
                     }
                 }
+            }
+
+            public void SetSkinColor(string colorString)
+            {
+                SetConcatedValue("third.main.first.body_color", colorString);
+            }
+
+            public void SetEyeColor(string colorString)
+            {
+                SetConcatedValue("first.main.first.eyes_color", colorString);
             }
 
             public bool CompareMainListAppearanceEntries(string entry1, string entry2)

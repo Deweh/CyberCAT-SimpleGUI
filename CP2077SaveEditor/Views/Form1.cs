@@ -145,6 +145,7 @@ namespace CP2077SaveEditor
             hairStyleBox.Items.AddRange(activeSaveFile.Appearance.HairStyles.Keys.ToArray());
             hairColorBox.Items.AddRange(activeSaveFile.Appearance.HairColors.ToArray());
             skinColorBox.Items.AddRange(activeSaveFile.Appearance.SkinColors.ToArray());
+            eyesColorBox.Items.AddRange(activeSaveFile.Appearance.EyeColors.ToArray());
 
 #if DEBUG
             appearanceCompareValuesBox.Visible = true;
@@ -182,8 +183,6 @@ namespace CP2077SaveEditor
 
             var valueFields = new Dictionary<string, TextBox>
             {
-                //Eyes
-                {"first.main.first.eyes_color", eyesColorBox },
                 //Makeup
                 {"first.main.first.makeupEyes_", eyeMakeupBox}, {"first.main.first.makeupLips_", lipMakeupBox}, {"first.main.first.makeupCheeks_", cheekMakeupBox},
                 //Body
@@ -240,9 +239,16 @@ namespace CP2077SaveEditor
                 hairColorBox.Enabled = false;
             }
 
-            //Skin Color
+            //Concated Colors
 
             skinColorBox.Text = activeSaveFile.GetAppearanceValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
+
+            var eyeColor = activeSaveFile.GetAppearanceValue("first.main.first.eyes_color").Split("__", StringSplitOptions.None).Last();
+            if (!eyesColorBox.Items.Contains(eyeColor))
+            {
+                eyesColorBox.Items.Add(eyeColor);
+            }
+            eyesColorBox.Text = eyeColor;
         }
 
         private void LinearAppearanceValueChanged(object sender, EventArgs e)
@@ -979,6 +985,11 @@ namespace CP2077SaveEditor
         private void skinColorBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             activeSaveFile.Appearance.SetSkinColor(skinColorBox.Text);
+        }
+
+        private void eyesColorBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            activeSaveFile.Appearance.SetEyeColor(eyesColorBox.Text);
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)

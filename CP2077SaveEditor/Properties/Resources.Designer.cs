@@ -71,6 +71,35 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [
+        ///	&quot;01_blood_gradient_black&quot;,
+        ///	&quot;02_blood_gradient_blue&quot;,
+        ///	&quot;03_blood_gradient_brown&quot;,
+        ///	&quot;04_blood_gradient_green&quot;,
+        ///	&quot;05_blood_gradient_grey&quot;,
+        ///	&quot;06_blood_gradient_light_blue&quot;,
+        ///	&quot;07_blood_gradient_red&quot;,
+        ///	&quot;08_blood_gradient_violet&quot;,
+        ///	&quot;09_blood_gradient_yellow&quot;,
+        ///	&quot;10_gradient_black&quot;,
+        ///	&quot;11_gradient_blue&quot;,
+        ///	&quot;12_gradient_brown&quot;,
+        ///	&quot;13_gradient_green&quot;,
+        ///	&quot;14_gradient_grey&quot;,
+        ///	&quot;15_gradient_light_blue&quot;,
+        ///	&quot;16_gradient_red&quot;,
+        ///	&quot;17_gradient_violet&quot;,
+        ///	&quot;18_gradient_yellow&quot;,
+        ///	&quot;19_multilayer_arasaka&quot;
+        ///].
+        /// </summary>
+        internal static string EyeColors {
+            get {
+                return ResourceManager.GetString("EyeColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {
         ///  &quot;2436045487&quot;: &quot;CYB-12345&quot;,
         ///  &quot;2145224326&quot;: &quot;travelling_merchant_lives&quot;,
@@ -126,6 +155,7 @@ namespace CP2077SaveEditor.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to {
+        ///  &quot;Shaved&quot;: 0,
         ///  &quot;Male 01&quot;: 15380579400599425026,
         ///  &quot;Male 02&quot;: 5984812588040213129,
         ///  &quot;Male 03&quot;: 3969157183659188110,
@@ -139,8 +169,7 @@ namespace CP2077SaveEditor.Properties {
         ///  &quot;Male 11&quot;: 15034475787780468953,
         ///  &quot;Male 12&quot;: 7355532851366951590,
         ///  &quot;Male 13&quot;: 11759469743560328903,
-        ///  &quot;Male 14&quot;: 3500425191302231725,
-        ///  &quot;Male 15&quot;:  [rest of string was truncated]&quot;;.
+        ///  &quot;Male 14&quot;: 3500425191302231725 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string HairStyles {
             get {
