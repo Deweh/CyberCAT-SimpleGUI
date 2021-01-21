@@ -183,9 +183,11 @@ namespace CP2077SaveEditor
 
         private void RefreshAppearanceValues()
         {
+            //Non-Editable Values
+
             var valueFields = new Dictionary<string, TextBox>
             {
-                //Facial Features
+                //Eyes
                 {"first.main.first.eyes_color", eyesColorBox },
                 //Makeup
                 {"first.main.first.makeupEyes_", eyeMakeupBox}, {"first.main.first.makeupLips_", lipMakeupBox}, {"first.main.first.makeupCheeks_", cheekMakeupBox},
@@ -197,6 +199,8 @@ namespace CP2077SaveEditor
             {
                 valueFields[searchString].Text = activeSaveFile.GetAppearanceValue(searchString);
             }
+
+            //Facial Features
 
             foreach (string searchString in linearAppearanceFeatures.Keys)
             {
@@ -212,6 +216,8 @@ namespace CP2077SaveEditor
                     linearAppearanceFeatures[searchString].Value = int.Parse(result) + 1;
                 }
             }
+
+            //Hair Style & Color
 
             var hairColorEntry = activeSaveFile.GetAppearanceValue("first.main.first.hair_color");
 
@@ -238,6 +244,8 @@ namespace CP2077SaveEditor
                 hairColorBox.Text = "None";
                 hairColorBox.Enabled = false;
             }
+
+            //Skin Color
 
             skinColorBox.Text = activeSaveFile.GetAppearanceValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
         }
@@ -999,24 +1007,27 @@ namespace CP2077SaveEditor
 
         private void hairStyleBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (hairColorBox.Enabled == false && hairStyleBox.Text != "Shaved")
+            if (!loadingSave)
             {
-                activeSaveFile.Appearance.CreateHairEntry(hairStyleBox.Text);
-                RefreshAppearanceValues();
+                if (hairColorBox.Enabled == false && hairStyleBox.Text != "Shaved")
+                {
+                    activeSaveFile.Appearance.CreateHairEntry(hairStyleBox.Text);
+                    RefreshAppearanceValues();
 
-                hairColorBox.Items.Remove("None");
-                return;
+                    hairColorBox.Items.Remove("None");
+                    return;
+                }
+
+                if (hairColorBox.Enabled == true && hairStyleBox.Text == "Shaved")
+                {
+                    activeSaveFile.Appearance.DeleteHairEntry();
+
+                    RefreshAppearanceValues();
+                    return;
+                }
+
+                activeSaveFile.Appearance.SetHairStyle(hairStyleBox.Text);
             }
-
-            if (hairColorBox.Enabled == true && hairStyleBox.Text == "Shaved")
-            {
-                activeSaveFile.Appearance.DeleteHairEntry();
-
-                RefreshAppearanceValues();
-                return;
-            }
-
-            activeSaveFile.Appearance.SetHairStyle(hairStyleBox.Text);
         }
 
         private void hairColorBox_SelectedIndexChanged(object sender, EventArgs e)

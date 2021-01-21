@@ -560,6 +560,14 @@ namespace CP2077SaveEditor
             {
                 var hairsList = activeSave.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == "hairs").FirstOrDefault().MainList;
                 hairsList.Remove(hairsList[0]);
+
+                var hairsCreationList = activeSave.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == "character_customization").FirstOrDefault().MainList;
+                var creationEntry = hairsCreationList.Where(x => CompareMainListAppearanceEntries("hair_color", x.SecondString)).FirstOrDefault();
+
+                if (creationEntry != null)
+                {
+                    hairsCreationList.Remove(creationEntry);
+                }
             }
 
             public void SetSkinColor(string colorString)
