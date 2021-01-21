@@ -65,7 +65,7 @@ namespace CP2077SaveEditor.Extensions
 
                 if (int.TryParse(x.SubItems[info.SortColumn].Text, out _) && int.TryParse(y.SubItems[info.SortColumn].Text, out _))
                 {
-                    compareResult = comparer.Compare(int.Parse(x.SubItems[info.SortColumn].Text), int.Parse(y.SubItems[info.SortColumn].Text));
+                    compareResult = comparer.Compare(int.Parse(y.SubItems[info.SortColumn].Text), int.Parse(x.SubItems[info.SortColumn].Text));
                 }
                 else
                 {
