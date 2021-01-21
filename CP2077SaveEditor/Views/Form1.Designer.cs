@@ -962,6 +962,7 @@ namespace CP2077SaveEditor
             this.inventoryListView.TabIndex = 0;
             this.inventoryListView.UseCompatibleStateImageBehavior = false;
             this.inventoryListView.View = System.Windows.Forms.View.Details;
+            this.inventoryListView.VirtualMode = true;
             // 
             // inventoryNameHeader
             // 

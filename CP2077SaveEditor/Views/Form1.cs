@@ -30,7 +30,6 @@ namespace CP2077SaveEditor
         //GUI
         private ModernButton activeTabButton = new ModernButton();
         private Panel activeTabPanel = new Panel();
-        private ListViewColumnSorter inventoryColumnSorter;
 
         //Lookup Dictionaries
         private Dictionary<string, CharacterCustomizationAppearances> appearanceCompareNodes;
@@ -70,11 +69,7 @@ namespace CP2077SaveEditor
             factsListView.MouseUp += factsListView_MouseUp;
             factsListView.KeyDown += factsListView_KeyDown;
             inventoryListView.DoubleClick += inventoryListView_DoubleClick;
-            inventoryListView.ColumnClick += inventoryListView_ColumnClick;
             inventoryListView.KeyDown += inventoryListView_KeyDown;
-
-            inventoryColumnSorter = new ListViewColumnSorter();
-            inventoryListView.ListViewItemSorter = inventoryColumnSorter;
 
             factsSearchBox.GotFocus += SearchBoxGotFocus;
             factsSearchBox.LostFocus += SearchBoxLostFocus;
@@ -291,29 +286,18 @@ namespace CP2077SaveEditor
         {
             var listViewRows = new List<ListViewItem>();
             var containerID = containersListBox.SelectedItem.ToString();
+
             containerGroupBox.Visible = true;
             containerGroupBox.Text = containerID;
+
             if (inventoryNames.Values.Contains(containerID))
             {
                 containerID = inventoryNames.Where(x => x.Value == containerID).FirstOrDefault().Key.ToString();
             }
 
-            ItemData activeItemEdit = null;
-
-            if (inventoryListView.SelectedItems.Count > 0)
-            {
-                activeItemEdit = (ItemData)inventoryListView.SelectedItems[0].Tag;
-            }
-
-            ListViewItem selectItem = null;
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
-                var row = new string[] { item.ItemGameName, "", item.ItemName, "", "1", item.ItemGameDescription };
-
-                if (item.ItemGameName.Length < 1)
-                {
-                    row[0] = "Unknown";
-                }
+                var row = new string[] { (item.ItemGameName.Length > 1) ? item.ItemGameName : "Unknown", "", item.ItemName, "", "1", item.ItemGameDescription };
 
                 if (item.Data.GetType() == typeof(ItemData.SimpleItemData))
                 {
@@ -366,12 +350,6 @@ namespace CP2077SaveEditor
                 var newItem = new ListViewItem(row);
                 newItem.Tag = item;
 
-                if (activeItemEdit == item)
-                {
-                    newItem.Selected = true;
-                    selectItem = newItem;
-                }
-
                 listViewRows.Add(newItem);
                 if (item.ItemGameName == "Eddies" && containerID == "1")
                 {
@@ -395,23 +373,8 @@ namespace CP2077SaveEditor
                     }
                 }
             }
-            
 
-            inventoryListView.BeginUpdate();
-            inventoryListView.ListViewItemSorter = null;
-
-            inventoryListView.Items.Clear();
-            inventoryListView.Items.AddRange(listViewRows.ToArray());
-
-            inventoryListView.ListViewItemSorter = inventoryColumnSorter;
-            inventoryListView.Sort();
-            inventoryListView.EndUpdate();
-
-            if (selectItem != null)
-            {
-                inventoryListView.EnsureVisible(inventoryListView.Items.IndexOf(selectItem));
-            }
-            
+            inventoryListView.SetVirtualItems(listViewRows);
             return true;
         }
 
@@ -690,30 +653,8 @@ namespace CP2077SaveEditor
             if (inventoryListView.SelectedIndices.Count > 0)
             {
                 var activeDetails = new ItemDetails();
-                activeDetails.LoadItem((ItemData)inventoryListView.SelectedItems[0].Tag, activeSaveFile, RefreshInventory);
+                activeDetails.LoadItem((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag, activeSaveFile, RefreshInventory);
             }
-        }
-
-        private void inventoryListView_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            if (e.Column == inventoryColumnSorter.SortColumn)
-            {
-                if (inventoryColumnSorter.Order == SortOrder.Ascending)
-                {
-                    inventoryColumnSorter.Order = SortOrder.Descending;
-                }
-                else
-                {
-                    inventoryColumnSorter.Order = SortOrder.Ascending;
-                }
-            }
-            else
-            {
-                inventoryColumnSorter.SortColumn = e.Column;
-                inventoryColumnSorter.Order = SortOrder.Ascending;
-            }
-
-            inventoryListView.Sort();
         }
 
         private void inventoryListView_KeyDown(object sender, KeyEventArgs e)
@@ -726,16 +667,16 @@ namespace CP2077SaveEditor
                     containerID = inventoryNames.Where(x => x.Value == containerID).FirstOrDefault().Key.ToString();
                 }
 
-                var activeItem = (ItemData)inventoryListView.SelectedItems[0].Tag;
+                var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
                 activeSaveFile.GetInventory(ulong.Parse(containerID)).Items.Remove(activeItem);
 
-                if (((ItemData)inventoryListView.SelectedItems[0].Tag).ItemGameName == "Eddies" && containerID == "1")
+                if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).ItemGameName == "Eddies" && containerID == "1")
                 {
                     moneyUpDown.Enabled = false;
                     moneyUpDown.Value = 0;
                 }
 
-                inventoryListView.Items.Remove(inventoryListView.SelectedItems[0]);
+                inventoryListView.RemoveVirtualItem(inventoryListView.SelectedVirtualItems()[0]);
                 statusLabel.Text = "'" + (string.IsNullOrEmpty(activeItem.ItemGameName) ? activeItem.ItemName : activeItem.ItemGameName) + "' deleted.";
             }
         }
