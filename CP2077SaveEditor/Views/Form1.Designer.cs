@@ -49,6 +49,7 @@ namespace CP2077SaveEditor
             this.appearanceCompareLoadButton = new CP2077SaveEditor.ModernButton();
             this.label18 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.skinColorBox = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
             this.breastsBox = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -136,7 +137,6 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.skinColorBox = new System.Windows.Forms.ComboBox();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.appearanceCompareValuesBox.SuspendLayout();
@@ -305,7 +305,7 @@ namespace CP2077SaveEditor
             this.label1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label1.Size = new System.Drawing.Size(379, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "v0.04a // CyberCAT by SirBitesalot and other contributors";
+            this.label1.Text = "v0.05a // CyberCAT by SirBitesalot and other contributors";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // statusLabel
@@ -441,6 +441,16 @@ namespace CP2077SaveEditor
             this.groupBox6.TabIndex = 16;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Body";
+            // 
+            // skinColorBox
+            // 
+            this.skinColorBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.skinColorBox.FormattingEnabled = true;
+            this.skinColorBox.Location = new System.Drawing.Point(80, 24);
+            this.skinColorBox.Name = "skinColorBox";
+            this.skinColorBox.Size = new System.Drawing.Size(200, 21);
+            this.skinColorBox.TabIndex = 6;
+            this.skinColorBox.SelectedIndexChanged += new System.EventHandler(this.skinColorBox_SelectedIndexChanged);
             // 
             // label17
             // 
@@ -1583,16 +1593,6 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
-            // 
-            // skinColorBox
-            // 
-            this.skinColorBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.skinColorBox.FormattingEnabled = true;
-            this.skinColorBox.Location = new System.Drawing.Point(80, 24);
-            this.skinColorBox.Name = "skinColorBox";
-            this.skinColorBox.Size = new System.Drawing.Size(200, 21);
-            this.skinColorBox.TabIndex = 6;
-            this.skinColorBox.SelectedIndexChanged += new System.EventHandler(this.skinColorBox_SelectedIndexChanged);
             // 
             // Form1
             // 
