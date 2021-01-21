@@ -523,13 +523,43 @@ namespace CP2077SaveEditor
 
             public void SetHairStyle(string friendlyName)
             {
-                SetEntryField(AppearanceField.Hash, "first.main.hair_color", HairStyles[friendlyName]);
+                if (friendlyName != "Shaved")
+                {
+                    SetEntryField(AppearanceField.Hash, "first.main.hair_color", HairStyles[friendlyName]);
+                }
             }
 
             public void SetHairColor(string colorString)
             {
-                SetEntryField(AppearanceField.FirstString, "first.main.hair_color", colorString);
-                activeSave.GetAppearanceContainer().Strings[0] = colorString.Substring(3);
+                if (colorString != "None")
+                {
+                    SetEntryField(AppearanceField.FirstString, "first.main.hair_color", colorString);
+                    if (activeSave.GetAppearanceContainer().Strings.Count < 1)
+                    {
+                        activeSave.GetAppearanceContainer().Strings.Add(colorString.Substring(3));
+                        activeSave.GetAppearanceContainer().Strings.Add("Short");
+                    } else {
+                        activeSave.GetAppearanceContainer().Strings[0] = colorString.Substring(3);
+                    }
+                }
+            }
+
+            public void CreateHairEntry(string friendlyName)
+            {
+                var hairsList = activeSave.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == "hairs").FirstOrDefault().MainList;
+
+                var newEntry = new CharacterCustomizationAppearances.HashValueEntry();
+                newEntry.FirstString = HairColors[0];
+                newEntry.Hash = HairStyles[friendlyName];
+                newEntry.SecondString = "hair_color1";
+
+                hairsList.Add(newEntry);
+            }
+
+            public void DeleteHairEntry()
+            {
+                var hairsList = activeSave.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == "hairs").FirstOrDefault().MainList;
+                hairsList.Remove(hairsList[0]);
             }
 
             public void SetSkinColor(string colorString)

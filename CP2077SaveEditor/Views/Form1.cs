@@ -198,9 +198,6 @@ namespace CP2077SaveEditor
                 valueFields[searchString].Text = activeSaveFile.GetAppearanceValue(searchString);
             }
 
-            hairColorBox.Text = activeSaveFile.GetAppearanceValue("first.main.first.hair_color");
-            skinColorBox.Text = activeSaveFile.GetAppearanceValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
-
             foreach (string searchString in linearAppearanceFeatures.Keys)
             {
                 var result = activeSaveFile.GetAppearanceValue(searchString);
@@ -216,14 +213,33 @@ namespace CP2077SaveEditor
                 }
             }
 
-            var hairHash = ulong.Parse(activeSaveFile.GetAppearanceValue("first.main.hash.hair_color"));
-            foreach (string styleName in activeSaveFile.Appearance.HairStyles.Keys)
+            var hairColorEntry = activeSaveFile.GetAppearanceValue("first.main.first.hair_color");
+
+            if (hairColorEntry != "default")
             {
-                if (activeSaveFile.Appearance.HairStyles[styleName] == hairHash)
+                hairColorBox.Text = hairColorEntry;
+                hairColorBox.Enabled = true;
+
+                var hairHash = ulong.Parse(activeSaveFile.GetAppearanceValue("first.main.hash.hair_color"));
+                foreach (string styleName in activeSaveFile.Appearance.HairStyles.Keys)
                 {
-                    hairStyleBox.Text = styleName;
+                    hairColorBox.Text = activeSaveFile.GetAppearanceValue("first.main.first.hair_color");
+
+                    if (activeSaveFile.Appearance.HairStyles[styleName] == hairHash)
+                    {
+                        hairStyleBox.Text = styleName;
+                    }
                 }
             }
+            else
+            {
+                hairStyleBox.Text = "Shaved";
+                hairColorBox.Items.Add("None");
+                hairColorBox.Text = "None";
+                hairColorBox.Enabled = false;
+            }
+
+            skinColorBox.Text = activeSaveFile.GetAppearanceValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
         }
 
         private void LinearAppearanceValueChanged(object sender, EventArgs e)
@@ -983,6 +999,23 @@ namespace CP2077SaveEditor
 
         private void hairStyleBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (hairColorBox.Enabled == false && hairStyleBox.Text != "Shaved")
+            {
+                activeSaveFile.Appearance.CreateHairEntry(hairStyleBox.Text);
+                RefreshAppearanceValues();
+
+                hairColorBox.Items.Remove("None");
+                return;
+            }
+
+            if (hairColorBox.Enabled == true && hairStyleBox.Text == "Shaved")
+            {
+                activeSaveFile.Appearance.DeleteHairEntry();
+
+                RefreshAppearanceValues();
+                return;
+            }
+
             activeSaveFile.Appearance.SetHairStyle(hairStyleBox.Text);
         }
 
