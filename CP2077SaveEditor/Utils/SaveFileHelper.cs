@@ -109,7 +109,7 @@ namespace CP2077SaveEditor
         {
             var result = this.GetStatsFromSeed(item.Header.Seed);
 
-            if (result == null)
+            if (result == null && item.Data != null && item.Data is ItemData.SimpleItemData)
             {
                 var i = Array.FindIndex(this.GetStatsMap().Values, x => x.RecordID.Id == item.ItemTdbId.Id);
                 if (i > -1)
