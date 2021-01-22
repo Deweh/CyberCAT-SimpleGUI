@@ -29,6 +29,7 @@ namespace CP2077SaveEditor
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.optionsPanel = new System.Windows.Forms.Panel();
             this.statsButton = new CP2077SaveEditor.ModernButton();
@@ -70,6 +71,7 @@ namespace CP2077SaveEditor
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.eyesColorBox = new System.Windows.Forms.ComboBox();
             this.earsUpDown = new System.Windows.Forms.NumericUpDown();
             this.jawUpDown = new System.Windows.Forms.NumericUpDown();
             this.mouthUpDown = new System.Windows.Forms.NumericUpDown();
@@ -97,6 +99,7 @@ namespace CP2077SaveEditor
             this.inventoryQuantityHeader = new System.Windows.Forms.ColumnHeader();
             this.inventoryDescriptionHeader = new System.Windows.Forms.ColumnHeader();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.debloatButton = new CP2077SaveEditor.ModernButton();
             this.clearQuestFlagsButton = new CP2077SaveEditor.ModernButton();
             this.label2 = new System.Windows.Forms.Label();
             this.moneyUpDown = new System.Windows.Forms.NumericUpDown();
@@ -136,7 +139,8 @@ namespace CP2077SaveEditor
             this.levelUpDown = new System.Windows.Forms.NumericUpDown();
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
-            this.eyesColorBox = new System.Windows.Forms.ComboBox();
+            this.debloatWorker = new System.ComponentModel.BackgroundWorker();
+            this.debloatTimer = new System.Windows.Forms.Timer(this.components);
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.appearanceCompareValuesBox.SuspendLayout();
@@ -300,10 +304,10 @@ namespace CP2077SaveEditor
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Location = new System.Drawing.Point(2366, 1154);
+            this.label1.Location = new System.Drawing.Point(2442, 1154);
             this.label1.Name = "label1";
             this.label1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.label1.Size = new System.Drawing.Size(379, 13);
+            this.label1.Size = new System.Drawing.Size(303, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "v0.05a // CyberCAT by SirBitesalot and other contributors";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -314,7 +318,7 @@ namespace CP2077SaveEditor
             this.statusLabel.Location = new System.Drawing.Point(161, 1154);
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.statusLabel.Size = new System.Drawing.Size(379, 13);
+            this.statusLabel.Size = new System.Drawing.Size(548, 13);
             this.statusLabel.TabIndex = 4;
             this.statusLabel.Text = "Idle";
             this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -662,6 +666,16 @@ namespace CP2077SaveEditor
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Facial Features";
             // 
+            // eyesColorBox
+            // 
+            this.eyesColorBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.eyesColorBox.FormattingEnabled = true;
+            this.eyesColorBox.Location = new System.Drawing.Point(154, 24);
+            this.eyesColorBox.Name = "eyesColorBox";
+            this.eyesColorBox.Size = new System.Drawing.Size(138, 21);
+            this.eyesColorBox.TabIndex = 8;
+            this.eyesColorBox.SelectedIndexChanged += new System.EventHandler(this.eyesColorBox_SelectedIndexChanged);
+            // 
             // earsUpDown
             // 
             this.earsUpDown.Location = new System.Drawing.Point(66, 137);
@@ -884,9 +898,9 @@ namespace CP2077SaveEditor
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.containersListBox);
-            this.groupBox2.Location = new System.Drawing.Point(418, 15);
+            this.groupBox2.Location = new System.Drawing.Point(540, 15);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(427, 65);
+            this.groupBox2.Size = new System.Drawing.Size(305, 65);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Inventories";
@@ -898,7 +912,7 @@ namespace CP2077SaveEditor
             this.containersListBox.FormattingEnabled = true;
             this.containersListBox.Location = new System.Drawing.Point(3, 18);
             this.containersListBox.Name = "containersListBox";
-            this.containersListBox.Size = new System.Drawing.Size(421, 44);
+            this.containersListBox.Size = new System.Drawing.Size(299, 44);
             this.containersListBox.TabIndex = 4;
             this.containersListBox.SelectedIndexChanged += new System.EventHandler(this.containersListBox_SelectedIndexChanged);
             // 
@@ -994,15 +1008,32 @@ namespace CP2077SaveEditor
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.debloatButton);
             this.groupBox1.Controls.Add(this.clearQuestFlagsButton);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.moneyUpDown);
             this.groupBox1.Location = new System.Drawing.Point(6, 15);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(406, 65);
+            this.groupBox1.Size = new System.Drawing.Size(528, 65);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Quick Actions";
+            // 
+            // debloatButton
+            // 
+            this.debloatButton.BackColor = System.Drawing.Color.White;
+            this.debloatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.debloatButton.ClickEffectEnabled = true;
+            this.debloatButton.DefaultColor = System.Drawing.Color.White;
+            this.debloatButton.HoverColor = System.Drawing.Color.LightGray;
+            this.debloatButton.Location = new System.Drawing.Point(381, 27);
+            this.debloatButton.Name = "debloatButton";
+            this.debloatButton.Size = new System.Drawing.Size(131, 22);
+            this.debloatButton.TabIndex = 3;
+            this.debloatButton.Text = "De-Bloat";
+            this.debloatButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.debloatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.debloatButton.Click += new System.EventHandler(this.debloatButton_Click);
             // 
             // clearQuestFlagsButton
             // 
@@ -1585,15 +1616,13 @@ namespace CP2077SaveEditor
             this.openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.openSaveButton.Click += new System.EventHandler(this.openSaveButton_Click);
             // 
-            // eyesColorBox
+            // debloatWorker
             // 
-            this.eyesColorBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.eyesColorBox.FormattingEnabled = true;
-            this.eyesColorBox.Location = new System.Drawing.Point(154, 24);
-            this.eyesColorBox.Name = "eyesColorBox";
-            this.eyesColorBox.Size = new System.Drawing.Size(138, 21);
-            this.eyesColorBox.TabIndex = 8;
-            this.eyesColorBox.SelectedIndexChanged += new System.EventHandler(this.eyesColorBox_SelectedIndexChanged);
+            this.debloatWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.debloatWorker_DoWork);
+            // 
+            // debloatTimer
+            // 
+            this.debloatTimer.Tick += new System.EventHandler(this.debloatTimer_Tick);
             // 
             // Form1
             // 
@@ -1779,6 +1808,9 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.ComboBox hairColorBox;
         private System.Windows.Forms.ComboBox skinColorBox;
         private System.Windows.Forms.ComboBox eyesColorBox;
+        private ModernButton debloatButton;
+        private System.ComponentModel.BackgroundWorker debloatWorker;
+        private System.Windows.Forms.Timer debloatTimer;
     }
 }
 

@@ -15,6 +15,7 @@ using CyberCAT.Core.Classes.Interfaces;
 using CyberCAT.Core.DumpedEnums;
 using Newtonsoft.Json;
 using CP2077SaveEditor.Extensions;
+using CyberCAT.Core.Classes.Mapping;
 
 namespace CP2077SaveEditor
 {
@@ -30,6 +31,7 @@ namespace CP2077SaveEditor
         //GUI
         private ModernButton activeTabButton = new ModernButton();
         private Panel activeTabPanel = new Panel();
+        private string debloatInfo = "";
 
         //Lookup Dictionaries
         private Dictionary<string, CharacterCustomizationAppearances> appearanceCompareNodes;
@@ -99,6 +101,8 @@ namespace CP2077SaveEditor
             quickhackingUpDown.ValueChanged += PlayerStatChanged;
             stealthUpDown.ValueChanged += PlayerStatChanged;
             coldBloodUpDown.ValueChanged += PlayerStatChanged;
+
+            debloatWorker.RunWorkerCompleted += debloatWorker_Completed;
 
             statsPanel.BackgroundImage = CP2077SaveEditor.Properties.Resources.player_stats;
 
@@ -568,10 +572,14 @@ namespace CP2077SaveEditor
                     if (saveType == 0)
                     {
                         testFile.LoadPCSaveFile(new MemoryStream(saveBytes));
-                    } else {
+                    }
+                    else
+                    {
                         testFile.LoadPS4SaveFile(new MemoryStream(saveBytes));
                     }
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     statusLabel.Text = "Save cancelled.";
                     File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
                     MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
@@ -990,6 +998,84 @@ namespace CP2077SaveEditor
         private void eyesColorBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             activeSaveFile.Appearance.SetEyeColor(eyesColorBox.Text);
+        }
+
+        private void debloatButton_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("This process will attempt to remove redundant data from your save & is potentially destructive. It's highly recommended that you back up your save before continuing. This process can take 10+ minutes for heavily bloated saves and cannot be cancelled once started. Continue?", "WARNING", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            debloatWorker.RunWorkerAsync();
+            debloatTimer.Start();
+
+            editorPanel.Enabled = false;
+            optionsPanel.Enabled = false;
+            openSaveButton.Enabled = false;
+            swapSaveType.Enabled = false;
+            
+        }
+
+        private void debloatTimer_Tick(object sender, EventArgs e)
+        {
+            statusLabel.Text = debloatInfo;
+        }
+
+        private void debloatWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var x = 1;
+            foreach (CyberCAT.Core.Classes.DumpedClasses.GameSavedStatsData stats in activeSaveFile.GetStatsMap().Values)
+            {
+                if (stats.StatModifiers != null)
+                {
+                    if (stats.StatModifiers.Count() > 100)
+                    {
+                        for (int i = 0; i <= stats.StatModifiers.Count() - 1; i++)
+                        {
+                            activeSaveFile.GetStatsContainer().RemoveHandle((int)stats.StatModifiers[i].Id);
+                            debloatInfo = "DE-BLOAT IN PROGRESS :: (1/2) :: Entry: " + x.ToString() + "/" + activeSaveFile.GetStatsMap().Values.Length + " -- Handle: " + i.ToString() + "/" + stats.StatModifiers.Count().ToString();
+                        }
+
+                        stats.StatModifiers = new Handle<CyberCAT.Core.Classes.DumpedClasses.GameStatModifierData>[] { };
+                    }
+                }
+                x++;
+            }
+
+            uint y = 0;
+            x = 0;
+            foreach (CyberCAT.Core.Classes.DumpedClasses.GameSavedStatsData value in activeSaveFile.GetStatsMap().Values)
+            {
+                if (value.StatModifiers != null && value.StatModifiers.Count() > 0)
+                {
+                    if (y < 1)
+                    {
+                        y = value.StatModifiers[0].Id;
+                    }
+                    var z = 0;
+                    foreach (Handle<CyberCAT.Core.Classes.DumpedClasses.GameStatModifierData> modifierData in value.StatModifiers)
+                    {
+                        modifierData.SetId(y);
+                        debloatInfo = "DE-BLOAT IN PROGRESS :: (2/2) :: Entry: " + x.ToString() + "/" + activeSaveFile.GetStatsMap().Values.Length + " -- Handle: " + z.ToString() + "/" + value.StatModifiers.Count().ToString();
+                        y++;
+                        z++;
+                    }
+                }
+                x++;
+            }
+        }
+
+        private void debloatWorker_Completed(object sender, EventArgs e)
+        {
+            debloatTimer.Stop();
+            editorPanel.Enabled = true;
+            optionsPanel.Enabled = true;
+            openSaveButton.Enabled = true;
+            swapSaveType.Enabled = true;
+
+            statusLabel.Text = "De-bloat complete.";
+            MessageBox.Show("De-bloat complete.");
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)

@@ -107,7 +107,18 @@ namespace CP2077SaveEditor
 
         public GameSavedStatsData GetItemStatData(ItemData item)
         {
-            return this.GetStatsFromSeed(item.Header.Seed);
+            var result = this.GetStatsFromSeed(item.Header.Seed);
+
+            if (result == null)
+            {
+                var i = Array.FindIndex(this.GetStatsMap().Values, x => x.RecordID.Id == item.ItemTdbId.Id);
+                if (i > -1)
+                {
+                    return this.GetStatsMap().Values[i];
+                }
+            }
+
+            return result;
         }
 
         public GameSavedStatsData GetStatsFromSeed(uint seed)
