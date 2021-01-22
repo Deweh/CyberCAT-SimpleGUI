@@ -1002,7 +1002,7 @@ namespace CP2077SaveEditor
 
         private void debloatButton_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("This process will attempt to remove redundant data from your save & is potentially destructive. It's highly recommended that you back up your save before continuing. Continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            if (MessageBox.Show("This process will remove redundant data from your save. Just in case, it's recommended that you back up your save before continuing. Continue?", "Notice", MessageBoxButtons.YesNo) != DialogResult.Yes)
             {
                 return;
             }
@@ -1024,48 +1024,45 @@ namespace CP2077SaveEditor
 
         private void debloatWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var x = 1;
+            var entryCounter = 1;
             foreach (CyberCAT.Core.Classes.DumpedClasses.GameSavedStatsData stats in activeSaveFile.GetStatsMap().Values)
             {
                 if (stats.StatModifiers != null)
                 {
-                    if (stats.StatModifiers.Count() > 100)
+                    var craftedModifiers = stats.StatModifiers.Where(x => x.Value.StatType == gamedataStatType.IsItemCrafted);
+
+                    if (craftedModifiers != null && craftedModifiers.Count() > 100)
                     {
-                        debloatInfo = "DE-BLOAT IN PROGRESS :: (1/2) :: Entry: " + x.ToString() + "/" + activeSaveFile.GetStatsMap().Values.Length;
+                        debloatInfo = "DE-BLOAT IN PROGRESS :: (1/2) :: Entry: " + entryCounter.ToString() + "/" + activeSaveFile.GetStatsMap().Values.Length.ToString();
 
                         var ids = new HashSet<uint>();
-                        for (int i = 0; i <= stats.StatModifiers.Count() - 1; i++)
+                        foreach (Handle<CyberCAT.Core.Classes.DumpedClasses.GameStatModifierData> modifierData in craftedModifiers)
                         {
-                            ids.Add(stats.StatModifiers[i].Id);
+                            ids.Add(modifierData.Id);
                         }
 
                         activeSaveFile.GetStatsContainer().RemoveHandles(ids);
                         stats.StatModifiers = new Handle<CyberCAT.Core.Classes.DumpedClasses.GameStatModifierData>[] { };
                     }
                 }
-                x++;
+                entryCounter++;
             }
 
-            uint y = 0;
-            x = 0;
+            entryCounter = 0;
+            uint handleInd = 1;
             foreach (CyberCAT.Core.Classes.DumpedClasses.GameSavedStatsData value in activeSaveFile.GetStatsMap().Values)
             {
                 if (value.StatModifiers != null && value.StatModifiers.Count() > 0)
                 {
-                    if (y < 1)
-                    {
-                        y = value.StatModifiers[0].Id;
-                    }
-                    var z = 0;
+                    var handleCounter = 0;
                     foreach (Handle<CyberCAT.Core.Classes.DumpedClasses.GameStatModifierData> modifierData in value.StatModifiers)
                     {
-                        modifierData.SetId(y);
-                        debloatInfo = "DE-BLOAT IN PROGRESS :: (2/2) :: Entry: " + x.ToString() + "/" + activeSaveFile.GetStatsMap().Values.Length + " -- Handle: " + z.ToString() + "/" + value.StatModifiers.Count().ToString();
-                        y++;
-                        z++;
+                        modifierData.SetId(handleInd);
+                        debloatInfo = "DE-BLOAT IN PROGRESS :: (2/2) :: Entry: " + entryCounter.ToString() + "/" + activeSaveFile.GetStatsMap().Values.Length.ToString() + " -- Handle: " + handleCounter.ToString() + "/" + value.StatModifiers.Count().ToString();
+                        handleInd++; handleCounter++;
                     }
                 }
-                x++;
+                entryCounter++;
             }
         }
 
