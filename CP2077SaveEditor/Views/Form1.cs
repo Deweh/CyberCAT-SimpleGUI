@@ -1002,7 +1002,7 @@ namespace CP2077SaveEditor
 
         private void debloatButton_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("This process will attempt to remove redundant data from your save & is potentially destructive. It's highly recommended that you back up your save before continuing. This process can take 10+ minutes for heavily bloated saves and cannot be cancelled once started. Continue?", "WARNING", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            if (MessageBox.Show("This process will attempt to remove redundant data from your save & is potentially destructive. It's highly recommended that you back up your save before continuing. Continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
             {
                 return;
             }
@@ -1031,12 +1031,15 @@ namespace CP2077SaveEditor
                 {
                     if (stats.StatModifiers.Count() > 100)
                     {
+                        debloatInfo = "DE-BLOAT IN PROGRESS :: (1/2) :: Entry: " + x.ToString() + "/" + activeSaveFile.GetStatsMap().Values.Length;
+
+                        var ids = new HashSet<uint>();
                         for (int i = 0; i <= stats.StatModifiers.Count() - 1; i++)
                         {
-                            activeSaveFile.GetStatsContainer().RemoveHandle((int)stats.StatModifiers[i].Id);
-                            debloatInfo = "DE-BLOAT IN PROGRESS :: (1/2) :: Entry: " + x.ToString() + "/" + activeSaveFile.GetStatsMap().Values.Length + " -- Handle: " + i.ToString() + "/" + stats.StatModifiers.Count().ToString();
+                            ids.Add(stats.StatModifiers[i].Id);
                         }
 
+                        activeSaveFile.GetStatsContainer().RemoveHandles(ids);
                         stats.StatModifiers = new Handle<CyberCAT.Core.Classes.DumpedClasses.GameStatModifierData>[] { };
                     }
                 }

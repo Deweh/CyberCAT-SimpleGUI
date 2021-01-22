@@ -185,7 +185,7 @@ namespace CP2077SaveEditor
             modifiersList.Remove(statsHandle);
             statsData.StatModifiers = modifiersList.ToArray();
 
-            this.GetStatsContainer().RemoveHandle((int)statsHandle.Id);
+            this.GetStatsContainer().RemoveHandle(statsHandle.Id);
 
             foreach (GameSavedStatsData value in this.GetStatsMap().Values)
             {
