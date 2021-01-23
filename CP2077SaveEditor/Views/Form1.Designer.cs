@@ -38,7 +38,6 @@ namespace CP2077SaveEditor
             this.saveChangesButton = new CP2077SaveEditor.ModernButton();
             this.appearanceButton = new CP2077SaveEditor.ModernButton();
             this.editorPanel = new System.Windows.Forms.Panel();
-            this.modernValuePicker1 = new CP2077SaveEditor.ModernValuePicker();
             this.filePathLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
@@ -143,7 +142,6 @@ namespace CP2077SaveEditor
             this.debloatWorker = new System.ComponentModel.BackgroundWorker();
             this.debloatTimer = new System.Windows.Forms.Timer(this.components);
             this.optionsPanel.SuspendLayout();
-            this.editorPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             this.appearanceCompareValuesBox.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -287,27 +285,11 @@ namespace CP2077SaveEditor
             // editorPanel
             // 
             this.editorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.editorPanel.Controls.Add(this.modernValuePicker1);
             this.editorPanel.Enabled = false;
             this.editorPanel.Location = new System.Drawing.Point(161, 12);
             this.editorPanel.Name = "editorPanel";
             this.editorPanel.Size = new System.Drawing.Size(851, 548);
             this.editorPanel.TabIndex = 2;
-            // 
-            // modernValuePicker1
-            // 
-            this.modernValuePicker1.Index = 0;
-            this.modernValuePicker1.Location = new System.Drawing.Point(212, 65);
-            this.modernValuePicker1.MaxIntegerValue = 99;
-            this.modernValuePicker1.MinIntegerValue = 0;
-            this.modernValuePicker1.Name = "modernValuePicker1";
-            this.modernValuePicker1.PickerName = "NAME";
-            this.modernValuePicker1.PickerType = CP2077SaveEditor.PickerValueType.Integer;
-            this.modernValuePicker1.Size = new System.Drawing.Size(200, 100);
-            this.modernValuePicker1.StringCollection = new string[0];
-            this.modernValuePicker1.StringValue = "00";
-            this.modernValuePicker1.SuppressIndexChange = false;
-            this.modernValuePicker1.TabIndex = 0;
             // 
             // filePathLabel
             // 
@@ -1665,7 +1647,6 @@ namespace CP2077SaveEditor
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Cyberpunk 2077 Save Editor (CyberCAT-SimpleGUI)";
             this.optionsPanel.ResumeLayout(false);
-            this.editorPanel.ResumeLayout(false);
             this.appearancePanel.ResumeLayout(false);
             this.appearancePanel.PerformLayout();
             this.appearanceCompareValuesBox.ResumeLayout(false);
@@ -1830,7 +1811,6 @@ namespace CP2077SaveEditor
         private ModernButton debloatButton;
         private System.ComponentModel.BackgroundWorker debloatWorker;
         private System.Windows.Forms.Timer debloatTimer;
-        private ModernValuePicker modernValuePicker1;
     }
 }
 
