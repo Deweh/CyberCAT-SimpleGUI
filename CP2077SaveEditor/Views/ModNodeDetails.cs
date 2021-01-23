@@ -34,7 +34,7 @@ namespace CP2077SaveEditor
             callbackFunc = callback;
             activeSaveFile = (SaveFileHelper)saveFileObj;
 
-            attachmentNameLabel.Text = node.AttachmentSlotTdbId.GameNameFallback;
+            attachmentNameLabel.Text = node.AttachmentSlotTdbId.Name;
             attachmentIdBox.Text = node.AttachmentSlotTdbId.Raw64.ToString();
 
             if (node.ItemTdbId.GameName.Length > 0)
@@ -43,7 +43,7 @@ namespace CP2077SaveEditor
             }
             else
             {
-                item1NameLabel.Text = node.ItemTdbId.GameNameFallback;
+                item1NameLabel.Text = node.ItemTdbId.Name;
             }
             
             item1IdBox.Text = node.ItemTdbId.Raw64.ToString();
@@ -60,7 +60,7 @@ namespace CP2077SaveEditor
                 resolvedItemLabel.Enabled = false;
             }
 
-            this.Text = node.AttachmentSlotTdbId.GameNameFallback + " :: " + node.ItemTdbId.GameNameFallback;
+            this.Text = node.AttachmentSlotTdbId.Name + " :: " + node.ItemTdbId.Name;
             this.ShowDialog();
         }
 
@@ -97,7 +97,7 @@ namespace CP2077SaveEditor
             }
             else
             {
-                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.GameNameFallback);
+                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.Name);
             }
             
         }

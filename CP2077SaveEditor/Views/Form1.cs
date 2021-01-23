@@ -307,7 +307,7 @@ namespace CP2077SaveEditor
 
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
-                var row = new string[] { (item.ItemTdbId.GameName.Length > 1) ? item.ItemTdbId.GameName : "Unknown", "", item.ItemTdbId.GameNameFallback, "", "1", item.ItemTdbId.GameDescription };
+                var row = new string[] { item.ItemTdbId.GameNameFallback, "", item.ItemTdbId.Name, "", "1", item.ItemTdbId.GameDescription };
 
                 if (item.Data.GetType() == typeof(ItemData.SimpleItemData))
                 {
@@ -691,7 +691,7 @@ namespace CP2077SaveEditor
                 }
 
                 inventoryListView.RemoveVirtualItem(inventoryListView.SelectedVirtualItems()[0]);
-                statusLabel.Text = "'" + (string.IsNullOrEmpty(activeItem.ItemTdbId.GameName) ? activeItem.ItemTdbId.GameNameFallback : activeItem.ItemTdbId.GameName) + "' deleted.";
+                statusLabel.Text = "'" + (string.IsNullOrEmpty(activeItem.ItemTdbId.GameName) ? activeItem.ItemTdbId.Name : activeItem.ItemTdbId.GameName) + "' deleted.";
             }
         }
 
