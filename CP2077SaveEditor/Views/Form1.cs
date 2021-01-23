@@ -22,7 +22,7 @@ namespace CP2077SaveEditor
     public partial class Form1 : Form
     {
         //Save File Object
-        private SaveFileHelper activeSaveFile = new SaveFileHelper(new INodeParser[] {});
+        private SaveFileHelper activeSaveFile;
 
         //Save Info
         private bool loadingSave = false;
@@ -146,10 +146,10 @@ namespace CP2077SaveEditor
                 control.ValueChanged += LinearAppearanceValueChanged;
             }
 
-            hairStyleBox.Items.AddRange(activeSaveFile.Appearance.HairStyles.Keys.ToArray());
-            hairColorBox.Items.AddRange(activeSaveFile.Appearance.HairColors.ToArray());
-            skinColorBox.Items.AddRange(activeSaveFile.Appearance.SkinColors.ToArray());
-            eyesColorBox.Items.AddRange(activeSaveFile.Appearance.EyeColors.ToArray());
+            hairStyleBox.Items.AddRange(AppearanceValueLists.HairStyles.Keys.ToArray());
+            hairColorBox.Items.AddRange(AppearanceValueLists.HairColors.ToArray());
+            skinColorBox.Items.AddRange(AppearanceValueLists.SkinColors.ToArray());
+            eyesColorBox.Items.AddRange(AppearanceValueLists.EyeColors.ToArray());
 
 #if DEBUG
             appearanceCompareValuesBox.Visible = true;
@@ -225,11 +225,11 @@ namespace CP2077SaveEditor
                 hairColorBox.Enabled = true;
 
                 var hairHash = ulong.Parse(activeSaveFile.GetAppearanceValue("first.main.hash.hair_color"));
-                foreach (string styleName in activeSaveFile.Appearance.HairStyles.Keys)
+                foreach (string styleName in AppearanceValueLists.HairStyles.Keys)
                 {
                     hairColorBox.Text = activeSaveFile.GetAppearanceValue("first.main.first.hair_color");
 
-                    if (activeSaveFile.Appearance.HairStyles[styleName] == hairHash)
+                    if (AppearanceValueLists.HairStyles[styleName] == hairHash)
                     {
                         hairStyleBox.Text = styleName;
                     }
