@@ -37,7 +37,7 @@ namespace CP2077SaveEditor
         {
             foreach (ItemData.ItemModData childNode in nodeData.Children)
             {
-                var newNode = rootNode.Nodes.Add(childNode.AttachmentSlotName + " :: " + childNode.ItemName + " [" + childNode.ChildrenCount.ToString() + "]");
+                var newNode = rootNode.Nodes.Add(childNode.AttachmentSlotTdbId.GameNameFallback + " :: " + childNode.ItemTdbId.GameNameFallback + " [" + childNode.ChildrenCount.ToString() + "]");
                 newNode.Tag = childNode;
                 if (childNode.ChildrenCount > 0)
                 {
@@ -70,7 +70,7 @@ namespace CP2077SaveEditor
                 if (activeItem.Data.GetType().FullName.EndsWith("SimpleItemData"))
                 {
                     //SimpleItemData parsing
-                    this.Text = activeItem.ItemName + " (Simple Item)";
+                    this.Text = activeItem.ItemTdbId.GameNameFallback + " (Simple Item)";
 
                     basicInfoGroupBox.Enabled = true;
                     quickActionsGroupBox.Enabled = false;
@@ -86,7 +86,7 @@ namespace CP2077SaveEditor
                 else
                 {
                     //ModableItemData parsing
-                    this.Text = activeItem.ItemName + " (Modable Item)";
+                    this.Text = activeItem.ItemTdbId.GameNameFallback + " (Modable Item)";
 
                     basicInfoGroupBox.Enabled = false;
                     quickActionsGroupBox.Enabled = true;
@@ -97,7 +97,7 @@ namespace CP2077SaveEditor
 
                     modsTreeView.Nodes.Clear();
 
-                    var rootNode = modsTreeView.Nodes.Add(data.RootNode.AttachmentSlotName, data.RootNode.AttachmentSlotName + " :: " + data.RootNode.ItemName + " [" + data.RootNode.ChildrenCount.ToString() + "]");
+                    var rootNode = modsTreeView.Nodes.Add(data.RootNode.AttachmentSlotTdbId.GameNameFallback, data.RootNode.AttachmentSlotTdbId.GameNameFallback + " :: " + data.RootNode.ItemTdbId.GameNameFallback + " [" + data.RootNode.ChildrenCount.ToString() + "]");
                     rootNode.Tag = data.RootNode;
 
                     IterativeBuildModTree(data.RootNode, rootNode);
@@ -385,7 +385,7 @@ namespace CP2077SaveEditor
 
         private void infuseLegendaryComponentsButton_Click(object sender, EventArgs e)
         {
-            var components = activeSaveFile.GetInventory(1).Items.Where(x => x.ItemGameName == "Legendary Upgrade Components").FirstOrDefault();
+            var components = activeSaveFile.GetInventory(1).Items.Where(x => x.ItemTdbId.GameName == "Legendary Upgrade Components").FirstOrDefault();
             if (components == null || ((ItemData.SimpleItemData)components.Data).Quantity < 5)
             {
                 MessageBox.Show("Insufficient Legendary Upgrade Components. (5) required.");

@@ -307,7 +307,7 @@ namespace CP2077SaveEditor
 
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
-                var row = new string[] { (item.ItemGameName.Length > 1) ? item.ItemGameName : "Unknown", "", item.ItemName, "", "1", item.ItemGameDescription };
+                var row = new string[] { (item.ItemTdbId.GameName.Length > 1) ? item.ItemTdbId.GameName : "Unknown", "", item.ItemTdbId.GameNameFallback, "", "1", item.ItemTdbId.GameDescription };
 
                 if (item.Data.GetType() == typeof(ItemData.SimpleItemData))
                 {
@@ -361,7 +361,7 @@ namespace CP2077SaveEditor
                 newItem.Tag = item;
 
                 listViewRows.Add(newItem);
-                if (item.ItemGameName == "Eddies" && containerID == "1")
+                if (item.ItemTdbId.GameName == "Eddies" && containerID == "1")
                 {
                     moneyUpDown.Value = ((ItemData.SimpleItemData)item.Data).Quantity;
                     moneyUpDown.Enabled = true;
@@ -447,9 +447,9 @@ namespace CP2077SaveEditor
                 var newSave = new SaveFileHelper(parsers);
                 if (saveType == 0)
                 {
-                    newSave.LoadPCSaveFile(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                    newSave.Load(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
                 } else {
-                    newSave.LoadPS4SaveFile(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                    newSave.Load(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
                 }
                 
                 activeSaveFile = newSave;
@@ -553,9 +553,9 @@ namespace CP2077SaveEditor
                 byte[] saveBytes;
                 if (saveType == 0)
                 {
-                    saveBytes = activeSaveFile.SaveToPCSaveFile();
+                    saveBytes = activeSaveFile.Save();
                 } else {
-                    saveBytes = activeSaveFile.SaveToPS4SaveFile();
+                    saveBytes = activeSaveFile.Save(false);
                 }
                 
 
@@ -571,11 +571,11 @@ namespace CP2077SaveEditor
                 {
                     if (saveType == 0)
                     {
-                        testFile.LoadPCSaveFile(new MemoryStream(saveBytes));
+                        testFile.Load(new MemoryStream(saveBytes));
                     }
                     else
                     {
-                        testFile.LoadPS4SaveFile(new MemoryStream(saveBytes));
+                        testFile.Load(new MemoryStream(saveBytes));
                     }
                 }
                 catch (Exception ex)
@@ -607,7 +607,7 @@ namespace CP2077SaveEditor
             if (moneyUpDown.Enabled)
             {
                 var playerInventory = activeSaveFile.GetInventory(1);
-                ((ItemData.SimpleItemData)playerInventory.Items[ playerInventory.Items.IndexOf( playerInventory.Items.Where(x => x.ItemGameName == "Eddies").FirstOrDefault() )].Data).Quantity = (uint)moneyUpDown.Value;
+                ((ItemData.SimpleItemData)playerInventory.Items[ playerInventory.Items.IndexOf( playerInventory.Items.Where(x => x.ItemTdbId.GameName == "Eddies").FirstOrDefault() )].Data).Quantity = (uint)moneyUpDown.Value;
             }
         }
 
@@ -684,14 +684,14 @@ namespace CP2077SaveEditor
                 var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
                 activeSaveFile.GetInventory(ulong.Parse(containerID)).Items.Remove(activeItem);
 
-                if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).ItemGameName == "Eddies" && containerID == "1")
+                if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).ItemTdbId.GameName == "Eddies" && containerID == "1")
                 {
                     moneyUpDown.Enabled = false;
                     moneyUpDown.Value = 0;
                 }
 
                 inventoryListView.RemoveVirtualItem(inventoryListView.SelectedVirtualItems()[0]);
-                statusLabel.Text = "'" + (string.IsNullOrEmpty(activeItem.ItemGameName) ? activeItem.ItemName : activeItem.ItemGameName) + "' deleted.";
+                statusLabel.Text = "'" + (string.IsNullOrEmpty(activeItem.ItemTdbId.GameName) ? activeItem.ItemTdbId.GameNameFallback : activeItem.ItemTdbId.GameName) + "' deleted.";
             }
         }
 
@@ -867,7 +867,7 @@ namespace CP2077SaveEditor
                     if (fileName.EndsWith(".dat"))
                     {
                         var tempSave = new SaveFileHelper(new List<INodeParser> { new CharacterCustomizationAppearancesParser() });
-                        tempSave.LoadPCSaveFile(new MemoryStream(File.ReadAllBytes(fileName)));
+                        tempSave.Load(new MemoryStream(File.ReadAllBytes(fileName)));
                         appearanceCompareNodes.Add(Path.GetFileNameWithoutExtension(fileName), tempSave.GetAppearanceContainer());
                         appearanceCompareListBox.Items.Add(fileName);
                     }

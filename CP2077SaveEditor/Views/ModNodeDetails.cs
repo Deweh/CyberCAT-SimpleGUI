@@ -34,16 +34,16 @@ namespace CP2077SaveEditor
             callbackFunc = callback;
             activeSaveFile = (SaveFileHelper)saveFileObj;
 
-            attachmentNameLabel.Text = node.AttachmentSlotName;
+            attachmentNameLabel.Text = node.AttachmentSlotTdbId.GameNameFallback;
             attachmentIdBox.Text = node.AttachmentSlotTdbId.Raw64.ToString();
 
-            if (node.ItemGameName.Length > 0)
+            if (node.ItemTdbId.GameName.Length > 0)
             {
-                item1NameLabel.Text = node.ItemGameName;
+                item1NameLabel.Text = node.ItemTdbId.GameName;
             }
             else
             {
-                item1NameLabel.Text = node.ItemName;
+                item1NameLabel.Text = node.ItemTdbId.GameNameFallback;
             }
             
             item1IdBox.Text = node.ItemTdbId.Raw64.ToString();
@@ -60,7 +60,7 @@ namespace CP2077SaveEditor
                 resolvedItemLabel.Enabled = false;
             }
 
-            this.Text = node.AttachmentSlotName + " :: " + node.ItemName;
+            this.Text = node.AttachmentSlotTdbId.GameNameFallback + " :: " + node.ItemTdbId.GameNameFallback;
             this.ShowDialog();
         }
 
@@ -91,13 +91,13 @@ namespace CP2077SaveEditor
         private void resolvedItemLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var details = new ItemDetails();
-            if (activeNode.ItemGameName.Length > 0)
+            if (activeNode.ItemTdbId.GameName.Length > 0)
             {
-                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemGameName);
+                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.GameName);
             }
             else
             {
-                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, "Unknown");
+                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.GameNameFallback);
             }
             
         }
