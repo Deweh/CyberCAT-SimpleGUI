@@ -17,7 +17,6 @@ namespace CP2077SaveEditor
         public AppearanceHelper(SaveFileHelper _saveFile)
         {
             activeSave = _saveFile;
-            MainSections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
         }
 
         public CharacterCustomizationAppearances.Section[] MainSections { get; set; }
@@ -30,6 +29,11 @@ namespace CP2077SaveEditor
             {
 
             }
+        }
+
+        public void SetMainSections()
+        {
+            MainSections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
         }
 
         public List<object> GetEntries(CharacterCustomizationAppearances.Section appearanceSection, AppearanceEntryType entryType, string searchString)

@@ -37,6 +37,12 @@ namespace CP2077SaveEditor
             Appearance = new AppearanceHelper(this);
         }
 
+        public new void Load(System.IO.Stream inputStream)
+        {
+            base.Load(inputStream);
+            Appearance.SetMainSections();
+        }
+
         public CharacterCustomizationAppearances GetAppearanceContainer()
         {
             return (CharacterCustomizationAppearances)this.Nodes[this.Nodes.FindIndex(x => x.Name == "CharacetrCustomization_Appearances")].Value;
