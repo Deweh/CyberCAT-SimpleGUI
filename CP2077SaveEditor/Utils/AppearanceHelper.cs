@@ -21,15 +21,75 @@ namespace CP2077SaveEditor
 
         public CharacterCustomizationAppearances.Section[] MainSections { get; set; }
 
-        public string HairStyle {
-            get {
-                return "";
-            }
-            set
-            {
+        public object VoiceTone { get; set; }
 
-            }
-        }
+        public object SkinTone { get; set; }
+
+        public object HairStyle { get; set; }
+
+        public object HairColor { get; set; }
+
+        public object Eyes { get; set; }
+
+        public object EyeColor { get; set; }
+
+        public object Eyebrows { get; set; }
+
+        public object EyebrowColor { get; set; }
+
+        public object Nose { get; set; }
+
+        public object Mouth { get; set; }
+
+        public object Jaw { get; set; }
+
+        public object Ears { get; set; }
+
+        public object Cyberware { get; set; }
+
+        public object FacialScars { get; set; }
+
+        public object FacialTattoos { get; set; }
+
+        public object Piercings { get; set; }
+
+        public object PiercingColor { get; set; }
+
+        public object Teeth { get; set; }
+
+        public object EyeMakeup { get; set; }
+
+        public object EyeMakeupColor { get; set; }
+
+        public object LipMakeup { get; set; }
+
+        public object LipMakeupColor { get; set; }
+
+        public object CheekMakeup { get; set; }
+
+        public object CheekMakeupColor { get; set; }
+
+        public object Blemishes { get; set; }
+
+        public object Nails { get; set; }
+
+        public object NailColor { get; set; }
+
+        public object Chest { get; set; }
+
+        public object Nipples { get; set; }
+
+        public object BodyTattoos { get; set; }
+
+        public object BodyScars { get; set; }
+
+        public object Genitals { get; set; }
+
+        public object PenisSize { get; set; }
+
+        public object PubicHairStyle { get; set; }
+
+        public object PubicHairColor { get; set; }
 
         public void SetMainSections()
         {
