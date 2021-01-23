@@ -17,7 +17,10 @@ namespace CP2077SaveEditor
         public AppearanceHelper(SaveFileHelper _saveFile)
         {
             activeSave = _saveFile;
+            MainSections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
         }
+
+        public CharacterCustomizationAppearances.Section[] MainSections { get; set; }
 
         public string HairStyle {
             get {
@@ -29,8 +32,9 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object GetEntry(CharacterCustomizationAppearances.Section appearanceSection, AppearanceEntryType entryType, string searchString)
+        public List<object> GetEntries(CharacterCustomizationAppearances.Section appearanceSection, AppearanceEntryType entryType, string searchString)
         {
+            var foundEntries = new List<object>();
             foreach (CharacterCustomizationAppearances.AppearanceSection subSection in appearanceSection.AppearanceSections)
             {
                 if (entryType == AppearanceEntryType.MainListEntry)
@@ -39,7 +43,7 @@ namespace CP2077SaveEditor
                     {
                         if (CompareMainListAppearanceEntries(mainListEntry.SecondString, searchString) == true)
                         {
-                            return mainListEntry;
+                            foundEntries.Add(mainListEntry);
                         }
                     }
                 }
@@ -49,87 +53,174 @@ namespace CP2077SaveEditor
                     {
                         if (additionalListEntry.FirstString == searchString)
                         {
-                            return additionalListEntry;
+                            foundEntries.Add(additionalListEntry);
                         }
                     }
                 }
             }
-            return null;
+            return foundEntries;
         }
 
-        public object GetEntry(string searchString)
+        public List<object> GetEntries(string searchString)
         {
-            var searchValues = searchString.Split('.');
-
-            if (searchValues.Count() != 3)
+            var location = StringToLocation(searchString);
+            if (location != null)
             {
-                return "default";
+                return GetEntries(location.Section, location.EntryType, location.SearchString);
             }
-
-            var searchSection = activeSave.GetAppearanceContainer().FirstSection;
-            var searchType = AppearanceEntryType.MainListEntry;
-            var searchTrueString = searchValues[2];
-
-            if (searchValues[0] == "second")
+            else
             {
-                searchSection = activeSave.GetAppearanceContainer().SecondSection;
+                return new List<object>();
             }
-            else if (searchValues[0] == "third")
-            {
-                searchSection = activeSave.GetAppearanceContainer().ThirdSection;
-            }
+        }
 
-            if (searchValues[1] == "additional")
+        public List<object> GetAllEntries(AppearanceEntryType entryType, string searchString)
+        {
+            var foundEntries = new List<object>();
+            foreach (CharacterCustomizationAppearances.Section section in MainSections)
             {
-                searchType = AppearanceEntryType.AdditionalListEntry;
+                foundEntries.AddRange(GetEntries(section, entryType, searchString));
             }
+            return foundEntries;
+        }
 
-            return GetEntry(searchSection, searchType, searchTrueString);
+        public void RemoveEntry(object entry)
+        {
+            foreach (CharacterCustomizationAppearances.Section section in MainSections)
+            {
+                foreach (CharacterCustomizationAppearances.AppearanceSection subSection in section.AppearanceSections)
+                {
+                    if (entry is CharacterCustomizationAppearances.HashValueEntry)
+                    {
+                        if (subSection.MainList.Contains((CharacterCustomizationAppearances.HashValueEntry)entry))
+                        {
+                            subSection.MainList.Remove((CharacterCustomizationAppearances.HashValueEntry)entry);
+                        }
+                    } else {
+                        if (subSection.AdditionalList.Contains((CharacterCustomizationAppearances.ValueEntry)entry))
+                        {
+                            subSection.AdditionalList.Remove((CharacterCustomizationAppearances.ValueEntry)entry);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void CreateEntry(object entry, string[] sectionNames, CharacterCustomizationAppearances.Section section)
+        {
+            var subSections = section.AppearanceSections.Where(x => sectionNames.Contains(x.SectionName));
+            if (subSections != null)
+            {
+                foreach (CharacterCustomizationAppearances.AppearanceSection singleSubSection in subSections)
+                {
+                    if (entry is CharacterCustomizationAppearances.HashValueEntry)
+                    {
+                        singleSubSection.MainList.Add((CharacterCustomizationAppearances.HashValueEntry)entry);
+                    }
+                    else
+                    {
+                        singleSubSection.AdditionalList.Add((CharacterCustomizationAppearances.ValueEntry)entry);
+                    }
+                    
+                }
+            }
         }
 
         public void SetValue(AppearanceField field, string searchString, object value)
         {
-            var entry = GetEntry(searchString);
-            if (entry is CharacterCustomizationAppearances.HashValueEntry)
+            var entries = GetEntries(searchString);
+            foreach (object entry in entries)
             {
-                switch (field)
+                if (entry is CharacterCustomizationAppearances.HashValueEntry)
                 {
-                    case AppearanceField.FirstString:
-                        ((CharacterCustomizationAppearances.HashValueEntry)entry).FirstString = (string)value;
-                        break;
-                    case AppearanceField.Hash:
-                        ((CharacterCustomizationAppearances.HashValueEntry)entry).Hash = (ulong)value;
-                        break;
-                    case AppearanceField.SecondString:
-                        ((CharacterCustomizationAppearances.HashValueEntry)entry).SecondString = (string)value;
-                        break;
+                    switch (field)
+                    {
+                        case AppearanceField.FirstString:
+                            ((CharacterCustomizationAppearances.HashValueEntry)entry).FirstString = (string)value;
+                            break;
+                        case AppearanceField.Hash:
+                            ((CharacterCustomizationAppearances.HashValueEntry)entry).Hash = (ulong)value;
+                            break;
+                        case AppearanceField.SecondString:
+                            ((CharacterCustomizationAppearances.HashValueEntry)entry).SecondString = (string)value;
+                            break;
+                    }
+                }
+                else if (entry is CharacterCustomizationAppearances.ValueEntry)
+                {
+                    switch (field)
+                    {
+                        case AppearanceField.FirstString:
+                            ((CharacterCustomizationAppearances.ValueEntry)entry).FirstString = (string)value;
+                            break;
+                        case AppearanceField.SecondString:
+                            ((CharacterCustomizationAppearances.ValueEntry)entry).SecondString = (string)value;
+                            break;
+                    }
                 }
             }
-            else if (entry is CharacterCustomizationAppearances.ValueEntry)
+        }
+
+        public string GetValue(CharacterCustomizationAppearances.Section appearanceSection, AppearanceEntryType entryType, AppearanceField fieldToGet, string searchString)
+        {
+            var entries = GetEntries(appearanceSection, entryType, searchString);
+
+            if (entries.Count < 1)
             {
-                switch (field)
+                return "default";
+            }
+
+            if (entries[0] is CharacterCustomizationAppearances.HashValueEntry)
+            {
+                var castedEntry = (CharacterCustomizationAppearances.HashValueEntry)entries[0];
+                if (fieldToGet == AppearanceField.FirstString)
                 {
-                    case AppearanceField.FirstString:
-                        ((CharacterCustomizationAppearances.ValueEntry)entry).FirstString = (string)value;
-                        break;
-                    case AppearanceField.SecondString:
-                        ((CharacterCustomizationAppearances.ValueEntry)entry).SecondString = (string)value;
-                        break;
+                    return castedEntry.FirstString;
                 }
+                else if (fieldToGet == AppearanceField.Hash)
+                {
+                    return castedEntry.Hash.ToString();
+                }
+                else
+                {
+                    return castedEntry.SecondString;
+                }
+            } else {
+                var castedEntry = (CharacterCustomizationAppearances.ValueEntry)entries[0];
+                if (fieldToGet == AppearanceField.FirstString)
+                {
+                    return castedEntry.FirstString;
+                }
+                else
+                {
+                    return castedEntry.SecondString;
+                }
+            }
+        }
+
+        public string GetValue(string searchString)
+        {
+            var location = StringToLocation(searchString);
+            if (location != null)
+            {
+                return GetValue(location.Section, location.EntryType, location.EntryField, location.SearchString);
+            }
+            else
+            {
+                return "default";
             }
         }
 
         public void SetConcatedValue(string searchString, string newValue, int position = -1)
         {
             string currentValue;
-
             if (position < 0)
             {
-                currentValue = activeSave.GetAppearanceValue(searchString).Split("__", StringSplitOptions.None).Last();
+                currentValue = GetValue(searchString).Split("__", StringSplitOptions.None).Last();
             }
             else
             {
-                currentValue = activeSave.GetAppearanceValue(searchString).Split("__", StringSplitOptions.None)[position];
+                currentValue = GetValue(searchString).Split("__", StringSplitOptions.None)[position];
             }
 
             var sections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
@@ -170,6 +261,102 @@ namespace CP2077SaveEditor
                     }
                 }
             }
+        }
+
+        public void SetFacialValue(string fieldName, int fieldNum, int value)
+        {
+            var entries = GetEntries("first.additional." + fieldName);
+
+            if (entries.Count < 1)
+            {
+                var newEntry = new CharacterCustomizationAppearances.ValueEntry();
+                newEntry.FirstString = fieldName;
+                newEntry.SecondString = "h000";
+
+                CreateEntry(newEntry, new[] { "TPP", "character_customization" }, MainSections[0]);
+                SetFacialValue(fieldName, fieldNum, value);
+            }
+            else
+            {
+                if (value == 1)
+                {
+                    foreach (CharacterCustomizationAppearances.ValueEntry entry in entries)
+                    {
+                        RemoveEntry(entry);
+                    }
+                }
+                else
+                {
+                    foreach (CharacterCustomizationAppearances.ValueEntry entry in entries)
+                    {
+                        entry.SecondString = "h" + (value - 1).ToString("00") + fieldNum.ToString();
+                    }
+                }
+            }
+        }
+
+        public void SetAllValues(CharacterCustomizationAppearances newValues)
+        {
+            var sections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
+            var newSections = new[] { newValues.FirstSection, newValues.SecondSection, newValues.ThirdSection };
+
+            var i = 0;
+            foreach (CharacterCustomizationAppearances.Section section in sections)
+            {
+                section.AppearanceSections.Clear();
+                foreach (CharacterCustomizationAppearances.AppearanceSection subSection in newSections[i].AppearanceSections)
+                {
+                    section.AppearanceSections.Add(subSection);
+                }
+                i++;
+            }
+
+            if (newValues.Strings != null)
+            {
+                activeSave.GetAppearanceContainer().Strings.Clear();
+                foreach (string singleString in newValues.Strings)
+                {
+                    activeSave.GetAppearanceContainer().Strings.Add(singleString);
+                }
+            }
+        }
+
+        public AppearanceEntryLocation StringToLocation(string searchString)
+        {
+            var searchValues = searchString.Split('.');
+            if (searchValues.Length < 3 && searchValues.Length > 4)
+            {
+                return null;
+            }
+
+            var result = new AppearanceEntryLocation(activeSave.GetAppearanceContainer().FirstSection, AppearanceEntryType.MainListEntry, (searchValues.Length == 3) ? searchValues[2] : searchValues[3], AppearanceField.FirstString);
+            if (searchValues[0] == "second")
+            {
+                result.Section = activeSave.GetAppearanceContainer().SecondSection;
+            }
+            else if (searchValues[0] == "third")
+            {
+                result.Section = activeSave.GetAppearanceContainer().ThirdSection;
+            }
+
+            if (searchValues[1] == "additional")
+            {
+                result.EntryType = AppearanceEntryType.AdditionalListEntry;
+            }
+
+            if (searchValues.Length == 4)
+            {
+                if (searchValues[2] == "hash")
+                {
+                    result.EntryField = AppearanceField.Hash;
+                }
+                else if (searchValues[2] == "second")
+                {
+                    result.EntryField = AppearanceField.SecondString;
+                }
+            }
+            
+            return result;
         }
 
         public void SetHairStyle(string friendlyName)
@@ -236,6 +423,22 @@ namespace CP2077SaveEditor
         public bool CompareMainListAppearanceEntries(string entry1, string entry2)
         {
             return Regex.Replace(entry1, @"[\d-]", string.Empty) == Regex.Replace(entry2, @"[\d-]", string.Empty);
+        }
+    }
+
+    public class AppearanceEntryLocation
+    {
+        public CharacterCustomizationAppearances.Section Section { get; set; }
+        public AppearanceEntryType EntryType { get; set; }
+        public AppearanceField EntryField { get; set; }
+        public string SearchString { get; set; }
+
+        public AppearanceEntryLocation(CharacterCustomizationAppearances.Section _sec, AppearanceEntryType _type, string _searchString, AppearanceField _field = AppearanceField.FirstString)
+        {
+            Section = _sec;
+            EntryType = _type;
+            EntryField = _field;
+            SearchString = _searchString;
         }
     }
 

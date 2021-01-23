@@ -195,14 +195,14 @@ namespace CP2077SaveEditor
 
             foreach(string searchString in valueFields.Keys)
             {
-                valueFields[searchString].Text = activeSaveFile.GetAppearanceValue(searchString);
+                valueFields[searchString].Text = activeSaveFile.Appearance.GetValue(searchString);
             }
 
             //Facial Features
 
             foreach (string searchString in linearAppearanceFeatures.Keys)
             {
-                var result = activeSaveFile.GetAppearanceValue(searchString);
+                var result = activeSaveFile.Appearance.GetValue(searchString);
 
                 if (result == "default")
                 {
@@ -217,17 +217,17 @@ namespace CP2077SaveEditor
 
             //Hair Style & Color
 
-            var hairColorEntry = activeSaveFile.GetAppearanceValue("first.main.first.hair_color");
+            var hairColorEntry = activeSaveFile.Appearance.GetValue("first.main.first.hair_color");
 
             if (hairColorEntry != "default")
             {
                 hairColorBox.Text = hairColorEntry;
                 hairColorBox.Enabled = true;
 
-                var hairHash = ulong.Parse(activeSaveFile.GetAppearanceValue("first.main.hash.hair_color"));
+                var hairHash = ulong.Parse(activeSaveFile.Appearance.GetValue("first.main.hash.hair_color"));
                 foreach (string styleName in AppearanceValueLists.HairStyles.Keys)
                 {
-                    hairColorBox.Text = activeSaveFile.GetAppearanceValue("first.main.first.hair_color");
+                    hairColorBox.Text = activeSaveFile.Appearance.GetValue("first.main.first.hair_color");
 
                     if (AppearanceValueLists.HairStyles[styleName] == hairHash)
                     {
@@ -245,9 +245,9 @@ namespace CP2077SaveEditor
 
             //Concated Colors
 
-            skinColorBox.Text = activeSaveFile.GetAppearanceValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
+            skinColorBox.Text = activeSaveFile.Appearance.GetValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
 
-            var eyeColor = activeSaveFile.GetAppearanceValue("first.main.first.eyes_color").Split("__", StringSplitOptions.None).Last();
+            var eyeColor = activeSaveFile.Appearance.GetValue("first.main.first.eyes_color").Split("__", StringSplitOptions.None).Last();
             if (!eyesColorBox.Items.Contains(eyeColor))
             {
                 eyesColorBox.Items.Add(eyeColor);
@@ -263,7 +263,7 @@ namespace CP2077SaveEditor
                 if (linearAppearanceFeatures[searchString] == sender)
                 {
                     var stringParts = searchString.Split('.');
-                    activeSaveFile.SetLinearAppearanceValue(searchString.Split('.')[3], i, (int)((NumericUpDown)sender).Value);
+                    activeSaveFile.Appearance.SetFacialValue(searchString.Split('.')[3], i, (int)((NumericUpDown)sender).Value);
                 }
                 i++;
             }
@@ -639,7 +639,7 @@ namespace CP2077SaveEditor
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName));
-                activeSaveFile.SetAllAppearanceValues(newValues);
+                activeSaveFile.Appearance.SetAllValues(newValues);
                 RefreshAppearanceValues();
                 statusLabel.Text = "Appearance preset loaded.";
             }
