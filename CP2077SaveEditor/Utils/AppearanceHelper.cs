@@ -22,6 +22,18 @@ namespace CP2077SaveEditor
 
         public Section[] MainSections { get; set; }
 
+        public AppearanceGender BodyGender
+        {
+            get
+            {
+                return (AppearanceGender)activeSave.GetAppearanceContainer().UnknownFirstBytes[4];
+            }
+            set
+            {
+                
+            }
+        }
+
         public AppearanceGender VoiceTone
         {
             get

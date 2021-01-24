@@ -257,19 +257,22 @@ namespace CP2077SaveEditor
 
         private void SetAppearanceImage(string name, string value)
         {
-            var path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + value + ".png";
-            if (File.Exists(path))
+            var path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + activeSaveFile.Appearance.BodyGender.ToString() + value + ".png";
+            if (!File.Exists(path)) {
+                path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + value + ".png";
+                if (!File.Exists(path))
+                {
+                    appearancePreviewBox.Image = new Bitmap(1, 1);
+                }
+            }
+
+            try
             {
-                try
-                {
-                    System.GC.Collect();
-                    appearancePreviewBox.Image = Image.FromFile(path);
-                }
-                catch (Exception)
-                {
-                }
-            } else {
-                appearancePreviewBox.Image = new Bitmap(1, 1);
+                System.GC.Collect();
+                appearancePreviewBox.Image = Image.FromFile(path);
+            }
+            catch (Exception)
+            {
             }
         }
 
@@ -437,6 +440,7 @@ namespace CP2077SaveEditor
 
                 //Appearance parsing
                 RefreshAppearanceValues();
+                SetAppearanceImage("VoiceTone", ((int)activeSaveFile.Appearance.VoiceTone).ToString("00"));
 
                 //Inventory parsing
                 moneyUpDown.Enabled = false;
