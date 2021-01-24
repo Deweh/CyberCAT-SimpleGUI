@@ -42,6 +42,7 @@ namespace CP2077SaveEditor
             this.label1 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.appearancePanel = new System.Windows.Forms.Panel();
+            this.appearancePreviewBox = new System.Windows.Forms.PictureBox();
             this.appearanceOptionsPanel = new System.Windows.Forms.Panel();
             this.label18 = new System.Windows.Forms.Label();
             this.loadAppearButton = new CP2077SaveEditor.ModernButton();
@@ -103,6 +104,7 @@ namespace CP2077SaveEditor
             this.debloatTimer = new System.Windows.Forms.Timer(this.components);
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.appearancePreviewBox)).BeginInit();
             this.inventoryPanel.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.containerGroupBox.SuspendLayout();
@@ -275,6 +277,7 @@ namespace CP2077SaveEditor
             // 
             // appearancePanel
             // 
+            this.appearancePanel.Controls.Add(this.appearancePreviewBox);
             this.appearancePanel.Controls.Add(this.appearanceOptionsPanel);
             this.appearancePanel.Controls.Add(this.label18);
             this.appearancePanel.Controls.Add(this.loadAppearButton);
@@ -284,6 +287,19 @@ namespace CP2077SaveEditor
             this.appearancePanel.Name = "appearancePanel";
             this.appearancePanel.Size = new System.Drawing.Size(851, 548);
             this.appearancePanel.TabIndex = 4;
+            // 
+            // appearancePreviewBox
+            // 
+            this.appearancePreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.appearancePreviewBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.appearancePreviewBox.Location = new System.Drawing.Point(71, 38);
+            this.appearancePreviewBox.Name = "appearancePreviewBox";
+            this.appearancePreviewBox.Size = new System.Drawing.Size(395, 437);
+            this.appearancePreviewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.appearancePreviewBox.TabIndex = 19;
+            this.appearancePreviewBox.TabStop = false;
             // 
             // appearanceOptionsPanel
             // 
@@ -1106,6 +1122,7 @@ namespace CP2077SaveEditor
             this.optionsPanel.ResumeLayout(false);
             this.appearancePanel.ResumeLayout(false);
             this.appearancePanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.appearancePreviewBox)).EndInit();
             this.inventoryPanel.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.containerGroupBox.ResumeLayout(false);
@@ -1213,6 +1230,7 @@ namespace CP2077SaveEditor
         private System.ComponentModel.BackgroundWorker debloatWorker;
         private System.Windows.Forms.Timer debloatTimer;
         private System.Windows.Forms.Panel appearanceOptionsPanel;
+        private System.Windows.Forms.PictureBox appearancePreviewBox;
     }
 }
 

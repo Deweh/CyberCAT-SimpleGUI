@@ -150,6 +150,7 @@ namespace CP2077SaveEditor
 
                 appearanceOptionsPanel.Controls.Add(picker);
                 picker.IndexChanged += AppearanceOptionChanged;
+                picker.MouseEnter += AppearanceOptionMouseEnter;
 
                 lastPos += picker.Height + 20;
             }
@@ -245,7 +246,31 @@ namespace CP2077SaveEditor
             {
                 SetAppearanceValue(sender.Name, Enum.Parse(GetAppearanceValue(sender.Name).GetType(), sender.StringValue));
             }
+            SetAppearanceImage(sender.Name, sender.Index.ToString("00"));
             RefreshAppearanceValues();
+        }
+
+        private void AppearanceOptionMouseEnter(object sender, EventArgs e)
+        {
+            SetAppearanceImage(((ModernValuePicker)sender).Name, ((ModernValuePicker)sender).Index.ToString("00"));
+        }
+
+        private void SetAppearanceImage(string name, string value)
+        {
+            var path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + value + ".png";
+            if (File.Exists(path))
+            {
+                try
+                {
+                    System.GC.Collect();
+                    appearancePreviewBox.Image = Image.FromFile(path);
+                }
+                catch (Exception)
+                {
+                }
+            } else {
+                appearancePreviewBox.Image = new Bitmap(1, 1);
+            }
         }
 
         public bool RefreshInventory(string search = "", int searchField = -1)
