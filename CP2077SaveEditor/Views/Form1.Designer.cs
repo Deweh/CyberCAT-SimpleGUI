@@ -42,48 +42,8 @@ namespace CP2077SaveEditor
             this.label1 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.appearancePanel = new System.Windows.Forms.Panel();
-            this.appearanceCompareValuesBox = new System.Windows.Forms.GroupBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.appearanceCompareNameBox = new System.Windows.Forms.TextBox();
-            this.appearanceCompareSaveButton = new CP2077SaveEditor.ModernButton();
-            this.appearanceCompareListBox = new System.Windows.Forms.ListBox();
-            this.appearanceCompareLoadButton = new CP2077SaveEditor.ModernButton();
+            this.appearanceOptionsPanel = new System.Windows.Forms.Panel();
             this.label18 = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.skinColorBox = new System.Windows.Forms.ComboBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.breastsBox = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.genitalsBox = new System.Windows.Forms.TextBox();
-            this.nipplesBox = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.cheekMakeupBox = new System.Windows.Forms.TextBox();
-            this.lipMakeupBox = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.eyeMakeupBox = new System.Windows.Forms.TextBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.hairColorBox = new System.Windows.Forms.ComboBox();
-            this.hairStyleBox = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.eyesColorBox = new System.Windows.Forms.ComboBox();
-            this.earsUpDown = new System.Windows.Forms.NumericUpDown();
-            this.jawUpDown = new System.Windows.Forms.NumericUpDown();
-            this.mouthUpDown = new System.Windows.Forms.NumericUpDown();
-            this.noseUpDown = new System.Windows.Forms.NumericUpDown();
-            this.eyesUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.appearanceTreeView = new System.Windows.Forms.TreeView();
             this.loadAppearButton = new CP2077SaveEditor.ModernButton();
             this.saveAppearButton = new CP2077SaveEditor.ModernButton();
             this.inventoryPanel = new System.Windows.Forms.Panel();
@@ -143,16 +103,6 @@ namespace CP2077SaveEditor
             this.debloatTimer = new System.Windows.Forms.Timer(this.components);
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
-            this.appearanceCompareValuesBox.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            this.groupBox5.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.earsUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.jawUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mouthUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.noseUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.eyesUpDown)).BeginInit();
             this.inventoryPanel.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.containerGroupBox.SuspendLayout();
@@ -325,13 +275,8 @@ namespace CP2077SaveEditor
             // 
             // appearancePanel
             // 
-            this.appearancePanel.Controls.Add(this.appearanceCompareValuesBox);
+            this.appearancePanel.Controls.Add(this.appearanceOptionsPanel);
             this.appearancePanel.Controls.Add(this.label18);
-            this.appearancePanel.Controls.Add(this.groupBox6);
-            this.appearancePanel.Controls.Add(this.groupBox5);
-            this.appearancePanel.Controls.Add(this.groupBox4);
-            this.appearancePanel.Controls.Add(this.groupBox3);
-            this.appearancePanel.Controls.Add(this.appearanceTreeView);
             this.appearancePanel.Controls.Add(this.loadAppearButton);
             this.appearancePanel.Controls.Add(this.saveAppearButton);
             this.appearancePanel.Enabled = false;
@@ -340,513 +285,26 @@ namespace CP2077SaveEditor
             this.appearancePanel.Size = new System.Drawing.Size(851, 548);
             this.appearancePanel.TabIndex = 4;
             // 
-            // appearanceCompareValuesBox
+            // appearanceOptionsPanel
             // 
-            this.appearanceCompareValuesBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.appearanceOptionsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.appearanceCompareValuesBox.Controls.Add(this.label19);
-            this.appearanceCompareValuesBox.Controls.Add(this.appearanceCompareNameBox);
-            this.appearanceCompareValuesBox.Controls.Add(this.appearanceCompareSaveButton);
-            this.appearanceCompareValuesBox.Controls.Add(this.appearanceCompareListBox);
-            this.appearanceCompareValuesBox.Controls.Add(this.appearanceCompareLoadButton);
-            this.appearanceCompareValuesBox.Location = new System.Drawing.Point(15, 363);
-            this.appearanceCompareValuesBox.Name = "appearanceCompareValuesBox";
-            this.appearanceCompareValuesBox.Size = new System.Drawing.Size(823, 100);
-            this.appearanceCompareValuesBox.TabIndex = 18;
-            this.appearanceCompareValuesBox.TabStop = false;
-            this.appearanceCompareValuesBox.Text = "Compare Values";
-            this.appearanceCompareValuesBox.Visible = false;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(715, 21);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(67, 13);
-            this.label19.TabIndex = 3;
-            this.label19.Text = "Field Name:";
-            // 
-            // appearanceCompareNameBox
-            // 
-            this.appearanceCompareNameBox.Location = new System.Drawing.Point(717, 37);
-            this.appearanceCompareNameBox.Name = "appearanceCompareNameBox";
-            this.appearanceCompareNameBox.Size = new System.Drawing.Size(100, 22);
-            this.appearanceCompareNameBox.TabIndex = 2;
-            // 
-            // appearanceCompareSaveButton
-            // 
-            this.appearanceCompareSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.appearanceCompareSaveButton.BackColor = System.Drawing.Color.White;
-            this.appearanceCompareSaveButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.appearanceCompareSaveButton.ClickEffectEnabled = true;
-            this.appearanceCompareSaveButton.DefaultColor = System.Drawing.Color.White;
-            this.appearanceCompareSaveButton.HoverColor = System.Drawing.Color.LightGray;
-            this.appearanceCompareSaveButton.Location = new System.Drawing.Point(544, 58);
-            this.appearanceCompareSaveButton.Name = "appearanceCompareSaveButton";
-            this.appearanceCompareSaveButton.Size = new System.Drawing.Size(165, 32);
-            this.appearanceCompareSaveButton.TabIndex = 1;
-            this.appearanceCompareSaveButton.Text = "Compare && Save";
-            this.appearanceCompareSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.appearanceCompareSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.appearanceCompareSaveButton.Click += new System.EventHandler(this.appearanceCompareSaveButton_Click);
-            // 
-            // appearanceCompareListBox
-            // 
-            this.appearanceCompareListBox.FormattingEnabled = true;
-            this.appearanceCompareListBox.Location = new System.Drawing.Point(11, 21);
-            this.appearanceCompareListBox.Name = "appearanceCompareListBox";
-            this.appearanceCompareListBox.Size = new System.Drawing.Size(525, 69);
-            this.appearanceCompareListBox.TabIndex = 1;
-            // 
-            // appearanceCompareLoadButton
-            // 
-            this.appearanceCompareLoadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.appearanceCompareLoadButton.BackColor = System.Drawing.Color.White;
-            this.appearanceCompareLoadButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.appearanceCompareLoadButton.ClickEffectEnabled = true;
-            this.appearanceCompareLoadButton.DefaultColor = System.Drawing.Color.White;
-            this.appearanceCompareLoadButton.HoverColor = System.Drawing.Color.LightGray;
-            this.appearanceCompareLoadButton.Location = new System.Drawing.Point(544, 21);
-            this.appearanceCompareLoadButton.Name = "appearanceCompareLoadButton";
-            this.appearanceCompareLoadButton.Size = new System.Drawing.Size(165, 32);
-            this.appearanceCompareLoadButton.TabIndex = 0;
-            this.appearanceCompareLoadButton.Text = "Load Saves from Folder";
-            this.appearanceCompareLoadButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.appearanceCompareLoadButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.appearanceCompareLoadButton.Click += new System.EventHandler(this.appearanceCompareLoadButton_Click);
+            this.appearanceOptionsPanel.AutoScroll = true;
+            this.appearanceOptionsPanel.Location = new System.Drawing.Point(533, 0);
+            this.appearanceOptionsPanel.Name = "appearanceOptionsPanel";
+            this.appearanceOptionsPanel.Size = new System.Drawing.Size(295, 502);
+            this.appearanceOptionsPanel.TabIndex = 18;
             // 
             // label18
             // 
             this.label18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(191, 506);
+            this.label18.Location = new System.Drawing.Point(191, 518);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(429, 13);
             this.label18.TabIndex = 17;
             this.label18.Text = "Presets will affect ALL character appearance attributes, even ones not listed abo" +
     "ve.";
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox6.Controls.Add(this.skinColorBox);
-            this.groupBox6.Controls.Add(this.label17);
-            this.groupBox6.Controls.Add(this.breastsBox);
-            this.groupBox6.Controls.Add(this.label14);
-            this.groupBox6.Controls.Add(this.label15);
-            this.groupBox6.Controls.Add(this.genitalsBox);
-            this.groupBox6.Controls.Add(this.nipplesBox);
-            this.groupBox6.Controls.Add(this.label16);
-            this.groupBox6.Location = new System.Drawing.Point(15, 209);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(823, 148);
-            this.groupBox6.TabIndex = 16;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Body";
-            // 
-            // skinColorBox
-            // 
-            this.skinColorBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.skinColorBox.FormattingEnabled = true;
-            this.skinColorBox.Location = new System.Drawing.Point(80, 24);
-            this.skinColorBox.Name = "skinColorBox";
-            this.skinColorBox.Size = new System.Drawing.Size(200, 21);
-            this.skinColorBox.TabIndex = 6;
-            this.skinColorBox.SelectedIndexChanged += new System.EventHandler(this.skinColorBox_SelectedIndexChanged);
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(28, 111);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(46, 13);
-            this.label17.TabIndex = 6;
-            this.label17.Text = "Breasts:";
-            // 
-            // breastsBox
-            // 
-            this.breastsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.breastsBox.Location = new System.Drawing.Point(80, 108);
-            this.breastsBox.Name = "breastsBox";
-            this.breastsBox.ReadOnly = true;
-            this.breastsBox.Size = new System.Drawing.Size(717, 22);
-            this.breastsBox.TabIndex = 7;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(22, 83);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(52, 13);
-            this.label14.TabIndex = 4;
-            this.label14.Text = "Genitals:";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(25, 55);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(49, 13);
-            this.label15.TabIndex = 2;
-            this.label15.Text = "Nipples:";
-            // 
-            // genitalsBox
-            // 
-            this.genitalsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.genitalsBox.Location = new System.Drawing.Point(80, 80);
-            this.genitalsBox.Name = "genitalsBox";
-            this.genitalsBox.ReadOnly = true;
-            this.genitalsBox.Size = new System.Drawing.Size(717, 22);
-            this.genitalsBox.TabIndex = 5;
-            // 
-            // nipplesBox
-            // 
-            this.nipplesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.nipplesBox.Location = new System.Drawing.Point(80, 52);
-            this.nipplesBox.Name = "nipplesBox";
-            this.nipplesBox.ReadOnly = true;
-            this.nipplesBox.Size = new System.Drawing.Size(717, 22);
-            this.nipplesBox.TabIndex = 3;
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(11, 27);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(63, 13);
-            this.label16.TabIndex = 0;
-            this.label16.Text = "Skin Color:";
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox5.Controls.Add(this.label13);
-            this.groupBox5.Controls.Add(this.label11);
-            this.groupBox5.Controls.Add(this.cheekMakeupBox);
-            this.groupBox5.Controls.Add(this.lipMakeupBox);
-            this.groupBox5.Controls.Add(this.label12);
-            this.groupBox5.Controls.Add(this.eyeMakeupBox);
-            this.groupBox5.Location = new System.Drawing.Point(332, 84);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(506, 119);
-            this.groupBox5.TabIndex = 15;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Makeup";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(11, 83);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(47, 13);
-            this.label13.TabIndex = 4;
-            this.label13.Text = "Cheeks:";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(28, 55);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(30, 13);
-            this.label11.TabIndex = 2;
-            this.label11.Text = "Lips:";
-            // 
-            // cheekMakeupBox
-            // 
-            this.cheekMakeupBox.Location = new System.Drawing.Point(64, 80);
-            this.cheekMakeupBox.Name = "cheekMakeupBox";
-            this.cheekMakeupBox.ReadOnly = true;
-            this.cheekMakeupBox.Size = new System.Drawing.Size(416, 22);
-            this.cheekMakeupBox.TabIndex = 5;
-            // 
-            // lipMakeupBox
-            // 
-            this.lipMakeupBox.Location = new System.Drawing.Point(64, 52);
-            this.lipMakeupBox.Name = "lipMakeupBox";
-            this.lipMakeupBox.ReadOnly = true;
-            this.lipMakeupBox.Size = new System.Drawing.Size(416, 22);
-            this.lipMakeupBox.TabIndex = 3;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(26, 27);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(32, 13);
-            this.label12.TabIndex = 0;
-            this.label12.Text = "Eyes:";
-            // 
-            // eyeMakeupBox
-            // 
-            this.eyeMakeupBox.Location = new System.Drawing.Point(64, 24);
-            this.eyeMakeupBox.Name = "eyeMakeupBox";
-            this.eyeMakeupBox.ReadOnly = true;
-            this.eyeMakeupBox.Size = new System.Drawing.Size(416, 22);
-            this.eyeMakeupBox.TabIndex = 1;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox4.Controls.Add(this.hairColorBox);
-            this.groupBox4.Controls.Add(this.hairStyleBox);
-            this.groupBox4.Controls.Add(this.label9);
-            this.groupBox4.Controls.Add(this.label8);
-            this.groupBox4.Location = new System.Drawing.Point(332, 15);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(506, 63);
-            this.groupBox4.TabIndex = 14;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Hair";
-            // 
-            // hairColorBox
-            // 
-            this.hairColorBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.hairColorBox.FormattingEnabled = true;
-            this.hairColorBox.Location = new System.Drawing.Point(314, 24);
-            this.hairColorBox.Name = "hairColorBox";
-            this.hairColorBox.Size = new System.Drawing.Size(166, 21);
-            this.hairColorBox.TabIndex = 5;
-            this.hairColorBox.SelectedIndexChanged += new System.EventHandler(this.hairColorBox_SelectedIndexChanged);
-            // 
-            // hairStyleBox
-            // 
-            this.hairStyleBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.hairStyleBox.FormattingEnabled = true;
-            this.hairStyleBox.Location = new System.Drawing.Point(64, 24);
-            this.hairStyleBox.Name = "hairStyleBox";
-            this.hairStyleBox.Size = new System.Drawing.Size(200, 21);
-            this.hairStyleBox.TabIndex = 4;
-            this.hairStyleBox.SelectedIndexChanged += new System.EventHandler(this.hairStyleBox_SelectedIndexChanged);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(270, 27);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(38, 13);
-            this.label9.TabIndex = 2;
-            this.label9.Text = "Color:";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(24, 27);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(34, 13);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "Style:";
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.eyesColorBox);
-            this.groupBox3.Controls.Add(this.earsUpDown);
-            this.groupBox3.Controls.Add(this.jawUpDown);
-            this.groupBox3.Controls.Add(this.mouthUpDown);
-            this.groupBox3.Controls.Add(this.noseUpDown);
-            this.groupBox3.Controls.Add(this.eyesUpDown);
-            this.groupBox3.Controls.Add(this.label10);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Location = new System.Drawing.Point(15, 15);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(311, 188);
-            this.groupBox3.TabIndex = 13;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Facial Features";
-            // 
-            // eyesColorBox
-            // 
-            this.eyesColorBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.eyesColorBox.FormattingEnabled = true;
-            this.eyesColorBox.Location = new System.Drawing.Point(154, 24);
-            this.eyesColorBox.Name = "eyesColorBox";
-            this.eyesColorBox.Size = new System.Drawing.Size(138, 21);
-            this.eyesColorBox.TabIndex = 8;
-            this.eyesColorBox.SelectedIndexChanged += new System.EventHandler(this.eyesColorBox_SelectedIndexChanged);
-            // 
-            // earsUpDown
-            // 
-            this.earsUpDown.Location = new System.Drawing.Point(66, 137);
-            this.earsUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.earsUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.earsUpDown.Name = "earsUpDown";
-            this.earsUpDown.Size = new System.Drawing.Size(38, 22);
-            this.earsUpDown.TabIndex = 10;
-            this.earsUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // jawUpDown
-            // 
-            this.jawUpDown.Location = new System.Drawing.Point(66, 109);
-            this.jawUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.jawUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.jawUpDown.Name = "jawUpDown";
-            this.jawUpDown.Size = new System.Drawing.Size(38, 22);
-            this.jawUpDown.TabIndex = 9;
-            this.jawUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // mouthUpDown
-            // 
-            this.mouthUpDown.Location = new System.Drawing.Point(66, 81);
-            this.mouthUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.mouthUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.mouthUpDown.Name = "mouthUpDown";
-            this.mouthUpDown.Size = new System.Drawing.Size(38, 22);
-            this.mouthUpDown.TabIndex = 8;
-            this.mouthUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // noseUpDown
-            // 
-            this.noseUpDown.Location = new System.Drawing.Point(66, 53);
-            this.noseUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.noseUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.noseUpDown.Name = "noseUpDown";
-            this.noseUpDown.Size = new System.Drawing.Size(38, 22);
-            this.noseUpDown.TabIndex = 7;
-            this.noseUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // eyesUpDown
-            // 
-            this.eyesUpDown.Location = new System.Drawing.Point(66, 25);
-            this.eyesUpDown.Maximum = new decimal(new int[] {
-            21,
-            0,
-            0,
-            0});
-            this.eyesUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.eyesUpDown.Name = "eyesUpDown";
-            this.eyesUpDown.Size = new System.Drawing.Size(38, 22);
-            this.eyesUpDown.TabIndex = 6;
-            this.eyesUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(110, 27);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(38, 13);
-            this.label10.TabIndex = 4;
-            this.label10.Text = "Color:";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(28, 27);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(32, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Eyes:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 55);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(36, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Nose:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(15, 83);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(45, 13);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "Mouth:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(31, 111);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(29, 13);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "Jaw:";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(29, 139);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(31, 13);
-            this.label7.TabIndex = 5;
-            this.label7.Text = "Ears:";
-            // 
-            // appearanceTreeView
-            // 
-            this.appearanceTreeView.Location = new System.Drawing.Point(15, 515);
-            this.appearanceTreeView.Name = "appearanceTreeView";
-            this.appearanceTreeView.Size = new System.Drawing.Size(22, 19);
-            this.appearanceTreeView.TabIndex = 12;
-            this.appearanceTreeView.Visible = false;
             // 
             // loadAppearButton
             // 
@@ -856,7 +314,7 @@ namespace CP2077SaveEditor
             this.loadAppearButton.ClickEffectEnabled = true;
             this.loadAppearButton.DefaultColor = System.Drawing.Color.White;
             this.loadAppearButton.HoverColor = System.Drawing.Color.LightGray;
-            this.loadAppearButton.Location = new System.Drawing.Point(626, 496);
+            this.loadAppearButton.Location = new System.Drawing.Point(626, 508);
             this.loadAppearButton.Name = "loadAppearButton";
             this.loadAppearButton.Size = new System.Drawing.Size(98, 33);
             this.loadAppearButton.TabIndex = 11;
@@ -873,7 +331,7 @@ namespace CP2077SaveEditor
             this.saveAppearButton.ClickEffectEnabled = true;
             this.saveAppearButton.DefaultColor = System.Drawing.Color.White;
             this.saveAppearButton.HoverColor = System.Drawing.Color.LightGray;
-            this.saveAppearButton.Location = new System.Drawing.Point(730, 496);
+            this.saveAppearButton.Location = new System.Drawing.Point(730, 508);
             this.saveAppearButton.Name = "saveAppearButton";
             this.saveAppearButton.Size = new System.Drawing.Size(98, 33);
             this.saveAppearButton.TabIndex = 10;
@@ -895,8 +353,7 @@ namespace CP2077SaveEditor
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.containersListBox);
             this.groupBox2.Location = new System.Drawing.Point(540, 15);
             this.groupBox2.Name = "groupBox2";
@@ -1649,21 +1106,6 @@ namespace CP2077SaveEditor
             this.optionsPanel.ResumeLayout(false);
             this.appearancePanel.ResumeLayout(false);
             this.appearancePanel.PerformLayout();
-            this.appearanceCompareValuesBox.ResumeLayout(false);
-            this.appearanceCompareValuesBox.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.earsUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.jawUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mouthUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.noseUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.eyesUpDown)).EndInit();
             this.inventoryPanel.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.containerGroupBox.ResumeLayout(false);
@@ -1714,11 +1156,6 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Panel inventoryPanel;
         private System.Windows.Forms.NumericUpDown moneyUpDown;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ListBox containersListBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox containerGroupBox;
@@ -1735,27 +1172,6 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.ColumnHeader inventoryIdHeader;
         private System.Windows.Forms.ColumnHeader inventoryQuantityHeader;
         private System.Windows.Forms.ColumnHeader inventoryDescriptionHeader;
-        private System.Windows.Forms.TreeView appearanceTreeView;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox cheekMakeupBox;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox lipMakeupBox;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox eyeMakeupBox;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.TextBox breastsBox;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox genitalsBox;
-        private System.Windows.Forms.TextBox nipplesBox;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.ColumnHeader inventoryTypeHeader;
         private System.Windows.Forms.TextBox factsSearchBox;
@@ -1793,24 +1209,10 @@ namespace CP2077SaveEditor
         private ModernButton additionalPlayerStatsButton;
         private ModernButton makeAllRomanceableButton;
         private ModernButton enableSecretEndingButton;
-        private System.Windows.Forms.GroupBox appearanceCompareValuesBox;
-        private ModernButton appearanceCompareSaveButton;
-        private System.Windows.Forms.ListBox appearanceCompareListBox;
-        private ModernButton appearanceCompareLoadButton;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.TextBox appearanceCompareNameBox;
-        private System.Windows.Forms.NumericUpDown earsUpDown;
-        private System.Windows.Forms.NumericUpDown jawUpDown;
-        private System.Windows.Forms.NumericUpDown mouthUpDown;
-        private System.Windows.Forms.NumericUpDown noseUpDown;
-        private System.Windows.Forms.NumericUpDown eyesUpDown;
-        private System.Windows.Forms.ComboBox hairStyleBox;
-        private System.Windows.Forms.ComboBox hairColorBox;
-        private System.Windows.Forms.ComboBox skinColorBox;
-        private System.Windows.Forms.ComboBox eyesColorBox;
         private ModernButton debloatButton;
         private System.ComponentModel.BackgroundWorker debloatWorker;
         private System.Windows.Forms.Timer debloatTimer;
+        private System.Windows.Forms.Panel appearanceOptionsPanel;
     }
 }
 

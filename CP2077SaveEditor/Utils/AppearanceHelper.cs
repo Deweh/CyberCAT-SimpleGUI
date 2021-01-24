@@ -37,11 +37,15 @@ namespace CP2077SaveEditor
         public int SkinTone {
             get
             {
-                return AppearanceValueLists.SkinColors.FindIndex(x => x == GetConcatedValue("third.main.first.body_color")) + 1;
+                return AppearanceValueLists.SkinTones.FindIndex(x => x == GetConcatedValue("third.main.first.body_color")) + 1;
             }
             set
             {
-                SetConcatedValue("third.main.first.body_color", AppearanceValueLists.SkinColors[value - 1]);
+                if (value > AppearanceValueLists.SkinTones.Count || value < 1)
+                {
+                    return;
+                }
+                SetConcatedValue("third.main.first.body_color", AppearanceValueLists.SkinTones[value - 1]);
             }
         }
 
@@ -56,11 +60,16 @@ namespace CP2077SaveEditor
                 }
                 else 
                 {
-                    return AppearanceValueLists.HairStyles.Where(x => x.Value == ulong.Parse(hash)).FirstOrDefault().Key;
+                    return AppearanceValueLists.HairStylesDict.Where(x => x.Value == ulong.Parse(hash)).FirstOrDefault().Key;
                 }
             }
             set
             {
+                if (!AppearanceValueLists.HairStylesDict.ContainsKey(value))
+                {
+                    return;
+                }
+
                 var entries = GetEntries("first.main.hair_color");
                 if (value == "Shaved")
                 {
@@ -73,7 +82,7 @@ namespace CP2077SaveEditor
                         var newEntry = new HashValueEntry()
                         {
                             FirstString = AppearanceValueLists.HairColors[0],
-                            Hash = AppearanceValueLists.HairStyles[value],
+                            Hash = AppearanceValueLists.HairStylesDict[value],
                             SecondString = "hair_color1"
                         };
 
@@ -81,7 +90,7 @@ namespace CP2077SaveEditor
                     }
                     else
                     {
-                        SetValue(AppearanceField.Hash, "first.main.hair_color", AppearanceValueLists.HairStyles[value]);
+                        SetValue(AppearanceField.Hash, "first.main.hair_color", AppearanceValueLists.HairStylesDict[value]);
                     }
                 }
             }
@@ -103,6 +112,11 @@ namespace CP2077SaveEditor
             }
             set
             {
+                if (value > AppearanceValueLists.HairColors.Count || value < 1)
+                {
+                    return;
+                }
+
                 if (GetValue("first.main.first.hair_color") != "default")
                 {
                     SetValue(AppearanceField.FirstString, "first.main.hair_color", AppearanceValueLists.HairColors[value - 1]);
@@ -128,11 +142,31 @@ namespace CP2077SaveEditor
             }
             set
             {
+                if (value > 21 || value < 1)
+                {
+                    return;
+                }
+
                 SetFacialValue("eyes", 1, value);
             }
         }
 
-        public object EyeColor { get; set; }
+        public int EyeColor
+        {
+            get
+            {
+                return AppearanceValueLists.EyeColors.FindIndex(x => x == GetConcatedValue("first.main.first.eyes_color")) + 1;
+            }
+            set
+            {
+                if (value > AppearanceValueLists.EyeColors.Count || value < 1)
+                {
+                    return;
+                }
+
+                SetConcatedValue("first.main.first.eyes_color", AppearanceValueLists.EyeColors[value - 1]);
+            }
+        }
 
         public object Eyebrows { get; set; }
 
@@ -146,6 +180,11 @@ namespace CP2077SaveEditor
             }
             set
             {
+                if (value > 21 || value < 1)
+                {
+                    return;
+                }
+
                 SetFacialValue("nose", 2, value);
             }
         }
@@ -158,6 +197,11 @@ namespace CP2077SaveEditor
             }
             set
             {
+                if (value > 21 || value < 1)
+                {
+                    return;
+                }
+
                 SetFacialValue("mouth", 3, value);
             }
         }
@@ -170,6 +214,11 @@ namespace CP2077SaveEditor
             }
             set
             {
+                if (value > 21 || value < 1)
+                {
+                    return;
+                }
+
                 SetFacialValue("jaw", 4, value);
             }
         }
@@ -182,6 +231,11 @@ namespace CP2077SaveEditor
             }
             set
             {
+                if (value > 21 || value < 1)
+                {
+                    return;
+                }
+
                 SetFacialValue("ear", 5, value);
             }
         }
@@ -596,67 +650,6 @@ namespace CP2077SaveEditor
             return result;
         }
 
-        public void SetHairStyle(string friendlyName)
-        {
-            if (friendlyName != "Shaved")
-            {
-                SetValue(AppearanceField.Hash, "first.main.hair_color", AppearanceValueLists.HairStyles[friendlyName]);
-            }
-        }
-
-        public void SetHairColor(string colorString)
-        {
-            if (colorString != "None")
-            {
-                SetValue(AppearanceField.FirstString, "first.main.hair_color", colorString);
-                if (activeSave.GetAppearanceContainer().Strings.Count < 1)
-                {
-                    activeSave.GetAppearanceContainer().Strings.Add(colorString.Substring(3));
-                    activeSave.GetAppearanceContainer().Strings.Add("Short");
-                }
-                else
-                {
-                    activeSave.GetAppearanceContainer().Strings[0] = colorString.Substring(3);
-                }
-            }
-        }
-
-        public void CreateHairEntry(string friendlyName)
-        {
-            var hairsList = activeSave.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == "hairs").FirstOrDefault().MainList;
-
-            var newEntry = new CharacterCustomizationAppearances.HashValueEntry();
-            newEntry.FirstString = AppearanceValueLists.HairColors[0];
-            newEntry.Hash = AppearanceValueLists.HairStyles[friendlyName];
-            newEntry.SecondString = "hair_color1";
-
-            hairsList.Add(newEntry);
-        }
-
-        public void DeleteHairEntry()
-        {
-            var hairsList = activeSave.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == "hairs").FirstOrDefault().MainList;
-            hairsList.Remove(hairsList[0]);
-
-            var hairsCreationList = activeSave.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == "character_customization").FirstOrDefault().MainList;
-            var creationEntry = hairsCreationList.Where(x => CompareMainListAppearanceEntries("hair_color", x.SecondString)).FirstOrDefault();
-
-            if (creationEntry != null)
-            {
-                hairsCreationList.Remove(creationEntry);
-            }
-        }
-
-        public void SetSkinColor(string colorString)
-        {
-            SetConcatedValue("third.main.first.body_color", colorString);
-        }
-
-        public void SetEyeColor(string colorString)
-        {
-            SetConcatedValue("first.main.first.eyes_color", colorString);
-        }
-
         public bool CompareMainListAppearanceEntries(string entry1, string entry2)
         {
             return Regex.Replace(entry1, @"[\d-]", string.Empty) == Regex.Replace(entry2, @"[\d-]", string.Empty);
@@ -687,9 +680,10 @@ namespace CP2077SaveEditor
 
     public static class AppearanceValueLists
     {
-        public static Dictionary<string, ulong> HairStyles { get; } = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(CP2077SaveEditor.Properties.Resources.HairStyles);
+        public static Dictionary<string, ulong> HairStylesDict { get; } = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(CP2077SaveEditor.Properties.Resources.HairStyles);
+        public static List<string> HairStyles { get; } = HairStylesDict.Keys.ToList();
         public static List<string> HairColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.HairColors);
-        public static List<string> SkinColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.SkinColors);
+        public static List<string> SkinTones { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.SkinColors);
         public static List<string> EyeColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.EyeColors);
     }
 }

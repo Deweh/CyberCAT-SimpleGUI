@@ -16,6 +16,7 @@ using CyberCAT.Core.DumpedEnums;
 using Newtonsoft.Json;
 using CP2077SaveEditor.Extensions;
 using CyberCAT.Core.Classes.Mapping;
+using System.Text.RegularExpressions;
 
 namespace CP2077SaveEditor
 {
@@ -34,9 +35,8 @@ namespace CP2077SaveEditor
         private string debloatInfo = "";
 
         //Lookup Dictionaries
-        private Dictionary<string, CharacterCustomizationAppearances> appearanceCompareNodes;
+        
         private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
-        private Dictionary<string, NumericUpDown> linearAppearanceFeatures;
         private static readonly Dictionary<string, string> itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         private static readonly Dictionary<ulong, string> inventoryNames = new()
         {
@@ -50,6 +50,19 @@ namespace CP2077SaveEditor
             { 0x7901DE03D136A5AF, "V's Wardrobe" },
             { 0xE5F556FCBB62A706, "V's Stash" },
             { 0xEDAD8C9B086A615E, "River's Stash" }
+        };
+        private static readonly List<string> appearanceOptions = new()
+        {
+            "VoiceTone",
+            "SkinTone",
+            "HairStyle",
+            "HairColor",
+            "Eyes",
+            "EyeColor",
+            "Nose",
+            "Mouth",
+            "Jaw",
+            "Ears"
         };
 
         public Form1()
@@ -78,30 +91,8 @@ namespace CP2077SaveEditor
             inventorySearchBox.GotFocus += SearchBoxGotFocus;
             inventorySearchBox.LostFocus += SearchBoxLostFocus;
 
-            levelUpDown.ValueChanged += PlayerStatChanged;
-            streetCredUpDown.ValueChanged += PlayerStatChanged;
-
-            bodyUpDown.ValueChanged += PlayerStatChanged;
-            reflexesUpDown.ValueChanged += PlayerStatChanged;
-            technicalAbilityUpDown.ValueChanged += PlayerStatChanged;
-            intelligenceUpDown.ValueChanged += PlayerStatChanged;
-            coolUpDown.ValueChanged += PlayerStatChanged;
             perkPointsUpDown.ValueChanged += PlayerStatChanged;
             attrPointsUpDown.ValueChanged += PlayerStatChanged;
-
-            athleticsUpDown.ValueChanged += PlayerStatChanged;
-            annihilationUpDown.ValueChanged += PlayerStatChanged;
-            streetBrawlerUpDown.ValueChanged += PlayerStatChanged;
-            assaultUpDown.ValueChanged += PlayerStatChanged;
-            handgunsUpDown.ValueChanged += PlayerStatChanged;
-            bladesUpDown.ValueChanged += PlayerStatChanged;
-            craftingUpDown.ValueChanged += PlayerStatChanged;
-            engineeringUpDown.ValueChanged += PlayerStatChanged;
-            breachProtocolUpDown.ValueChanged += PlayerStatChanged;
-            quickhackingUpDown.ValueChanged += PlayerStatChanged;
-            stealthUpDown.ValueChanged += PlayerStatChanged;
-            coldBloodUpDown.ValueChanged += PlayerStatChanged;
-
             debloatWorker.RunWorkerCompleted += debloatWorker_Completed;
 
             statsPanel.BackgroundImage = CP2077SaveEditor.Properties.Resources.player_stats;
@@ -132,28 +123,36 @@ namespace CP2077SaveEditor
                 {gamedataProficiencyType.ColdBlood, coldBloodUpDown}
             };
 
-            linearAppearanceFeatures = new Dictionary<string, NumericUpDown>
+            foreach (NumericUpDown numUpDown in attrFields.Values)
             {
-                {"first.additional.second.eyes", eyesUpDown},
-                {"first.additional.second.nose", noseUpDown},
-                {"first.additional.second.mouth", mouthUpDown},
-                {"first.additional.second.jaw", jawUpDown},
-                {"first.additional.second.ear", earsUpDown}
-            };
-
-            foreach (NumericUpDown control in linearAppearanceFeatures.Values)
-            {
-                control.ValueChanged += LinearAppearanceValueChanged;
+                numUpDown.ValueChanged += PlayerStatChanged;
             }
 
-            hairStyleBox.Items.AddRange(AppearanceValueLists.HairStyles.Keys.ToArray());
-            hairColorBox.Items.AddRange(AppearanceValueLists.HairColors.ToArray());
-            skinColorBox.Items.AddRange(AppearanceValueLists.SkinColors.ToArray());
-            eyesColorBox.Items.AddRange(AppearanceValueLists.EyeColors.ToArray());
+            foreach (NumericUpDown numUpDown in proficFields.Values)
+            {
+                numUpDown.ValueChanged += PlayerStatChanged;
+            }
 
-#if DEBUG
-            appearanceCompareValuesBox.Visible = true;
-#endif
+            var lastPos = 20;
+            var r = new Regex(@"
+                (?<=[A-Z])(?=[A-Z][a-z]) |
+                 (?<=[^A-Z])(?=[A-Z]) |
+                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
+
+            foreach (string option in appearanceOptions)
+            {
+                var picker = new ModernValuePicker()
+                {
+                    Name = option,
+                    PickerName = r.Replace(option, " "),
+                    Location = new Point(0, lastPos)
+                };
+
+                appearanceOptionsPanel.Controls.Add(picker);
+                picker.IndexChanged += AppearanceOptionChanged;
+
+                lastPos += picker.Height + 20;
+            }
         }
 
         //This function & other functions related to managing tabs need to be refactored.
@@ -183,113 +182,70 @@ namespace CP2077SaveEditor
 
         private void RefreshAppearanceValues()
         {
-            //Non-Editable Values
-
-            var valueFields = new Dictionary<string, TextBox>
+            foreach (ModernValuePicker picker in appearanceOptionsPanel.Controls)
             {
-                //Makeup
-                {"first.main.first.makeupEyes_", eyeMakeupBox}, {"first.main.first.makeupLips_", lipMakeupBox}, {"first.main.first.makeupCheeks_", cheekMakeupBox},
-                //Body
-                {"third.main.first.nipples_", nipplesBox}, {"third.main.first.genitals_", genitalsBox}, {"third.additional.second.breast", breastsBox}
-            };
-
-            foreach(string searchString in valueFields.Keys)
-            {
-                valueFields[searchString].Text = activeSaveFile.Appearance.GetValue(searchString);
-            }
-
-            //Facial Features
-
-            foreach (string searchString in linearAppearanceFeatures.Keys)
-            {
-                var result = activeSaveFile.Appearance.GetValue(searchString);
-
-                if (result == "default")
+                if (GetAppearanceValue(picker.Name) is int)
                 {
-                    linearAppearanceFeatures[searchString].Value = 1;
+                    picker.SuppressIndexChange = true;
+                    picker.Index = (int)GetAppearanceValue(picker.Name);
                 }
-                else
+                else if(GetAppearanceValue(picker.Name) is string)
                 {
-                    result = result.Substring(1, 2);
-                    linearAppearanceFeatures[searchString].Value = int.Parse(result) + 1;
-                }
-            }
-
-            //Hair Style & Color
-
-            var hairColorEntry = activeSaveFile.Appearance.GetValue("first.main.first.hair_color");
-
-            if (hairColorEntry != "default")
-            {
-                hairColorBox.Text = hairColorEntry;
-                hairColorBox.Enabled = true;
-
-                var hairHash = ulong.Parse(activeSaveFile.Appearance.GetValue("first.main.hash.hair_color"));
-                foreach (string styleName in AppearanceValueLists.HairStyles.Keys)
-                {
-                    hairColorBox.Text = activeSaveFile.Appearance.GetValue("first.main.first.hair_color");
-
-                    if (AppearanceValueLists.HairStyles[styleName] == hairHash)
+                    if (picker.StringCollection.Length < 1)
                     {
-                        hairStyleBox.Text = styleName;
+                        picker.PickerType = PickerValueType.String;
+                        picker.StringCollection = ((List<string>)typeof(AppearanceValueLists).GetProperty(picker.Name + "s").GetValue(null, null)).ToArray();
+                    }
+                    picker.SuppressIndexChange = true;
+                    var newValue = (string)GetAppearanceValue(picker.Name);
+
+                    if (picker.StringCollection.Contains(newValue))
+                    {
+                        picker.Index = Array.IndexOf(picker.StringCollection, newValue);
+                    } else {
+                        picker.Index = 0;
+                        picker.StringValue = newValue;
                     }
                 }
-            }
-            else
-            {
-                hairStyleBox.Text = "Shaved";
-                hairColorBox.Items.Add("None");
-                hairColorBox.Text = "None";
-                hairColorBox.Enabled = false;
-            }
-
-            //Concated Colors
-
-            skinColorBox.Text = activeSaveFile.Appearance.GetValue("third.main.first.body_color").Split("__", StringSplitOptions.None).Last();
-
-            var eyeColor = activeSaveFile.Appearance.GetValue("first.main.first.eyes_color").Split("__", StringSplitOptions.None).Last();
-            if (!eyesColorBox.Items.Contains(eyeColor))
-            {
-                eyesColorBox.Items.Add(eyeColor);
-            }
-            eyesColorBox.Text = eyeColor;
-        }
-
-        private void LinearAppearanceValueChanged(object sender, EventArgs e)
-        {
-            var i = 1;
-            foreach (string searchString in linearAppearanceFeatures.Keys)
-            {
-                if (linearAppearanceFeatures[searchString] == sender)
+                else if (GetAppearanceValue(picker.Name) is Enum)
                 {
-                    var stringParts = searchString.Split('.');
-                    activeSaveFile.Appearance.SetFacialValue(searchString.Split('.')[3], i, (int)((NumericUpDown)sender).Value);
+                    if (picker.StringCollection.Length < 1)
+                    {
+                        picker.PickerType = PickerValueType.String;
+                        picker.StringCollection = Enum.GetNames(GetAppearanceValue(picker.Name).GetType());
+                    }
+
+                    picker.SuppressIndexChange = true;
+                    picker.Index = (int)GetAppearanceValue(picker.Name);
                 }
-                i++;
             }
         }
 
-        private void IterateAppearanceSection(CharacterCustomizationAppearances.Section section, TreeNode rootNode)
+        private object GetAppearanceValue(string name)
         {
-            foreach (CharacterCustomizationAppearances.AppearanceSection subSection in section.AppearanceSections)
+            return activeSaveFile.Appearance.GetType().GetProperty(name).GetValue(activeSaveFile.Appearance);
+        }
+
+        private void SetAppearanceValue(string name, object value)
+        {
+            activeSaveFile.Appearance.GetType().GetProperty(name).SetValue(activeSaveFile.Appearance, value);
+        }
+
+        private void AppearanceOptionChanged(ModernValuePicker sender)
+        {
+            if (GetAppearanceValue(sender.Name) is int)
             {
-                var subSectionNode = rootNode.Nodes.Add(subSection.SectionName, subSection.SectionName);
-                var mainlistNode = subSectionNode.Nodes.Add("Main List", "Main List");
-                foreach (CharacterCustomizationAppearances.HashValueEntry entry in subSection.MainList)
-                {
-                    var entryNode = mainlistNode.Nodes.Add(entry.FirstString, entry.FirstString);
-                    entryNode.Nodes.Add("First String: " + entry.FirstString);
-                    entryNode.Nodes.Add("Hash: " + entry.Hash.ToString());
-                    entryNode.Nodes.Add("Second String: " + entry.SecondString);
-                }
-                var additionallistNode = subSectionNode.Nodes.Add("Additional List", "Additional List");
-                foreach (CharacterCustomizationAppearances.ValueEntry entry in subSection.AdditionalList)
-                {
-                    var entryNode = additionallistNode.Nodes.Add(entry.FirstString, entry.FirstString);
-                    entryNode.Nodes.Add("First String: " + entry.FirstString);
-                    entryNode.Nodes.Add("Second String: " + entry.SecondString);
-                }
+                SetAppearanceValue(sender.Name, sender.Index);
             }
+            else if(GetAppearanceValue(sender.Name) is string)
+            {
+                SetAppearanceValue(sender.Name, sender.StringValue);
+            }
+            else if (GetAppearanceValue(sender.Name) is Enum)
+            {
+                SetAppearanceValue(sender.Name, Enum.Parse(GetAppearanceValue(sender.Name).GetType(), sender.StringValue));
+            }
+            RefreshAppearanceValues();
         }
 
         public bool RefreshInventory(string search = "", int searchField = -1)
@@ -853,101 +809,6 @@ namespace CP2077SaveEditor
             MessageBox.Show("All characters are now romanceable.");
         }
 
-        private void appearanceCompareLoadButton_Click(object sender, EventArgs e)
-        {
-            var fileWindow = new OpenFileDialog();
-            fileWindow.Filter = "Cyberpunk 2077 Save File|*.dat";
-            if (fileWindow.ShowDialog() == DialogResult.OK)
-            {
-                appearanceCompareListBox.Items.Clear();
-                appearanceCompareNodes = new Dictionary<string, CharacterCustomizationAppearances>();
-
-                foreach (string fileName in Directory.GetFiles(Path.GetDirectoryName(fileWindow.FileName)))
-                {
-                    if (fileName.EndsWith(".dat"))
-                    {
-                        var tempSave = new SaveFileHelper(new List<INodeParser> { new CharacterCustomizationAppearancesParser() });
-                        tempSave.Load(new MemoryStream(File.ReadAllBytes(fileName)));
-                        appearanceCompareNodes.Add(Path.GetFileNameWithoutExtension(fileName), tempSave.GetAppearanceContainer());
-                        appearanceCompareListBox.Items.Add(fileName);
-                    }
-                }
-            }
-        }
-
-        private void appearanceCompareSaveButton_Click(object sender, EventArgs e)
-        {
-            var values = new List<AppearanceConstructor.ValueRepresentation>();
-
-            foreach (string appearanceName in appearanceCompareNodes.Keys)
-            {
-                var singleValue = new AppearanceConstructor.ValueRepresentation(appearanceCompareNameBox.Text, appearanceName);
-                var currentAppearance = appearanceCompareNodes[appearanceName];
-
-                var mainSections = new[] { currentAppearance.FirstSection, currentAppearance.SecondSection, currentAppearance.ThirdSection };
-                var sectionName = "First";
-
-                foreach (CharacterCustomizationAppearances.Section mainSection in mainSections)
-                {
-                    foreach (CharacterCustomizationAppearances.AppearanceSection section in currentAppearance.FirstSection.AppearanceSections)
-                    {
-                        var appearanceSectionName = section.SectionName;
-                        var baseSection = activeSaveFile.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == section.SectionName).FirstOrDefault();
-
-                        foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in section.MainList)
-                        {
-                            var baseMainEntry = baseSection.MainList.Where(x => activeSaveFile.Appearance.CompareMainListAppearanceEntries(x.SecondString, mainEntry.SecondString)).FirstOrDefault();
-
-                            if (baseMainEntry != null)
-                            {
-                                if (baseMainEntry.FirstString != mainEntry.FirstString || baseMainEntry.Hash != mainEntry.Hash || baseMainEntry.SecondString != mainEntry.SecondString)
-                                {
-                                    singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), mainEntry));
-                                }
-                            }
-                            else
-                            {
-                                singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), mainEntry));
-                            }
-                        }
-
-                        foreach (CharacterCustomizationAppearances.ValueEntry additionalEntry in section.AdditionalList)
-                        {
-                            var baseAdditionalEntry = baseSection.AdditionalList.Where(x => x.FirstString == additionalEntry.FirstString).FirstOrDefault();
-
-                            if (baseAdditionalEntry != null)
-                            {
-                                if (baseAdditionalEntry.SecondString != additionalEntry.SecondString)
-                                {
-                                    singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), additionalEntry));
-                                }
-                            }
-                            else
-                            {
-                                singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), additionalEntry));
-                            }
-                        }
-                    }
-
-                    if (sectionName == "First")
-                    {
-                        sectionName = "Second";
-                    } else {
-                        sectionName = "Third";
-                    }
-                }
-
-                values.Add(singleValue);
-            }
-
-            var fileWindow = new SaveFileDialog();
-            fileWindow.Filter = "JSON File|*.json";
-            if (fileWindow.ShowDialog() == DialogResult.OK)
-            {
-                File.WriteAllText(fileWindow.FileName, JsonConvert.SerializeObject(values, Formatting.Indented));
-            }
-        }
-
         private void swapSaveType_Click(object sender, EventArgs e)
         {
             if (saveType == 0)
@@ -958,46 +819,6 @@ namespace CP2077SaveEditor
                 saveType = 0;
                 swapSaveType.Text = "Save Type: PC";
             }
-        }
-
-        private void hairStyleBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!loadingSave)
-            {
-                if (hairColorBox.Enabled == false && hairStyleBox.Text != "Shaved")
-                {
-                    activeSaveFile.Appearance.CreateHairEntry(hairStyleBox.Text);
-                    RefreshAppearanceValues();
-
-                    hairColorBox.Items.Remove("None");
-                    return;
-                }
-
-                if (hairColorBox.Enabled == true && hairStyleBox.Text == "Shaved")
-                {
-                    activeSaveFile.Appearance.DeleteHairEntry();
-
-                    RefreshAppearanceValues();
-                    return;
-                }
-
-                activeSaveFile.Appearance.SetHairStyle(hairStyleBox.Text);
-            }
-        }
-
-        private void hairColorBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            activeSaveFile.Appearance.SetHairColor(hairColorBox.Text);
-        }
-
-        private void skinColorBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            activeSaveFile.Appearance.SetSkinColor(skinColorBox.Text);
-        }
-
-        private void eyesColorBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            activeSaveFile.Appearance.SetEyeColor(eyesColorBox.Text);
         }
 
         private void debloatButton_Click(object sender, EventArgs e)

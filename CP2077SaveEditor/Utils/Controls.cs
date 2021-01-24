@@ -117,8 +117,9 @@ namespace CP2077SaveEditor
         private int _maxInt = 99;
         private int _minInt = 0;
         private string[] _stringCollection = new string[] { };
+        private string _stringValue = string.Empty;
 
-        public delegate void IndexChangedHandler();
+        public delegate void IndexChangedHandler(ModernValuePicker sender);
         public event IndexChangedHandler IndexChanged;
 
         public string PickerName
@@ -149,11 +150,12 @@ namespace CP2077SaveEditor
         {
             get
             {
-                return valueLabel.Text;
+                return _stringValue;
             }
             set
             {
-                valueLabel.Text = value;
+                _stringValue = value;
+                valueLabel.Text = _stringValue.ToUpper();
                 UpdateChildControls();
             }
         }
@@ -211,7 +213,7 @@ namespace CP2077SaveEditor
                 {
                     SuppressIndexChange = false;
                 } else {
-                    if (IndexChanged != null) { IndexChanged(); }
+                    if (IndexChanged != null) { IndexChanged(this); }
                 }
             }
         }
