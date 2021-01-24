@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static CP2077SaveEditor.SaveFileHelper;
+using static CyberCAT.Core.Classes.NodeRepresentations.CharacterCustomizationAppearances;
 
 namespace CP2077SaveEditor
 {
@@ -19,17 +20,117 @@ namespace CP2077SaveEditor
             activeSave = _saveFile;
         }
 
-        public CharacterCustomizationAppearances.Section[] MainSections { get; set; }
+        public Section[] MainSections { get; set; }
 
-        public object VoiceTone { get; set; }
+        public AppearanceGender VoiceTone
+        {
+            get
+            {
+                return (AppearanceGender)activeSave.GetAppearanceContainer().UnknownFirstBytes[5];
+            }
+            set
+            {
+                activeSave.GetAppearanceContainer().UnknownFirstBytes[5] = (byte)value;
+            }
+        }
 
-        public object SkinTone { get; set; }
+        public int SkinTone {
+            get
+            {
+                return AppearanceValueLists.SkinColors.FindIndex(x => x == GetConcatedValue("third.main.first.body_color")) + 1;
+            }
+            set
+            {
+                SetConcatedValue("third.main.first.body_color", AppearanceValueLists.SkinColors[value - 1]);
+            }
+        }
 
-        public object HairStyle { get; set; }
+        public string HairStyle
+        {
+            get
+            {
+                var hash = GetValue("first.main.hash.hair_color");
+                if (hash == "default")
+                {
+                    return "Shaved";
+                }
+                else 
+                {
+                    return AppearanceValueLists.HairStyles.Where(x => x.Value == ulong.Parse(hash)).FirstOrDefault().Key;
+                }
+            }
+            set
+            {
+                var entries = GetEntries("first.main.hair_color");
+                if (value == "Shaved")
+                {
+                    RemoveEntries(entries);
+                }
+                else
+                {
+                    if (entries.Count < 1)
+                    {
+                        var newEntry = new HashValueEntry()
+                        {
+                            FirstString = AppearanceValueLists.HairColors[0],
+                            Hash = AppearanceValueLists.HairStyles[value],
+                            SecondString = "hair_color1"
+                        };
 
-        public object HairColor { get; set; }
+                        CreateEntry(newEntry, new[] { "hairs" }, MainSections[0]);
+                    }
+                    else
+                    {
+                        SetValue(AppearanceField.Hash, "first.main.hair_color", AppearanceValueLists.HairStyles[value]);
+                    }
+                }
+            }
+        }
 
-        public object Eyes { get; set; }
+        public int HairColor
+        {
+            get
+            {
+                var value = GetValue("first.main.first.hair_color");
+                if (value == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return AppearanceValueLists.HairColors.FindIndex(x => x == value) + 1;
+                }
+            }
+            set
+            {
+                if (GetValue("first.main.first.hair_color") != "default")
+                {
+                    SetValue(AppearanceField.FirstString, "first.main.hair_color", AppearanceValueLists.HairColors[value - 1]);
+                    var container = activeSave.GetAppearanceContainer();
+                    if (container.Strings.Count < 1)
+                    {
+                        container.Strings.Add(AppearanceValueLists.HairColors[value - 1].Substring(3));
+                        container.Strings.Add("Short");
+                    }
+                    else
+                    {
+                        container.Strings[0] = AppearanceValueLists.HairColors[value - 1].Substring(3);
+                    }
+                }
+            }
+        }
+
+        public int Eyes
+        {
+            get
+            {
+                return GetFacialValue("eyes");
+            }
+            set
+            {
+                SetFacialValue("eyes", 1, value);
+            }
+        }
 
         public object EyeColor { get; set; }
 
@@ -37,13 +138,53 @@ namespace CP2077SaveEditor
 
         public object EyebrowColor { get; set; }
 
-        public object Nose { get; set; }
+        public int Nose
+        {
+            get
+            {
+                return GetFacialValue("nose");
+            }
+            set
+            {
+                SetFacialValue("nose", 2, value);
+            }
+        }
 
-        public object Mouth { get; set; }
+        public int Mouth
+        {
+            get
+            {
+                return GetFacialValue("mouth");
+            }
+            set
+            {
+                SetFacialValue("mouth", 3, value);
+            }
+        }
 
-        public object Jaw { get; set; }
+        public int Jaw
+        {
+            get
+            {
+                return GetFacialValue("jaw");
+            }
+            set
+            {
+                SetFacialValue("jaw", 4, value);
+            }
+        }
 
-        public object Ears { get; set; }
+        public int Ears
+        {
+            get
+            {
+                return GetFacialValue("ear");
+            }
+            set
+            {
+                SetFacialValue("ear", 5, value);
+            }
+        }
 
         public object Cyberware { get; set; }
 
@@ -167,6 +308,14 @@ namespace CP2077SaveEditor
                         }
                     }
                 }
+            }
+        }
+
+        public void RemoveEntries(List<object> entries)
+        {
+            foreach (object entry in entries)
+            {
+                RemoveEntry(entry);
             }
         }
 
@@ -327,6 +476,17 @@ namespace CP2077SaveEditor
             }
         }
 
+        public string GetConcatedValue(string searchString, int position = -1)
+        {
+            var result = GetValue(searchString).Split("__", StringSplitOptions.None);
+            if (position < 0)
+            {
+                return result.Last();
+            } else {
+                return result[position];
+            }
+        }
+
         public void SetFacialValue(string fieldName, int fieldNum, int value)
         {
             var entries = GetEntries("first.additional." + fieldName);
@@ -356,6 +516,19 @@ namespace CP2077SaveEditor
                         entry.SecondString = "h" + (value - 1).ToString("00") + fieldNum.ToString();
                     }
                 }
+            }
+        }
+
+        public int GetFacialValue(string fieldName)
+        {
+            var result = GetValue("first.additional.second." + fieldName);
+            if (result == "default")
+            {
+                return 1;
+            }
+            else
+            {
+                return int.Parse(result.Substring(1, 2)) + 1;
             }
         }
 
@@ -488,6 +661,12 @@ namespace CP2077SaveEditor
         {
             return Regex.Replace(entry1, @"[\d-]", string.Empty) == Regex.Replace(entry2, @"[\d-]", string.Empty);
         }
+    }
+
+    public enum AppearanceGender
+    {
+        Female,
+        Male
     }
 
     public class AppearanceEntryLocation
