@@ -246,8 +246,8 @@ namespace CP2077SaveEditor
             {
                 SetAppearanceValue(sender.Name, Enum.Parse(GetAppearanceValue(sender.Name).GetType(), sender.StringValue));
             }
-            SetAppearanceImage(sender.Name, sender.Index.ToString("00"));
             RefreshAppearanceValues();
+            SetAppearanceImage(sender.Name, sender.Index.ToString("00"));
         }
 
         private void AppearanceOptionMouseEnter(object sender, EventArgs e)
