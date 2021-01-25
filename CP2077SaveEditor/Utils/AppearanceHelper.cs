@@ -62,6 +62,27 @@ namespace CP2077SaveEditor
             }
         }
 
+        public int SkinType
+        {
+            get
+            {
+                return AppearanceValueLists.SkinTypes.FindIndex(x => x == ulong.Parse(GetValue("first.main.hash.skin_type_"))) + 1;
+            }
+            set
+            {
+                if (value > AppearanceValueLists.SkinTypes.Count || value < 1)
+                {
+                    return;
+                }
+
+                var entries = GetAllEntries(AppearanceEntryType.MainListEntry, "skin_type_");
+                foreach (HashValueEntry entry in entries)
+                {
+                    entry.Hash = AppearanceValueLists.SkinTypes[value - 1];
+                }
+            }
+        }
+
         public string HairStyle
         {
             get
@@ -698,6 +719,7 @@ namespace CP2077SaveEditor
         public static List<string> HairStyles { get; } = HairStylesDict.Keys.ToList();
         public static List<string> HairColors { get; } = Values["HairColors"].ToObject<List<string>>();
         public static List<string> SkinTones { get; } = Values["SkinTones"].ToObject<List<string>>();
+        public static List<ulong> SkinTypes { get;  } = Values["SkinTypes"].ToObject<List<ulong>>();
         public static List<string> EyeColors { get; } = Values["EyeColors"].ToObject<List<string>>();
     }
 }

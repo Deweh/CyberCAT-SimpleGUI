@@ -55,6 +55,7 @@ namespace CP2077SaveEditor
         {
             "VoiceTone",
             "SkinTone",
+            "SkinType",
             "HairStyle",
             "HairColor",
             "Eyes",
