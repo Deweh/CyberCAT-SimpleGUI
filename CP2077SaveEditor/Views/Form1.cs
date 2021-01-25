@@ -257,9 +257,9 @@ namespace CP2077SaveEditor
 
         private void SetAppearanceImage(string name, string value)
         {
-            var path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + activeSaveFile.Appearance.BodyGender.ToString() + value + ".png";
+            var path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + activeSaveFile.Appearance.BodyGender.ToString() + value + ".jpg";
             if (!File.Exists(path)) {
-                path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + value + ".png";
+                path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + value + ".jpg";
                 if (!File.Exists(path))
                 {
                     appearancePreviewBox.Image = new Bitmap(1, 1);
