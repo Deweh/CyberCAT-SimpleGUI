@@ -75,11 +75,7 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                var entries = GetAllEntries(AppearanceEntryType.MainListEntry, "skin_type_");
-                foreach (HashValueEntry entry in entries)
-                {
-                    entry.Hash = AppearanceValueLists.SkinTypes[value - 1];
-                }
+                SetAllEntries(AppearanceEntryType.MainListEntry, "skin_type_", (object entry) => { ((HashValueEntry)entry).Hash = AppearanceValueLists.SkinTypes[value - 1]; });
             }
         }
 
@@ -364,6 +360,15 @@ namespace CP2077SaveEditor
             else
             {
                 return new List<object>();
+            }
+        }
+
+        public void SetAllEntries(AppearanceEntryType entryType, string searchString, Action<object> entriesAction)
+        {
+            var entries = GetAllEntries(entryType, searchString);
+            foreach (object entry in entries)
+            {
+                entriesAction(entry);
             }
         }
 
