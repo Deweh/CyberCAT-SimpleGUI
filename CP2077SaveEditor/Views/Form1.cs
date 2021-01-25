@@ -151,9 +151,7 @@ namespace CP2077SaveEditor
             skinColorBox.Items.AddRange(AppearanceValueLists.SkinColors.ToArray());
             eyesColorBox.Items.AddRange(AppearanceValueLists.EyeColors.ToArray());
 
-#if DEBUG
             appearanceCompareValuesBox.Visible = true;
-#endif
         }
 
         //This function & other functions related to managing tabs need to be refactored.
