@@ -202,7 +202,7 @@ namespace CP2077SaveEditor
                     {
                         if (modifierData.Id > statsHandle.Id)
                         {
-                            modifierData.SetId(modifierData.Id - 1);
+                            modifierData.Id = (modifierData.Id - 1);
                         }
                     }
                 }

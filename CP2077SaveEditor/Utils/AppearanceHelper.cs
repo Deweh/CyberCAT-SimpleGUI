@@ -1,5 +1,6 @@
 ﻿using CyberCAT.Core.Classes.NodeRepresentations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -692,10 +693,11 @@ namespace CP2077SaveEditor
 
     public static class AppearanceValueLists
     {
-        public static Dictionary<string, ulong> HairStylesDict { get; } = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(CP2077SaveEditor.Properties.Resources.HairStyles);
+        private static JObject Values = JsonConvert.DeserializeObject<JObject>(CP2077SaveEditor.Properties.Resources.AppearanceValues);
+        public static Dictionary<string, ulong> HairStylesDict { get; } = Values["HairStyles"].ToObject<Dictionary<string, ulong>>();
         public static List<string> HairStyles { get; } = HairStylesDict.Keys.ToList();
-        public static List<string> HairColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.HairColors);
-        public static List<string> SkinTones { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.SkinColors);
-        public static List<string> EyeColors { get; } = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.EyeColors);
+        public static List<string> HairColors { get; } = Values["HairColors"].ToObject<List<string>>();
+        public static List<string> SkinTones { get; } = Values["SkinTones"].ToObject<List<string>>();
+        public static List<string> EyeColors { get; } = Values["EyeColors"].ToObject<List<string>>();
     }
 }

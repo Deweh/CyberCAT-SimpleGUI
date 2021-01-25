@@ -61,41 +61,41 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {
+        ///	&quot;EyeColors&quot;:
+        ///	[
+        ///		&quot;01_blood_gradient_black&quot;,
+        ///		&quot;02_blood_gradient_blue&quot;,
+        ///		&quot;03_blood_gradient_brown&quot;,
+        ///		&quot;04_blood_gradient_green&quot;,
+        ///		&quot;05_blood_gradient_grey&quot;,
+        ///		&quot;06_blood_gradient_light_blue&quot;,
+        ///		&quot;07_blood_gradient_red&quot;,
+        ///		&quot;08_blood_gradient_violet&quot;,
+        ///		&quot;09_blood_gradient_yellow&quot;,
+        ///		&quot;10_gradient_black&quot;,
+        ///		&quot;11_gradient_blue&quot;,
+        ///		&quot;12_gradient_brown&quot;,
+        ///		&quot;13_gradient_green&quot;,
+        ///		&quot;14_gradient_grey&quot;,
+        ///		&quot;15_gradient_light_blue&quot;,
+        ///		&quot;16_gradient_red&quot;,
+        ///		&quot;17_gradient_violet&quot;,
+        ///		&quot;18_gradient_yellow&quot;, [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AppearanceValues {
+            get {
+                return ResourceManager.GetString("AppearanceValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap corpo {
             get {
                 object obj = ResourceManager.GetObject("corpo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [
-        ///	&quot;01_blood_gradient_black&quot;,
-        ///	&quot;02_blood_gradient_blue&quot;,
-        ///	&quot;03_blood_gradient_brown&quot;,
-        ///	&quot;04_blood_gradient_green&quot;,
-        ///	&quot;05_blood_gradient_grey&quot;,
-        ///	&quot;06_blood_gradient_light_blue&quot;,
-        ///	&quot;07_blood_gradient_red&quot;,
-        ///	&quot;08_blood_gradient_violet&quot;,
-        ///	&quot;09_blood_gradient_yellow&quot;,
-        ///	&quot;10_gradient_black&quot;,
-        ///	&quot;11_gradient_blue&quot;,
-        ///	&quot;12_gradient_brown&quot;,
-        ///	&quot;13_gradient_green&quot;,
-        ///	&quot;14_gradient_grey&quot;,
-        ///	&quot;15_gradient_light_blue&quot;,
-        ///	&quot;16_gradient_red&quot;,
-        ///	&quot;17_gradient_violet&quot;,
-        ///	&quot;18_gradient_yellow&quot;,
-        ///	&quot;19_multilayer_arasaka&quot;
-        ///].
-        /// </summary>
-        internal static string EyeColors {
-            get {
-                return ResourceManager.GetString("EyeColors", resourceCulture);
             }
         }
         
@@ -118,62 +118,6 @@ namespace CP2077SaveEditor.Properties {
         internal static string Facts {
             get {
                 return ResourceManager.GetString("Facts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [
-        ///  &quot;01_blonde_platinum&quot;,
-        ///  &quot;02_red_merlot&quot;,
-        ///  &quot;03_ginger_copper&quot;,
-        ///  &quot;04_teal_ombre&quot;,
-        ///  &quot;05_brown_liquorice&quot;,
-        ///  &quot;06_black_carbon&quot;,
-        ///  &quot;07_blonde_golden&quot;,
-        ///  &quot;08_blonde_dishwater&quot;,
-        ///  &quot;09_blue_sapphire&quot;,
-        ///  &quot;10_brown_ombre&quot;,
-        ///  &quot;11_red_apple&quot;,
-        ///  &quot;12_gray_gunmetal&quot;,
-        ///  &quot;13_ginger_strawberry&quot;,
-        ///  &quot;14_teal_ash&quot;,
-        ///  &quot;15_pink_magenta&quot;,
-        ///  &quot;16_pink_rose&quot;,
-        ///  &quot;17_blue_steel&quot;,
-        ///  &quot;18_blue_red_ombre&quot;,
-        ///  &quot;19_cold_white&quot;,
-        ///  &quot;20_cyberpunk_yellow&quot;,
-        ///  &quot;21_goblin_green&quot;,
-        ///  &quot;22_liliac&quot;,
-        ///  &quot;23_mermaid_aquamarine&quot; [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string HairColors {
-            get {
-                return ResourceManager.GetString("HairColors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {
-        ///  &quot;Shaved&quot;: 0,
-        ///  &quot;Male 01&quot;: 15380579400599425026,
-        ///  &quot;Male 02&quot;: 5984812588040213129,
-        ///  &quot;Male 03&quot;: 3969157183659188110,
-        ///  &quot;Male 04&quot;: 8293982515479886033,
-        ///  &quot;Male 05&quot;: 489179940800955688,
-        ///  &quot;Male 06&quot;: 17869284528227924120,
-        ///  &quot;Male 07&quot;: 9218839545645238688,
-        ///  &quot;Male 08&quot;: 14289422152790764376,
-        ///  &quot;Male 09&quot;: 12576467769371085804,
-        ///  &quot;Male 10&quot;: 17460733649327649186,
-        ///  &quot;Male 11&quot;: 15034475787780468953,
-        ///  &quot;Male 12&quot;: 7355532851366951590,
-        ///  &quot;Male 13&quot;: 11759469743560328903,
-        ///  &quot;Male 14&quot;: 3500425191302231725 [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string HairStyles {
-            get {
-                return ResourceManager.GetString("HairStyles", resourceCulture);
             }
         }
         
@@ -278,28 +222,6 @@ namespace CP2077SaveEditor.Properties {
             get {
                 object obj = ResourceManager.GetObject("player_stats", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [
-        ///	&quot;01_ca_pale&quot;,
-        ///	&quot;01_ca_pale_00_warm_ivory&quot;,
-        ///	&quot;02_ca_limestone&quot;,
-        ///	&quot;02_ca_limestone_00_beige&quot;,
-        ///	&quot;03_ca_senna&quot;,
-        ///	&quot;03_ca_senna_00_amber&quot;,
-        ///	&quot;03_ca_senna_01_honey&quot;,
-        ///	&quot;03_ca_senna_02_band&quot;,
-        ///	&quot;04_ca_almond&quot;,
-        ///	&quot;04_ca_almond_00_umber&quot;,
-        ///	&quot;05_bl_espresso&quot;,
-        ///	&quot;06_bl_dark&quot;
-        ///].
-        /// </summary>
-        internal static string SkinColors {
-            get {
-                return ResourceManager.GetString("SkinColors", resourceCulture);
             }
         }
         
