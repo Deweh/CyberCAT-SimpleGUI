@@ -154,6 +154,26 @@ namespace CP2077SaveEditor
 
                 lastPos += picker.Height + 20;
             }
+
+            if (File.Exists(Environment.CurrentDirectory + "\\config.json"))
+            {
+                try
+                {
+                    var config = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(Environment.CurrentDirectory + "\\config.json"));
+                    if (config["SaveButtonPosition"] == 1)
+                    {
+                        saveChangesButton.Location = new Point(saveChangesButton.Location.X, factsButton.Location.Y + factsButton.Height - 1);
+                        saveChangesButton.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+                    }
+                    else if(config["SaveButtonPosition"] > 1)
+                    {
+                        saveChangesButton.Location = new Point(saveChangesButton.Location.X, saveChangesButton.Location.Y - config["SaveButtonPosition"]);
+                    }
+                }
+                catch (Exception)
+                { }
+            }
+            
         }
 
         //This function & other functions related to managing tabs need to be refactored.
