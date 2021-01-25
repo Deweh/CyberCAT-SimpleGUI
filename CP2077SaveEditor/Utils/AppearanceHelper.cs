@@ -100,29 +100,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                var entries = GetEntries("first.main.hair_color");
-                if (value == "Shaved")
+                SetNullableHashValue("hair_color", new HashValueEntry()
                 {
-                    RemoveEntries(entries);
-                }
-                else
-                {
-                    if (entries.Count < 1)
-                    {
-                        var newEntry = new HashValueEntry()
-                        {
-                            FirstString = AppearanceValueLists.HairColors[0],
-                            Hash = AppearanceValueLists.HairStylesDict[value],
-                            SecondString = "hair_color1"
-                        };
-
-                        CreateEntry(newEntry, new[] { "hairs" }, MainSections[0]);
-                    }
-                    else
-                    {
-                        SetValue(AppearanceField.Hash, "first.main.hair_color", AppearanceValueLists.HairStylesDict[value]);
-                    }
-                }
+                    FirstString = AppearanceValueLists.HairColors[0],
+                    Hash = AppearanceValueLists.HairStylesDict[value],
+                    SecondString = "hair_color1"
+                },
+                new[] { "hairs" });
             }
         }
 
@@ -198,7 +182,36 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object Eyebrows { get; set; }
+        public int Eyebrows
+        {
+            get
+            {
+                var hash = GetValue("first.main.hash.eyebrows_color");
+                if (hash == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return AppearanceValueLists.Eyebrows.FindIndex(x => x == ulong.Parse(hash));
+                }
+            }
+            set
+            {
+                if (value > (AppearanceValueLists.Eyebrows.Count - 1) || value < 0)
+                {
+                    return;
+                }
+
+                SetNullableHashValue("eyebrows_color", new HashValueEntry()
+                {
+                    FirstString = "heb_pwa__basehead__02_blonde",
+                    Hash = AppearanceValueLists.Eyebrows[value],
+                    SecondString = "eyebrows_color1"
+                },
+                new[] { "TPP", "character_customization" }, null, true);
+            }
+        }
 
         public object EyebrowColor { get; set; }
 
@@ -366,6 +379,14 @@ namespace CP2077SaveEditor
         public void SetAllEntries(AppearanceEntryType entryType, string searchString, Action<object> entriesAction)
         {
             var entries = GetAllEntries(entryType, searchString);
+            foreach (object entry in entries)
+            {
+                entriesAction(entry);
+            }
+        }
+
+        public void SetAllEntries(List<object> entries, Action<object> entriesAction)
+        {
             foreach (object entry in entries)
             {
                 entriesAction(entry);
@@ -625,6 +646,38 @@ namespace CP2077SaveEditor
             }
         }
 
+        public void SetNullableHashValue(string searchString, HashValueEntry defaultEntry, string[] sectionNames, Section baseMainSection = null, bool createAllMainSections = false)
+        {
+            var entries = GetAllEntries(AppearanceEntryType.MainListEntry, searchString);
+            if (defaultEntry.Hash == 0)
+            {
+                RemoveEntries(entries);
+            }
+            else
+            {
+                if (entries.Count < 1)
+                {
+                    if (createAllMainSections == true)
+                    {
+                        foreach (Section mainSection in MainSections)
+                        {
+                            CreateEntry(defaultEntry, sectionNames, mainSection);
+                        }
+                    } else {
+                        if (baseMainSection == null)
+                        {
+                            baseMainSection = MainSections[0];
+                        }
+                        CreateEntry(defaultEntry, sectionNames, baseMainSection);
+                    }
+                }
+                else
+                {
+                    SetAllEntries(entries, (object entry) => { ((HashValueEntry)entry).Hash = defaultEntry.Hash; });
+                }
+            }
+        }
+
         public void SetAllValues(CharacterCustomizationAppearances newValues)
         {
             var sections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
@@ -726,5 +779,6 @@ namespace CP2077SaveEditor
         public static List<string> SkinTones { get; } = Values["SkinTones"].ToObject<List<string>>();
         public static List<ulong> SkinTypes { get;  } = Values["SkinTypes"].ToObject<List<ulong>>();
         public static List<string> EyeColors { get; } = Values["EyeColors"].ToObject<List<string>>();
+        public static List<ulong> Eyebrows { get; } = Values["Eyebrows"].ToObject<List<ulong>>();
     }
 }
