@@ -927,7 +927,7 @@ namespace CP2077SaveEditor
                     var handleCounter = 0;
                     foreach (Handle<CyberCAT.Core.Classes.DumpedClasses.GameStatModifierData> modifierData in value.StatModifiers)
                     {
-                        modifierData.SetId(handleInd);
+                        modifierData.Id = handleInd;
                         debloatInfo = "DE-BLOAT IN PROGRESS :: (2/2) :: Entry: " + entryCounter.ToString() + "/" + activeSaveFile.GetStatsMap().Values.Length.ToString() + " -- Handle: " + handleCounter.ToString() + "/" + value.StatModifiers.Count().ToString();
                         handleInd++; handleCounter++;
                     }
