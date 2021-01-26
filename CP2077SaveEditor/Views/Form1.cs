@@ -64,7 +64,8 @@ namespace CP2077SaveEditor
             "Nose",
             "Mouth",
             "Jaw",
-            "Ears"
+            "Ears",
+            "LipMakeup"
         };
 
         public Form1()

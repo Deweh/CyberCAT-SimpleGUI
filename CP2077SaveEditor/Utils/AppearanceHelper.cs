@@ -299,7 +299,37 @@ namespace CP2077SaveEditor
 
         public object EyeMakeupColor { get; set; }
 
-        public object LipMakeup { get; set; }
+        public int LipMakeup
+        {
+            get
+            {
+                var hash = GetValue("first.main.hash.makeupLips_");
+                if (hash == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return AppearanceValueLists.LipMakeups.FindIndex(x => x == ulong.Parse(hash));
+                }
+            }
+            set
+            {
+                var max = AppearanceValueLists.LipMakeups.Count - 1;
+                if (value > (BodyGender == AppearanceGender.Male ? (max - 1) : max) || value < 0)
+                {
+                    return;
+                }
+
+                SetNullableHashValue("makeupLips_", new HashValueEntry()
+                {
+                    FirstString = "hx_000_pwa__basehead__makeup_lips_01__01_black",
+                    Hash = AppearanceValueLists.LipMakeups[value],
+                    SecondString = "makeupLips_01"
+                },
+                new[] { "TPP", "character_customization" }, null, true);
+            }
+        }
 
         public object LipMakeupColor { get; set; }
 
@@ -777,8 +807,9 @@ namespace CP2077SaveEditor
         public static List<string> HairStyles { get; } = HairStylesDict.Keys.ToList();
         public static List<string> HairColors { get; } = Values["HairColors"].ToObject<List<string>>();
         public static List<string> SkinTones { get; } = Values["SkinTones"].ToObject<List<string>>();
-        public static List<ulong> SkinTypes { get;  } = Values["SkinTypes"].ToObject<List<ulong>>();
+        public static List<ulong> SkinTypes { get; } = Values["SkinTypes"].ToObject<List<ulong>>();
         public static List<string> EyeColors { get; } = Values["EyeColors"].ToObject<List<string>>();
         public static List<ulong> Eyebrows { get; } = Values["Eyebrows"].ToObject<List<ulong>>();
+        public static List<ulong> LipMakeups { get; } = Values["LipMakeups"].ToObject<List<ulong>>();
     }
 }
