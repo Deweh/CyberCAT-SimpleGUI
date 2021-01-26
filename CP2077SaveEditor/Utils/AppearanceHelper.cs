@@ -205,7 +205,7 @@ namespace CP2077SaveEditor
 
                 SetNullableHashValue("eyebrows_color", new HashValueEntry()
                 {
-                    FirstString = "heb_pwa__basehead__02_blonde",
+                    FirstString = "heb_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__01_black",
                     Hash = AppearanceValueLists.Eyebrows[value],
                     SecondString = "eyebrows_color1"
                 },
@@ -323,7 +323,7 @@ namespace CP2077SaveEditor
 
                 SetNullableHashValue("makeupLips_", new HashValueEntry()
                 {
-                    FirstString = "hx_000_pwa__basehead__makeup_lips_01__01_black",
+                    FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__makeup_lips_01__01_black",
                     Hash = AppearanceValueLists.LipMakeups[value],
                     SecondString = "makeupLips_01"
                 },
