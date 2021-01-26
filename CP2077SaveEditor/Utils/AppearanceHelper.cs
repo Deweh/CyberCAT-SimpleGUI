@@ -713,13 +713,13 @@ namespace CP2077SaveEditor
                 if (fieldName == "nose" && BodyGender == AppearanceGender.Female)
                 {
                     //Spaghetti for days.
-                    if (finalValue > 12 || finalValue < 17)
+                    if (finalValue > 12 || finalValue < 18)
                     {
                         finalValue--;
                     }
-                    else if (finalValue == 17)
+                    else if (finalValue == 12)
                     {
-                        finalValue = 12;
+                        finalValue = 17;
                     }
                 }
                 return finalValue;
