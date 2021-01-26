@@ -66,6 +66,7 @@ namespace CP2077SaveEditor
             "Mouth",
             "Jaw",
             "Ears",
+            "Cyberware",
             "LipMakeup"
         };
 

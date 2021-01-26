@@ -100,7 +100,7 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashValue("hair_color", new HashValueEntry()
+                SetNullableHashEntry("hair_color", new HashValueEntry()
                 {
                     FirstString = AppearanceValueLists.HairColors[0],
                     Hash = AppearanceValueLists.HairStylesDict[value],
@@ -203,13 +203,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashValue("eyebrows_color", new HashValueEntry()
+                SetNullableHashEntry("eyebrows_color", new HashValueEntry()
                 {
                     FirstString = "heb_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__01_black",
                     Hash = AppearanceValueLists.Eyebrows[value],
                     SecondString = "eyebrows_color1"
                 },
-                new[] { "TPP", "character_customization" }, null, true);
+                new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, true);
             }
         }
 
@@ -306,7 +306,42 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object Cyberware { get; set; }
+        public int Cyberware
+        {
+            get
+            {
+                var result = GetConcatedValue("first.main.first.cyberware_", 1);
+                if (result == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return int.Parse(result.Split("_").Last());
+                }
+            }
+            set
+            {
+                if (value > 8 || value < 0)
+                {
+                    return;
+                }
+
+                string first = null;
+                if (value > 0)
+                {
+                    first = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__cyberware_" + value.ToString("00") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1];
+                }
+
+                SetNullableHashEntry("cyberware_", new HashValueEntry()
+                {
+                    FirstString = first,
+                    Hash = 6513893019731746558,
+                    SecondString = "cyberware_" + value.ToString("00")
+                },
+                new[] { "TPP", "character_customization" }, AppearanceField.FirstString, null, true);
+            }
+        }
 
         public object FacialScars { get; set; }
 
@@ -344,13 +379,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashValue("makeupLips_", new HashValueEntry()
+                SetNullableHashEntry("makeupLips_", new HashValueEntry()
                 {
                     FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__makeup_lips_01__01_black",
                     Hash = AppearanceValueLists.LipMakeups[value],
                     SecondString = "makeupLips_01"
                 },
-                new[] { "TPP", "character_customization" }, null, true);
+                new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, true);
             }
         }
 
@@ -646,6 +681,11 @@ namespace CP2077SaveEditor
         public string GetConcatedValue(string searchString, int position = -1)
         {
             var result = GetValue(searchString).Split("__", StringSplitOptions.None);
+            if (result[0] == "default")
+            {
+                return "default";
+            }
+
             if (position < 0)
             {
                 return result.Last();
@@ -726,10 +766,10 @@ namespace CP2077SaveEditor
             }
         }
 
-        public void SetNullableHashValue(string searchString, HashValueEntry defaultEntry, string[] sectionNames, Section baseMainSection = null, bool createAllMainSections = false)
+        public void SetNullableHashEntry(string searchString, HashValueEntry defaultEntry, string[] sectionNames, AppearanceField setValueField = AppearanceField.Hash, Section baseMainSection = null, bool createAllMainSections = false)
         {
             var entries = GetAllEntries(AppearanceEntryType.MainListEntry, searchString);
-            if (defaultEntry.Hash == 0)
+            if (defaultEntry.Hash == 0 || defaultEntry.FirstString == null || defaultEntry.SecondString == null)
             {
                 RemoveEntries(entries);
             }
@@ -753,7 +793,21 @@ namespace CP2077SaveEditor
                 }
                 else
                 {
-                    SetAllEntries(entries, (object entry) => { ((HashValueEntry)entry).Hash = defaultEntry.Hash; });
+                    SetAllEntries(entries, (object entry) => 
+                    {
+                        if (setValueField == AppearanceField.FirstString)
+                        {
+                            ((HashValueEntry)entry).FirstString = defaultEntry.FirstString;
+                        }
+                        else if (setValueField == AppearanceField.SecondString)
+                        {
+                            ((HashValueEntry)entry).SecondString = defaultEntry.SecondString;
+                        }
+                        else
+                        {
+                            ((HashValueEntry)entry).Hash = defaultEntry.Hash;
+                        }
+                    });
                 }
             }
         }
