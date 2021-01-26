@@ -287,6 +287,8 @@ namespace CP2077SaveEditor
             nameLabel.TextChanged += UpdateChildControls;
             valueLabel.TextChanged += UpdateChildControls;
             this.SizeChanged += UpdateChildControls;
+
+            valueLabel.Click += valueLabel_DoubleClick;
             UpdateChildControls();
         }
 
@@ -313,6 +315,81 @@ namespace CP2077SaveEditor
         private void rightButton_Click(object sender, EventArgs e)
         {
             Index = Index + 1;
+        }
+
+        private void valueLabel_DoubleClick(object sender, EventArgs e)
+        {
+            Control entryBox;
+            if (PickerType == PickerValueType.Integer)
+            {
+                entryBox = new TextBox();
+            } else {
+                var newCombo = new ComboBox();
+                newCombo.Items.AddRange(StringCollection);
+                newCombo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                newCombo.AutoCompleteSource = AutoCompleteSource.ListItems;
+                newCombo.SelectedIndexChanged += entryBox_IndexChanged;
+                entryBox = newCombo;
+            }
+            this.Controls.Add(entryBox);
+
+            entryBox.Font = valueLabel.Font;
+            entryBox.Location = valueLabel.Location;
+            entryBox.Text = StringValue;
+            entryBox.Size = valueLabel.Size;
+            entryBox.KeyDown += entryBox_KeyDown;
+            entryBox.Select();
+
+            leftButton.Enabled = false;
+            rightButton.Enabled = false;
+
+            valueLabel.Visible = false;
+        }
+
+        private void entryBox_IndexChanged(object sender, EventArgs e)
+        {
+            var castedSender = (ComboBox)sender;
+            if (castedSender.Text != StringValue)
+            {
+                entryBox_ApplyValue(sender, null);
+            }
+        }
+
+        private void entryBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true; e.SuppressKeyPress = true;
+                entryBox_ApplyValue(sender, null);
+            }
+        }
+
+        private void entryBox_ApplyValue(object sender, EventArgs e)
+        {
+            Control castedSender;
+            if (sender is ComboBox)
+            {
+                castedSender = (ComboBox)sender;
+                var newInd = Array.FindIndex(StringCollection, x => x.ToLower() == castedSender.Text.ToLower());
+                if (newInd > -1)
+                {
+                    Index = newInd;
+                }
+            } else {
+                castedSender = (TextBox)sender;
+                int newInd;
+                if (int.TryParse(castedSender.Text, out newInd) == true)
+                {
+                    Index = newInd;
+                }
+            }
+
+            this.Controls.Remove(castedSender);
+
+            leftButton.Enabled = true;
+            rightButton.Enabled = true;
+
+            valueLabel.Visible = true;
         }
     }
 
