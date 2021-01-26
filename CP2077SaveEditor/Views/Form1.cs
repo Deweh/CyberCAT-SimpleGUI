@@ -210,39 +210,48 @@ namespace CP2077SaveEditor
         {
             foreach (ModernValuePicker picker in appearanceOptionsPanel.Controls)
             {
-                if (GetAppearanceValue(picker.Name) is int)
+                try
                 {
-                    picker.SuppressIndexChange = true;
-                    picker.Index = (int)GetAppearanceValue(picker.Name);
-                }
-                else if(GetAppearanceValue(picker.Name) is string)
-                {
-                    if (picker.StringCollection.Length < 1)
+                    if (GetAppearanceValue(picker.Name) is int)
                     {
-                        picker.PickerType = PickerValueType.String;
-                        picker.StringCollection = ((List<string>)typeof(AppearanceValueLists).GetProperty(picker.Name + "s").GetValue(null, null)).ToArray();
+                        picker.SuppressIndexChange = true;
+                        picker.Index = (int)GetAppearanceValue(picker.Name);
                     }
-                    picker.SuppressIndexChange = true;
-                    var newValue = (string)GetAppearanceValue(picker.Name);
+                    else if (GetAppearanceValue(picker.Name) is string)
+                    {
+                        if (picker.StringCollection.Length < 1)
+                        {
+                            picker.PickerType = PickerValueType.String;
+                            picker.StringCollection = ((List<string>)typeof(AppearanceValueLists).GetProperty(picker.Name + "s").GetValue(null, null)).ToArray();
+                        }
+                        picker.SuppressIndexChange = true;
+                        var newValue = (string)GetAppearanceValue(picker.Name);
 
-                    if (picker.StringCollection.Contains(newValue))
+                        if (picker.StringCollection.Contains(newValue))
+                        {
+                            picker.Index = Array.IndexOf(picker.StringCollection, newValue);
+                        }
+                        else
+                        {
+                            picker.Index = 0;
+                            picker.StringValue = newValue;
+                        }
+                    }
+                    else if (GetAppearanceValue(picker.Name) is Enum)
                     {
-                        picker.Index = Array.IndexOf(picker.StringCollection, newValue);
-                    } else {
-                        picker.Index = 0;
-                        picker.StringValue = newValue;
+                        if (picker.StringCollection.Length < 1)
+                        {
+                            picker.PickerType = PickerValueType.String;
+                            picker.StringCollection = Enum.GetNames(GetAppearanceValue(picker.Name).GetType());
+                        }
+
+                        picker.SuppressIndexChange = true;
+                        picker.Index = (int)GetAppearanceValue(picker.Name);
                     }
                 }
-                else if (GetAppearanceValue(picker.Name) is Enum)
+                catch(Exception)
                 {
-                    if (picker.StringCollection.Length < 1)
-                    {
-                        picker.PickerType = PickerValueType.String;
-                        picker.StringCollection = Enum.GetNames(GetAppearanceValue(picker.Name).GetType());
-                    }
-
-                    picker.SuppressIndexChange = true;
-                    picker.Index = (int)GetAppearanceValue(picker.Name);
+                    picker.Enabled = false;
                 }
             }
         }
