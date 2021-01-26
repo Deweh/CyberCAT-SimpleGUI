@@ -680,7 +680,21 @@ namespace CP2077SaveEditor
                 {
                     foreach (CharacterCustomizationAppearances.ValueEntry entry in entries)
                     {
-                        entry.SecondString = "h" + (value - 1).ToString("00") + fieldNum.ToString();
+                        var finalValue = value;
+                        if (fieldName == "nose" && BodyGender == AppearanceGender.Female)
+                        {
+                            //Those are some fine spaghetti values ya got there CDPR.
+                            if (finalValue > 11 || finalValue < 17)
+                            {
+                                finalValue++;
+                            }
+                            else if (finalValue == 17)
+                            {
+                                finalValue = 12;
+                            }
+                        }
+                        finalValue--;
+                        entry.SecondString = "h" + finalValue.ToString("00") + fieldNum.ToString();
                     }
                 }
             }
@@ -695,7 +709,20 @@ namespace CP2077SaveEditor
             }
             else
             {
-                return int.Parse(result.Substring(1, 2)) + 1;
+                var finalValue = int.Parse(result.Substring(1, 2)) + 1;
+                if (fieldName == "nose" && BodyGender == AppearanceGender.Female)
+                {
+                    //Spaghetti for days.
+                    if (finalValue > 12 || finalValue < 17)
+                    {
+                        finalValue--;
+                    }
+                    else if (finalValue == 17)
+                    {
+                        finalValue = 12;
+                    }
+                }
+                return finalValue;
             }
         }
 
