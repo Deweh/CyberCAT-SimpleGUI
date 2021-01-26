@@ -61,6 +61,7 @@ namespace CP2077SaveEditor
             "Eyes",
             "EyeColor",
             "Eyebrows",
+            "EyebrowColor",
             "Nose",
             "Mouth",
             "Jaw",
