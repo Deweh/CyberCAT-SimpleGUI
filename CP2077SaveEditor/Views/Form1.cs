@@ -310,8 +310,9 @@ namespace CP2077SaveEditor
 
             try
             {
-                System.GC.Collect();
+                Image oldImg = appearancePreviewBox.Image;
                 appearancePreviewBox.Image = Image.FromFile(path);
+                if (oldImg != null) { oldImg.Dispose(); }
             }
             catch (Exception)
             {
