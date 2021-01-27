@@ -248,9 +248,11 @@ namespace CP2077SaveEditor
                         picker.SuppressIndexChange = true;
                         picker.Index = (int)GetAppearanceValue(picker.Name);
                     }
+                    picker.Enabled = true;
                 }
                 catch(Exception)
                 {
+                    picker.StringValue = "";
                     picker.Enabled = false;
                 }
             }
@@ -286,7 +288,10 @@ namespace CP2077SaveEditor
 
         private void AppearanceOptionMouseEnter(object sender, EventArgs e)
         {
-            SetAppearanceImage(((ModernValuePicker)sender).Name, ((ModernValuePicker)sender).Index.ToString("00"));
+            if (((ModernValuePicker)sender).Enabled == true)
+            {
+                SetAppearanceImage(((ModernValuePicker)sender).Name, ((ModernValuePicker)sender).Index.ToString("00"));
+            }
         }
 
         private void SetAppearanceImage(string name, string value)

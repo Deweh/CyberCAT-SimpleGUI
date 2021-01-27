@@ -117,7 +117,7 @@ namespace CP2077SaveEditor
                 var value = GetValue("first.main.first.hair_color");
                 if (value == "default")
                 {
-                    return 0;
+                    throw new Exception();
                 }
                 else
                 {
@@ -220,7 +220,7 @@ namespace CP2077SaveEditor
                 var result = GetConcatedValue("first.main.first.eyebrows_color");
                 if (result == "default")
                 {
-                    return 0;
+                    throw new Exception();
                 }
                 else
                 {
