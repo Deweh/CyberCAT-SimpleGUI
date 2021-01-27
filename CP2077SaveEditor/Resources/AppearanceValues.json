@@ -203,5 +203,17 @@
 		"06_green",
 		"07_pink",
 		"08_red"
+	],
+	"LipMakeupColors":
+	[
+		"01_black",
+		"02_blue",
+		"03_gold",
+		"04_green",
+		"05_pink",
+		"06_red",
+		"07_violet",
+		"08_white",
+		"09_yellow"
 	]
 }

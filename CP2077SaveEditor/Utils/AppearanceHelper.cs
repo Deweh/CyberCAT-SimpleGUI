@@ -389,7 +389,30 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object LipMakeupColor { get; set; }
+        public int LipMakeupColor
+        {
+            get
+            {
+                var result = GetConcatedValue("first.main.first.makeupLips_");
+                if (result == "default")
+                {
+                    throw new Exception();
+                }
+                else
+                {
+                    return AppearanceValueLists.LipMakeupColors.FindIndex(x => x == result) + 1;
+                }
+            }
+            set
+            {
+                if (value > AppearanceValueLists.LipMakeupColors.Count || value < 1)
+                {
+                    return;
+                }
+
+                SetConcatedValue("first.main.first.makeupLips_", AppearanceValueLists.LipMakeupColors[value - 1]);
+            }
+        }
 
         public object CheekMakeup { get; set; }
 
@@ -916,5 +939,6 @@ namespace CP2077SaveEditor
         public static List<ulong> Eyebrows { get; } = Values["Eyebrows"].ToObject<List<ulong>>();
         public static List<ulong> LipMakeups { get; } = Values["LipMakeups"].ToObject<List<ulong>>();
         public static List<string> EyebrowColors { get; } = Values["EyebrowColors"].ToObject<List<string>>();
+        public static List<string> LipMakeupColors { get; } = Values["LipMakeupColors"].ToObject<List<string>>();
     }
 }
