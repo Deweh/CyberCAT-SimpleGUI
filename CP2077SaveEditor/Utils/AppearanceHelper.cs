@@ -805,7 +805,7 @@ namespace CP2077SaveEditor
                         if (fieldName == "nose" && BodyGender == AppearanceGender.Female)
                         {
                             //Those are some fine spaghetti values ya got there CDPR.
-                            if (finalValue > 11 || finalValue < 17)
+                            if (finalValue > 11 && finalValue < 17)
                             {
                                 finalValue++;
                             }
@@ -834,7 +834,7 @@ namespace CP2077SaveEditor
                 if (fieldName == "nose" && BodyGender == AppearanceGender.Female)
                 {
                     //Spaghetti for days.
-                    if (finalValue > 12 || finalValue < 18)
+                    if (finalValue > 12 && finalValue < 18)
                     {
                         finalValue--;
                     }
