@@ -58,7 +58,7 @@ namespace CP2077SaveEditor
                 {
                     return;
                 }
-                SetConcatedValue("third.main.first.body_color", AppearanceValueLists.SkinTones[value - 1]);
+                SetConcatedValue("third.main.first.body_color", AppearanceValueLists.SkinTones[value - 1], -1, true);
             }
         }
 
@@ -703,7 +703,7 @@ namespace CP2077SaveEditor
             }
         }
 
-        public void SetConcatedValue(string searchString, string newValue, int position = -1)
+        public void SetConcatedValue(string searchString, string newValue, int position = -1, bool wideSearch = false)
         {
             string currentValue;
             if (position < 0)
@@ -724,7 +724,7 @@ namespace CP2077SaveEditor
                     {
                         try
                         {
-                            if (CompareMainListAppearanceEntries(mainEntry.SecondString, searchString.Split(".").Last()) != true)
+                            if (CompareMainListAppearanceEntries(mainEntry.SecondString, searchString.Split(".").Last()) != true && wideSearch == false)
                             {
                                 continue;
                             }
