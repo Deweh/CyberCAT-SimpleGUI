@@ -68,6 +68,7 @@ namespace CP2077SaveEditor
             "Ears",
             "Cyberware",
             "EyeMakeup",
+            "EyeMakeupColor",
             "LipMakeup",
             "LipMakeupColor"
         };
