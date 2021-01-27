@@ -376,11 +376,13 @@ namespace CP2077SaveEditor
 
                 SetNullableHashEntry("makeupEyes_", new HashValueEntry()
                 {
-                    FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__makeup_eyes_01__01_black",
+                    FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead_makeup_eyes__01_black",
                     Hash = AppearanceValueLists.EyeMakeups[value],
                     SecondString = "makeupEyes_01"
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, true);
+
+                SetAllEntries(AppearanceEntryType.MainListEntry, "makeupEyes_", (object entry) => { ((HashValueEntry)entry).SecondString = "makeupEyes_" + value.ToString("00"); });
             }
         }
 
