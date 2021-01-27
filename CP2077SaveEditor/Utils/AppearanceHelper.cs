@@ -670,6 +670,10 @@ namespace CP2077SaveEditor
                     {
                         try
                         {
+                            if (CompareMainListAppearanceEntries(mainEntry.SecondString, searchString.Split(".").Last()) != true)
+                            {
+                                continue;
+                            }
                             var valueParts = mainEntry.FirstString.Split("__", StringSplitOptions.None);
                             var targetPart = valueParts.Last();
 
