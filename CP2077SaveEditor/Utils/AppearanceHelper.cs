@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static CP2077SaveEditor.SaveFileHelper;
 using static CyberCAT.Core.Classes.NodeRepresentations.CharacterCustomizationAppearances;
+using CP2077SaveEditor.Extensions;
 
 namespace CP2077SaveEditor
 {
@@ -58,7 +59,7 @@ namespace CP2077SaveEditor
                 {
                     return;
                 }
-                SetConcatedValue("third.main.first.body_color", AppearanceValueLists.SkinTones[value - 1], -1, true);
+                SetConcatedValue("third.main.first.body_color", AppearanceValueLists.SkinTones[value - 1], -1, true, AppearanceValueLists.SkinTones);
             }
         }
 
@@ -568,6 +569,24 @@ namespace CP2077SaveEditor
             return foundEntries;
         }
 
+        public void EnumerateAllEntries(Action<object> entryAction)
+        {
+            foreach (CharacterCustomizationAppearances.Section section in MainSections)
+            {
+                foreach (CharacterCustomizationAppearances.AppearanceSection subSection in section.AppearanceSections)
+                {
+                    foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in subSection.MainList)
+                    {
+                        entryAction(mainEntry);
+                    }
+                    foreach(ValueEntry additionalEntry in subSection.AdditionalList)
+                    {
+                        entryAction(additionalEntry);
+                    }
+                }
+            }
+        }
+
         public void RemoveEntry(object entry)
         {
             foreach (CharacterCustomizationAppearances.Section section in MainSections)
@@ -703,60 +722,47 @@ namespace CP2077SaveEditor
             }
         }
 
-        public void SetConcatedValue(string searchString, string newValue, int position = -1, bool wideSearch = false)
+        public void SetConcatedValue(string searchString, string newValue, int position = -1, bool wideSearch = false, IEnumerable<string> searchCollection = null)
         {
-            string currentValue;
-            if (position < 0)
+            if (searchCollection == null)
             {
-                currentValue = GetValue(searchString).Split("__", StringSplitOptions.None).Last();
-            }
-            else
-            {
-                currentValue = GetValue(searchString).Split("__", StringSplitOptions.None)[position];
+                searchCollection = new[] { GetValue(searchString).Split("__", StringSplitOptions.None).LastOrIndex(position) };
             }
 
-            var sections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
-            foreach (CharacterCustomizationAppearances.Section section in sections)
+            EnumerateAllEntries((object entry) =>
             {
-                foreach (CharacterCustomizationAppearances.AppearanceSection subSection in section.AppearanceSections)
+                if (entry is HashValueEntry mainEntry)
                 {
-                    foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in subSection.MainList)
+                    try
                     {
-                        try
+                        if (CompareMainListAppearanceEntries(mainEntry.SecondString, searchString.Split(".").Last()) != true && wideSearch == false)
                         {
-                            if (CompareMainListAppearanceEntries(mainEntry.SecondString, searchString.Split(".").Last()) != true && wideSearch == false)
-                            {
-                                continue;
-                            }
-                            var valueParts = mainEntry.FirstString.Split("__", StringSplitOptions.None);
-                            var targetPart = valueParts.Last();
-
-                            if (position > -1)
-                            {
-                                targetPart = valueParts[position];
-                            }
-
-                            if (targetPart == currentValue)
-                            {
-                                if (position < 0)
-                                {
-                                    valueParts[valueParts.Length - 1] = newValue;
-                                }
-                                else
-                                {
-                                    valueParts[position] = newValue;
-                                }
-
-                                mainEntry.FirstString = string.Join("__", valueParts);
-                            }
+                            return;
                         }
-                        catch (Exception)
+
+                        var valueParts = mainEntry.FirstString.Split("__", StringSplitOptions.None);
+                        var targetPart = valueParts.LastOrIndex(position);
+
+                        if (searchCollection.Contains(targetPart))
                         {
-                            continue;
+                            if (position < 0)
+                            {
+                                valueParts[valueParts.Length - 1] = newValue;
+                            }
+                            else
+                            {
+                                valueParts[position] = newValue;
+                            }
+
+                            mainEntry.FirstString = string.Join("__", valueParts);
                         }
                     }
+                    catch (Exception)
+                    {
+                        return;
+                    }
                 }
-            }
+            });
         }
 
         public string GetConcatedValue(string searchString, int position = -1)
