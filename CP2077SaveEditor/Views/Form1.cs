@@ -71,6 +71,7 @@ namespace CP2077SaveEditor
             "EyeMakeupColor",
             "LipMakeup",
             "LipMakeupColor",
+            "Chest",
             "BodyTattoos"
         };
 

@@ -1,5 +1,13 @@
+base:
 
 x - 905
 y - 162
 height - 1156
 width - 1116
+
+body:
+
+x - 1009
+y - 120
+height - 1240
+width - 770

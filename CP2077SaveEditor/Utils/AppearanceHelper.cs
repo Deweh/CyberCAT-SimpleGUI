@@ -479,7 +479,57 @@ namespace CP2077SaveEditor
 
         public object NailColor { get; set; }
 
-        public object Chest { get; set; }
+        public int Chest
+        {
+            get
+            {
+                if (BodyGender == AppearanceGender.Male)
+                {
+                    throw new Exception();
+                }
+
+                var result = GetConcatedValue("third.additional.second.breast");
+                switch (result)
+                {
+                    case "full_breast_big":
+                        return 3;
+                    case "full_breast_small":
+                        return 1;
+                    default:
+                        return 2;
+                }
+            }
+            set
+            {
+                if (value < 1 || value > 3)
+                {
+                    return;
+                }
+
+                var entries = GetEntries("third.additional.breast");
+                if (value == 2)
+                {
+                    RemoveEntries(entries);
+                }
+                else
+                {
+                    var valueString = (value == 1 ? "full_breast_small" : "full_breast_big");
+
+                    if (entries.Count < 1)
+                    {
+                        CreateEntry(new ValueEntry() { FirstString = "breast", SecondString = string.Empty }, new[] { "breast", "character_creation" }, MainSections[2]);
+                        entries = GetEntries("third.additional.breast");
+                    }
+
+                    foreach (ValueEntry entry in entries)
+                    {
+                        entry.SecondString = "t0_000_wa_base__" + valueString;
+                        entry.TrailingBytes[0] = 1;
+                        entry.TrailingBytes[4] = 1;
+                    }
+                }
+            }
+        }
 
         public object Nipples { get; set; }
 
