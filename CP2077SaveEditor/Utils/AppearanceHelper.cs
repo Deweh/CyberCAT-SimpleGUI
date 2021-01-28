@@ -483,7 +483,36 @@ namespace CP2077SaveEditor
 
         public object Nipples { get; set; }
 
-        public object BodyTattoos { get; set; }
+        public int BodyTattoos
+        {
+            get
+            {
+                var hash = GetValue("third.main.hash.body_tattoo_");
+                if (hash == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return AppearanceValueLists.BodyTattoos.FindIndex(x => x == ulong.Parse(hash));
+                }
+            }
+            set
+            {
+                if (value > (AppearanceValueLists.BodyTattoos.Count - 1) || value < 0)
+                {
+                    return;
+                }
+
+                SetNullableHashEntry("body_tattoo_", new HashValueEntry()
+                {
+                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
+                    Hash = AppearanceValueLists.BodyTattoos[value],
+                    SecondString = "body_tattoo_01"
+                },
+                new[] { "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2]);
+            }
+        }
 
         public object BodyScars { get; set; }
 
@@ -1006,5 +1035,6 @@ namespace CP2077SaveEditor
         public static List<string> LipMakeupColors { get; } = Values["LipMakeupColors"].ToObject<List<string>>();
         public static List<ulong> EyeMakeups { get; } = Values["EyeMakeups"].ToObject<List<ulong>>();
         public static List<string> EyeMakeupColors { get; } = Values["EyeMakeupColors"].ToObject<List<string>>();
+        public static List<ulong> BodyTattoos { get; } = Values["BodyTattoos"].ToObject<List<ulong>>();
     }
 }

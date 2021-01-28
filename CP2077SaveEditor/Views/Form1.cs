@@ -70,7 +70,8 @@ namespace CP2077SaveEditor
             "EyeMakeup",
             "EyeMakeupColor",
             "LipMakeup",
-            "LipMakeupColor"
+            "LipMakeupColor",
+            "BodyTattoos"
         };
 
         public Form1()
