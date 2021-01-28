@@ -816,7 +816,7 @@ namespace CP2077SaveEditor
         private void factsSaveButton_Click(object sender, EventArgs e)
         {
             var saveWindow = new SaveFileDialog();
-            saveWindow.Filter = "JSON File|*.json";
+            saveWindow.Filter = "Text File|*.txt";
             if (saveWindow.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllText(saveWindow.FileName, JsonConvert.SerializeObject(activeSaveFile.GetKnownFacts(), Formatting.Indented));
