@@ -51,29 +51,6 @@ namespace CP2077SaveEditor
             { 0xE5F556FCBB62A706, "V's Stash" },
             { 0xEDAD8C9B086A615E, "River's Stash" }
         };
-        private static readonly List<string> appearanceOptions = new()
-        {
-            "VoiceTone",
-            "SkinTone",
-            "SkinType",
-            "HairStyle",
-            "HairColor",
-            "Eyes",
-            "EyeColor",
-            "Eyebrows",
-            "EyebrowColor",
-            "Nose",
-            "Mouth",
-            "Jaw",
-            "Ears",
-            "Cyberware",
-            "EyeMakeup",
-            "EyeMakeupColor",
-            "LipMakeup",
-            "LipMakeupColor",
-            "Chest",
-            "BodyTattoos"
-        };
 
         public Form1()
         {
@@ -149,20 +126,25 @@ namespace CP2077SaveEditor
                  (?<=[^A-Z])(?=[A-Z]) |
                  (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
 
-            foreach (string option in appearanceOptions)
+            typeof(AppearanceHelper).GetProperties();
+
+            foreach (System.Reflection.PropertyInfo property in typeof(AppearanceHelper).GetProperties())
             {
-                var picker = new ModernValuePicker()
+                if (property.PropertyType.Name != "Object" && property.Name != "MainSections" && property.CanWrite == true)
                 {
-                    Name = option,
-                    PickerName = r.Replace(option, " "),
-                    Location = new Point(0, lastPos)
-                };
+                    var picker = new ModernValuePicker()
+                    {
+                        Name = property.Name,
+                        PickerName = r.Replace(property.Name, " "),
+                        Location = new Point(0, lastPos)
+                    };
 
-                appearanceOptionsPanel.Controls.Add(picker);
-                picker.IndexChanged += AppearanceOptionChanged;
-                picker.MouseEnter += AppearanceOptionMouseEnter;
+                    appearanceOptionsPanel.Controls.Add(picker);
+                    picker.IndexChanged += AppearanceOptionChanged;
+                    picker.MouseEnter += AppearanceOptionMouseEnter;
 
-                lastPos += picker.Height + 20;
+                        lastPos += picker.Height + 20;
+                }
             }
 
             if (File.Exists(Environment.CurrentDirectory + "\\config.json"))

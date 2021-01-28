@@ -30,10 +30,6 @@ namespace CP2077SaveEditor
             {
                 return (AppearanceGender)activeSave.GetAppearanceContainer().UnknownFirstBytes[4];
             }
-            set
-            {
-                
-            }
         }
 
         public AppearanceGender VoiceTone
