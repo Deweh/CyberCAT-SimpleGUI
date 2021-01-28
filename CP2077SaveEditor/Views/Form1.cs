@@ -885,53 +885,43 @@ namespace CP2077SaveEditor
                 var mainSections = new[] { currentAppearance.FirstSection, currentAppearance.SecondSection, currentAppearance.ThirdSection };
                 var sectionName = "First";
 
-                foreach (CharacterCustomizationAppearances.Section mainSection in mainSections)
+                foreach (CharacterCustomizationAppearances.AppearanceSection section in currentAppearance.FirstSection.AppearanceSections)
                 {
-                    foreach (CharacterCustomizationAppearances.AppearanceSection section in mainSection.AppearanceSections)
+                    var appearanceSectionName = section.SectionName;
+                    var baseSection = activeSaveFile.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == section.SectionName).FirstOrDefault();
+
+                    foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in section.MainList)
                     {
-                        var appearanceSectionName = section.SectionName;
-                        var baseSection = activeSaveFile.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == section.SectionName).FirstOrDefault();
+                        var baseMainEntry = baseSection.MainList.Where(x => activeSaveFile.Appearance.CompareMainListAppearanceEntries(x.SecondString, mainEntry.SecondString)).FirstOrDefault();
 
-                        foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in section.MainList)
+                        if (baseMainEntry != null)
                         {
-                            var baseMainEntry = baseSection.MainList.Where(x => activeSaveFile.Appearance.CompareMainListAppearanceEntries(x.SecondString, mainEntry.SecondString)).FirstOrDefault();
-
-                            if (baseMainEntry != null)
-                            {
-                                if (baseMainEntry.FirstString != mainEntry.FirstString || baseMainEntry.Hash != mainEntry.Hash || baseMainEntry.SecondString != mainEntry.SecondString)
-                                {
-                                    singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), mainEntry));
-                                }
-                            }
-                            else
+                            if (baseMainEntry.FirstString != mainEntry.FirstString || baseMainEntry.Hash != mainEntry.Hash || baseMainEntry.SecondString != mainEntry.SecondString)
                             {
                                 singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), mainEntry));
                             }
                         }
-
-                        foreach (CharacterCustomizationAppearances.ValueEntry additionalEntry in section.AdditionalList)
+                        else
                         {
-                            var baseAdditionalEntry = baseSection.AdditionalList.Where(x => x.FirstString == additionalEntry.FirstString).FirstOrDefault();
+                            singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), mainEntry));
+                        }
+                    }
 
-                            if (baseAdditionalEntry != null)
-                            {
-                                if (baseAdditionalEntry.SecondString != additionalEntry.SecondString)
-                                {
-                                    singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), additionalEntry));
-                                }
-                            }
-                            else
+                    foreach (CharacterCustomizationAppearances.ValueEntry additionalEntry in section.AdditionalList)
+                    {
+                        var baseAdditionalEntry = baseSection.AdditionalList.Where(x => x.FirstString == additionalEntry.FirstString).FirstOrDefault();
+
+                        if (baseAdditionalEntry != null)
+                        {
+                            if (baseAdditionalEntry.SecondString != additionalEntry.SecondString)
                             {
                                 singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), additionalEntry));
                             }
                         }
-                    }
-
-                    if (sectionName == "First")
-                    {
-                        sectionName = "Second";
-                    } else {
-                        sectionName = "Third";
+                        else
+                        {
+                            singleValue.Entries.Add(new AppearanceConstructor.EntryPair(new AppearanceConstructor.EntryLocation(sectionName, appearanceSectionName), additionalEntry));
+                        }
                     }
                 }
 
