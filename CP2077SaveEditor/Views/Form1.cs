@@ -887,7 +887,7 @@ namespace CP2077SaveEditor
 
                 foreach (CharacterCustomizationAppearances.Section mainSection in mainSections)
                 {
-                    foreach (CharacterCustomizationAppearances.AppearanceSection section in currentAppearance.FirstSection.AppearanceSections)
+                    foreach (CharacterCustomizationAppearances.AppearanceSection section in mainSection.AppearanceSections)
                     {
                         var appearanceSectionName = section.SectionName;
                         var baseSection = activeSaveFile.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == section.SectionName).FirstOrDefault();
