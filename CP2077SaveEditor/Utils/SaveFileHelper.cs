@@ -213,6 +213,12 @@ namespace CP2077SaveEditor
             rand.NextBytes(randBytes);
             var newSeed = BitConverter.ToUInt32(randBytes);
 
+            while (this.GetStatsMap().Values.Where(x => x.Seed == newSeed).FirstOrDefault() != null)
+            {
+                rand.NextBytes(randBytes);
+                newSeed = BitConverter.ToUInt32(randBytes);
+            }
+
             this.GetStatsMap().Keys = this.GetStatsMap().Keys.Append(new GameStatsObjectID
             {
                 IdType = gameStatIDType.ItemID,
