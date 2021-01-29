@@ -933,17 +933,18 @@ namespace CP2077SaveEditor
                             }
                         }
                     }
+
+                    if (sectionName == "First")
+                    {
+                        sectionName = "Second";
+                    }
+                    else
+                    {
+                        sectionName = "Third";
+                    }
+
                     i++;
                 }
-
-                if (sectionName == "First")
-                {
-                    sectionName = "Second";
-                } else {
-                    sectionName = "Third";
-                }
-                
-
                 values.Add(singleValue);
             }
 
