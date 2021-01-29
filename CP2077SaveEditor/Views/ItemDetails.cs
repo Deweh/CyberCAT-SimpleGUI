@@ -21,6 +21,7 @@ namespace CP2077SaveEditor
         private ItemData activeItem;
         private SaveFileHelper activeSaveFile;
         private bool statsOnly = false;
+        private Random globalRand;
 
         public ItemDetails()
         {
@@ -112,46 +113,44 @@ namespace CP2077SaveEditor
             //Stats parsing
             if (activeSaveFile.GetItemStatData(activeItem) == null)
             {
-                if (detailsTabControl.TabPages.Contains(statsTab))
+                MessageBox.Show("No stat data");
+                activeSaveFile.CreateStatData(activeItem, globalRand);
+            }
+            statsListView.Items.Clear();
+            var listRows = new List<ListViewItem>();
+            var statsData = activeSaveFile.GetItemStatData(activeItem);
+            if (statsData.StatModifiers != null)
+            {
+                foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
                 {
-                    detailsTabControl.TabPages.Remove(statsTab);
-                }
-            } else {
-                statsListView.Items.Clear();
-                var listRows = new List<ListViewItem>();
-                var statsData = activeSaveFile.GetItemStatData(activeItem);
-                if (statsData.StatModifiers != null)
-                {
-                    foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
+                    var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
+
+                    if (modifier.Value.GetType().Name == "GameCombinedStatModifierData")
                     {
-                        var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
-
-                        if (modifier.Value.GetType().Name == "GameCombinedStatModifierData")
-                        {
-                            row[0] = "Combined";
-                            row[3] = ((GameCombinedStatModifierData)modifier.Value).Value.ToString();
-                        }
-                        else if (modifier.Value.GetType().Name == "GameConstantStatModifierData")
-                        {
-                            row[3] = ((GameConstantStatModifierData)modifier.Value).Value.ToString();
-                        }
-                        else
-                        {
-                            row[0] = "Curve";
-                        }
-
-                        var newItem = new ListViewItem(row);
-                        newItem.Tag = modifier;
-                        listRows.Add(newItem);
+                        row[0] = "Combined";
+                        row[3] = ((GameCombinedStatModifierData)modifier.Value).Value.ToString();
+                    }
+                    else if (modifier.Value.GetType().Name == "GameConstantStatModifierData")
+                    {
+                        row[3] = ((GameConstantStatModifierData)modifier.Value).Value.ToString();
+                    }
+                    else
+                    {
+                        row[0] = "Curve";
                     }
 
-                    statsListView.BeginUpdate();
-                    statsListView.Items.AddRange(listRows.ToArray());
-                    statsListView.EndUpdate();
-                } else {
-                    statsData.StatModifiers = new Handle<GameStatModifierData>[0];
+                    var newItem = new ListViewItem(row);
+                    newItem.Tag = modifier;
+                    listRows.Add(newItem);
                 }
+
+                statsListView.BeginUpdate();
+                statsListView.Items.AddRange(listRows.ToArray());
+                statsListView.EndUpdate();
+            } else {
+                statsData.StatModifiers = new Handle<GameStatModifierData>[0];
             }
+            
 
             if (!statsOnly)
             {
@@ -161,11 +160,12 @@ namespace CP2077SaveEditor
             return true;
         }
 
-        public void LoadItem(ItemData item, object _saveFile, Func<bool> callback1)
+        public void LoadItem(ItemData item, object _saveFile, Func<bool> callback1, Random rand)
         {
             callbackFunc1 = callback1;
             activeItem = item;
             activeSaveFile = (SaveFileHelper)_saveFile;
+            globalRand = rand;
             ReloadData();
 
             this.ShowDialog();

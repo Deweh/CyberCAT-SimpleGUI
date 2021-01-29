@@ -28,6 +28,7 @@ namespace CP2077SaveEditor
         //Save Info
         private bool loadingSave = false;
         private int saveType = 0;
+        private Random globalRand = new Random();
 
         //GUI
         private ModernButton activeTabButton = new ModernButton();
@@ -35,7 +36,6 @@ namespace CP2077SaveEditor
         private string debloatInfo = "";
 
         //Lookup Dictionaries
-        
         private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
         private static readonly Dictionary<string, string> itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         private static readonly Dictionary<ulong, string> inventoryNames = new()
@@ -700,7 +700,7 @@ namespace CP2077SaveEditor
             if (inventoryListView.SelectedIndices.Count > 0)
             {
                 var activeDetails = new ItemDetails();
-                activeDetails.LoadItem((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag, activeSaveFile, RefreshInventory);
+                activeDetails.LoadItem((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag, activeSaveFile, RefreshInventory, globalRand);
             }
         }
 

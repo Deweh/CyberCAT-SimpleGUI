@@ -111,7 +111,7 @@ namespace CP2077SaveEditor.Extensions
             {
                 info.Items.Sort((x, y) => Compare(x, y));
             }
-            targetView.Update();
+            targetView.Invalidate();
         }
 
         public static VirtualInfo GetVirtualInfo(this ListView targetView)

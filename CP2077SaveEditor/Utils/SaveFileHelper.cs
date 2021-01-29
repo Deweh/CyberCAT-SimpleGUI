@@ -207,6 +207,52 @@ namespace CP2077SaveEditor
             }
         }
 
+        public GameSavedStatsData CreateStatData(ItemData item, Random rand)
+        {
+            var randBytes = new byte[4];
+            rand.NextBytes(randBytes);
+            var newSeed = BitConverter.ToUInt32(randBytes);
+
+            this.GetStatsMap().Keys = this.GetStatsMap().Keys.Append(new GameStatsObjectID
+            {
+                IdType = gameStatIDType.ItemID,
+                EntityHash = GetItemIdHash(item.ItemTdbId.Raw64, newSeed, 0)
+            }).ToArray();
+
+            var statsEntry = new GameSavedStatsData
+            {
+                RecordID = item.ItemTdbId,
+                Seed = newSeed,
+                StatModifiers = new Handle<GameStatModifierData>[0]
+            };
+
+            this.GetStatsMap().Values = this.GetStatsMap().Values.Append(statsEntry).ToArray();
+            item.Header.Seed = newSeed;
+            return statsEntry;
+        }
+
+        //Credit to Seberoth
+        public static ulong GetItemIdHash(ulong tweakDbId, uint seed, ushort unk1 = 0)
+        {
+            ulong c = 0xC6A4A7935BD1E995;
+
+            ulong tmp;
+
+            if (unk1 == 0)
+            {
+                tmp = seed * c;
+                tmp = tmp >> 0x2F ^ tmp;
+            }
+            else
+            {
+                tmp = unk1 * c;
+                tmp = ((tmp >> 0x2f ^ tmp) * c ^ seed) * 0x35A98F4D286A90B9;
+                tmp = tmp >> 0x2F ^ tmp;
+            }
+
+            return (tmp * c ^ tweakDbId) * c;
+        }
+
         public List<FactsTable.FactEntry> GetKnownFacts()
         {
             var factsList = new List<FactsTable.FactEntry>();
