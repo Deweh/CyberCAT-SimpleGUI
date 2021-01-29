@@ -929,6 +929,12 @@ namespace CP2077SaveEditor
                     }
                 }
 
+                if (sectionName == "First")
+                {
+                    sectionName = "Second";
+                } else {
+                    sectionName = "Third";
+                }
                 
 
                 values.Add(singleValue);
