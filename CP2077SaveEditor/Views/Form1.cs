@@ -877,6 +877,8 @@ namespace CP2077SaveEditor
         {
             var values = new List<AppearanceConstructor.ValueRepresentation>();
 
+            var baseMainSections = new[] { activeSaveFile.GetAppearanceContainer().FirstSection, activeSaveFile.GetAppearanceContainer().SecondSection, activeSaveFile.GetAppearanceContainer().ThirdSection };
+
             foreach (string appearanceName in appearanceCompareNodes.Keys)
             {
                 var singleValue = new AppearanceConstructor.ValueRepresentation(appearanceCompareNameBox.Text, appearanceName);
@@ -884,12 +886,16 @@ namespace CP2077SaveEditor
 
                 var mainSections = new[] { currentAppearance.FirstSection, currentAppearance.SecondSection, currentAppearance.ThirdSection };
                 var sectionName = "First";
+
+                var i = 0;
                 foreach (var main in mainSections)
                 {
                     foreach (CharacterCustomizationAppearances.AppearanceSection section in main.AppearanceSections)
                     {
                         var appearanceSectionName = section.SectionName;
-                        var baseSection = activeSaveFile.GetAppearanceContainer().FirstSection.AppearanceSections.Where(x => x.SectionName == section.SectionName).FirstOrDefault();
+
+
+                        var baseSection = baseMainSections[i].AppearanceSections.Where(x => x.SectionName == section.SectionName).FirstOrDefault();
 
                         foreach (object entry in section.MainList)
                         {
@@ -927,6 +933,7 @@ namespace CP2077SaveEditor
                             }
                         }
                     }
+                    i++;
                 }
 
                 if (sectionName == "First")
