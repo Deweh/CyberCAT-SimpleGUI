@@ -471,7 +471,71 @@ namespace CP2077SaveEditor
 
         public object Blemishes { get; set; }
 
-        public object Nails { get; set; }
+        public string Nails
+        {
+            get
+            {
+                return (GetValue("second.additional.second.nails_l") == "default" ? "Short" : "Long");
+            }
+            set
+            {
+                if (value != "Short" && value != "Long")
+                {
+                    return;
+                }
+
+                var entries = GetEntries("second.additional.nails_l"); entries.AddRange(GetEntries("second.additional.nails_r"));
+                if (value == "Short")
+                {
+                    RemoveEntries(entries);
+                } else {
+                    if (entries.Count < 1)
+                    {
+                        var sectionNames = new[]
+                        {
+                            "holstered_default",
+                            "holstered_nanowire",
+                            "unholstered_nanowire",
+                            "character_customization",
+                            "holstered_launcher",
+                            "unholstered_launcher",
+                            "holstered_mantis",
+                            "unholstered_mantis"
+                        };
+
+                        if (BodyGender == AppearanceGender.Female)
+                        {
+                            sectionNames = new[]
+                            {
+                                "holstered_default_tpp",
+                                "holstered_default_fpp",
+                                "holstered_nanowire_tpp",
+                                "holstered_nanowire_fpp",
+                                "unholstered_nanowire",
+                                "character_customization",
+                                "holstered_launcher_tpp",
+                                "holstered_launcher_fpp",
+                                "unholstered_launcher",
+                                "holstered_mantis_tpp",
+                                "holstered_mantis_fpp",
+                                "unholstered_mantis"
+                            };
+                        }
+
+                        var leftRight = new[] { "l", "r" };
+
+                        foreach (string side in leftRight)
+                        {
+                            CreateEntry(new ValueEntry()
+                            {
+                                FirstString = "nails_" + side,
+                                SecondString = "a0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__nails_" + side + (BodyGender == AppearanceGender.Male ? "_001" : string.Empty)
+                            }, sectionNames, MainSections[1]);
+                        }
+                    }
+                }
+            }
+        }
 
         public object NailColor { get; set; }
 
@@ -1082,5 +1146,6 @@ namespace CP2077SaveEditor
         public static List<ulong> EyeMakeups { get; } = Values["EyeMakeups"].ToObject<List<ulong>>();
         public static List<string> EyeMakeupColors { get; } = Values["EyeMakeupColors"].ToObject<List<string>>();
         public static List<ulong> BodyTattoos { get; } = Values["BodyTattoos"].ToObject<List<ulong>>();
+        public static List<string> Nailss { get; } = new List<string> { "Short", "Long" };
     }
 }
