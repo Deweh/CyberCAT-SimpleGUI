@@ -113,7 +113,6 @@ namespace CP2077SaveEditor
             //Stats parsing
             if (activeSaveFile.GetItemStatData(activeItem) == null)
             {
-                MessageBox.Show("No stat data");
                 activeSaveFile.CreateStatData(activeItem, globalRand);
             }
             statsListView.Items.Clear();
