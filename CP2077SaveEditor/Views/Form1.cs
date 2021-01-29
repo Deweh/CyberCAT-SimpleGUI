@@ -70,6 +70,7 @@ namespace CP2077SaveEditor
             factsListView.AfterLabelEdit += factsListView_AfterLabelEdit;
             factsListView.MouseUp += factsListView_MouseUp;
             factsListView.KeyDown += factsListView_KeyDown;
+            inventoryListView.MouseClick += inventoryListView_Click;
             inventoryListView.DoubleClick += inventoryListView_DoubleClick;
             inventoryListView.KeyDown += inventoryListView_KeyDown;
 
@@ -674,6 +675,26 @@ namespace CP2077SaveEditor
             ((FactsTable.FactEntry)factsListView.SelectedVirtualItems()[0].Tag).Value = UInt32.Parse(e.Label);
         }
 
+        private void inventoryListView_Click (object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var containerID = containersListBox.SelectedItem.ToString();
+                if (inventoryNames.Values.Contains(containerID))
+                {
+                    containerID = inventoryNames.Where(x => x.Value == containerID).FirstOrDefault().Key.ToString();
+                }
+
+                var contextMenu = new ContextMenuStrip();
+                if (containerID == "1")
+                {
+
+                }
+                contextMenu.Items.Add("Delete").Click += DeleteSelectedInventoryItem;
+                contextMenu.Show(Cursor.Position);
+            }
+        }
+
         private void inventoryListView_DoubleClick(object sender, EventArgs e)
         {
             if (inventoryListView.SelectedIndices.Count > 0)
@@ -687,24 +708,29 @@ namespace CP2077SaveEditor
         {
             if (inventoryListView.SelectedIndices.Count > 0 && e.KeyCode == Keys.Delete)
             {
-                var containerID = containersListBox.SelectedItem.ToString();
-                if (inventoryNames.Values.Contains(containerID))
-                {
-                    containerID = inventoryNames.Where(x => x.Value == containerID).FirstOrDefault().Key.ToString();
-                }
-
-                var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
-                activeSaveFile.GetInventory(ulong.Parse(containerID)).Items.Remove(activeItem);
-
-                if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).ItemTdbId.GameName == "Eddies" && containerID == "1")
-                {
-                    moneyUpDown.Enabled = false;
-                    moneyUpDown.Value = 0;
-                }
-
-                inventoryListView.RemoveVirtualItem(inventoryListView.SelectedVirtualItems()[0]);
-                statusLabel.Text = "'" + (string.IsNullOrEmpty(activeItem.ItemTdbId.GameName) ? activeItem.ItemTdbId.Name : activeItem.ItemTdbId.GameName) + "' deleted.";
+                DeleteSelectedInventoryItem();
             }
+        }
+
+        private void DeleteSelectedInventoryItem(object sender = null, EventArgs e = null)
+        {
+            var containerID = containersListBox.SelectedItem.ToString();
+            if (inventoryNames.Values.Contains(containerID))
+            {
+                containerID = inventoryNames.Where(x => x.Value == containerID).FirstOrDefault().Key.ToString();
+            }
+
+            var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
+            activeSaveFile.GetInventory(ulong.Parse(containerID)).Items.Remove(activeItem);
+
+            if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).ItemTdbId.GameName == "Eddies" && containerID == "1")
+            {
+                moneyUpDown.Enabled = false;
+                moneyUpDown.Value = 0;
+            }
+
+            inventoryListView.RemoveVirtualItem(inventoryListView.SelectedVirtualItems()[0]);
+            statusLabel.Text = "'" + (string.IsNullOrEmpty(activeItem.ItemTdbId.GameName) ? activeItem.ItemTdbId.Name : activeItem.ItemTdbId.GameName) + "' deleted.";
         }
 
         private void factsListView_KeyDown(object sender, KeyEventArgs e)

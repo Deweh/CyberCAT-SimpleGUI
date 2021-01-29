@@ -24,6 +24,7 @@ namespace CP2077SaveEditor.Extensions
         {
             if (targetView.Tag == null)
             {
+                targetView.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(targetView, true, null);
                 targetView.RetrieveVirtualItem += RetrieveDefaultVirtualItem;
                 targetView.ColumnClick += DefaultColumnClick;
                 targetView.Tag = new VirtualInfo(newList);
@@ -110,7 +111,7 @@ namespace CP2077SaveEditor.Extensions
             {
                 info.Items.Sort((x, y) => Compare(x, y));
             }
-            targetView.Invalidate();
+            targetView.Update();
         }
 
         public static VirtualInfo GetVirtualInfo(this ListView targetView)

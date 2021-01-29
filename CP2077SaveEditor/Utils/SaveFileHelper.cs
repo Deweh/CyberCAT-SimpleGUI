@@ -76,35 +76,33 @@ namespace CP2077SaveEditor
 
         public Dictionary<GameItemID, string> GetEquippedItems()
         {
-            var equipSystem = (EquipmentSystem)this.GetScriptableContainer().ClassList[Array.FindIndex(this.GetScriptableContainer().ClassList, x => x.GetType().Name == "EquipmentSystem")];
-            var playerEquipAreas = equipSystem.OwnerData.Where(x => x.Value.OwnerID.Hash == 1).FirstOrDefault().Value.Equipment.EquipAreas;
-
+            var playerEquipAreas = GetEquipAreas();
             var equippedItems = new Dictionary<GameItemID, string>();
+
             var weaponSlotNum = 1;
             foreach (GameSEquipArea area in playerEquipAreas)
             {
                 var areaName = area.AreaType.ToString();
-                if (area.AreaType == gamedataEquipmentArea.Weapon || area.AreaType == gamedataEquipmentArea.Head || area.AreaType == gamedataEquipmentArea.Face
-                    || area.AreaType == gamedataEquipmentArea.OuterChest || area.AreaType == gamedataEquipmentArea.InnerChest || area.AreaType == gamedataEquipmentArea.Legs
-                    || area.AreaType == gamedataEquipmentArea.Feet || area.AreaType == gamedataEquipmentArea.QuickSlot || area.AreaType == gamedataEquipmentArea.Consumable
-                    || area.AreaType == gamedataEquipmentArea.Outfit)
+                foreach (GameSEquipSlot slot in area.EquipSlots)
                 {
-                    foreach (GameSEquipSlot slot in area.EquipSlots)
+                    if (area.AreaType == gamedataEquipmentArea.Weapon)
                     {
-                        if (area.AreaType == gamedataEquipmentArea.Weapon)
-                        {
-                            areaName = "Weapon " + weaponSlotNum.ToString();
-                            weaponSlotNum++;
-                        }
-                        if (slot.ItemID != null)
-                        {
-                            equippedItems.Add(slot.ItemID, areaName);
-                        }
+                        areaName = "Weapon " + weaponSlotNum.ToString();
+                        weaponSlotNum++;
+                    }
+                    if (slot.ItemID != null)
+                    {
+                        equippedItems.Add(slot.ItemID, areaName);
                     }
                 }
-
             }
             return equippedItems;
+        }
+
+        public GameSEquipArea[] GetEquipAreas()
+        {
+            var equipSystem = (EquipmentSystem)this.GetScriptableContainer().ClassList[Array.FindIndex(this.GetScriptableContainer().ClassList, x => x.GetType().Name == "EquipmentSystem")];
+            return equipSystem.OwnerData.Where(x => x.Value.OwnerID.Hash == 1).FirstOrDefault().Value.Equipment.EquipAreas;
         }
 
         public GameStatsStateMapStructure GetStatsMap()
