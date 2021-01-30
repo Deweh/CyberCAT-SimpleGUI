@@ -342,7 +342,44 @@ namespace CP2077SaveEditor
 
         public object FacialScars { get; set; }
 
-        public object FacialTattoos { get; set; }
+        public int FacialTattoos
+        {
+            get
+            {
+                var hash = GetValue("first.main.hash.facial_tattoo_");
+                if (hash == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return AppearanceValueLists.FacialTattoos.FindIndex(x => x == ulong.Parse(hash));
+                }
+            }
+            set
+            {
+                if (value > (AppearanceValueLists.FacialTattoos.Count - 1) || value < 0)
+                {
+                    return;
+                }
+
+                SetNullableHashEntry("facial_tattoo_", new HashValueEntry
+                {
+                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
+                    Hash = AppearanceValueLists.FacialTattoos[value],
+                    SecondString = "facial_tattoo_" + value.ToString("00")
+                },
+                new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, false, true);
+
+                SetNullableHashEntry("tattoo", new HashValueEntry
+                {
+                    FirstString = (value == 0 ? null : "h0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__tattoo_" + value.ToString("00")),
+                    Hash = 2355758180805363120,
+                    SecondString = "tattoo"
+                },
+                new[] { "TPP", "character_customization" }, AppearanceField.FirstString);
+            }
+        }
 
         public object Piercings { get; set; }
 
@@ -992,7 +1029,7 @@ namespace CP2077SaveEditor
             }
         }
 
-        public void SetNullableHashEntry(string searchString, HashValueEntry defaultEntry, string[] sectionNames, AppearanceField setValueField = AppearanceField.Hash, Section baseMainSection = null, bool createAllMainSections = false)
+        public void SetNullableHashEntry(string searchString, HashValueEntry defaultEntry, string[] sectionNames, AppearanceField setValueField = AppearanceField.Hash, Section baseMainSection = null, bool createAllMainSections = false, bool allFields = false)
         {
             var entries = GetAllEntries(AppearanceEntryType.MainListEntry, searchString);
             if (defaultEntry.Hash == 0 || defaultEntry.FirstString == null || defaultEntry.SecondString == null)
@@ -1021,15 +1058,17 @@ namespace CP2077SaveEditor
                 {
                     SetAllEntries(entries, (object entry) => 
                     {
-                        if (setValueField == AppearanceField.FirstString)
+                        if (setValueField == AppearanceField.FirstString || allFields == true)
                         {
                             ((HashValueEntry)entry).FirstString = defaultEntry.FirstString;
                         }
-                        else if (setValueField == AppearanceField.SecondString)
+
+                        if (setValueField == AppearanceField.SecondString || allFields == true)
                         {
                             ((HashValueEntry)entry).SecondString = defaultEntry.SecondString;
                         }
-                        else
+
+                        if(setValueField == AppearanceField.Hash || allFields == true)
                         {
                             ((HashValueEntry)entry).Hash = defaultEntry.Hash;
                         }
@@ -1147,5 +1186,6 @@ namespace CP2077SaveEditor
         public static List<string> EyeMakeupColors { get; } = Values["EyeMakeupColors"].ToObject<List<string>>();
         public static List<ulong> BodyTattoos { get; } = Values["BodyTattoos"].ToObject<List<ulong>>();
         public static List<string> Nailss { get; } = new List<string> { "Short", "Long" };
+        public static List<ulong> FacialTattoos { get; } = Values["FacialTattoos"].ToObject<List<ulong>>();
     }
 }

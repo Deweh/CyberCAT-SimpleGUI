@@ -83,16 +83,19 @@ namespace CP2077SaveEditor
             foreach (GameSEquipArea area in playerEquipAreas)
             {
                 var areaName = area.AreaType.ToString();
-                foreach (GameSEquipSlot slot in area.EquipSlots)
+                if (area.EquipSlots != null)
                 {
-                    if (area.AreaType == gamedataEquipmentArea.Weapon)
+                    foreach (GameSEquipSlot slot in area.EquipSlots)
                     {
-                        areaName = "Weapon " + weaponSlotNum.ToString();
-                        weaponSlotNum++;
-                    }
-                    if (slot.ItemID != null)
-                    {
-                        equippedItems.Add(slot.ItemID, areaName);
+                        if (area.AreaType == gamedataEquipmentArea.Weapon)
+                        {
+                            areaName = "Weapon " + weaponSlotNum.ToString();
+                            weaponSlotNum++;
+                        }
+                        if (slot.ItemID != null)
+                        {
+                            equippedItems.Add(slot.ItemID, areaName);
+                        }
                     }
                 }
             }
