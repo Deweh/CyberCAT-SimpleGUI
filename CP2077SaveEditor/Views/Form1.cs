@@ -688,7 +688,7 @@ namespace CP2077SaveEditor
                 var contextMenu = new ContextMenuStrip();
                 if (containerID == "1")
                 {
-
+                    //To-do: Add options for slotting in equipment/making new equipment slots.
                 }
                 contextMenu.Items.Add("Delete").Click += DeleteSelectedInventoryItem;
                 contextMenu.Show(Cursor.Position);
