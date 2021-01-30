@@ -560,8 +560,8 @@ namespace CP2077SaveEditor
                 }
 
                 var points = activeSaveFile.GetPlayerDevelopmentData().Value.DevPoints;
-                perkPointsUpDown.Value = points[Array.FindIndex(points, x => x.Type == gamedataDevelopmentPointType.Primary)].Unspent;
-                attrPointsUpDown.Value = points[Array.FindIndex(points, x => x.Type == null)].Unspent;
+                perkPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == gamedataDevelopmentPointType.Primary)].Unspent);
+                attrPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == null)].Unspent);
 
                 //Update controls
                 loadingSave = false;

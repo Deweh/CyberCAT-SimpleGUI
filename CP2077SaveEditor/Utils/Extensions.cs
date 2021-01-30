@@ -34,7 +34,7 @@ namespace CP2077SaveEditor.Extensions
             {
                 targetView.GetVirtualInfo().Items = newList;
             }
-            
+
             targetView.VirtualListSize = newList.Count();
             targetView.SortVirtualItems();
         }
@@ -87,7 +87,7 @@ namespace CP2077SaveEditor.Extensions
                     return 0;
                 }
             }
-            
+
             if (column > -1)
             {
                 if (column == info.SortColumn)
@@ -142,7 +142,9 @@ namespace CP2077SaveEditor.Extensions
             if (position == -1)
             {
                 return arr.Last();
-            } else {
+            }
+            else
+            {
                 return arr[position];
             }
         }
@@ -164,6 +166,22 @@ namespace CP2077SaveEditor.Extensions
         {
             SendMessage(parent.Handle, WM_SETREDRAW, true, 0);
             parent.Refresh();
+        }
+    }
+
+    public static class NumericUpDownExtensions
+    {
+        public static void SetValue(this NumericUpDown numericUpDown, decimal value)
+        {
+            if (value < numericUpDown.Minimum)
+            {
+                value = numericUpDown.Minimum;
+            }
+            else if (value > numericUpDown.Maximum)
+            {
+                value = numericUpDown.Maximum;
+            }
+            numericUpDown.Value = value;
         }
     }
 }
