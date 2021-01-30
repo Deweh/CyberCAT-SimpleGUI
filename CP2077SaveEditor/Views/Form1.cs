@@ -177,6 +177,7 @@ namespace CP2077SaveEditor
             if (appearancePanel.Controls.Contains(appearanceOptionsPanel))
             {
                 this.SuspendLayout();
+                appearanceOptionsPanel.SuspendDrawing();
                 appearancePanel.Controls.Remove(appearanceOptionsPanel);
             }
         }
@@ -186,6 +187,7 @@ namespace CP2077SaveEditor
             if (!appearancePanel.Controls.Contains(appearanceOptionsPanel))
             {
                 appearancePanel.Controls.Add(appearanceOptionsPanel);
+                appearanceOptionsPanel.ResumeDrawing();
                 this.ResumeLayout();
             }
         }
