@@ -562,7 +562,6 @@ namespace CP2077SaveEditor
             // 
             // makeAllRomanceableButton
             // 
-            this.makeAllRomanceableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.makeAllRomanceableButton.BackColor = System.Drawing.Color.White;
             this.makeAllRomanceableButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.makeAllRomanceableButton.ClickEffectEnabled = true;
@@ -596,7 +595,6 @@ namespace CP2077SaveEditor
             // 
             // enableSecretEndingButton
             // 
-            this.enableSecretEndingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.enableSecretEndingButton.BackColor = System.Drawing.Color.White;
             this.enableSecretEndingButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.enableSecretEndingButton.ClickEffectEnabled = true;
