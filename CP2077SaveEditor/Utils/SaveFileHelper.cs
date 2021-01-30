@@ -108,6 +108,25 @@ namespace CP2077SaveEditor
             return equipSystem.OwnerData.Where(x => x.Value.OwnerID.Hash == 1).FirstOrDefault().Value.Equipment.EquipAreas;
         }
 
+        public List<GameSEquipSlot> GetEquipSlotsFromID(GameItemID id)
+        {
+            var slots = new List<GameSEquipSlot>();
+            foreach (GameSEquipArea area in this.GetEquipAreas())
+            {
+                if (area.EquipSlots != null)
+                {
+                    foreach (GameSEquipSlot slot in area.EquipSlots)
+                    {
+                        if (slot.ItemID != null && slot.ItemID.Id.Raw64 == id.Id.Raw64)
+                        {
+                            slots.Add(slot);
+                        }
+                    }
+                }
+            }
+            return slots;
+        }
+
         public GameStatsStateMapStructure GetStatsMap()
         {
             return (GameStatsStateMapStructure)this.GetStatsContainer().ClassList[Array.FindIndex(this.GetStatsContainer().ClassList, x => x.GetType().FullName.EndsWith("GameStatsStateMapStructure"))];

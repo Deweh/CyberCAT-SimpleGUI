@@ -407,7 +407,7 @@ namespace CP2077SaveEditor
             {
                 foreach (KeyValuePair<CyberCAT.Core.Classes.DumpedClasses.GameItemID, string> equipInfo in activeSaveFile.GetEquippedItems().Reverse())
                 {
-                    var equippedItem = listViewRows.Where(x => ((ItemData)x.Tag).ItemTdbId.Id == equipInfo.Key.Id.Id).FirstOrDefault();
+                    var equippedItem = listViewRows.Where(x => ((ItemData)x.Tag).ItemTdbId.Raw64 == equipInfo.Key.Id.Raw64).FirstOrDefault();
 
                     if (equippedItem != null)
                     {
@@ -700,7 +700,7 @@ namespace CP2077SaveEditor
 
         private void inventoryListView_Click (object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right && inventoryListView.SelectedIndices.Count > 0)
             {
                 var containerID = containersListBox.SelectedItem.ToString();
                 if (inventoryNames.Values.Contains(containerID))
@@ -711,9 +711,17 @@ namespace CP2077SaveEditor
                 var contextMenu = new ContextMenuStrip();
                 if (containerID == "1")
                 {
-                    //To-do: Add options for slotting in equipment/making new equipment slots.
+                    var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
+                    var equipSlot = activeSaveFile.GetEquippedItems().Where(x => x.Key.Id.Raw64 == activeItem.ItemTdbId.Raw64).FirstOrDefault().Key;
+
+                    if (equipSlot != null)
+                    {
+                        var unequipItem = contextMenu.Items.Add("Unequip");
+                        unequipItem.Tag = equipSlot;
+                        unequipItem.Click += UnequipInventoryItem;
+                    }
                 }
-                contextMenu.Items.Add("Delete").Click += DeleteSelectedInventoryItem;
+                contextMenu.Items.Add("Delete").Click += DeleteInventoryItem;
                 contextMenu.Show(Cursor.Position);
             }
         }
@@ -731,11 +739,22 @@ namespace CP2077SaveEditor
         {
             if (inventoryListView.SelectedIndices.Count > 0 && e.KeyCode == Keys.Delete)
             {
-                DeleteSelectedInventoryItem();
+                DeleteInventoryItem();
             }
         }
 
-        private void DeleteSelectedInventoryItem(object sender = null, EventArgs e = null)
+        private void UnequipInventoryItem(object sender, EventArgs e)
+        {
+            var equipId = (CyberCAT.Core.Classes.DumpedClasses.GameItemID)((ToolStripItem)sender).Tag;
+            foreach (var equipSlot in activeSaveFile.GetEquipSlotsFromID(equipId))
+            {
+                equipSlot.ItemID = null;
+            }
+
+            RefreshInventory();
+        }
+
+        private void DeleteInventoryItem(object sender = null, EventArgs e = null)
         {
             var containerID = containersListBox.SelectedItem.ToString();
             if (inventoryNames.Values.Contains(containerID))
