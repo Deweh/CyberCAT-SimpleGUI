@@ -717,28 +717,13 @@ namespace CP2077SaveEditor
         public List<object> GetEntries(CharacterCustomizationAppearances.Section appearanceSection, AppearanceEntryType entryType, string searchString)
         {
             var foundEntries = new List<object>();
-            foreach (CharacterCustomizationAppearances.AppearanceSection subSection in appearanceSection.AppearanceSections)
+            if (entryType == AppearanceEntryType.MainListEntry)
             {
-                if (entryType == AppearanceEntryType.MainListEntry)
-                {
-                    foreach (CharacterCustomizationAppearances.HashValueEntry mainListEntry in subSection.MainList)
-                    {
-                        if (CompareMainListAppearanceEntries(mainListEntry.SecondString, searchString) == true)
-                        {
-                            foundEntries.Add(mainListEntry);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (CharacterCustomizationAppearances.ValueEntry additionalListEntry in subSection.AdditionalList)
-                    {
-                        if (additionalListEntry.FirstString == searchString)
-                        {
-                            foundEntries.Add(additionalListEntry);
-                        }
-                    }
-                }
+                foundEntries.AddRange(appearanceSection.AppearanceSections.SelectMany(x => x.MainList).Where(x => CompareMainListAppearanceEntries(x.SecondString, searchString)).ToList());
+            }
+            else
+            {
+                foundEntries.AddRange(appearanceSection.AppearanceSections.SelectMany(x => x.AdditionalList).Where(x => x.FirstString == searchString).ToList());
             }
             return foundEntries;
         }
