@@ -641,12 +641,12 @@ namespace CP2077SaveEditor
                 }
                 else
                 {
-                    return AppearanceValueLists.BodyTattoos.FindIndex(x => x == ulong.Parse(hash));
+                    return AppearanceValueLists.BodyTattoos["TPP"].FindIndex(x => x == ulong.Parse(hash));
                 }
             }
             set
             {
-                if (value > (AppearanceValueLists.BodyTattoos.Count - 1) || value < 0)
+                if (value > (AppearanceValueLists.BodyTattoos["TPP"].Count - 1) || value < 0)
                 {
                     return;
                 }
@@ -654,10 +654,18 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("body_tattoo_", new HashValueEntry()
                 {
                     FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = AppearanceValueLists.BodyTattoos[value],
+                    Hash = AppearanceValueLists.BodyTattoos["TPP"][value],
                     SecondString = "body_tattoo_01"
                 },
                 new[] { "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2]);
+
+                SetNullableHashEntry("fpp_body_tattoo_", new HashValueEntry()
+                {
+                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
+                    Hash = AppearanceValueLists.BodyTattoos["FPP"][value],
+                    SecondString = "fpp_body_tattoo_01"
+                },
+                new[] { "FPP_Body" }, AppearanceField.Hash, MainSections[2]);
             }
         }
 
@@ -1184,7 +1192,7 @@ namespace CP2077SaveEditor
         public static List<string> LipMakeupColors { get; } = Values["LipMakeupColors"].ToObject<List<string>>();
         public static List<ulong> EyeMakeups { get; } = Values["EyeMakeups"].ToObject<List<ulong>>();
         public static List<string> EyeMakeupColors { get; } = Values["EyeMakeupColors"].ToObject<List<string>>();
-        public static List<ulong> BodyTattoos { get; } = Values["BodyTattoos"].ToObject<List<ulong>>();
+        public static Dictionary<string, List<ulong>> BodyTattoos { get; } = Values["BodyTattoos"].ToObject<Dictionary<string, List<ulong>>>();
         public static List<string> Nailss { get; } = new List<string> { "Short", "Long" };
         public static List<ulong> FacialTattoos { get; } = Values["FacialTattoos"].ToObject<List<ulong>>();
     }
