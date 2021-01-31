@@ -22,7 +22,7 @@ namespace CP2077SaveEditor
         private SaveFileHelper activeSaveFile;
         private bool statsOnly = false;
         private Random globalRand;
-
+        
         public ItemDetails()
         {
             InitializeComponent();
@@ -32,6 +32,11 @@ namespace CP2077SaveEditor
 
             statsListView.DoubleClick += statsListView_DoubleClick;
             statsListView.KeyDown += statsListView_KeyDown;
+
+            quantityUpDown.ValueChanged += ApplyableControlChanged;
+            unknownFlag1CheckBox.CheckedChanged += ApplyableControlChanged;
+            questItemCheckBox.CheckedChanged += ApplyableControlChanged;
+            modsBaseIdBox.TextChanged += ApplyableControlChanged;
         }
 
         private void IterativeBuildModTree(ItemData.ItemModData nodeData, TreeNode rootNode)
@@ -247,6 +252,7 @@ namespace CP2077SaveEditor
                 activeItem.Flags.IsNotUnequippable = unknownFlag1CheckBox.Checked;
                 activeItem.Flags.IsQuestItem = questItemCheckBox.Checked;
                 callbackFunc1.Invoke();
+                applyButton.Enabled = false;
             }
         }
 
@@ -410,6 +416,11 @@ namespace CP2077SaveEditor
 
                 MessageBox.Show("Legendary components infused.");
             }
+        }
+
+        private void ApplyableControlChanged(object sender, EventArgs e)
+        {
+            applyButton.Enabled = true;
         }
     }
 }
