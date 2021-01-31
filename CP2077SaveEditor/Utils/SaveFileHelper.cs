@@ -241,6 +241,15 @@ namespace CP2077SaveEditor
                 newSeed = BitConverter.ToUInt32(randBytes);
             }
 
+            if (item.Data.GetType() != typeof(ItemData.SimpleItemData))
+            {
+                item.Header.Seed = newSeed;
+            }
+            else
+            {
+                newSeed = 2;
+            }
+
             this.GetStatsMap().Keys = this.GetStatsMap().Keys.Append(new GameStatsObjectID
             {
                 IdType = gameStatIDType.ItemID,
@@ -255,7 +264,6 @@ namespace CP2077SaveEditor
             };
 
             this.GetStatsMap().Values = this.GetStatsMap().Values.Append(statsEntry).ToArray();
-            item.Header.Seed = newSeed;
             return statsEntry;
         }
 
