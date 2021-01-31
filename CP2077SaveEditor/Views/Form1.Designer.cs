@@ -588,7 +588,7 @@ namespace CP2077SaveEditor
             this.factsSaveButton.Name = "factsSaveButton";
             this.factsSaveButton.Size = new System.Drawing.Size(105, 18);
             this.factsSaveButton.TabIndex = 3;
-            this.factsSaveButton.Text = "Save to File";
+            this.factsSaveButton.Text = "Export to Text";
             this.factsSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
             this.factsSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.factsSaveButton.Click += new System.EventHandler(this.factsSaveButton_Click);
@@ -611,13 +611,12 @@ namespace CP2077SaveEditor
             // 
             // addFactButton
             // 
-            this.addFactButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.addFactButton.BackColor = System.Drawing.Color.White;
             this.addFactButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.addFactButton.ClickEffectEnabled = true;
             this.addFactButton.DefaultColor = System.Drawing.Color.White;
             this.addFactButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addFactButton.Location = new System.Drawing.Point(656, -1);
+            this.addFactButton.Location = new System.Drawing.Point(352, -1);
             this.addFactButton.Name = "addFactButton";
             this.addFactButton.Size = new System.Drawing.Size(92, 18);
             this.addFactButton.TabIndex = 2;

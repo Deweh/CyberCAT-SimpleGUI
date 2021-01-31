@@ -877,6 +877,8 @@ namespace CP2077SaveEditor
 
         private void factsSaveButton_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Note: This option is not meant to overwrite your save file. If you are only trying to save changes to your quest facts, you should press 'Save Changes' instead.");
+
             var saveWindow = new SaveFileDialog();
             saveWindow.Filter = "Text File|*.txt";
             if (saveWindow.ShowDialog() == DialogResult.OK)
