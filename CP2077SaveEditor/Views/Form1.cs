@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using CP2077SaveEditor.Extensions;
 using CyberCAT.Core.Classes.Mapping;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace CP2077SaveEditor
 {
@@ -140,7 +141,8 @@ namespace CP2077SaveEditor
                     {
                         Name = property.Name,
                         PickerName = r.Replace(property.Name, " "),
-                        Location = new Point(0, lastPos)
+                        Location = new Point(0, lastPos),
+                        Tag = property,
                     };
 
                     appearanceOptionsPanel.Controls.Add(picker);
@@ -223,12 +225,13 @@ namespace CP2077SaveEditor
             {
                 try
                 {
-                    if (GetAppearanceValue(picker.Name) is int)
+                    var value = GetAppearanceValue(picker);
+                    if (value is int intValue)
                     {
                         picker.SuppressIndexChange = true;
-                        picker.Index = (int)GetAppearanceValue(picker.Name);
+                        picker.Index = intValue;
                     }
-                    else if (GetAppearanceValue(picker.Name) is string)
+                    else if (value is string strValue)
                     {
                         if (picker.StringCollection.Length < 1)
                         {
@@ -236,28 +239,27 @@ namespace CP2077SaveEditor
                             picker.StringCollection = ((List<string>)typeof(AppearanceValueLists).GetProperty(picker.Name + "s").GetValue(null, null)).ToArray();
                         }
                         picker.SuppressIndexChange = true;
-                        var newValue = (string)GetAppearanceValue(picker.Name);
 
-                        if (picker.StringCollection.Contains(newValue))
+                        if (picker.StringCollection.Contains(strValue))
                         {
-                            picker.Index = Array.IndexOf(picker.StringCollection, newValue);
+                            picker.Index = Array.IndexOf(picker.StringCollection, strValue);
                         }
                         else
                         {
                             picker.Index = 0;
-                            picker.StringValue = newValue;
+                            picker.StringValue = strValue;
                         }
                     }
-                    else if (GetAppearanceValue(picker.Name) is Enum)
+                    else if (value is Enum)
                     {
                         if (picker.StringCollection.Length < 1)
                         {
                             picker.PickerType = PickerValueType.String;
-                            picker.StringCollection = Enum.GetNames(GetAppearanceValue(picker.Name).GetType());
+                            picker.StringCollection = Enum.GetNames(value.GetType());
                         }
 
                         picker.SuppressIndexChange = true;
-                        picker.Index = (int)GetAppearanceValue(picker.Name);
+                        picker.Index = (int)value;
                     }
                     picker.Enabled = true;
                 }
@@ -269,29 +271,30 @@ namespace CP2077SaveEditor
             }
         }
 
-        private object GetAppearanceValue(string name)
+        private object GetAppearanceValue(ModernValuePicker picker)
         {
-            return activeSaveFile.Appearance.GetType().GetProperty(name).GetValue(activeSaveFile.Appearance);
+            return ((PropertyInfo)picker.Tag).GetValue(activeSaveFile.Appearance);
         }
 
-        private void SetAppearanceValue(string name, object value)
+        private void SetAppearanceValue(ModernValuePicker picker, object value)
         {
-            activeSaveFile.Appearance.GetType().GetProperty(name).SetValue(activeSaveFile.Appearance, value);
+            ((PropertyInfo)picker.Tag).SetValue(activeSaveFile.Appearance, value);
         }
 
         private void AppearanceOptionChanged(ModernValuePicker sender)
         {
-            if (GetAppearanceValue(sender.Name) is int)
+            var value = ((PropertyInfo)sender.Tag).PropertyType;
+            if (value == typeof(int))
             {
-                SetAppearanceValue(sender.Name, sender.Index);
+                SetAppearanceValue(sender, sender.Index);
             }
-            else if(GetAppearanceValue(sender.Name) is string)
+            else if(value == typeof(string))
             {
-                SetAppearanceValue(sender.Name, sender.StringValue);
+                SetAppearanceValue(sender, sender.StringValue);
             }
-            else if (GetAppearanceValue(sender.Name) is Enum)
+            else if (value.IsEnum)
             {
-                SetAppearanceValue(sender.Name, Enum.Parse(GetAppearanceValue(sender.Name).GetType(), sender.StringValue));
+                SetAppearanceValue(sender, Enum.Parse(value, sender.StringValue));
             }
             RefreshAppearanceValues();
             SetAppearanceImage(sender.Name, sender.Index.ToString("00"));

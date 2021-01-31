@@ -415,7 +415,31 @@ namespace CP2077SaveEditor
 
         public object PiercingColor { get; set; }
 
-        public object Teeth { get; set; }
+        public int Teeth
+        {
+            get
+            {
+                var value = GetValue("first.main.first.teeth");
+                if (value.EndsWith("basehead"))
+                {
+                    return 0;
+                }
+                else
+                {
+                    var ind = AppearanceValueLists.Teeth.FindIndex(x => x == "__" + value.Split("__", StringSplitOptions.None).Last());
+                    return ind;
+                }
+            }
+            set
+            {
+                if (value > 4 || value < 0)
+                {
+                    return;
+                }
+
+                SetValue(AppearanceField.FirstString, "first.main.first.teeth", (BodyGender == AppearanceGender.Female ? "female" : "male") + "_ht_000__basehead" + AppearanceValueLists.Teeth[value]);
+            }
+        }
 
         public int EyeMakeup
         {
@@ -1211,5 +1235,6 @@ namespace CP2077SaveEditor
         public static List<string> Nailss { get; } = new List<string> { "Short", "Long" };
         public static List<ulong> FacialTattoos { get; } = Values["FacialTattoos"].ToObject<List<ulong>>();
         public static List<ulong> Piercings { get; } = Values["Piercings"].ToObject<List<ulong>>();
+        public static List<string> Teeth { get; } = Values["Teeth"].ToObject<List<string>>();
     }
 }
