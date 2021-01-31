@@ -316,6 +316,7 @@ namespace CP2077SaveEditor
                 if (!File.Exists(path))
                 {
                     appearancePreviewBox.Image = new Bitmap(1, 1);
+                    return;
                 }
             }
 
