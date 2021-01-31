@@ -752,6 +752,10 @@ namespace CP2077SaveEditor
             }
 
             RefreshInventory();
+            if (inventoryListView.SelectedVirtualItems().Count > 0)
+            {
+                inventoryListView.SelectedVirtualItems()[0].Selected = false;
+            }
         }
 
         private void DeleteInventoryItem(object sender = null, EventArgs e = null)

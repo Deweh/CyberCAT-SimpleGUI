@@ -381,7 +381,37 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object Piercings { get; set; }
+        public int Piercings
+        {
+            get
+            {
+                var hash = GetValue("first.main.hash.piercings_");
+                if (hash == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    var ind = AppearanceValueLists.Piercings.FindIndex(x => x == ulong.Parse(hash));
+                    return (ind < 0 ? 1 : ind);
+                }
+            }
+            set
+            {
+                if (value > (AppearanceValueLists.Piercings.Count - 1) || value < 0)
+                {
+                    return;
+                }
+
+                SetNullableHashEntry("piercings_", new HashValueEntry
+                {
+                    FirstString = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__earring__07_pearl",
+                    Hash = AppearanceValueLists.Piercings[value],
+                    SecondString = "piercings_01"
+                },
+                new[] { "TPP", "character_customization" }, AppearanceField.Hash);
+            }
+        }
 
         public object PiercingColor { get; set; }
 
@@ -1195,5 +1225,6 @@ namespace CP2077SaveEditor
         public static Dictionary<string, List<ulong>> BodyTattoos { get; } = Values["BodyTattoos"].ToObject<Dictionary<string, List<ulong>>>();
         public static List<string> Nailss { get; } = new List<string> { "Short", "Long" };
         public static List<ulong> FacialTattoos { get; } = Values["FacialTattoos"].ToObject<List<ulong>>();
+        public static List<ulong> Piercings { get; } = Values["Piercings"].ToObject<List<ulong>>();
     }
 }
