@@ -207,14 +207,16 @@ namespace CP2077SaveEditor
 
         private void pasteLegendaryIdButton_Click(object sender, EventArgs e)
         {
-            if (activeSaveFile.GetItemStatData(activeItem) == null)
+            var statData = activeSaveFile.GetItemStatData(activeItem);
+            if (statData == null)
             {
                 if (MessageBox.Show("Item has no stat data. To fix this, please upgrade the item in-game at least once. Fallback to old method?", "Notice", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     modsBaseIdBox.Text = ((ulong)88400986533).ToString();
                 }
             } else {
-                activeSaveFile.SetConstantStat(gamedataStatType.Quality, 4, activeSaveFile.GetItemStatData(activeItem));
+                activeSaveFile.SetConstantStat(gamedataStatType.Quality, 4, statData);
+                activeSaveFile.SetConstantStat(gamedataStatType.RandomCurveInput, 0, statData, gameStatModifierType.Multiplier);
 
                 ReloadData();
                 MessageBox.Show("Legendary quality stat applied.");

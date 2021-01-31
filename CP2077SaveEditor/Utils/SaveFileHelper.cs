@@ -158,16 +158,16 @@ namespace CP2077SaveEditor
             return null;
         }
 
-        public void SetConstantStat(gamedataStatType stat, float value, GameSavedStatsData statsData)
+        public void SetConstantStat(gamedataStatType stat, float value, GameSavedStatsData statsData, gameStatModifierType mod = gameStatModifierType.Additive)
         {
             var foundStat = false;
             foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
             {
-                if (modifier.Value.GetType() == typeof(GameConstantStatModifierData))
+                if (modifier.Value is GameConstantStatModifierData constantModifier)
                 {
-                    if (((GameConstantStatModifierData)modifier.Value).StatType == stat)
+                    if (constantModifier.StatType == stat && constantModifier.ModifierType == mod)
                     {
-                        ((GameConstantStatModifierData)modifier.Value).Value = value;
+                        constantModifier.Value = value;
                         foundStat = true;
                     }
                 }
@@ -175,10 +175,12 @@ namespace CP2077SaveEditor
 
             if (!foundStat)
             {
-                var newModifierData = new GameConstantStatModifierData();
-                newModifierData.ModifierType = gameStatModifierType.Additive;
-                newModifierData.StatType = stat;
-                newModifierData.Value = value;
+                var newModifierData = new GameConstantStatModifierData 
+                {
+                    ModifierType = mod,
+                    StatType = stat,
+                    Value = value
+                };
 
                 this.AddStat(typeof(GameConstantStatModifierData), statsData, newModifierData);
             }
