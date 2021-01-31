@@ -180,6 +180,8 @@ namespace CP2077SaveEditor
             {
                 this.SuspendLayout();
                 appearanceOptionsPanel.SuspendDrawing();
+                appearancePreviewBox.SuspendDrawing();
+                appearancePanel.Controls.Remove(appearancePreviewBox);
                 appearancePanel.Controls.Remove(appearanceOptionsPanel);
             }
         }
@@ -189,6 +191,8 @@ namespace CP2077SaveEditor
             if (!appearancePanel.Controls.Contains(appearanceOptionsPanel))
             {
                 appearancePanel.Controls.Add(appearanceOptionsPanel);
+                appearancePanel.Controls.Add(appearancePreviewBox);
+                appearancePreviewBox.ResumeDrawing();
                 appearanceOptionsPanel.ResumeDrawing();
                 this.ResumeLayout();
             }
