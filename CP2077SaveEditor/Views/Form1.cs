@@ -58,9 +58,6 @@ namespace CP2077SaveEditor
             InitializeComponent();
             this.Size = new Size(1040, 627);
             this.CenterToScreen();
-            this.Move += Form1_Move;
-            this.Resize += Form1_Resize;
-            this.ResizeEnd += Form1_Resize;
             editorPanel.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right);
 
             var tabPanels = new Panel[] { appearancePanel, inventoryPanel, factsPanel, statsPanel };
@@ -170,30 +167,6 @@ namespace CP2077SaveEditor
                 { }
             }
             
-        }
-
-        public void Form1_Move(object sender, EventArgs e)
-        {
-            if (appearancePanel.Controls.Contains(appearanceOptionsPanel))
-            {
-                this.SuspendLayout();
-                appearanceOptionsPanel.SuspendDrawing();
-                appearancePreviewBox.SuspendDrawing();
-                appearancePanel.Controls.Remove(appearancePreviewBox);
-                appearancePanel.Controls.Remove(appearanceOptionsPanel);
-            }
-        }
-
-        public void Form1_Resize(object sender, EventArgs e)
-        {
-            if (!appearancePanel.Controls.Contains(appearanceOptionsPanel))
-            {
-                appearancePanel.Controls.Add(appearanceOptionsPanel);
-                appearancePanel.Controls.Add(appearancePreviewBox);
-                appearancePreviewBox.ResumeDrawing();
-                appearanceOptionsPanel.ResumeDrawing();
-                this.ResumeLayout();
-            }
         }
 
         //This function & other functions related to managing tabs need to be refactored.

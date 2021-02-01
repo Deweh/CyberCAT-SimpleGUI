@@ -108,30 +108,39 @@ namespace CP2077SaveEditor
 
     public class ModernValuePicker : Panel
     {
-        private ModernButton leftButton = new ModernButton();
-        private ModernButton rightButton = new ModernButton();
-        private Label valueLabel = new Label();
-        private Label nameLabel = new Label();
+        //Painting
+        private Font[] fonts = new Font[] { new Font("Segoe UI", (float)8.25), new Font("Segoe UI", 13), new Font("Segoe UI", 13, FontStyle.Bold) };
+        private Pen pixelPen = new Pen(Color.Black, 1);
+        private bool[] gStates = new bool[] { false, false, false, false, false };
+        private bool[] enabledStates = new bool[] { true, true };
+        private Rectangle leftRect = new Rectangle(1,1,1,1);
+        private Rectangle rightRect = new Rectangle(1,1,1,1);
+
+        //Other
         private PickerValueType _type = PickerValueType.Integer;
         private int _index = 0;
         private int _maxInt = 99;
         private int _minInt = 0;
         private string[] _stringCollection = new string[] { };
-        private string _stringValue = string.Empty;
+        private string _stringValue = "00";
 
         public delegate void IndexChangedHandler(ModernValuePicker sender);
         public event IndexChangedHandler IndexChanged;
 
-        public string PickerName
+        public string PickerName { get; set; } = "Name";
+        public string StringValue
         {
-            get {
-                return nameLabel.Text;
+            get
+            {
+                return _stringValue;
             }
-            set {
-                nameLabel.Text = value.ToUpper();
-                UpdateChildControls();
+            set
+            {
+                _stringValue = value;
+                this.Invalidate(new Rectangle(leftRect.Right, leftRect.Top, rightRect.Left - leftRect.Right, 50));
             }
         }
+        public bool SuppressIndexChange { get; set; } = false;
 
         public PickerValueType PickerType
         {
@@ -143,20 +152,6 @@ namespace CP2077SaveEditor
                 _type = value;
                 SuppressIndexChange = true;
                 Index = 0;
-            }
-        }
-
-        public string StringValue
-        {
-            get
-            {
-                return _stringValue;
-            }
-            set
-            {
-                _stringValue = value;
-                valueLabel.Text = _stringValue.ToUpper();
-                UpdateChildControls();
             }
         }
 
@@ -207,8 +202,6 @@ namespace CP2077SaveEditor
                     }
                 }
 
-                UpdateChildControls();
-
                 if (SuppressIndexChange == true)
                 {
                     SuppressIndexChange = false;
@@ -217,8 +210,6 @@ namespace CP2077SaveEditor
                 }
             }
         }
-
-        public bool SuppressIndexChange { get; set; } = false;
 
         public string[] StringCollection
         {
@@ -267,63 +258,142 @@ namespace CP2077SaveEditor
             }
         }
 
-        protected override void OnCreateControl()
-        {
-            base.OnCreateControl();
-            this.Controls.AddRange(new Control[] { leftButton, rightButton, valueLabel, nameLabel });
-            this.BorderStyle = BorderStyle.None;
-
-            leftButton.Text = "<";
-            rightButton.Text = ">";
-            leftButton.Size = new Size(20, 50);
-            rightButton.Size = new Size(20, 50);
-            nameLabel.AutoSize = true;
-            valueLabel.AutoSize = true;
-            nameLabel.Font = new Font(nameLabel.Font.FontFamily, 13, FontStyle.Bold);
-            valueLabel.Font = new Font(valueLabel.Font.FontFamily, 13);
-
-            leftButton.Click += leftButton_Click;
-            rightButton.Click += rightButton_Click;
-            nameLabel.TextChanged += UpdateChildControls;
-            valueLabel.TextChanged += UpdateChildControls;
-            this.SizeChanged += UpdateChildControls;
-
-            valueLabel.Click += valueLabel_DoubleClick;
-            UpdateChildControls();
-        }
-
         public ModernValuePicker()
         {
             PickerName = "Name";
-            valueLabel.Text = "00";
+            StringValue = "00";
             this.Size = new Size(200, 100);
+            this.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(this, true, null);
         }
 
-        private void UpdateChildControls(object sender = null, EventArgs e = null)
+        protected override void OnPaint(PaintEventArgs e)
         {
-            leftButton.Location = new Point(10, (this.Height / 5) * 3 - (leftButton.Height / 2));
-            rightButton.Location = new Point(this.Width - 30, (this.Height / 5) * 3 - (rightButton.Height / 2));
-            nameLabel.Location = new Point((this.Width / 2) - (nameLabel.Width / 2), (this.Height / 5) - (nameLabel.Height / 2));
-            valueLabel.Location = new Point((this.Width / 2) - (valueLabel.Width / 2), (this.Height / 5) * 3 - (valueLabel.Height / 2));
+            var g = e.Graphics;
+            leftRect = new Rectangle(10, (this.Height / 5) * 3 - 25, 20, 50);
+            rightRect = new Rectangle(this.Width - 30, (this.Height / 5) * 3 - 25, 20, 50);
+            var leftSize = TextRenderer.MeasureText("<", fonts[0]);
+            var rightSize = TextRenderer.MeasureText(">", fonts[0]);
+            var valueSize = TextRenderer.MeasureText(StringValue.ToUpper(), fonts[1]);
+            var nameSize = TextRenderer.MeasureText(PickerName.ToUpper(), fonts[2]);
+
+            if (gStates[0]) g.FillRectangle(Brushes.LightGray, leftRect);
+            if (gStates[1]) g.FillRectangle(Brushes.LightGray, rightRect);
+            if (gStates[2]) g.FillRectangle(Brushes.DarkGray, leftRect);
+            if (gStates[3]) g.FillRectangle(Brushes.DarkGray, rightRect);
+
+            g.DrawRectangle(pixelPen, leftRect);
+            g.DrawRectangle(pixelPen, rightRect);
+            TextRenderer.DrawText(g, "<", fonts[0], new Point(leftRect.X + ((leftRect.Width / 2) - (leftSize.Width / 2)), leftRect.Y + ((leftRect.Height / 2) - (leftSize.Height / 2))), pixelPen.Color);
+            TextRenderer.DrawText(g, ">", fonts[0], new Point(rightRect.X + ((rightRect.Width / 2) - (rightSize.Width / 2)), rightRect.Y + ((rightRect.Height / 2) - (rightSize.Height / 2))), pixelPen.Color);
+            if (!gStates[4]) TextRenderer.DrawText(g, StringValue.ToUpper(), fonts[1], new Point((this.Width / 2) - (valueSize.Width / 2), (this.Height / 5) * 3 - (valueSize.Height / 2)), pixelPen.Color);
+            TextRenderer.DrawText(g, PickerName.ToUpper(), fonts[2], new Point((this.Width / 2) - (nameSize.Width / 2), (this.Height / 5) - (nameSize.Height / 2)), pixelPen.Color);
         }
 
-        private void leftButton_Click(object sender, EventArgs e)
+        protected override void OnMouseMove(MouseEventArgs e)
         {
-            Index = Index - 1;
+            if (leftRect.Contains(e.Location) && !gStates[0] && enabledStates[0])
+            {
+                gStates[0] = true;
+                this.Invalidate(leftRect);
+            }
+            else if (!leftRect.Contains(e.Location) && gStates[0])
+            {
+                gStates[0] = false;
+                this.Invalidate(leftRect);
+            }
+
+            if (rightRect.Contains(e.Location) && !gStates[1] && enabledStates[1])
+            {
+                gStates[1] = true;
+                this.Invalidate(rightRect);
+            }
+            else if (!rightRect.Contains(e.Location) && gStates[1])
+            {
+                gStates[1] = false;
+                this.Invalidate(rightRect);
+            }
         }
 
-        private void rightButton_Click(object sender, EventArgs e)
+        protected override void OnMouseLeave(EventArgs e)
         {
-            Index = Index + 1;
+            gStates = new bool[] { false, false, false, false, false };
+            
+            this.Invalidate(leftRect);
+            this.Invalidate(rightRect);
         }
 
-        private void valueLabel_DoubleClick(object sender, EventArgs e)
+        protected override void OnMouseDown(MouseEventArgs e)
         {
+            if (leftRect.Contains(e.Location) && !gStates[2] && enabledStates[0])
+            {
+                gStates[2] = true;
+                this.Invalidate(leftRect);
+            }
+
+            if (rightRect.Contains(e.Location) && !gStates[3] && enabledStates[1])
+            {
+                gStates[3] = true;
+                this.Invalidate(rightRect);
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (gStates[2])
+            {
+                if (enabledStates[0])
+                {
+                    Index -= 1;
+                }
+                gStates[2] = false;
+                this.Invalidate(leftRect);
+            }
+
+            if (gStates[3])
+            {
+                if (enabledStates[1])
+                {
+                    Index += 1;
+                }
+                gStates[3] = false;
+                this.Invalidate(rightRect);
+            }
+        }
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            base.OnEnabledChanged(e);
+            if (this.Enabled)
+            {
+                pixelPen = new Pen(Color.Black, 1);
+            } else {
+                pixelPen = new Pen(Color.Gray, 1);
+            }
+            this.Invalidate();
+        }
+
+        protected override void OnDoubleClick(EventArgs e)
+        {
+            if (gStates[4])
+            {
+                return;
+            }
+
+            var valueSize = TextRenderer.MeasureText(StringValue.ToUpper(), fonts[1]);
+            var valueLoc = new Point((this.Width / 2) - (valueSize.Width / 2), (this.Height / 5) * 3 - (valueSize.Height / 2));
+
+            if (!new Rectangle(valueLoc, valueSize).Contains(PointToClient(Cursor.Position)))
+            {
+                return;
+            }
+
             Control entryBox;
             if (PickerType == PickerValueType.Integer)
             {
                 entryBox = new TextBox();
-            } else {
+            }
+            else
+            {
                 var newCombo = new ComboBox();
                 newCombo.Items.AddRange(StringCollection);
                 newCombo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
@@ -333,17 +403,16 @@ namespace CP2077SaveEditor
             }
             this.Controls.Add(entryBox);
 
-            entryBox.Font = valueLabel.Font;
-            entryBox.Location = valueLabel.Location;
+            entryBox.Font = fonts[1];
+            entryBox.Location = valueLoc;
             entryBox.Text = StringValue;
-            entryBox.Size = valueLabel.Size;
+            entryBox.Size = valueSize;
             entryBox.KeyDown += entryBox_KeyDown;
             entryBox.Select();
 
-            leftButton.Enabled = false;
-            rightButton.Enabled = false;
-
-            valueLabel.Visible = false;
+            enabledStates = new bool[] { false, false };
+            gStates[4] = true;
+            this.Invalidate();
         }
 
         private void entryBox_IndexChanged(object sender, EventArgs e)
@@ -351,7 +420,7 @@ namespace CP2077SaveEditor
             var castedSender = (ComboBox)sender;
             if (castedSender.Text != StringValue)
             {
-                entryBox_ApplyValue(sender, null);
+                entryBox_ApplyValue(sender);
             }
         }
 
@@ -360,11 +429,11 @@ namespace CP2077SaveEditor
             if (e.KeyCode == Keys.Enter)
             {
                 e.Handled = true; e.SuppressKeyPress = true;
-                entryBox_ApplyValue(sender, null);
+                entryBox_ApplyValue(sender);
             }
         }
 
-        private void entryBox_ApplyValue(object sender, EventArgs e)
+        private void entryBox_ApplyValue(object sender)
         {
             Control castedSender;
             if (sender is ComboBox)
@@ -375,7 +444,9 @@ namespace CP2077SaveEditor
                 {
                     Index = newInd;
                 }
-            } else {
+            }
+            else
+            {
                 castedSender = (TextBox)sender;
                 int newInd;
                 if (int.TryParse(castedSender.Text, out newInd) == true)
@@ -383,13 +454,11 @@ namespace CP2077SaveEditor
                     Index = newInd;
                 }
             }
-
             this.Controls.Remove(castedSender);
 
-            leftButton.Enabled = true;
-            rightButton.Enabled = true;
-
-            valueLabel.Visible = true;
+            enabledStates = new bool[] { true, true };
+            gStates[4] = false;
+            this.Invalidate();
         }
     }
 
