@@ -22,6 +22,7 @@ namespace CP2077SaveEditor
         private void continueButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+            this.Close();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
