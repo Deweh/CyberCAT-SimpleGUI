@@ -128,6 +128,11 @@ namespace CP2077SaveEditor
             var lastPos = 20;
             foreach (PropertyInfo property in typeof(AppearanceHelper).GetProperties())
             {
+                //if (property.PropertyType.Name == "Object")
+                //{
+                //    MessageBox.Show(property.Name);
+                //}
+
                 if (property.PropertyType.Name != "Object" && property.Name != "MainSections" && property.CanWrite == true)
                 {
                     var picker = new ModernValuePicker()

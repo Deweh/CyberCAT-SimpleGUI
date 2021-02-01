@@ -340,7 +340,36 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object FacialScars { get; set; }
+        public int FacialScars
+        {
+            get
+            {
+                var value = GetConcatedValue("first.main.first.scars");
+                if (value == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return AppearanceValueLists.FacialScars.FindIndex(x => x == value) + 1;
+                }
+            }
+            set
+            {
+                if (value > AppearanceValueLists.FacialScars.Count || value < 0)
+                {
+                    return;
+                }
+
+                SetNullableHashEntry("scars", new HashValueEntry
+                {
+                    FirstString = (value > 0 ? "h0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__scars_01__" + AppearanceValueLists.FacialScars[value - 1] : null),
+                    Hash = 5491315604699331944,
+                    SecondString = "scars"
+                },
+                new[] { "TPP", "character_customization" }, AppearanceField.FirstString);
+            }
+        }
 
         public int FacialTattoos
         {
@@ -1236,5 +1265,6 @@ namespace CP2077SaveEditor
         public static List<ulong> FacialTattoos { get; } = Values["FacialTattoos"].ToObject<List<ulong>>();
         public static List<ulong> Piercings { get; } = Values["Piercings"].ToObject<List<ulong>>();
         public static List<string> Teeth { get; } = Values["Teeth"].ToObject<List<string>>();
+        public static List<string> FacialScars { get; } = Values["FacialScars"].ToObject<List<string>>();
     }
 }

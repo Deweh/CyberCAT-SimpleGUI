@@ -301,5 +301,17 @@
 		"__gold",
 		"__cooper",
 		"__pink"
+	],
+	"FacialScars":
+	[
+		"scar_01",
+		"scar_02",
+		"scar_03",
+		"tribe_01",
+		"tribe_02",
+		"tribe_03",
+		"beatup_01",
+		"beatup_02",
+		"seal_01"
 	]
 }
