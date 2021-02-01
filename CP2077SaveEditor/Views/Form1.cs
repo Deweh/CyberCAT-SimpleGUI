@@ -28,6 +28,7 @@ namespace CP2077SaveEditor
 
         //Save Info
         private bool loadingSave = false;
+        private bool cancelLoad = false;
         private int saveType = 0;
         private Random globalRand = new Random();
 
@@ -68,6 +69,7 @@ namespace CP2077SaveEditor
                 singleTab.Visible = false;
             }
 
+            GenericUnknownStructParser.WrongDefaultValue += GenericUnknownStructParser_WrongDefaultValue;
             factsListView.AfterLabelEdit += factsListView_AfterLabelEdit;
             factsListView.MouseUp += factsListView_MouseUp;
             factsListView.KeyDown += factsListView_KeyDown;
@@ -459,11 +461,12 @@ namespace CP2077SaveEditor
                 });
 
                 var newSave = new SaveFileHelper(parsers);
-                if (saveType == 0)
+                newSave.Load(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+
+                if (cancelLoad)
                 {
-                    newSave.Load(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
-                } else {
-                    newSave.Load(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                    cancelLoad = false;
+                    return;
                 }
                 
                 activeSaveFile = newSave;
@@ -549,6 +552,16 @@ namespace CP2077SaveEditor
                 filePathLabel.Text = Path.GetFileName(Path.GetDirectoryName(fileWindow.FileName));
                 statusLabel.Text = "Save file loaded.";
                 SwapTab(statsButton, statsPanel);
+            }
+        }
+
+        private void GenericUnknownStructParser_WrongDefaultValue(object sender, WrongDefaultValueEventArgs e)
+        {
+            e.Ignore = true;
+            if (new WrongDefaultDialog(e.ClassName, e.PropertyName, e.Value).ShowDialog() != DialogResult.OK)
+            {
+                cancelLoad = true;
+                statusLabel.Text = "Load cancelled.";
             }
         }
 
