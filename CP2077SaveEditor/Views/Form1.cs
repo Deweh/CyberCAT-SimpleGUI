@@ -126,30 +126,23 @@ namespace CP2077SaveEditor
             }
 
             var lastPos = 20;
-            var r = new Regex(@"
-                (?<=[A-Z])(?=[A-Z][a-z]) |
-                 (?<=[^A-Z])(?=[A-Z]) |
-                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
-
-            typeof(AppearanceHelper).GetProperties();
-
-            foreach (System.Reflection.PropertyInfo property in typeof(AppearanceHelper).GetProperties())
+            foreach (PropertyInfo property in typeof(AppearanceHelper).GetProperties())
             {
                 if (property.PropertyType.Name != "Object" && property.Name != "MainSections" && property.CanWrite == true)
                 {
                     var picker = new ModernValuePicker()
                     {
                         Name = property.Name,
-                        PickerName = r.Replace(property.Name, " "),
+                        PickerName = Regex.Replace(property.Name, "([a-z])([A-Z])", "$1 $2"),
                         Location = new Point(0, lastPos),
-                        Tag = property,
+                        Tag = property
                     };
 
                     appearanceOptionsPanel.Controls.Add(picker);
                     picker.IndexChanged += AppearanceOptionChanged;
                     picker.MouseEnter += AppearanceOptionMouseEnter;
-
-                        lastPos += picker.Height + 20;
+                    
+                    lastPos += picker.Height + 20;
                 }
             }
 

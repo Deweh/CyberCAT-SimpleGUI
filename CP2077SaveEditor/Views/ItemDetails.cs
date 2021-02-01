@@ -73,45 +73,39 @@ namespace CP2077SaveEditor
         {
             if (!statsOnly)
             {
-                if (activeItem.Data.GetType().FullName.EndsWith("SimpleItemData"))
+                if (activeItem.Data is ItemData.SimpleItemData simpleData)
                 {
                     //SimpleItemData parsing
                     this.Text = activeItem.ItemTdbId.Name + " (Simple Item)";
-
-                    basicInfoGroupBox.Enabled = true;
-                    quickActionsGroupBox.Enabled = false;
 
                     if (detailsTabControl.TabPages.Contains(modInfoTab))
                     {
                         detailsTabControl.TabPages.Remove(modInfoTab);
                     }
 
-                    var data = (ItemData.SimpleItemData)activeItem.Data;
-                    quantityUpDown.Value = data.Quantity;
+                    quantityUpDown.Value = simpleData.Quantity;
                 }
-                else
+
+                if (activeItem.Data is ItemData.ModableItemData modableData)
                 {
                     //ModableItemData parsing
                     this.Text = activeItem.ItemTdbId.Name + " (Modable Item)";
 
-                    basicInfoGroupBox.Enabled = false;
-                    quickActionsGroupBox.Enabled = true;
+                    if (activeItem.Data is ItemData.ModableItemWithQuantityData modableQuantityData)
+                    {
+                        quantityUpDown.Value = modableQuantityData.Quantity;
+                    } else {
+                        basicInfoGroupBox.Enabled = false;
+                        quantityUpDown.Value = 1;
+                    }
 
-                    var data = (ItemData.ModableItemData)activeItem.Data;
-                    quantityUpDown.Value = 1;
-                    modsBaseIdBox.Text = data.TdbId1.Raw64.ToString();
+                    quickActionsGroupBox.Enabled = true;
+                    modsBaseIdBox.Text = modableData.TdbId1.Raw64.ToString();
 
                     modsTreeView.Nodes.Clear();
-
-                    var rootNode = modsTreeView.Nodes.Add(data.RootNode.AttachmentSlotTdbId.Name, data.RootNode.AttachmentSlotTdbId.Name + " :: " + data.RootNode.ItemTdbId.Name + " [" + data.RootNode.ChildrenCount.ToString() + "]");
-                    rootNode.Tag = data.RootNode;
-
-                    IterativeBuildModTree(data.RootNode, rootNode);
-                }
-                if (activeItem.Data.GetType() == typeof(ItemData.ModableItemWithQuantityData))
-                {
-                    basicInfoGroupBox.Enabled = true;
-                    quantityUpDown.Value = ((ItemData.ModableItemWithQuantityData)activeItem.Data).Quantity;
+                    var rootNode = modsTreeView.Nodes.Add(modableData.RootNode.AttachmentSlotTdbId.Name, modableData.RootNode.AttachmentSlotTdbId.Name + " :: " + modableData.RootNode.ItemTdbId.Name + " [" + modableData.RootNode.ChildrenCount.ToString() + "]");
+                    rootNode.Tag = modableData.RootNode;
+                    IterativeBuildModTree(modableData.RootNode, rootNode);
                 }
             }
 
@@ -120,6 +114,7 @@ namespace CP2077SaveEditor
             {
                 activeSaveFile.CreateStatData(activeItem, globalRand);
             }
+
             statsListView.Items.Clear();
             var listRows = new List<ListViewItem>();
             var statsData = activeSaveFile.GetItemStatData(activeItem);
@@ -129,14 +124,14 @@ namespace CP2077SaveEditor
                 {
                     var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
 
-                    if (modifier.Value.GetType().Name == "GameCombinedStatModifierData")
+                    if (modifier.Value is GameCombinedStatModifierData combinedData)
                     {
                         row[0] = "Combined";
-                        row[3] = ((GameCombinedStatModifierData)modifier.Value).Value.ToString();
+                        row[3] = combinedData.Value.ToString();
                     }
-                    else if (modifier.Value.GetType().Name == "GameConstantStatModifierData")
+                    else if (modifier.Value is GameConstantStatModifierData constantData)
                     {
-                        row[3] = ((GameConstantStatModifierData)modifier.Value).Value.ToString();
+                        row[3] = constantData.Value.ToString();
                     }
                     else
                     {
@@ -227,33 +222,24 @@ namespace CP2077SaveEditor
         {
             if (!statsOnly)
             {
-                if (activeItem.Data.GetType() == typeof(ItemData.SimpleItemData))
+                if (activeItem.Data is ItemData.ModableItemData modableData)
                 {
-                    ((ItemData.SimpleItemData)activeItem.Data).Quantity = (uint)quantityUpDown.Value;
-                }
-                else
-                {
-                    try
+                    if (!ulong.TryParse(modsBaseIdBox.Text, out ulong id))
                     {
-                        ulong.Parse(modsBaseIdBox.Text);
-                    }
-                    catch (Exception)
-                    {
-                        MessageBox.Show("ID must be a 64-bit unsigned integer.");
+                        MessageBox.Show("Special ID must be a 64-bit unsigned integer.");
                         return;
                     }
-                    if (activeItem.Data.GetType() == typeof(ItemData.ModableItemData))
-                    {
-                        ((ItemData.ModableItemData)activeItem.Data).TdbId1.Raw64 = ulong.Parse(modsBaseIdBox.Text);
-                    } else {
-                        ((ItemData.ModableItemWithQuantityData)activeItem.Data).TdbId1.Raw64 = ulong.Parse(modsBaseIdBox.Text);
-                        ((ItemData.ModableItemWithQuantityData)activeItem.Data).Quantity = (uint)quantityUpDown.Value;
-                    }
-                  
+                    modableData.TdbId1.Raw64 = id;
                 }
+
+                if (activeItem.Data is ItemData.SimpleItemData || activeItem.Data is ItemData.ModableItemWithQuantityData)
+                {
+                    ((dynamic)activeItem.Data).Quantity = (uint)quantityUpDown.Value;
+                }
+
                 activeItem.Flags.IsNotUnequippable = unknownFlag1CheckBox.Checked;
                 activeItem.Flags.IsQuestItem = questItemCheckBox.Checked;
-                callbackFunc1.Invoke();
+                callbackFunc1();
                 applyButton.Enabled = false;
             }
         }
