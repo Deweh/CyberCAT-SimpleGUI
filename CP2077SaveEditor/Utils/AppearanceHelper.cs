@@ -608,7 +608,36 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object CheekMakeup { get; set; }
+        public int CheekMakeup
+        {
+            get
+            {
+                var hash = GetValue("first.main.hash.makeupCheeks_");
+                if (hash == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return AppearanceValueLists.CheekMakeups.FindIndex(x => x == ulong.Parse(hash));
+                }
+            }
+            set
+            {
+                if (value > (AppearanceValueLists.CheekMakeups.Count - 1) || value < 0)
+                {
+                    return;
+                }
+
+                SetNullableHashEntry("makeupCheeks_", new HashValueEntry
+                {
+                    FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__morphs_makeup_freckles_01__" + (value == 5 ? "02_pink" : "03_light_brown"),
+                    Hash = AppearanceValueLists.CheekMakeups[value],
+                    SecondString = "makeupCheeks_01"
+                },
+                new[] { "TPP", "character_customization" });
+            }
+        }
 
         public object CheekMakeupColor { get; set; }
 
@@ -1320,5 +1349,6 @@ namespace CP2077SaveEditor
         public static List<string> FacialScars { get; } = Values["FacialScars"].ToObject<List<string>>();
         public static List<ulong> BodyScars { get; } = Values["BodyScars"].ToObject<List<ulong>>();
         public static List<string> PiercingColors { get; } = Values["PiercingColors"].ToObject<List<string>>();
+        public static List<ulong> CheekMakeups { get; } = Values["CheekMakeups"].ToObject<List<ulong>>();
     }
 }
