@@ -262,8 +262,8 @@ namespace CP2077SaveEditor
         {
             PickerName = "Name";
             StringValue = "00";
-            this.Size = new Size(200, 100);
-            this.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(this, true, null);
+            Size = new Size(200, 100);
+            DoubleBuffered = true;
         }
 
         protected override void OnPaint(PaintEventArgs e)
