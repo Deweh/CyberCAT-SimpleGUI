@@ -114,7 +114,7 @@ namespace CP2077SaveEditor
                 var value = GetValue("first.main.first.hair_color");
                 if (value == "default")
                 {
-                    throw new Exception();
+                    return -1;
                 }
                 else
                 {
@@ -217,7 +217,7 @@ namespace CP2077SaveEditor
                 var result = GetConcatedValue("first.main.first.eyebrows_color");
                 if (result == "default")
                 {
-                    throw new Exception();
+                    return -1;
                 }
                 else
                 {
@@ -510,7 +510,7 @@ namespace CP2077SaveEditor
                 var result = GetConcatedValue("first.main.first.makeupEyes_");
                 if (result == "default")
                 {
-                    throw new Exception();
+                    return -1;
                 }
                 else
                 {
@@ -567,7 +567,7 @@ namespace CP2077SaveEditor
                 var result = GetConcatedValue("first.main.first.makeupLips_");
                 if (result == "default")
                 {
-                    throw new Exception();
+                    return -1;
                 }
                 else
                 {
@@ -665,7 +665,7 @@ namespace CP2077SaveEditor
             {
                 if (BodyGender == AppearanceGender.Male)
                 {
-                    throw new Exception();
+                    return -1;
                 }
 
                 var result = GetConcatedValue("third.additional.second.breast");

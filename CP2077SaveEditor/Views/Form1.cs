@@ -205,6 +205,13 @@ namespace CP2077SaveEditor
                     var value = GetAppearanceValue(picker);
                     if (value is int intValue)
                     {
+                        if (intValue < 0)
+                        {
+                            picker.StringValue = string.Empty;
+                            picker.Enabled = false;
+                            continue;
+                        }
+
                         picker.SuppressIndexChange = true;
                         picker.Index = intValue;
                     }
@@ -242,7 +249,7 @@ namespace CP2077SaveEditor
                 }
                 catch(Exception)
                 {
-                    picker.StringValue = "";
+                    picker.StringValue = string.Empty;
                     picker.Enabled = false;
                 }
             }
