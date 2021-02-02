@@ -442,7 +442,30 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object PiercingColor { get; set; }
+        public int PiercingColor
+        {
+            get
+            {
+                var value = GetConcatedValue("first.main.first.piercings_");
+                if (value == "default")
+                {
+                    return -1;
+                }
+                else
+                {
+                    return AppearanceValueLists.PiercingColors.FindIndex(x => x == value) + 1;
+                }
+            }
+            set
+            {
+                if (value > AppearanceValueLists.PiercingColors.Count || value < 1)
+                {
+                    return;
+                }
+
+                SetConcatedValue("first.main.first.piercings_", AppearanceValueLists.PiercingColors[value - 1]);
+            }
+        }
 
         public int Teeth
         {
@@ -1296,5 +1319,6 @@ namespace CP2077SaveEditor
         public static List<string> Teeth { get; } = Values["Teeth"].ToObject<List<string>>();
         public static List<string> FacialScars { get; } = Values["FacialScars"].ToObject<List<string>>();
         public static List<ulong> BodyScars { get; } = Values["BodyScars"].ToObject<List<ulong>>();
+        public static List<string> PiercingColors { get; } = Values["PiercingColors"].ToObject<List<string>>();
     }
 }
