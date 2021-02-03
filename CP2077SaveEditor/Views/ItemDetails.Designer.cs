@@ -37,6 +37,7 @@ namespace CP2077SaveEditor
             this.modsBaseIdBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.quickActionsGroupBox = new System.Windows.Forms.GroupBox();
+            this.infuseLegendaryComponentsButton = new CP2077SaveEditor.ModernButton();
             this.pasteLegendaryIdButton = new CP2077SaveEditor.ModernButton();
             this.questItemCheckBox = new System.Windows.Forms.CheckBox();
             this.flagsGroupBox = new System.Windows.Forms.GroupBox();
@@ -52,18 +53,22 @@ namespace CP2077SaveEditor
             this.statValueHeader = new System.Windows.Forms.ColumnHeader();
             this.removeStatButton = new CP2077SaveEditor.ModernButton();
             this.addConstantStatButton = new CP2077SaveEditor.ModernButton();
+            this.statsPlaceholderTab = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.createStatDataButton = new CP2077SaveEditor.ModernButton();
             this.modInfoTab = new System.Windows.Forms.TabPage();
             this.newModNodeButton = new CP2077SaveEditor.ModernButton();
             this.deleteModNodeButton = new CP2077SaveEditor.ModernButton();
             this.closeButton = new CP2077SaveEditor.ModernButton();
             this.applyButton = new CP2077SaveEditor.ModernButton();
-            this.infuseLegendaryComponentsButton = new CP2077SaveEditor.ModernButton();
             this.basicInfoGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.quantityUpDown)).BeginInit();
             this.quickActionsGroupBox.SuspendLayout();
             this.flagsGroupBox.SuspendLayout();
             this.detailsTabControl.SuspendLayout();
             this.statsTab.SuspendLayout();
+            this.statsPlaceholderTab.SuspendLayout();
             this.modInfoTab.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -135,6 +140,22 @@ namespace CP2077SaveEditor
             this.quickActionsGroupBox.TabStop = false;
             this.quickActionsGroupBox.Text = "Quick Actions";
             // 
+            // infuseLegendaryComponentsButton
+            // 
+            this.infuseLegendaryComponentsButton.BackColor = System.Drawing.Color.White;
+            this.infuseLegendaryComponentsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.infuseLegendaryComponentsButton.ClickEffectEnabled = true;
+            this.infuseLegendaryComponentsButton.DefaultColor = System.Drawing.Color.White;
+            this.infuseLegendaryComponentsButton.HoverColor = System.Drawing.Color.LightGray;
+            this.infuseLegendaryComponentsButton.Location = new System.Drawing.Point(212, 21);
+            this.infuseLegendaryComponentsButton.Name = "infuseLegendaryComponentsButton";
+            this.infuseLegendaryComponentsButton.Size = new System.Drawing.Size(214, 24);
+            this.infuseLegendaryComponentsButton.TabIndex = 3;
+            this.infuseLegendaryComponentsButton.Text = "Infuse Legendary Components";
+            this.infuseLegendaryComponentsButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.infuseLegendaryComponentsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.infuseLegendaryComponentsButton.Click += new System.EventHandler(this.infuseLegendaryComponentsButton_Click);
+            // 
             // pasteLegendaryIdButton
             // 
             this.pasteLegendaryIdButton.BackColor = System.Drawing.Color.White;
@@ -186,6 +207,7 @@ namespace CP2077SaveEditor
             // 
             this.detailsTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.detailsTabControl.Controls.Add(this.statsTab);
+            this.detailsTabControl.Controls.Add(this.statsPlaceholderTab);
             this.detailsTabControl.Controls.Add(this.modInfoTab);
             this.detailsTabControl.Location = new System.Drawing.Point(12, 201);
             this.detailsTabControl.Name = "detailsTabControl";
@@ -315,6 +337,54 @@ namespace CP2077SaveEditor
             this.addConstantStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.addConstantStatButton.Click += new System.EventHandler(this.addConstantStatButton_Click);
             // 
+            // statsPlaceholderTab
+            // 
+            this.statsPlaceholderTab.Controls.Add(this.label4);
+            this.statsPlaceholderTab.Controls.Add(this.label3);
+            this.statsPlaceholderTab.Controls.Add(this.createStatDataButton);
+            this.statsPlaceholderTab.Location = new System.Drawing.Point(4, 22);
+            this.statsPlaceholderTab.Name = "statsPlaceholderTab";
+            this.statsPlaceholderTab.Size = new System.Drawing.Size(424, 330);
+            this.statsPlaceholderTab.TabIndex = 2;
+            this.statsPlaceholderTab.Text = "Stats";
+            this.statsPlaceholderTab.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(31, 186);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(362, 26);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Note: This feature is in beta and has only been tested on clothes and\r\nweapons. U" +
+    "sing it on other items may cause corruption.";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(43, 90);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(335, 13);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "This item has no stat data, but a new entry can be created for it.";
+            // 
+            // createStatDataButton
+            // 
+            this.createStatDataButton.BackColor = System.Drawing.Color.White;
+            this.createStatDataButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.createStatDataButton.ClickEffectEnabled = true;
+            this.createStatDataButton.DefaultColor = System.Drawing.Color.White;
+            this.createStatDataButton.HoverColor = System.Drawing.Color.LightGray;
+            this.createStatDataButton.Location = new System.Drawing.Point(109, 129);
+            this.createStatDataButton.Name = "createStatDataButton";
+            this.createStatDataButton.Size = new System.Drawing.Size(200, 32);
+            this.createStatDataButton.TabIndex = 0;
+            this.createStatDataButton.Text = "Create Stat Entry";
+            this.createStatDataButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.createStatDataButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.createStatDataButton.Click += new System.EventHandler(this.createStatDataButton_Click);
+            // 
             // modInfoTab
             // 
             this.modInfoTab.Controls.Add(this.newModNodeButton);
@@ -396,22 +466,6 @@ namespace CP2077SaveEditor
             this.applyButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
-            // infuseLegendaryComponentsButton
-            // 
-            this.infuseLegendaryComponentsButton.BackColor = System.Drawing.Color.White;
-            this.infuseLegendaryComponentsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.infuseLegendaryComponentsButton.ClickEffectEnabled = true;
-            this.infuseLegendaryComponentsButton.DefaultColor = System.Drawing.Color.White;
-            this.infuseLegendaryComponentsButton.HoverColor = System.Drawing.Color.LightGray;
-            this.infuseLegendaryComponentsButton.Location = new System.Drawing.Point(212, 21);
-            this.infuseLegendaryComponentsButton.Name = "infuseLegendaryComponentsButton";
-            this.infuseLegendaryComponentsButton.Size = new System.Drawing.Size(214, 24);
-            this.infuseLegendaryComponentsButton.TabIndex = 3;
-            this.infuseLegendaryComponentsButton.Text = "Infuse Legendary Components";
-            this.infuseLegendaryComponentsButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.infuseLegendaryComponentsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.infuseLegendaryComponentsButton.Click += new System.EventHandler(this.infuseLegendaryComponentsButton_Click);
-            // 
             // ItemDetails
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -438,6 +492,8 @@ namespace CP2077SaveEditor
             this.flagsGroupBox.PerformLayout();
             this.detailsTabControl.ResumeLayout(false);
             this.statsTab.ResumeLayout(false);
+            this.statsPlaceholderTab.ResumeLayout(false);
+            this.statsPlaceholderTab.PerformLayout();
             this.modInfoTab.ResumeLayout(false);
             this.modInfoTab.PerformLayout();
             this.ResumeLayout(false);
@@ -474,5 +530,9 @@ namespace CP2077SaveEditor
         private ModernButton newModNodeButton;
         private ModernButton deleteModNodeButton;
         private ModernButton infuseLegendaryComponentsButton;
+        private System.Windows.Forms.TabPage statsPlaceholderTab;
+        private System.Windows.Forms.Label label3;
+        private ModernButton createStatDataButton;
+        private System.Windows.Forms.Label label4;
     }
 }

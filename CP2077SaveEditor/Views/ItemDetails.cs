@@ -112,44 +112,48 @@ namespace CP2077SaveEditor
             //Stats parsing
             if (activeSaveFile.GetItemStatData(activeItem) == null)
             {
-                activeSaveFile.CreateStatData(activeItem, globalRand);
+                detailsTabControl.TabPages.Remove(statsTab);
             }
-
-            statsListView.Items.Clear();
-            var listRows = new List<ListViewItem>();
-            var statsData = activeSaveFile.GetItemStatData(activeItem);
-            if (statsData.StatModifiers != null)
+            else
             {
-                foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
+                detailsTabControl.TabPages.Remove(statsPlaceholderTab);
+                statsListView.Items.Clear();
+                var listRows = new List<ListViewItem>();
+                var statsData = activeSaveFile.GetItemStatData(activeItem);
+                if (statsData.StatModifiers != null)
                 {
-                    var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
+                    foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
+                    {
+                        var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
 
-                    if (modifier.Value is GameCombinedStatModifierData combinedData)
-                    {
-                        row[0] = "Combined";
-                        row[3] = combinedData.Value.ToString();
-                    }
-                    else if (modifier.Value is GameConstantStatModifierData constantData)
-                    {
-                        row[3] = constantData.Value.ToString();
-                    }
-                    else
-                    {
-                        row[0] = "Curve";
+                        if (modifier.Value is GameCombinedStatModifierData combinedData)
+                        {
+                            row[0] = "Combined";
+                            row[3] = combinedData.Value.ToString();
+                        }
+                        else if (modifier.Value is GameConstantStatModifierData constantData)
+                        {
+                            row[3] = constantData.Value.ToString();
+                        }
+                        else
+                        {
+                            row[0] = "Curve";
+                        }
+
+                        var newItem = new ListViewItem(row);
+                        newItem.Tag = modifier;
+                        listRows.Add(newItem);
                     }
 
-                    var newItem = new ListViewItem(row);
-                    newItem.Tag = modifier;
-                    listRows.Add(newItem);
+                    statsListView.BeginUpdate();
+                    statsListView.Items.AddRange(listRows.ToArray());
+                    statsListView.EndUpdate();
                 }
-
-                statsListView.BeginUpdate();
-                statsListView.Items.AddRange(listRows.ToArray());
-                statsListView.EndUpdate();
-            } else {
-                statsData.StatModifiers = new Handle<GameStatModifierData>[0];
+                else
+                {
+                    statsData.StatModifiers = new Handle<GameStatModifierData>[0];
+                }
             }
-            
 
             if (!statsOnly)
             {
@@ -409,6 +413,15 @@ namespace CP2077SaveEditor
         private void ApplyableControlChanged(object sender, EventArgs e)
         {
             applyButton.Enabled = true;
+        }
+
+        private void createStatDataButton_Click(object sender, EventArgs e)
+        {
+            activeSaveFile.CreateStatData(activeItem, globalRand);
+            detailsTabControl.TabPages.Remove(statsPlaceholderTab);
+            detailsTabControl.TabPages.Insert(0, statsTab);
+            detailsTabControl.SelectedTab = statsTab;
+            ReloadData();
         }
     }
 }
