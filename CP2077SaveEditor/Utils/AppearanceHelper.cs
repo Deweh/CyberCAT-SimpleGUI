@@ -629,6 +629,18 @@ namespace CP2077SaveEditor
                     return;
                 }
 
+                if (CheekMakeupColor > -1)
+                {
+                    if (CheekMakeup != 5 && value == 5)
+                    {
+                        SetConcatedValue("first.main.first.makeupCheeks_", "02_pink");
+                    }
+                    else if(CheekMakeup == 5 && value < 5 && value > 0)
+                    {
+                        SetConcatedValue("first.main.first.makeupCheeks_", "03_light_brown");
+                    }
+                }
+
                 SetNullableHashEntry("makeupCheeks_", new HashValueEntry
                 {
                     FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__morphs_makeup_freckles_01__" + (value == 5 ? "02_pink" : "03_light_brown"),
@@ -639,9 +651,61 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object CheekMakeupColor { get; set; }
+        public int CheekMakeupColor
+        {
+            get
+            {
+                var value = GetConcatedValue("first.main.first.makeupCheeks_");
+                if (value == "default")
+                {
+                    return -1;
+                }
+                else
+                {
+                    return (AppearanceValueLists.CheekMakeupColors.FindIndex(x => x == value) + 1);
+                }
+            }
+            set
+            {
+                if (value > (CheekMakeup == 5 ? 7 : 4) || value < (CheekMakeup == 5 ? 5 : 1))
+                {
+                    return;
+                }
 
-        public object Blemishes { get; set; }
+                SetConcatedValue("first.main.first.makeupCheeks_", AppearanceValueLists.CheekMakeupColors[value - 1]);
+            }
+        }
+
+        public int Blemishes
+        {
+            get
+            {
+                var hash = GetValue("first.main.hash.makeupPimples_");
+                if (hash == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return AppearanceValueLists.Blemishes.FindIndex(x => x == ulong.Parse(hash));
+                }
+            }
+            set
+            {
+                if (value < 0 || value > (AppearanceValueLists.Blemishes.Count - 1))
+                {
+                    return;
+                }
+
+                SetNullableHashEntry("makeupPimples_", new HashValueEntry
+                {
+                    FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead_pimples_01__brown_01",
+                    Hash = AppearanceValueLists.Blemishes[value],
+                    SecondString = "makeupPimples_01"
+                },
+                new[] { "TPP", "character_customization" });
+            }
+        }
 
         public string Nails
         {
@@ -763,7 +827,51 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object Nipples { get; set; }
+        public int Nipples
+        {
+            get
+            {
+                var value = GetConcatedValue("third.main.first.nipples_", 0);
+                if (value == "default")
+                {
+                    return 1;
+                }
+                else
+                {
+                    var num = int.Parse(value.Split("_")[2]);
+                    return (num == 0 ? 0 : (num + 1));
+                }
+            }
+            set
+            {
+                if (value > (BodyGender == AppearanceGender.Female ? 3 : 1) || value < 0)
+                {
+                    return;
+                }
+
+                string first = null;
+                if (value != 1)
+                {
+                    first = (BodyGender == AppearanceGender.Female ? "female" : "male") + "_i0_00" + (value == 0 ? 0 : (value - 1)).ToString() + "_base__nipple__" + AppearanceValueLists.SkinTones[SkinTone - 1];
+                }
+
+                SetNullableHashEntry("fpp_nipples_", new HashValueEntry
+                {
+                    FirstString = (first == null ? null : first.Replace("base", "fpp")),
+                    Hash = 8383615550749140678,
+                    SecondString = "fpp_nipples_01"
+                },
+                new[] { "FPP_Body" }, AppearanceField.FirstString, MainSections[2]);
+
+                SetNullableHashEntry("nipples_", new HashValueEntry
+                {
+                    FirstString = first,
+                    Hash = 17949477145130904651,
+                    SecondString = "nipples_01"
+                },
+                new[] { "TPP_Body", "character_creation" }, AppearanceField.FirstString, MainSections[2]);
+            }
+        }
 
         public int BodyTattoos
         {
@@ -835,11 +943,158 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object Genitals { get; set; }
+        public int Genitals
+        {
+            get
+            {
+                var value = GetConcatedValue("third.main.first.genitals_", 1);
+                if (value == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return (AppearanceValueLists.Genitals.FindIndex(x => x == value) + 1);
+                }
+            }
+            set
+            {
+                if (value > AppearanceValueLists.Genitals.Count || value < 0)
+                {
+                    return;
+                }
 
-        public object PenisSize { get; set; }
+                string first = null;
+                if (value > 0)
+                {
+                    first = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__" + AppearanceValueLists.Genitals[value - 1] + "__" + AppearanceValueLists.SkinTones[SkinTone - 1];
+                }
 
-        public object PubicHairStyle { get; set; }
+                if (value < 2)
+                {
+                    RemoveEntries(GetEntries("third.additional.penis_base"));
+                }
+
+                if (Genitals > 0)
+                {
+                    var entries = GetEntries("third.main." + AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_");
+                    if (value < 1)
+                    {
+                        RemoveEntries(entries);
+                    }
+                    else
+                    {
+                        SetAllEntries(entries, (object entry) =>
+                        {
+                            var entryValue = entry as HashValueEntry;
+
+                            var parts = entryValue.FirstString.Split("__", StringSplitOptions.None);
+                            parts[1] = AppearanceValueLists.Genitals[value - 1] + "_hairstyle";
+                            entryValue.FirstString = string.Join("__", parts);
+
+                            entryValue.SecondString = AppearanceValueLists.Genitals[value - 1] + "_hairstyle_01";
+                        });
+                    }
+                }
+
+                SetNullableHashEntry("genitals_", new HashValueEntry
+                {
+                    FirstString = first,
+                    Hash = 3178724759333055970,
+                    SecondString = "genitals_" + value.ToString("00")
+                },
+                new[] { "character_creation", "genitals" }, AppearanceField.FirstString, MainSections[2], false, true);
+
+                
+            }
+        }
+
+        public int PenisSize
+        {
+            get
+            {
+                if (Genitals < 2)
+                {
+                    return -1;
+                }
+
+                var value = GetValue("third.additional.second.penis_base");
+                if (value == "default")
+                {
+                    return 2;
+                }
+                else
+                {
+                    return (AppearanceValueLists.PenisSizes.FindIndex(x => x == value.Split("__", StringSplitOptions.None)[1]) + 1);
+                }
+            }
+            set
+            {
+                if (value > AppearanceValueLists.PenisSizes.Count || value < 1)
+                {
+                    return;
+                }
+
+                var entries = GetEntries("third.additional.penis_base");
+                if (value == 2)
+                {
+                    RemoveEntries(entries);
+                }
+                else
+                {
+                    var newValue = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__" + AppearanceValueLists.PenisSizes[value - 1];
+                    if (entries.Count < 1)
+                    {
+                        CreateEntry(new ValueEntry
+                        {
+                            FirstString = "penis_base",
+                            SecondString = newValue
+                        },
+                        new[] { "character_creation", "genitals" }, MainSections[2]);
+                    }
+                    else
+                    {
+                        SetValue(AppearanceField.SecondString, "third.additional.penis_base", newValue);
+                    }
+                }
+            }
+        }
+
+        public int PubicHairStyle
+        {
+            get
+            {
+                if (Genitals < 1)
+                {
+                    return -1;
+                }
+
+                var hash = GetValue("third.main.hash." + AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_");
+                if (hash == "default")
+                {
+                    return 0;
+                }
+                else
+                {
+                    return AppearanceValueLists.PubicHairStyles.FindIndex(x => x == ulong.Parse(hash));
+                }
+            }
+            set
+            {
+                if (value > (AppearanceValueLists.PubicHairStyles.Count - 1) || value < 0)
+                {
+                    return;
+                }
+
+                SetNullableHashEntry(AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_", new HashValueEntry
+                {
+                    FirstString = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__" + AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle__01_black",
+                    Hash = AppearanceValueLists.PubicHairStyles[value],
+                    SecondString = AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_01"
+                },
+                new[] { "character_creation", "genitals" }, AppearanceField.Hash, MainSections[2]);
+            }
+        }
 
         public object PubicHairColor { get; set; }
 
@@ -1350,5 +1605,10 @@ namespace CP2077SaveEditor
         public static List<ulong> BodyScars { get; } = Values["BodyScars"].ToObject<List<ulong>>();
         public static List<string> PiercingColors { get; } = Values["PiercingColors"].ToObject<List<string>>();
         public static List<ulong> CheekMakeups { get; } = Values["CheekMakeups"].ToObject<List<ulong>>();
+        public static List<string> CheekMakeupColors { get; } = Values["CheekMakeupColors"].ToObject<List<string>>();
+        public static List<ulong> Blemishes { get; } = Values["Blemishes"].ToObject<List<ulong>>();
+        public static List<string> Genitals { get; } = Values["Genitals"].ToObject<List<string>>();
+        public static List<string> PenisSizes { get; } = Values["PenisSizes"].ToObject<List<string>>();
+        public static List<ulong> PubicHairStyles { get; } = Values["PubicHairStyles"].ToObject<List<ulong>>();
     }
 }
