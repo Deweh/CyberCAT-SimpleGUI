@@ -762,6 +762,22 @@ namespace CP2077SaveEditor
                         unequipItem.Tag = equipSlot;
                         unequipItem.Click += UnequipInventoryItem;
                     }
+                    else
+                    {
+                        var equipIn = new ToolStripMenuItem("Equip in Slot");
+                        foreach (var area in activeSaveFile.GetEquipAreas())
+                        {
+                            int counter = 1;
+                            foreach (var slot in area.EquipSlots)
+                            {
+                                var slotItem = equipIn.DropDownItems.Add(area.AreaType.ToString() + " " + counter.ToString());
+                                slotItem.Tag = slot;
+                                slotItem.Click += EquipInventoryItem;
+                                counter++;
+                            }
+                        }
+                        contextMenu.Items.Add(equipIn);
+                    }
                 }
                 contextMenu.Items.Add("Delete").Click += DeleteInventoryItem;
                 contextMenu.Show(Cursor.Position);
@@ -783,6 +799,15 @@ namespace CP2077SaveEditor
             {
                 DeleteInventoryItem();
             }
+        }
+
+        private void EquipInventoryItem(object sender, EventArgs e)
+        {
+            var slot = (CyberCAT.Core.Classes.DumpedClasses.GameSEquipSlot)((ToolStripItem)sender).Tag;
+            var currentItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
+            slot.ItemID = new CyberCAT.Core.Classes.DumpedClasses.GameItemID() { Id = new TweakDbId() { Raw64 = currentItem.ItemTdbId.Raw64 } };
+            RefreshInventory();
+            inventoryListView.SelectedVirtualItems()[0].Selected = false;
         }
 
         private void UnequipInventoryItem(object sender, EventArgs e)
