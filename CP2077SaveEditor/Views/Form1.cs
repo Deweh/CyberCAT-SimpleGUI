@@ -571,25 +571,27 @@ namespace CP2077SaveEditor
                 var ps = activeSaveFile.GetPSDataContainer();
                 var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
                 var unlockedVehicles = new List<string>();
-                if (vehiclePS != null)
-                {
-                    vehiclesListView.Enabled = true;
-                    unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name).ToList();
-                }
-                else
-                {
-                    vehiclesListView.Enabled = false;
-                }
 
                 var vehicles = itemNames.Values.Where(x => x.Name.StartsWith("Vehicle.") && x.Name.EndsWith("_player"));
                 var listItems = new List<ListViewItem>();
 
-                foreach (var info in vehicles)
+                if (vehiclePS != null)
                 {
-                    var newItem = new ListViewItem(info.Name);
-                    newItem.Checked = true;
-                    newItem.Checked = unlockedVehicles.Contains(info.Name);
-                    listItems.Add(newItem);
+                    vehiclesListView.Enabled = true;
+                    unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name).ToList();
+
+                    foreach (var info in vehicles)
+                    {
+                        var newItem = new ListViewItem(info.Name);
+                        newItem.Checked = true;
+                        newItem.Checked = unlockedVehicles.Contains(info.Name);
+                        listItems.Add(newItem);
+                    }
+                }
+                else
+                {
+                    vehiclesListView.Enabled = false;
+                    listItems.Add(new ListViewItem("No vehicle data found. Try unlocking at least 1 vehicle in-game first."));
                 }
 
                 vehiclesListView.SetVirtualItems(listItems);
