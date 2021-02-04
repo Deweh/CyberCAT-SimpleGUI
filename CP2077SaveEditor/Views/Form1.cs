@@ -578,14 +578,23 @@ namespace CP2077SaveEditor
                 if (vehiclePS != null)
                 {
                     vehiclesListView.Enabled = true;
-                    unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name).ToList();
-
-                    foreach (var info in vehicles)
+                    try
                     {
-                        var newItem = new ListViewItem(info.Name);
-                        newItem.Checked = true;
-                        newItem.Checked = unlockedVehicles.Contains(info.Name);
-                        listItems.Add(newItem);
+                        unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name).ToList();
+
+                        foreach (var info in vehicles)
+                        {
+                            var newItem = new ListViewItem(info.Name);
+                            newItem.Checked = true;
+                            newItem.Checked = unlockedVehicles.Contains(info.Name);
+                            listItems.Add(newItem);
+                        }
+                    }
+                    catch(Exception)
+                    {
+                        vehiclesListView.Enabled = false;
+                        listItems = new List<ListViewItem>();
+                        listItems.Add(new ListViewItem("No vehicle data found. Try unlocking at least 1 vehicle in-game first."));
                     }
                 }
                 else
