@@ -26,6 +26,8 @@ namespace CP2077SaveEditor
 
         public Section[] MainSections { get; set; }
 
+        public bool SuppressBodyGenderPrompt { get; set; } = false;
+
         public AppearanceGender BodyGender
         {
             get
@@ -36,9 +38,12 @@ namespace CP2077SaveEditor
             {
                 if (value != BodyGender)
                 {
-                    if (MessageBox.Show("Changing body gender will reset all appearance options to default. Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    if (!SuppressBodyGenderPrompt)
                     {
-                        return;
+                        if (MessageBox.Show("Changing body gender will reset all appearance options to default. Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                        {
+                            return;
+                        }
                     }
                 }
                 else
@@ -52,15 +57,21 @@ namespace CP2077SaveEditor
                 if (value == AppearanceGender.Female)
                 {
                     playerPuppet.Gender = string.Empty;
-                    SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.FemaleDefaultPreset));
-                    VoiceTone = AppearanceGender.Female;
+                    if (!SuppressBodyGenderPrompt)
+                    {
+                        SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.FemaleDefaultPreset));
+                    }
                 }
                 else
                 {
                     playerPuppet.Gender = "Male";
-                    SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.MaleDefaultPreset));
-                    VoiceTone = AppearanceGender.Male;
+                    if (!SuppressBodyGenderPrompt)
+                    {
+                        SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.MaleDefaultPreset));
+                    }
                 }
+
+                if(SuppressBodyGenderPrompt) SuppressBodyGenderPrompt = false;
             }
         }
 
@@ -1553,6 +1564,11 @@ namespace CP2077SaveEditor
                 {
                     activeSave.GetAppearanceContainer().StringTriples.Add(tripleString);
                 }
+            }
+
+            if (newValues.UnknownFirstBytes.Length == 6)
+            {
+                activeSave.GetAppearanceContainer().UnknownFirstBytes = newValues.UnknownFirstBytes;
             }
         }
 

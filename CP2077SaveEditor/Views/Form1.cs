@@ -133,7 +133,7 @@ namespace CP2077SaveEditor
                 //    MessageBox.Show(property.Name);
                 //}
 
-                if (property.PropertyType.Name != "Object" && property.Name != "MainSections" && property.CanWrite == true)
+                if (property.PropertyType.Name != "Object" && property.PropertyType.Name != "Boolean" && property.Name != "MainSections" && property.CanWrite == true)
                 {
                     var picker = new ModernValuePicker()
                     {
@@ -707,6 +707,11 @@ namespace CP2077SaveEditor
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName));
+                if (newValues.UnknownFirstBytes[4] != activeSaveFile.GetAppearanceContainer().UnknownFirstBytes[4])
+                {
+                    activeSaveFile.Appearance.SuppressBodyGenderPrompt = true;
+                    activeSaveFile.Appearance.BodyGender = (AppearanceGender)newValues.UnknownFirstBytes[4];
+                }
                 activeSaveFile.Appearance.SetAllValues(newValues);
                 RefreshAppearanceValues();
                 statusLabel.Text = "Appearance preset loaded.";
