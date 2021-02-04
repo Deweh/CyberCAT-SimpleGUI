@@ -574,10 +574,7 @@ namespace CP2077SaveEditor
                 if (vehiclePS != null)
                 {
                     vehiclesListView.Enabled = true;
-                    foreach (var unlocked in vehiclePS.UnlockedVehicleArray)
-                    {
-                        unlockedVehicles.Add(unlocked.VehicleID.RecordID.Name);
-                    }
+                    unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name).ToList();
                 }
                 else
                 {
@@ -1081,25 +1078,19 @@ namespace CP2077SaveEditor
 
         private void vehiclesListView_DoubleClick(object sender, EventArgs e)
         {
-            if (vehiclesListView.SelectedIndices.Count > 0)
+            var ps = activeSaveFile.GetPSDataContainer();
+            var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
+            var unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name);
+
+            foreach (var selectedItem in vehiclesListView.GetVirtualInfo().Items)
             {
-                var ps = activeSaveFile.GetPSDataContainer();
-                var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
-                var unlockedVehicles = new List<string>();
-
-                foreach (var unlocked in vehiclePS.UnlockedVehicleArray)
-                {
-                    unlockedVehicles.Add(unlocked.VehicleID.RecordID.Name);
-                }
-
-                var selectedItem = vehiclesListView.SelectedVirtualItems()[0];
                 if (selectedItem.Checked)
                 {
                     if (!unlockedVehicles.Contains(selectedItem.Text))
                     {
                         vehiclePS.UnlockedVehicleArray = vehiclePS.UnlockedVehicleArray.Append(new CyberCAT.Core.Classes.DumpedClasses.VehicleUnlockedVehicle()
                         {
-                            VehicleID = new CyberCAT.Core.Classes.DumpedClasses.VehicleGarageVehicleID() { RecordID = TweakDbId.FromName(selectedItem.Text) } 
+                            VehicleID = new CyberCAT.Core.Classes.DumpedClasses.VehicleGarageVehicleID() { RecordID = TweakDbId.FromName(selectedItem.Text) }
                         }).ToArray();
                     }
                 }
@@ -1118,9 +1109,9 @@ namespace CP2077SaveEditor
                         vehiclePS.UnlockedVehicleArray = list.ToArray();
                     }
                 }
-
-                vehiclesListView.Invalidate();
             }
+
+            vehiclesListView.Invalidate();
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)
