@@ -61,7 +61,7 @@ namespace CP2077SaveEditor
             this.CenterToScreen();
             editorPanel.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right);
 
-            var tabPanels = new Panel[] { appearancePanel, inventoryPanel, factsPanel, statsPanel };
+            var tabPanels = new Panel[] { appearancePanel, inventoryPanel, factsPanel, statsPanel, vehiclesPanel };
             foreach (Panel singleTab in tabPanels)
             {
                 editorPanel.Controls.Add(singleTab);
@@ -76,6 +76,7 @@ namespace CP2077SaveEditor
             inventoryListView.MouseClick += inventoryListView_Click;
             inventoryListView.DoubleClick += inventoryListView_DoubleClick;
             inventoryListView.KeyDown += inventoryListView_KeyDown;
+            vehiclesListView.DoubleClick += vehiclesListView_DoubleClick;
 
             factsSearchBox.GotFocus += SearchBoxGotFocus;
             factsSearchBox.LostFocus += SearchBoxLostFocus;
@@ -458,14 +459,15 @@ namespace CP2077SaveEditor
                 statusLabel.Text = "Loading save...";
                 this.Refresh();
                 //Initialize NameResolver & FactResolver dictionaries, build parsers list & load save file
-                NameResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, NameResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames));
+                var itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, NameResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
+                NameResolver.UseDictionary(itemNames);
                 FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
 
                 var parsers = new List<INodeParser>();
                 parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
                     new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
-                    new StatsSystemParser(), new ScriptableSystemsContainerParser()
+                    new StatsSystemParser(), new ScriptableSystemsContainerParser(), new PSDataParser()
                 });
 
                 var newSave = new SaveFileHelper(parsers);
@@ -553,6 +555,36 @@ namespace CP2077SaveEditor
                 perkPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == gamedataDevelopmentPointType.Primary)].Unspent);
                 attrPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == null)].Unspent);
 
+                //PSData parsing
+                var ps = activeSaveFile.GetPSDataContainer();
+                var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
+                var unlockedVehicles = new List<string>();
+                if (vehiclePS != null)
+                {
+                    vehiclesListView.Enabled = true;
+                    foreach (var unlocked in vehiclePS.UnlockedVehicleArray)
+                    {
+                        unlockedVehicles.Add(unlocked.VehicleID.RecordID.Name);
+                    }
+                }
+                else
+                {
+                    vehiclesListView.Enabled = false;
+                }
+
+                var vehicles = itemNames.Values.Where(x => x.Name.StartsWith("Vehicle.") && x.Name.EndsWith("_player"));
+                var listItems = new List<ListViewItem>();
+
+                foreach (var info in vehicles)
+                {
+                    var newItem = new ListViewItem(info.Name);
+                    newItem.Checked = true;
+                    newItem.Checked = unlockedVehicles.Contains(info.Name);
+                    listItems.Add(newItem);
+                }
+
+                vehiclesListView.SetVirtualItems(listItems);
+
                 //Update controls
                 loadingSave = false;
                 editorPanel.Enabled = true;
@@ -599,7 +631,7 @@ namespace CP2077SaveEditor
                 parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
                     new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
-                    new StatsSystemParser(), new ScriptableSystemsContainerParser()
+                    new StatsSystemParser(), new ScriptableSystemsContainerParser(), new PSDataParser()
                 });
 
                 var testFile = new SaveFileHelper(parsers);
@@ -1027,6 +1059,55 @@ namespace CP2077SaveEditor
 
             statusLabel.Text = "De-bloat complete.";
             MessageBox.Show("De-bloat complete.");
+        }
+
+        private void vehiclesButton_Click(object sender, EventArgs e)
+        {
+            SwapTab(vehiclesButton, vehiclesPanel);
+        }
+
+        private void vehiclesListView_DoubleClick(object sender, EventArgs e)
+        {
+            if (vehiclesListView.SelectedIndices.Count > 0)
+            {
+                var ps = activeSaveFile.GetPSDataContainer();
+                var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
+                var unlockedVehicles = new List<string>();
+
+                foreach (var unlocked in vehiclePS.UnlockedVehicleArray)
+                {
+                    unlockedVehicles.Add(unlocked.VehicleID.RecordID.Name);
+                }
+
+                var selectedItem = vehiclesListView.SelectedVirtualItems()[0];
+                if (selectedItem.Checked)
+                {
+                    if (!unlockedVehicles.Contains(selectedItem.Text))
+                    {
+                        vehiclePS.UnlockedVehicleArray = vehiclePS.UnlockedVehicleArray.Append(new CyberCAT.Core.Classes.DumpedClasses.VehicleUnlockedVehicle()
+                        {
+                            VehicleID = new CyberCAT.Core.Classes.DumpedClasses.VehicleGarageVehicleID() { RecordID = TweakDbId.FromName(selectedItem.Text) } 
+                        }).ToArray();
+                    }
+                }
+                else
+                {
+                    if (unlockedVehicles.Contains(selectedItem.Text))
+                    {
+                        var list = vehiclePS.UnlockedVehicleArray.ToList();
+                        foreach (var unlocked in vehiclePS.UnlockedVehicleArray)
+                        {
+                            if (unlocked.VehicleID.RecordID.Name == selectedItem.Text)
+                            {
+                                list.Remove(unlocked);
+                            }
+                        }
+                        vehiclePS.UnlockedVehicleArray = list.ToArray();
+                    }
+                }
+
+                vehiclesListView.Invalidate();
+            }
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)

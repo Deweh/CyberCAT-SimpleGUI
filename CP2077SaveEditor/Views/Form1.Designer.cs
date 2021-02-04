@@ -32,6 +32,7 @@ namespace CP2077SaveEditor
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.optionsPanel = new System.Windows.Forms.Panel();
+            this.vehiclesButton = new CP2077SaveEditor.ModernButton();
             this.statsButton = new CP2077SaveEditor.ModernButton();
             this.factsButton = new CP2077SaveEditor.ModernButton();
             this.inventoryButton = new CP2077SaveEditor.ModernButton();
@@ -102,6 +103,9 @@ namespace CP2077SaveEditor
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
             this.debloatWorker = new System.ComponentModel.BackgroundWorker();
             this.debloatTimer = new System.Windows.Forms.Timer(this.components);
+            this.vehiclesPanel = new System.Windows.Forms.Panel();
+            this.vehiclesListView = new System.Windows.Forms.ListView();
+            this.vehicleIDHeader = new System.Windows.Forms.ColumnHeader();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.appearancePreviewBox)).BeginInit();
@@ -134,6 +138,7 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.reflexesUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.streetCredUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelUpDown)).BeginInit();
+            this.vehiclesPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // optionsPanel
@@ -142,6 +147,7 @@ namespace CP2077SaveEditor
             | System.Windows.Forms.AnchorStyles.Left)));
             this.optionsPanel.BackColor = System.Drawing.Color.White;
             this.optionsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.optionsPanel.Controls.Add(this.vehiclesButton);
             this.optionsPanel.Controls.Add(this.statsButton);
             this.optionsPanel.Controls.Add(this.factsButton);
             this.optionsPanel.Controls.Add(this.inventoryButton);
@@ -152,6 +158,22 @@ namespace CP2077SaveEditor
             this.optionsPanel.Name = "optionsPanel";
             this.optionsPanel.Size = new System.Drawing.Size(143, 1064);
             this.optionsPanel.TabIndex = 1;
+            // 
+            // vehiclesButton
+            // 
+            this.vehiclesButton.BackColor = System.Drawing.Color.White;
+            this.vehiclesButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.vehiclesButton.ClickEffectEnabled = true;
+            this.vehiclesButton.DefaultColor = System.Drawing.Color.White;
+            this.vehiclesButton.HoverColor = System.Drawing.Color.DarkGray;
+            this.vehiclesButton.Location = new System.Drawing.Point(-1, 179);
+            this.vehiclesButton.Name = "vehiclesButton";
+            this.vehiclesButton.Size = new System.Drawing.Size(143, 61);
+            this.vehiclesButton.TabIndex = 3;
+            this.vehiclesButton.Text = "Unlocked Vehicles";
+            this.vehiclesButton.TextColor = System.Drawing.Color.Black;
+            this.vehiclesButton.TextFont = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.vehiclesButton.Click += new System.EventHandler(this.vehiclesButton_Click);
             // 
             // statsButton
             // 
@@ -176,7 +198,7 @@ namespace CP2077SaveEditor
             this.factsButton.ClickEffectEnabled = true;
             this.factsButton.DefaultColor = System.Drawing.Color.White;
             this.factsButton.HoverColor = System.Drawing.Color.DarkGray;
-            this.factsButton.Location = new System.Drawing.Point(-1, 179);
+            this.factsButton.Location = new System.Drawing.Point(-1, 239);
             this.factsButton.Name = "factsButton";
             this.factsButton.Size = new System.Drawing.Size(143, 61);
             this.factsButton.TabIndex = 2;
@@ -1094,12 +1116,46 @@ namespace CP2077SaveEditor
             // 
             this.debloatTimer.Tick += new System.EventHandler(this.debloatTimer_Tick);
             // 
+            // vehiclesPanel
+            // 
+            this.vehiclesPanel.Controls.Add(this.vehiclesListView);
+            this.vehiclesPanel.Enabled = false;
+            this.vehiclesPanel.Location = new System.Drawing.Point(1876, 566);
+            this.vehiclesPanel.Name = "vehiclesPanel";
+            this.vehiclesPanel.Size = new System.Drawing.Size(851, 548);
+            this.vehiclesPanel.TabIndex = 14;
+            // 
+            // vehiclesListView
+            // 
+            this.vehiclesListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.vehiclesListView.CheckBoxes = true;
+            this.vehiclesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.vehicleIDHeader});
+            this.vehiclesListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.vehiclesListView.GridLines = true;
+            this.vehiclesListView.HideSelection = false;
+            this.vehiclesListView.Location = new System.Drawing.Point(0, 0);
+            this.vehiclesListView.MultiSelect = false;
+            this.vehiclesListView.Name = "vehiclesListView";
+            this.vehiclesListView.Size = new System.Drawing.Size(851, 548);
+            this.vehiclesListView.TabIndex = 0;
+            this.vehiclesListView.UseCompatibleStateImageBehavior = false;
+            this.vehiclesListView.View = System.Windows.Forms.View.Details;
+            this.vehiclesListView.VirtualMode = true;
+            // 
+            // vehicleIDHeader
+            // 
+            this.vehicleIDHeader.Name = "vehicleIDHeader";
+            this.vehicleIDHeader.Text = "ID";
+            this.vehicleIDHeader.Width = 820;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(2757, 1179);
+            this.Controls.Add(this.vehiclesPanel);
             this.Controls.Add(this.swapSaveType);
             this.Controls.Add(this.statsPanel);
             this.Controls.Add(this.factsPanel);
@@ -1152,6 +1208,7 @@ namespace CP2077SaveEditor
             ((System.ComponentModel.ISupportInitialize)(this.reflexesUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.streetCredUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelUpDown)).EndInit();
+            this.vehiclesPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1228,6 +1285,10 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Timer debloatTimer;
         private System.Windows.Forms.Panel appearanceOptionsPanel;
         private System.Windows.Forms.PictureBox appearancePreviewBox;
+        private System.Windows.Forms.Panel vehiclesPanel;
+        private System.Windows.Forms.ListView vehiclesListView;
+        private System.Windows.Forms.ColumnHeader vehicleIDHeader;
+        private ModernButton vehiclesButton;
     }
 }
 

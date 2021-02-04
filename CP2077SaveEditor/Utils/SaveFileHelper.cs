@@ -74,6 +74,11 @@ namespace CP2077SaveEditor
             return devSystem.PlayerData[Array.FindIndex(devSystem.PlayerData, x => x.Value.OwnerID.Hash == 1)];
         }
 
+        public GenericUnknownStruct GetPSDataContainer()
+        {
+            var persistSystem = this.Nodes.Where(x => x.Name == "PersistencySystem").FirstOrDefault(); return (GenericUnknownStruct)persistSystem.Children.Where(x => x.Name == "PSData").FirstOrDefault().Value;
+        }
+
         public Dictionary<GameItemID, string> GetEquippedItems()
         {
             var playerEquipAreas = GetEquipAreas();
