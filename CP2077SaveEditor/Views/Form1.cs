@@ -31,6 +31,7 @@ namespace CP2077SaveEditor
         private bool cancelLoad = false;
         private int saveType = 0;
         private Random globalRand = new Random();
+        private WrongDefaultValueEventArgs wrongDefaultInfo = null;
 
         //GUI
         private ModernButton activeTabButton = new ModernButton();
@@ -470,12 +471,23 @@ namespace CP2077SaveEditor
                     new StatsSystemParser(), new ScriptableSystemsContainerParser(), new PSDataParser()
                 });
 
+                wrongDefaultInfo = null;
+
                 var newSave = new SaveFileHelper(parsers);
                 newSave.Load(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+
+                if (wrongDefaultInfo != null)
+                {
+                    if (new WrongDefaultDialog(wrongDefaultInfo.ClassName, wrongDefaultInfo.PropertyName, wrongDefaultInfo.Value).ShowDialog() != DialogResult.OK)
+                    {
+                        cancelLoad = true;
+                    }
+                }
 
                 if (cancelLoad)
                 {
                     cancelLoad = false;
+                    statusLabel.Text = "Load cancelled.";
                     return;
                 }
                 
@@ -598,11 +610,7 @@ namespace CP2077SaveEditor
         private void GenericUnknownStructParser_WrongDefaultValue(object sender, WrongDefaultValueEventArgs e)
         {
             e.Ignore = true;
-            if (new WrongDefaultDialog(e.ClassName, e.PropertyName, e.Value).ShowDialog() != DialogResult.OK)
-            {
-                cancelLoad = true;
-                statusLabel.Text = "Load cancelled.";
-            }
+            wrongDefaultInfo = e;
         }
 
         private void saveChangesButton_Click(object sender, EventArgs e)
