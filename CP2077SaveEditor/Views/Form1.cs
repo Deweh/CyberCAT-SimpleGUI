@@ -460,8 +460,8 @@ namespace CP2077SaveEditor
                 statusLabel.Text = "Loading save...";
                 this.Refresh();
                 //Initialize NameResolver & FactResolver dictionaries, build parsers list & load save file
-                var itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, NameResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
-                NameResolver.UseDictionary(itemNames);
+                var itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
+                NameResolver.TweakDbResolver = new JsonResolver(itemNames);
                 FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
 
                 var parsers = new List<INodeParser>();
