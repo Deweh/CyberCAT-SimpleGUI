@@ -122,6 +122,15 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;DataExists&quot;:true,&quot;Unknown1&quot;:0,&quot;UnknownFirstBytes&quot;:&quot;AwAAAAAA&quot;,&quot;FirstSection&quot;:{&quot;AppearanceSections&quot;:[{&quot;SectionName&quot;:&quot;TPP&quot;,&quot;MainList&quot;:[{&quot;Hash&quot;:11127614498395143143,&quot;FirstString&quot;:&quot;h0_000_pwa__basehead__03_ca_senna&quot;,&quot;SecondString&quot;:&quot;skin_type_01&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:16043278657831145316,&quot;FirstString&quot;:&quot;he_000_pwa__basehead__15_gradient_light_blue&quot;,&quot;SecondString&quot;:&quot;eyes_color&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:5580371224339221950,&quot;FirstString&quot;:&quot;heb_pwa__basehead__02_blonde&quot;,&quot;SecondString&quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string FemaleDefaultPreset {
+            get {
+                return ResourceManager.GetString("FemaleDefaultPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {
         ///  &quot;0001F38D:18&quot;: &quot;ConsumableItem&quot;,
         ///  &quot;0002DF00:18&quot;: &quot;Clothing&quot;,
@@ -174,6 +183,15 @@ namespace CP2077SaveEditor.Properties {
         internal static string ItemNames {
             get {
                 return ResourceManager.GetString("ItemNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;DataExists&quot;:true,&quot;Unknown1&quot;:0,&quot;UnknownFirstBytes&quot;:&quot;AwAAAAEB&quot;,&quot;FirstSection&quot;:{&quot;AppearanceSections&quot;:[{&quot;SectionName&quot;:&quot;TPP&quot;,&quot;MainList&quot;:[{&quot;Hash&quot;:8412290529705602186,&quot;FirstString&quot;:&quot;h0_000_pma__basehead__04_ca_almond_00_umber&quot;,&quot;SecondString&quot;:&quot;skin_type_02&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:16043278657831145316,&quot;FirstString&quot;:&quot;he_000_pma__basehead__12_gradient_brown&quot;,&quot;SecondString&quot;:&quot;eyes_color&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:16883307788927853167,&quot;FirstString&quot;:&quot;heb_pma__basehead__01_black&quot;,&quot;SecondStr [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string MaleDefaultPreset {
+            get {
+                return ResourceManager.GetString("MaleDefaultPreset", resourceCulture);
             }
         }
         

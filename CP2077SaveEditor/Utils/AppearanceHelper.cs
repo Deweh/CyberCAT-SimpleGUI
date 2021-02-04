@@ -1,4 +1,5 @@
 ﻿using CyberCAT.Core.Classes.NodeRepresentations;
+using CyberCAT.Core.Classes.DumpedClasses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using static CP2077SaveEditor.SaveFileHelper;
 using static CyberCAT.Core.Classes.NodeRepresentations.CharacterCustomizationAppearances;
 using CP2077SaveEditor.Extensions;
+using System.Windows.Forms;
 
 namespace CP2077SaveEditor
 {
@@ -29,6 +31,36 @@ namespace CP2077SaveEditor
             get
             {
                 return (AppearanceGender)activeSave.GetAppearanceContainer().UnknownFirstBytes[4];
+            }
+            set
+            {
+                if (value != BodyGender)
+                {
+                    if (MessageBox.Show("Changing body gender will reset all appearance options to default. Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+
+                activeSave.GetAppearanceContainer().UnknownFirstBytes[4] = (byte)value;
+
+                var playerPuppet = (PlayerPuppetPS)activeSave.GetPSDataContainer().ClassList.Where(x => x is PlayerPuppetPS).FirstOrDefault();
+                if (value == AppearanceGender.Female)
+                {
+                    playerPuppet.Gender = string.Empty;
+                    SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.FemaleDefaultPreset));
+                    VoiceTone = AppearanceGender.Female;
+                }
+                else
+                {
+                    playerPuppet.Gender = "Male";
+                    SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.MaleDefaultPreset));
+                    VoiceTone = AppearanceGender.Male;
+                }
             }
         }
 
@@ -1511,6 +1543,15 @@ namespace CP2077SaveEditor
                 foreach (string singleString in newValues.Strings)
                 {
                     activeSave.GetAppearanceContainer().Strings.Add(singleString);
+                }
+            }
+
+            if (newValues.StringTriples != null)
+            {
+                activeSave.GetAppearanceContainer().StringTriples.Clear();
+                foreach (var tripleString in newValues.StringTriples)
+                {
+                    activeSave.GetAppearanceContainer().StringTriples.Add(tripleString);
                 }
             }
         }
