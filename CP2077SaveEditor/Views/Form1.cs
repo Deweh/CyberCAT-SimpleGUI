@@ -616,7 +616,10 @@ namespace CP2077SaveEditor
         private void GenericUnknownStructParser_WrongDefaultValue(object sender, WrongDefaultValueEventArgs e)
         {
             e.Ignore = true;
-            wrongDefaultInfo = e;
+            if (e.PropertyName != "acousticIsolationFactor")
+            {
+                wrongDefaultInfo = e;
+            }
         }
 
         private void saveChangesButton_Click(object sender, EventArgs e)
