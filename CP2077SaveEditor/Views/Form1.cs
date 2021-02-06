@@ -721,6 +721,12 @@ namespace CP2077SaveEditor
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName));
+
+                if (newValues.UnknownFirstBytes.Length > 6)
+                {
+                    newValues.UnknownFirstBytes = newValues.UnknownFirstBytes.Skip(newValues.UnknownFirstBytes.Length - 6).ToArray();
+                }
+
                 if (newValues.UnknownFirstBytes[4] != activeSaveFile.GetAppearanceContainer().UnknownFirstBytes[4])
                 {
                     activeSaveFile.Appearance.SuppressBodyGenderPrompt = true;
