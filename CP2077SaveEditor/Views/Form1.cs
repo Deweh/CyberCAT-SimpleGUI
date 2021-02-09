@@ -44,6 +44,7 @@ namespace CP2077SaveEditor
 
         //Lookup Dictionaries
         private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
+        private static Dictionary<ulong, JsonResolver.NameStruct> itemNames;
         private static readonly Dictionary<string, string> itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         private static readonly Dictionary<ulong, string> inventoryNames = new()
         {
@@ -173,9 +174,24 @@ namespace CP2077SaveEditor
                     }
                 }
                 catch (Exception)
-                { }
+                {
+                    MessageBox.Show("Unable to read config.json", "Notice");
+                }
             }
-            
+
+            if (File.Exists(Environment.CurrentDirectory + "\\names.json"))
+            {
+                try
+                {
+                    itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(File.ReadAllText("names.json"));
+                    return;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Unable to read names.json", "Notice");
+                }
+            }
+            itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
         }
 
         private void SaveFile_ProgressChanged(object sender, SaveProgressChangedEventArgs e)
@@ -475,8 +491,7 @@ namespace CP2077SaveEditor
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 loadingSave = true;
-                //Initialize NameResolver & FactResolver dictionaries, build parsers list & load save file
-                var itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
+                //Build parsers list & load save file
                 NameResolver.TweakDbResolver = new JsonResolver(itemNames);
                 FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
 
