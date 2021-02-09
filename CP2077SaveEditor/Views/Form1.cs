@@ -188,10 +188,17 @@ namespace CP2077SaveEditor
                 }
                 catch (Exception)
                 {
+                    itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
                     MessageBox.Show("Unable to read names.json", "Notice");
                 }
             }
-            itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
+            else
+            {
+                itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
+            }
+
+            NameResolver.TweakDbResolver = new JsonResolver(itemNames);
+            FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
         }
 
         private void SaveFile_ProgressChanged(object sender, SaveProgressChangedEventArgs e)
@@ -492,9 +499,6 @@ namespace CP2077SaveEditor
             {
                 loadingSave = true;
                 //Build parsers list & load save file
-                NameResolver.TweakDbResolver = new JsonResolver(itemNames);
-                FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
-
                 var parsers = new List<INodeParser>();
                 parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
@@ -505,6 +509,8 @@ namespace CP2077SaveEditor
                 wrongDefaultInfo = null;
 
                 var newSave = new SaveFileHelper(parsers);
+                editorPanel.Enabled = false;
+                optionsPanel.Enabled = false;
                 loadTimer.Start();
                 var worker = new BackgroundWorker();
                 worker.DoWork += (object sender, DoWorkEventArgs e) =>
@@ -676,9 +682,10 @@ namespace CP2077SaveEditor
                 {
                     File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
                 }
-                
-                loadTimer.Start();
 
+                editorPanel.Enabled = false;
+                optionsPanel.Enabled = false;
+                loadTimer.Start();
                 var worker = new BackgroundWorker();
                 worker.DoWork += (object sender, DoWorkEventArgs e) =>
                 {
@@ -726,6 +733,11 @@ namespace CP2077SaveEditor
                         File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
                         MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
                         return;
+                    }
+                    finally
+                    {
+                        editorPanel.Enabled = true;
+                        optionsPanel.Enabled = true;
                     }
 
                     File.WriteAllBytes(saveWindow.FileName, saveBytes);
