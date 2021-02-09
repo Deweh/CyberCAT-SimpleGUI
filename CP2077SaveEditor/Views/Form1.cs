@@ -196,9 +196,6 @@ namespace CP2077SaveEditor
             {
                 itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
             }
-
-            NameResolver.TweakDbResolver = new JsonResolver(itemNames);
-            FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
         }
 
         private void SaveFile_ProgressChanged(object sender, SaveProgressChangedEventArgs e)
@@ -498,7 +495,12 @@ namespace CP2077SaveEditor
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 loadingSave = true;
-                //Build parsers list & load save file
+                //Initialize resolvers, build parsers list & load save file
+                if (NameResolver.TweakDbResolver == null)
+                {
+                    NameResolver.TweakDbResolver = new JsonResolver(itemNames);
+                    FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
+                }
                 var parsers = new List<INodeParser>();
                 parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
