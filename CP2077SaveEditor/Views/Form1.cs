@@ -18,6 +18,7 @@ using CP2077SaveEditor.Extensions;
 using CyberCAT.Core.Classes.Mapping;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Threading;
 
 namespace CP2077SaveEditor
 {
@@ -37,6 +38,9 @@ namespace CP2077SaveEditor
         private ModernButton activeTabButton = new ModernButton();
         private Panel activeTabPanel = new Panel();
         private string debloatInfo = "";
+        private int currentProgress = 0;
+        private int maxProgress = 0;
+        private string currentNode = string.Empty;
 
         //Lookup Dictionaries
         private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
@@ -71,6 +75,7 @@ namespace CP2077SaveEditor
             }
 
             GenericUnknownStructParser.WrongDefaultValue += GenericUnknownStructParser_WrongDefaultValue;
+            SaveFile.ProgressChanged += SaveFile_ProgressChanged;
             factsListView.AfterLabelEdit += factsListView_AfterLabelEdit;
             factsListView.MouseUp += factsListView_MouseUp;
             factsListView.KeyDown += factsListView_KeyDown;
@@ -171,6 +176,19 @@ namespace CP2077SaveEditor
                 { }
             }
             
+        }
+
+        private void SaveFile_ProgressChanged(object sender, SaveProgressChangedEventArgs e)
+        {
+            if (e.NodeName != string.Empty)
+            {
+                currentNode = e.NodeName;
+            }
+            else if (e.Maximum > 0)
+            {
+                Interlocked.Exchange(ref currentProgress, e.CurrentProgress);
+                Interlocked.Exchange(ref maxProgress, e.Maximum);
+            }
         }
 
         //This function & other functions related to managing tabs need to be refactored.
@@ -457,8 +475,6 @@ namespace CP2077SaveEditor
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 loadingSave = true;
-                statusLabel.Text = "Loading save...";
-                this.Refresh();
                 //Initialize NameResolver & FactResolver dictionaries, build parsers list & load save file
                 var itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
                 NameResolver.TweakDbResolver = new JsonResolver(itemNames);
@@ -474,142 +490,157 @@ namespace CP2077SaveEditor
                 wrongDefaultInfo = null;
 
                 var newSave = new SaveFileHelper(parsers);
-                newSave.Load(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
-
-                if (wrongDefaultInfo != null)
+                loadTimer.Start();
+                var worker = new BackgroundWorker();
+                worker.DoWork += (object sender, DoWorkEventArgs e) =>
                 {
-                    if (new WrongDefaultDialog(wrongDefaultInfo.ClassName, wrongDefaultInfo.PropertyName, wrongDefaultInfo.Value).ShowDialog() != DialogResult.OK)
+                    newSave.Load(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                };
+                worker.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) =>
+                {
+                    loadTimer.Stop();
+                    currentProgress = 0;
+                    maxProgress = 0;
+                    currentNode = string.Empty;
+
+                    if (wrongDefaultInfo != null)
                     {
-                        cancelLoad = true;
-                    }
-                }
-
-                if (cancelLoad)
-                {
-                    cancelLoad = false;
-                    statusLabel.Text = "Load cancelled.";
-                    return;
-                }
-                
-                activeSaveFile = newSave;
-
-                //Appearance parsing
-                RefreshAppearanceValues();
-                SetAppearanceImage("VoiceTone", ((int)activeSaveFile.Appearance.VoiceTone).ToString("00"));
-
-                //Inventory parsing
-                moneyUpDown.Enabled = false;
-                moneyUpDown.Value = 0;
-
-                containersListBox.Items.Clear();
-                foreach (Inventory.SubInventory container in activeSaveFile.GetInventoriesContainer().SubInventories)
-                {
-                    var containerID = container.InventoryId.ToString();
-                    if (inventoryNames.Keys.Contains(container.InventoryId))
-                    {
-                        containerID = inventoryNames[container.InventoryId];
-                    }
-                    containersListBox.Items.Add(containerID);
-                }
-
-                if (containersListBox.Items.Count > 0)
-                {
-                    containersListBox.SelectedIndex = 0;
-                }
-
-                //Facts parsing
-                RefreshFacts();
-
-                //Player stats parsing
-                var playerData = activeSaveFile.GetPlayerDevelopmentData();
-                foreach (gamedataProficiencyType proficType in proficFields.Keys)
-                {
-                    CyberCAT.Core.Classes.DumpedClasses.SProficiency profic;
-                    if (proficType == gamedataProficiencyType.Invalid)
-                    {
-                        profic = playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == null)];
-                    } else {
-                        profic = playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == proficType)];
-                    }
-                    if (profic.CurrentLevel > (int)proficFields[proficType].Maximum)
-                    {
-                        proficFields[proficType].Maximum = profic.CurrentLevel;
-                    }
-                    
-                    proficFields[proficType].Value = profic.CurrentLevel;
-                }
-
-                foreach (gamedataStatType attrType in attrFields.Keys)
-                {
-                    CyberCAT.Core.Classes.DumpedClasses.SAttribute attr = playerData.Value.Attributes[Array.FindIndex(playerData.Value.Attributes, x => x.AttributeName == attrType)];
-                    if (attr.Value > (int)attrFields[attrType].Maximum)
-                    {
-                        attrFields[attrType].Maximum = attr.Value;
+                        if (new WrongDefaultDialog(wrongDefaultInfo.ClassName, wrongDefaultInfo.PropertyName, wrongDefaultInfo.Value).ShowDialog() != DialogResult.OK)
+                        {
+                            cancelLoad = true;
+                        }
                     }
 
-                    attrFields[attrType].Value = attr.Value;
-                }
-
-                switch (activeSaveFile.GetPlayerDevelopmentData().Value.LifePath)
-                {
-                    case gamedataLifePath.Nomad:
-                        lifePathBox.SelectedIndex = 0;
-                        break;
-                    case gamedataLifePath.StreetKid:
-                        lifePathBox.SelectedIndex = 1;
-                        break;
-                    default:
-                        lifePathBox.SelectedIndex = 2;
-                        break;
-                }
-
-                var points = activeSaveFile.GetPlayerDevelopmentData().Value.DevPoints;
-                perkPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == gamedataDevelopmentPointType.Primary)].Unspent);
-                attrPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == null)].Unspent);
-
-                //PSData parsing
-                var ps = activeSaveFile.GetPSDataContainer();
-                var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
-                var unlockedVehicles = new List<string>();
-
-                var vehicles = itemNames.Values.Where(x => x.Name.StartsWith("Vehicle.") && x.Name.EndsWith("_player"));
-                var listItems = new List<ListViewItem>();
-
-                if (vehiclePS != null)
-                {
-                    vehiclesListView.Enabled = true;
-                    if (vehiclePS.UnlockedVehicleArray == null)
+                    if (cancelLoad)
                     {
-                        vehiclePS.UnlockedVehicleArray = new CyberCAT.Core.Classes.DumpedClasses.VehicleUnlockedVehicle[0];
+                        cancelLoad = false;
+                        statusLabel.Text = "Load cancelled.";
+                        return;
+                    }
+
+                    activeSaveFile = newSave;
+
+                    //Appearance parsing
+                    RefreshAppearanceValues();
+                    SetAppearanceImage("VoiceTone", ((int)activeSaveFile.Appearance.VoiceTone).ToString("00"));
+
+                    //Inventory parsing
+                    moneyUpDown.Enabled = false;
+                    moneyUpDown.Value = 0;
+
+                    containersListBox.Items.Clear();
+                    foreach (Inventory.SubInventory container in activeSaveFile.GetInventoriesContainer().SubInventories)
+                    {
+                        var containerID = container.InventoryId.ToString();
+                        if (inventoryNames.Keys.Contains(container.InventoryId))
+                        {
+                            containerID = inventoryNames[container.InventoryId];
+                        }
+                        containersListBox.Items.Add(containerID);
+                    }
+
+                    if (containersListBox.Items.Count > 0)
+                    {
+                        containersListBox.SelectedIndex = 0;
+                    }
+
+                    //Facts parsing
+                    RefreshFacts();
+
+                    //Player stats parsing
+                    var playerData = activeSaveFile.GetPlayerDevelopmentData();
+                    foreach (gamedataProficiencyType proficType in proficFields.Keys)
+                    {
+                        CyberCAT.Core.Classes.DumpedClasses.SProficiency profic;
+                        if (proficType == gamedataProficiencyType.Invalid)
+                        {
+                            profic = playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == null)];
+                        }
+                        else
+                        {
+                            profic = playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == proficType)];
+                        }
+                        if (profic.CurrentLevel > (int)proficFields[proficType].Maximum)
+                        {
+                            proficFields[proficType].Maximum = profic.CurrentLevel;
+                        }
+
+                        proficFields[proficType].Value = profic.CurrentLevel;
+                    }
+
+                    foreach (gamedataStatType attrType in attrFields.Keys)
+                    {
+                        CyberCAT.Core.Classes.DumpedClasses.SAttribute attr = playerData.Value.Attributes[Array.FindIndex(playerData.Value.Attributes, x => x.AttributeName == attrType)];
+                        if (attr.Value > (int)attrFields[attrType].Maximum)
+                        {
+                            attrFields[attrType].Maximum = attr.Value;
+                        }
+
+                        attrFields[attrType].Value = attr.Value;
+                    }
+
+                    switch (activeSaveFile.GetPlayerDevelopmentData().Value.LifePath)
+                    {
+                        case gamedataLifePath.Nomad:
+                            lifePathBox.SelectedIndex = 0;
+                            break;
+                        case gamedataLifePath.StreetKid:
+                            lifePathBox.SelectedIndex = 1;
+                            break;
+                        default:
+                            lifePathBox.SelectedIndex = 2;
+                            break;
+                    }
+
+                    var points = activeSaveFile.GetPlayerDevelopmentData().Value.DevPoints;
+                    perkPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == gamedataDevelopmentPointType.Primary)].Unspent);
+                    attrPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == null)].Unspent);
+
+                    //PSData parsing
+                    var ps = activeSaveFile.GetPSDataContainer();
+                    var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
+                    var unlockedVehicles = new List<string>();
+
+                    var vehicles = itemNames.Values.Where(x => x.Name.StartsWith("Vehicle.") && x.Name.EndsWith("_player"));
+                    var listItems = new List<ListViewItem>();
+
+                    if (vehiclePS != null)
+                    {
+                        vehiclesListView.Enabled = true;
+                        if (vehiclePS.UnlockedVehicleArray == null)
+                        {
+                            vehiclePS.UnlockedVehicleArray = new CyberCAT.Core.Classes.DumpedClasses.VehicleUnlockedVehicle[0];
+                        }
+                        else
+                        {
+                            unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name).ToList();
+                        }
+
+                        foreach (var info in vehicles)
+                        {
+                            var newItem = new ListViewItem(info.Name);
+                            newItem.Checked = true;
+                            newItem.Checked = unlockedVehicles.Contains(info.Name);
+                            listItems.Add(newItem);
+                        }
                     }
                     else
                     {
-                        unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name).ToList();
+                        vehiclesListView.Enabled = false;
+                        listItems.Add(new ListViewItem("No vehicle data found. Try unlocking at least 1 vehicle in-game first."));
                     }
 
-                    foreach (var info in vehicles)
-                    {
-                        var newItem = new ListViewItem(info.Name);
-                        newItem.Checked = true;
-                        newItem.Checked = unlockedVehicles.Contains(info.Name);
-                        listItems.Add(newItem);
-                    }
-                }
-                else
-                {
-                    vehiclesListView.Enabled = false;
-                    listItems.Add(new ListViewItem("No vehicle data found. Try unlocking at least 1 vehicle in-game first."));
-                }
+                    vehiclesListView.SetVirtualItems(listItems);
 
-                vehiclesListView.SetVirtualItems(listItems);
-
-                //Update controls
-                loadingSave = false;
-                editorPanel.Enabled = true;
-                optionsPanel.Enabled = true;
-                filePathLabel.Text = Path.GetFileName(Path.GetDirectoryName(fileWindow.FileName));
-                statusLabel.Text = "Save file loaded.";
-                SwapTab(statsButton, statsPanel);
+                    //Update controls
+                    loadingSave = false;
+                    editorPanel.Enabled = true;
+                    optionsPanel.Enabled = true;
+                    filePathLabel.Text = Path.GetFileName(Path.GetDirectoryName(fileWindow.FileName));
+                    statusLabel.Text = "Save file loaded.";
+                    SwapTab(statsButton, statsPanel);
+                };
+                worker.RunWorkerAsync();
             }
         }
 
@@ -626,51 +657,68 @@ namespace CP2077SaveEditor
             saveWindow.Filter = "Cyberpunk 2077 Save File|*.dat";
             if (saveWindow.ShowDialog() == DialogResult.OK)
             {
-                statusLabel.Text = "Saving changes...";
-                this.Refresh();
                 if (File.Exists(saveWindow.FileName) && !File.Exists(Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old"))
                 {
                     File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
                 }
-                byte[] saveBytes;
-                if (saveType == 0)
-                {
-                    saveBytes = activeSaveFile.Save();
-                } else {
-                    saveBytes = activeSaveFile.Save(false);
-                }
                 
+                loadTimer.Start();
 
-                var parsers = new List<INodeParser>();
-                parsers.AddRange(new INodeParser[] {
+                var worker = new BackgroundWorker();
+                worker.DoWork += (object sender, DoWorkEventArgs e) =>
+                {
+                    byte[] saveBytes;
+                    if (saveType == 0)
+                    {
+                        saveBytes = activeSaveFile.Save();
+                    }
+                    else
+                    {
+                        saveBytes = activeSaveFile.Save(false);
+                    }
+                    e.Result = saveBytes;
+                };
+                worker.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) =>
+                {
+                    byte[] saveBytes = (byte[])e.Result;
+                    loadTimer.Stop();
+                    currentProgress = 0;
+                    maxProgress = 0;
+                    currentNode = string.Empty;
+
+                    var parsers = new List<INodeParser>();
+                    parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
                     new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
                     new StatsSystemParser(), new ScriptableSystemsContainerParser(), new PSDataParser()
                 });
 
-                var testFile = new SaveFileHelper(parsers);
-                try
-                {
-                    if (saveType == 0)
+                    var testFile = new SaveFileHelper(parsers);
+                    try
                     {
-                        testFile.Load(new MemoryStream(saveBytes));
+                        if (saveType == 0)
+                        {
+                            testFile.Load(new MemoryStream(saveBytes));
+                        }
+                        else
+                        {
+                            testFile.Load(new MemoryStream(saveBytes));
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        testFile.Load(new MemoryStream(saveBytes));
+                        statusLabel.Text = "Save cancelled.";
+                        File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
+                        MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
+                        return;
                     }
-                }
-                catch (Exception ex)
-                {
-                    statusLabel.Text = "Save cancelled.";
-                    File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
-                    MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
-                    return;
-                }
 
-                File.WriteAllBytes(saveWindow.FileName, saveBytes);
-                activeSaveFile = testFile;
-                statusLabel.Text = "File saved.";
+                    File.WriteAllBytes(saveWindow.FileName, saveBytes);
+                    activeSaveFile = testFile;
+                    statusLabel.Text = "File saved.";
+                };
+
+                worker.RunWorkerAsync();
             }
         }
 
@@ -1152,6 +1200,32 @@ namespace CP2077SaveEditor
             }
 
             vehiclesListView.Invalidate();
+        }
+
+        private void loadTimer_Tick(object sender, EventArgs e)
+        {
+            var status = string.Empty;
+
+            if (loadingSave)
+            {
+                status += "Parsing";
+            }
+            else
+            {
+                status += "Rebuilding";
+            }
+
+            if (currentNode != string.Empty)
+            {
+                status += " " + currentNode;
+                if (maxProgress > 0 && currentProgress < maxProgress)
+                {
+                    status += " (" + Math.Round((Decimal.Divide(currentProgress, maxProgress) * 100), 0).ToString() + "%)";
+                }
+            }
+
+            status += "...";
+            statusLabel.Text = status;
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)

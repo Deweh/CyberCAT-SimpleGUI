@@ -106,6 +106,7 @@ namespace CP2077SaveEditor
             this.vehiclesPanel = new System.Windows.Forms.Panel();
             this.vehiclesListView = new System.Windows.Forms.ListView();
             this.vehicleIDHeader = new System.Windows.Forms.ColumnHeader();
+            this.loadTimer = new System.Windows.Forms.Timer(this.components);
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.appearancePreviewBox)).BeginInit();
@@ -1149,6 +1150,11 @@ namespace CP2077SaveEditor
             this.vehicleIDHeader.Text = "ID";
             this.vehicleIDHeader.Width = 820;
             // 
+            // loadTimer
+            // 
+            this.loadTimer.Interval = 1;
+            this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1289,6 +1295,7 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.ListView vehiclesListView;
         private System.Windows.Forms.ColumnHeader vehicleIDHeader;
         private ModernButton vehiclesButton;
+        private System.Windows.Forms.Timer loadTimer;
     }
 }
 
