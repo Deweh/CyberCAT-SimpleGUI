@@ -179,23 +179,7 @@ namespace CP2077SaveEditor
                 }
             }
 
-            if (File.Exists(Environment.CurrentDirectory + "\\names.json"))
-            {
-                try
-                {
-                    itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(File.ReadAllText("names.json"));
-                    return;
-                }
-                catch (Exception)
-                {
-                    itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
-                    MessageBox.Show("Unable to read names.json", "Notice");
-                }
-            }
-            else
-            {
-                itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
-            }
+            itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
         }
 
         private void SaveFile_ProgressChanged(object sender, SaveProgressChangedEventArgs e)
@@ -498,7 +482,20 @@ namespace CP2077SaveEditor
                 //Initialize resolvers, build parsers list & load save file
                 if (NameResolver.TweakDbResolver == null)
                 {
-                    NameResolver.TweakDbResolver = new JsonResolver(itemNames);
+                    statusLabel.Text = "Parsing Item Database...";
+                    statusLabel.Refresh();
+                    if (File.Exists("items.bin"))
+                    {
+                        NameResolver.TweakDbResolver = new BinaryResolver(File.ReadAllBytes("items.bin"));
+                    }
+                    else
+                    {
+                        if (File.Exists("names.json"))
+                        {
+                            itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(File.ReadAllText("names.json"));
+                        }
+                        NameResolver.TweakDbResolver = new JsonResolver(itemNames);
+                    }
                     FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
                 }
                 var parsers = new List<INodeParser>();

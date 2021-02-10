@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -253,6 +255,167 @@ namespace CP2077SaveEditor.Extensions
             public string Name { get; set; }
             public string GameName { get; set; }
             public string GameDescription { get; set; }
+        }
+    }
+
+    public class BinaryResolver : ITweakDbResolver
+    {
+        private BinaryReader br;
+        private Dictionary<ulong, TdbIdInfo> TdbIdIndex = new Dictionary<ulong, TdbIdInfo>();
+
+        public string GetName(TweakDbId tdbid)
+        {
+            if (tdbid == null)
+            {
+                return "<null>";
+            }
+
+            return TdbIdIndex.Keys.Contains(tdbid.Raw64) ? TdbIdIndex[tdbid.Raw64].Name : $"Unknown_{tdbid}";
+        }
+
+        public string GetGameName(TweakDbId tdbid)
+        {
+            if (tdbid == null)
+            {
+                return "<null>";
+            }
+
+            if (TdbIdIndex.Keys.Contains(tdbid.Raw64) && TdbIdIndex[tdbid.Raw64].InfoOffset != 0)
+            {
+                br.BaseStream.Seek(TdbIdIndex[tdbid.Raw64].InfoOffset, SeekOrigin.Begin);
+                return br.ReadString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public string GetGameDescription(TweakDbId tdbid)
+        {
+            if (tdbid == null)
+            {
+                return "<null>";
+            }
+
+            if (TdbIdIndex.Keys.Contains(tdbid.Raw64) && TdbIdIndex[tdbid.Raw64].InfoOffset != 0)
+            {
+                br.BaseStream.Seek(TdbIdIndex[tdbid.Raw64].InfoOffset, SeekOrigin.Begin);
+                br.ReadString();
+                return br.ReadString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public ulong GetHash(string itemName)
+        {
+            return TdbIdIndex.Where(x => x.Value.Name == itemName).Select(x => x.Key).FirstOrDefault();
+        }
+
+        public BinaryResolver(byte[] data)
+        {
+            var decompressed = new MemoryStream(Decompress(data));
+            br = new BinaryReader(decompressed, Encoding.UTF8);
+
+            // Magic
+            if (br.ReadByte() != 0x5 || br.ReadByte() != 0x8) throw new Exception();
+            // String Section Offset
+            long stringsOffset = br.ReadInt64();
+
+            while (br.BaseStream.Position < stringsOffset)
+            {
+                TdbIdIndex.Add(br.ReadUInt64(), new TdbIdInfo() { Name = br.ReadString(), InfoOffset = br.ReadInt64() });
+            }
+        }
+
+        private static byte[] Decompress(byte[] input)
+        {
+            using (var source = new MemoryStream(input))
+            {
+                byte[] lengthBytes = new byte[4];
+                source.Read(lengthBytes, 0, 4);
+
+                var length = BitConverter.ToInt32(lengthBytes, 0);
+                using (var decompressionStream = new GZipStream(source,
+                    CompressionMode.Decompress))
+                {
+                    var result = new byte[length];
+                    decompressionStream.Read(result, 0, length);
+                    return result;
+                }
+            }
+        }
+
+        private struct TdbIdInfo
+        {
+            public string Name { get; set; }
+            public long InfoOffset { get; set; }
+        }
+    }
+
+    public static class BinaryDatabaseWriter
+    {
+        public static byte[] Write(Dictionary<ulong, JsonResolver.NameStruct> sourceJson)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (var bw = new BinaryWriter(ms, Encoding.UTF8))
+                {
+                    bw.Write(new byte[] { 0x5, 0x8 });
+                    bw.Write((long)0);
+
+                    var tdbidOffsets = new Dictionary<ulong, long>();
+                    foreach (ulong hash in sourceJson.Keys)
+                    {
+                        bw.Write(hash);
+                        bw.Write(sourceJson[hash].Name);
+                        tdbidOffsets.Add(hash, bw.BaseStream.Position);
+                        bw.Write((long)0);
+                    }
+                    var stringsOffset = bw.BaseStream.Position;
+
+                    bw.BaseStream.Seek(2, SeekOrigin.Begin);
+                    bw.Write(stringsOffset);
+                    bw.BaseStream.Seek(stringsOffset, SeekOrigin.Begin);
+
+                    foreach (ulong hash in tdbidOffsets.Keys)
+                    {
+                        if (!string.IsNullOrEmpty(sourceJson[hash].GameName) || !string.IsNullOrEmpty(sourceJson[hash].GameDescription))
+                        {
+                            var bufferPos = bw.BaseStream.Position;
+                            bw.BaseStream.Seek(tdbidOffsets[hash], SeekOrigin.Begin);
+                            bw.Write(bufferPos);
+                            bw.BaseStream.Seek(bufferPos, SeekOrigin.Begin);
+
+                            bw.Write(sourceJson[hash].GameName);
+                            bw.Write(sourceJson[hash].GameDescription);
+                        }
+                    }
+
+                    return Compress(ms.ToArray());
+                }
+            }
+        }
+
+        private static byte[] Compress(byte[] input)
+        {
+            using (var result = new MemoryStream())
+            {
+                var lengthBytes = BitConverter.GetBytes(input.Length);
+                result.Write(lengthBytes, 0, 4);
+
+                using (var compressionStream = new GZipStream(result,
+                    CompressionMode.Compress))
+                {
+                    compressionStream.Write(input, 0, input.Length);
+                    compressionStream.Flush();
+
+                }
+                return result.ToArray();
+            }
         }
     }
 }
