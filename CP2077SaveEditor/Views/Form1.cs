@@ -271,8 +271,9 @@ namespace CP2077SaveEditor
                     }
                     picker.Enabled = true;
                 }
-                catch(Exception)
+                catch(Exception ex)
                 {
+                    MessageBox.Show(ex.Message);
                     picker.StringValue = string.Empty;
                     picker.Enabled = false;
                 }
@@ -318,26 +319,35 @@ namespace CP2077SaveEditor
 
         private void SetAppearanceImage(string name, string value)
         {
+            var oldImg = appearancePreviewBox.Image;
+            var imgExists = true;
             var path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + activeSaveFile.Appearance.BodyGender.ToString() + value + ".jpg";
             if (!File.Exists(path)) {
                 path = Environment.CurrentDirectory + "\\previews\\" + name + "\\" + value + ".jpg";
                 if (!File.Exists(path))
                 {
-                    appearancePreviewBox.Image = new Bitmap(1, 1);
-                    return;
+                    imgExists = false;
                 }
             }
 
-            try
+            if (imgExists)
             {
-                Image oldImg = appearancePreviewBox.Image;
-                appearancePreviewBox.Image = Image.FromFile(path);
-                if (oldImg != null) oldImg.Dispose();
+                try
+                {
+
+                    appearancePreviewBox.Image = Image.FromFile(path);
+                }
+                catch (Exception)
+                {
+                    appearancePreviewBox.Image = null;
+                }
             }
-            catch (Exception)
+            else
             {
-                appearancePreviewBox.Image = new Bitmap(1, 1);
+                appearancePreviewBox.Image = null;
             }
+            oldImg?.Dispose();
+
         }
 
         public bool RefreshInventory(string search = "", int searchField = -1)

@@ -816,7 +816,42 @@ namespace CP2077SaveEditor
             }
         }
 
-        public object NailColor { get; set; }
+        public int NailColor
+        {
+            get
+            {
+                var value = GetValue("second.main.first.nails_color" + (BodyGender == AppearanceGender.Female ? "_tpp" : string.Empty)).Substring("a0_000_pwa_base__nails_".Length);
+                return AppearanceValueLists.NailColors.FindIndex(x => x == value) + 1;
+            }
+            set
+            {
+                if (value > (AppearanceValueLists.NailColors.Count() - 1) || value < 1)
+                {
+                    return;
+                }
+
+                List<object> entries;
+                if (BodyGender == AppearanceGender.Female)
+                {
+                    entries = GetEntries("second.main.nails_color_tpp");
+                    entries.AddRange(GetEntries("second.main.nails_color_fpp"));
+                }
+                else
+                {
+                    entries = GetEntries("second.main.nails_color");
+                }
+
+                entries.AddRange(GetEntries("second.main.u_launcher_nails_color"));
+                entries.AddRange(GetEntries("second.main.u_mantise_nails_color"));
+
+                SetAllEntries(entries, (object entry) =>
+                {
+                    var entryValue = entry as HashValueEntry;
+
+                    entryValue.FirstString = "a0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_" + (entryValue.FirstString.Contains("fpp") ? "fpp" : "base") + "__nails_" + AppearanceValueLists.NailColors[value - 1];
+                });
+            }
+        }
 
         public int Chest
         {
@@ -1667,5 +1702,6 @@ namespace CP2077SaveEditor
         public static List<string> Genitals { get; } = Values["Genitals"].ToObject<List<string>>();
         public static List<string> PenisSizes { get; } = Values["PenisSizes"].ToObject<List<string>>();
         public static List<ulong> PubicHairStyles { get; } = Values["PubicHairStyles"].ToObject<List<ulong>>();
+        public static List<string> NailColors { get; } = Values["NailColors"].ToObject<List<string>>();
     }
 }
