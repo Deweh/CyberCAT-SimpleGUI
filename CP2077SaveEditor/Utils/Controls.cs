@@ -183,11 +183,11 @@ namespace CP2077SaveEditor
                 {
                     if (value > StringCollection.Length - 1)
                     {
-                        _index = StringCollection.Length - 1;
+                        _index = 0;
                     }
                     else if (value < 0)
                     {
-                        _index = 0;
+                        _index = StringCollection.Length - 1;
                     }
                     else
                     {

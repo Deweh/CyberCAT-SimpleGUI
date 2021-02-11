@@ -271,9 +271,8 @@ namespace CP2077SaveEditor
                     }
                     picker.Enabled = true;
                 }
-                catch(Exception ex)
+                catch(Exception)
                 {
-                    MessageBox.Show(ex.Message);
                     picker.StringValue = string.Empty;
                     picker.Enabled = false;
                 }
@@ -334,7 +333,6 @@ namespace CP2077SaveEditor
             {
                 try
                 {
-
                     appearancePreviewBox.Image = Image.FromFile(path);
                 }
                 catch (Exception)
