@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="XCOPY &quot;$(SolutionDir)\previews&quot; &quot;$(TargetDir)\previews\&quot; /S /Y /D&#xD;&#xA;XCOPY &quot;$(SolutionDir)\licenses&quot; &quot;$(TargetDir)\licenses\&quot; /S /Y /D&#xD;&#xA;XCOPY &quot;$(SolutionDir)\config.json&quot; &quot;$(TargetDir)&quot; /Y /D&#xD;&#xA;XCOPY &quot;$(SolutionDir)\names.json&quot; &quot;$(TargetDir)&quot; /Y /D&#xD;&#xA;DEL &quot;$(TargetDir)\previews\info.txt&quot;" />
+    <Exec Command="XCOPY &quot;$(SolutionDir)\previews&quot; &quot;$(TargetDir)\previews\&quot; /S /Y /D&#xD;&#xA;XCOPY &quot;$(SolutionDir)\licenses&quot; &quot;$(TargetDir)\licenses\&quot; /S /Y /D&#xD;&#xA;XCOPY &quot;$(SolutionDir)\config.json&quot; &quot;$(TargetDir)&quot; /Y /D&#xD;&#xA;DEL &quot;$(TargetDir)\previews\info.txt&quot;" />
   </Target>
 
 </Project>

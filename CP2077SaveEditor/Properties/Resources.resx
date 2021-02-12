@@ -121,9 +121,6 @@
   <data name="Facts" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Facts.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ItemNames" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ItemNames.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="ItemClasses" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ItemClasses.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -150,5 +147,8 @@
   </data>
   <data name="MaleDefaultPreset" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MaleDefault.preset;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="ItemNames" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ItemNames.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

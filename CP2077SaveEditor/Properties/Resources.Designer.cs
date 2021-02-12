@@ -158,31 +158,12 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {
-        ///  &quot;0&quot;: {
-        ///    &quot;gameDescription&quot;: &quot;&quot;,
-        ///    &quot;gameName&quot;: &quot;&quot;,
-        ///    &quot;guessed&quot;: true,
-        ///    &quot;name&quot;: &quot;None&quot;
-        ///  },
-        ///  &quot;100003754986&quot;: {
-        ///    &quot;gameDescription&quot;: &quot;&quot;,
-        ///    &quot;gameName&quot;: &quot;8L-OODY Tungsten-Steel Military Helmet&quot;,
-        ///    &quot;guessed&quot;: false,
-        ///    &quot;name&quot;: &quot;Items.Helmet_02_rich_02&quot;
-        ///  },
-        ///  &quot;100011957978&quot;: {
-        ///    &quot;gameDescription&quot;: &quot;With long-lasting, sythentic mint flavors and sweetners.&quot;,
-        ///    &quot;gameName&quot;: &quot;Bubble Gum&quot;,
-        ///    &quot;guessed&quot;: false,
-        ///    &quot;name&quot;: &quot;Items.GenericJunkItem30&quot;
-        ///  },
-        ///  &quot;100025052306&quot;: {
-        ///  [rest of string was truncated]&quot;;.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static string ItemNames {
+        internal static byte[] ItemNames {
             get {
-                return ResourceManager.GetString("ItemNames", resourceCulture);
+                object obj = ResourceManager.GetObject("ItemNames", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

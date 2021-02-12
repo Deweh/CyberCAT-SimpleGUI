@@ -44,7 +44,7 @@ namespace CP2077SaveEditor
 
         //Lookup Dictionaries
         private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
-        private static Dictionary<ulong, JsonResolver.NameStruct> itemNames;
+        private static List<string> itemNames;
         private static readonly Dictionary<string, string> itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         private static readonly Dictionary<ulong, string> inventoryNames = new()
         {
@@ -178,8 +178,6 @@ namespace CP2077SaveEditor
                     MessageBox.Show("Unable to read config.json", "Notice");
                 }
             }
-
-            itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(CP2077SaveEditor.Properties.Resources.ItemNames);
         }
 
         private void SaveFile_ProgressChanged(object sender, SaveProgressChangedEventArgs e)
@@ -492,18 +490,9 @@ namespace CP2077SaveEditor
                 {
                     statusLabel.Text = "Parsing Item Database...";
                     statusLabel.Refresh();
-                    if (File.Exists("items.bin"))
-                    {
-                        NameResolver.TweakDbResolver = new BinaryResolver(File.ReadAllBytes("items.bin"));
-                    }
-                    else
-                    {
-                        if (File.Exists("names.json"))
-                        {
-                            itemNames = JsonConvert.DeserializeObject<Dictionary<ulong, JsonResolver.NameStruct>>(File.ReadAllText("names.json"));
-                        }
-                        NameResolver.TweakDbResolver = new JsonResolver(itemNames);
-                    }
+                    var tdbidResolver = new BinaryResolver(CP2077SaveEditor.Properties.Resources.ItemNames);
+                    itemNames = tdbidResolver.TdbIdIndex.Select(x => x.Value.Name).ToList();
+                    NameResolver.TweakDbResolver = tdbidResolver;
                     FactResolver.UseDictionary(JsonConvert.DeserializeObject<Dictionary<ulong, string>>(CP2077SaveEditor.Properties.Resources.Facts));
                 }
                 var parsers = new List<INodeParser>();
@@ -629,7 +618,7 @@ namespace CP2077SaveEditor
                     var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
                     var unlockedVehicles = new List<string>();
 
-                    var vehicles = itemNames.Values.Where(x => x.Name.StartsWith("Vehicle.") && x.Name.EndsWith("_player"));
+                    var vehicles = itemNames.Where(x => x.StartsWith("Vehicle.") && x.EndsWith("_player"));
                     var listItems = new List<ListViewItem>();
 
                     if (vehiclePS != null)
@@ -646,9 +635,9 @@ namespace CP2077SaveEditor
 
                         foreach (var info in vehicles)
                         {
-                            var newItem = new ListViewItem(info.Name);
+                            var newItem = new ListViewItem(info);
                             newItem.Checked = true;
-                            newItem.Checked = unlockedVehicles.Contains(info.Name);
+                            newItem.Checked = unlockedVehicles.Contains(info);
                             listItems.Add(newItem);
                         }
                     }

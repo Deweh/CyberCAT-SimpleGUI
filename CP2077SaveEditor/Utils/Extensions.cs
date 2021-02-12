@@ -261,7 +261,7 @@ namespace CP2077SaveEditor.Extensions
     public class BinaryResolver : ITweakDbResolver
     {
         private BinaryReader br;
-        private Dictionary<ulong, TdbIdInfo> TdbIdIndex = new Dictionary<ulong, TdbIdInfo>();
+        public Dictionary<ulong, TdbIdInfo> TdbIdIndex = new Dictionary<ulong, TdbIdInfo>();
 
         public string GetName(TweakDbId tdbid)
         {
@@ -349,7 +349,7 @@ namespace CP2077SaveEditor.Extensions
             }
         }
 
-        private struct TdbIdInfo
+        public struct TdbIdInfo
         {
             public string Name { get; set; }
             public long InfoOffset { get; set; }
