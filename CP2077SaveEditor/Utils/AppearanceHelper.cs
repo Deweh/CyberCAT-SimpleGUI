@@ -825,7 +825,7 @@ namespace CP2077SaveEditor
             }
             set
             {
-                if (value > (AppearanceValueLists.NailColors.Count() - 1) || value < 1)
+                if (value > AppearanceValueLists.NailColors.Count() || value < 1)
                 {
                     return;
                 }
