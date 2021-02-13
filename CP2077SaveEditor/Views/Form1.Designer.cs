@@ -284,7 +284,7 @@ namespace CP2077SaveEditor
             this.label1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label1.Size = new System.Drawing.Size(303, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "v0.08a // CyberCAT by SirBitesalot and other contributors";
+            this.label1.Text = "v0.09a // CyberCAT by SirBitesalot and other contributors";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // statusLabel
