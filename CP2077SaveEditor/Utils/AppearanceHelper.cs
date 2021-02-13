@@ -527,7 +527,7 @@ namespace CP2077SaveEditor
             }
             set
             {
-                if (value > 4 || value < 0)
+                if (value > (AppearanceValueLists.Teeth.Count - 1) || value < 0)
                 {
                     return;
                 }

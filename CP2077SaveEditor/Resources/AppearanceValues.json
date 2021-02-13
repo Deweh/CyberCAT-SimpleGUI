@@ -300,7 +300,9 @@
 		"__silver",
 		"__gold",
 		"__cooper",
-		"__pink"
+		"__pink",
+		"__metal",
+		"__metal_rusty"
 	],
 	"FacialScars":
 	[
@@ -312,7 +314,9 @@
 		"tribe_03",
 		"beatup_01",
 		"beatup_02",
-		"seal_01"
+		"seal_01",
+		"witcher_01",
+		"burn_01"
 	],
 	"BodyScars":
 	[
