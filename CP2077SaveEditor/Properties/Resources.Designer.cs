@@ -61,6 +61,15 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [&quot;15002372041655897180.app&quot;,&quot;1925576907472423714.app&quot;,&quot;2003268365561002008.app&quot;,&quot;9955918664674453963.app&quot;,&quot;base\\characters\\appearances\\_e3_trailer_chrome_ma.app&quot;,&quot;base\\characters\\appearances\\_e3_trailer_chrome_wa.app&quot;,&quot;base\\characters\\appearances\\_e3_trailer_ma.app&quot;,&quot;base\\characters\\appearances\\_e3_trailer_mb.app&quot;,&quot;base\\characters\\appearances\\_e3_trailer_mf.app&quot;,&quot;base\\characters\\appearances\\_e3_trailer_wa.app&quot;,&quot;base\\characters\\appearances\\boss\\anton_kolev.app&quot;,&quot;base\\characters\\appear [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AppearancePaths {
+            get {
+                return ResourceManager.GetString("AppearancePaths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {
         ///	&quot;EyeColors&quot;:
         ///	[

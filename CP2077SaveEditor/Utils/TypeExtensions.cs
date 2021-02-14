@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CyberCAT.Core.Classes;
 using CyberCAT.Core.Classes.Interfaces;
+using CyberCAT.Core.Classes.NodeRepresentations;
+using CyberCAT.Extra.Utils;
+using Newtonsoft.Json;
 
 namespace CP2077SaveEditor.Extensions
 {
@@ -186,6 +189,32 @@ namespace CP2077SaveEditor.Extensions
                 value = numericUpDown.Maximum;
             }
             numericUpDown.Value = value;
+        }
+    }
+
+    public static class HashValueEntryExtensions
+    {
+        private static Dictionary<ulong, string> pathHashes;
+
+        static HashValueEntryExtensions()
+        {
+            pathHashes = new Dictionary<ulong, string>();
+            var names = JsonConvert.DeserializeObject<string[]>(CP2077SaveEditor.Properties.Resources.AppearancePaths);
+
+            for(int i = 0; i < names.Length; i++)
+            {
+                pathHashes.Add(HashGenerator.CalcFNV1A64(names[i]), names[i]);
+            }
+        }
+
+        public static string GetPath(this CharacterCustomizationAppearances.HashValueEntry entry)
+        {
+            return pathHashes.ContainsKey(entry.Hash) ? pathHashes[entry.Hash] : string.Empty;
+        }
+
+        public static void SetPath(this CharacterCustomizationAppearances.HashValueEntry entry, string value)
+        {
+            entry.Hash = HashGenerator.CalcFNV1A64(value);
         }
     }
 }
