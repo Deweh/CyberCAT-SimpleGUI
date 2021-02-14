@@ -972,21 +972,31 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("body_tattoo_", new HashValueEntry()
-                {
-                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = AppearanceValueLists.BodyTattoos["TPP"][value],
-                    SecondString = "body_tattoo_01"
-                },
-                new[] { "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2]);
+                var entries = GetEntries("third.main.body_color");
 
-                SetNullableHashEntry("fpp_body_tattoo_", new HashValueEntry()
+                foreach (HashValueEntry entry in entries)
                 {
-                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = AppearanceValueLists.BodyTattoos["FPP"][value],
-                    SecondString = "fpp_body_tattoo_01"
-                },
-                new[] { "FPP_Body" }, AppearanceField.Hash, MainSections[2]);
+                    entry.SetPath("base\\characters\\appearances\\main_npc\\evelyn.app");
+                    entry.FirstString = "default";
+
+                    System.Windows.Forms.MessageBox.Show("set.");
+                }
+
+                //SetNullableHashEntry("body_tattoo_", new HashValueEntry()
+                //{
+                //    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
+                //    Hash = AppearanceValueLists.BodyTattoos["TPP"][value],
+                //    SecondString = "body_tattoo_01"
+                //},
+                //new[] { "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2]);
+
+                //SetNullableHashEntry("fpp_body_tattoo_", new HashValueEntry()
+                //{
+                //    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
+                //    Hash = AppearanceValueLists.BodyTattoos["FPP"][value],
+                //    SecondString = "fpp_body_tattoo_01"
+                //},
+                //new[] { "FPP_Body" }, AppearanceField.Hash, MainSections[2]);
             }
         }
 
