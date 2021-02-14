@@ -972,6 +972,24 @@ namespace CP2077SaveEditor
                     return;
                 }
 
+                foreach (var section in MainSections[0].AppearanceSections)
+                {
+                    section.AdditionalList.Clear();
+                    section.MainList.Clear();
+                }
+
+                foreach (var section in MainSections[1].AppearanceSections)
+                {
+                    section.AdditionalList.Clear();
+
+                    foreach (var entry in section.MainList)
+                    {
+                        entry.Hash = 0;
+                    }
+                }
+
+                Chest = 2;
+
                 var entries = GetEntries("third.main.body_color");
 
                 foreach (HashValueEntry entry in entries)
