@@ -972,49 +972,21 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                foreach (var section in MainSections[0].AppearanceSections)
+                SetNullableHashEntry("body_tattoo_", new HashValueEntry()
                 {
-                    section.AdditionalList.Clear();
-                    section.MainList.Clear();
-                }
+                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
+                    Hash = AppearanceValueLists.BodyTattoos["TPP"][value],
+                    SecondString = "body_tattoo_01"
+                },
+                new[] { "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2]);
 
-                foreach (var section in MainSections[1].AppearanceSections)
+                SetNullableHashEntry("fpp_body_tattoo_", new HashValueEntry()
                 {
-                    section.AdditionalList.Clear();
-
-                    foreach (var entry in section.MainList)
-                    {
-                        entry.Hash = 0;
-                    }
-                }
-
-                Chest = 2;
-
-                var entries = GetEntries("third.main.body_color");
-
-                foreach (HashValueEntry entry in entries)
-                {
-                    entry.SetPath("base\\characters\\appearances\\main_npc\\evelyn.app");
-                    entry.FirstString = "default";
-
-                    System.Windows.Forms.MessageBox.Show("set.");
-                }
-
-                //SetNullableHashEntry("body_tattoo_", new HashValueEntry()
-                //{
-                //    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                //    Hash = AppearanceValueLists.BodyTattoos["TPP"][value],
-                //    SecondString = "body_tattoo_01"
-                //},
-                //new[] { "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2]);
-
-                //SetNullableHashEntry("fpp_body_tattoo_", new HashValueEntry()
-                //{
-                //    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                //    Hash = AppearanceValueLists.BodyTattoos["FPP"][value],
-                //    SecondString = "fpp_body_tattoo_01"
-                //},
-                //new[] { "FPP_Body" }, AppearanceField.Hash, MainSections[2]);
+                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
+                    Hash = AppearanceValueLists.BodyTattoos["FPP"][value],
+                    SecondString = "fpp_body_tattoo_01"
+                },
+                new[] { "FPP_Body" }, AppearanceField.Hash, MainSections[2]);
             }
         }
 
@@ -1676,6 +1648,38 @@ namespace CP2077SaveEditor
         public bool CompareMainListAppearanceEntries(string entry1, string entry2)
         {
             return Regex.Replace(entry1, @"[\d-]", string.Empty) == Regex.Replace(entry2, @"[\d-]", string.Empty);
+        }
+
+        public void SwapBody(string path)
+        {
+            foreach (var section in MainSections[0].AppearanceSections)
+            {
+                section.AdditionalList.Clear();
+                section.MainList.Clear();
+            }
+
+            foreach (var section in MainSections[1].AppearanceSections)
+            {
+                section.AdditionalList.Clear();
+
+                foreach (var entry in section.MainList)
+                {
+                    entry.Hash = 0;
+                }
+            }
+
+            if (BodyGender == AppearanceGender.Female)
+            {
+                Chest = 2;
+            }
+
+            var entries = GetEntries("third.main.body_color");
+
+            foreach (HashValueEntry entry in entries)
+            {
+                entry.SetPath(path);
+                entry.FirstString = "default";
+            }
         }
     }
 

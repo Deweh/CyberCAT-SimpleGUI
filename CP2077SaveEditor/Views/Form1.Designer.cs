@@ -107,6 +107,8 @@ namespace CP2077SaveEditor
             this.vehiclesListView = new System.Windows.Forms.ListView();
             this.vehicleIDHeader = new System.Windows.Forms.ColumnHeader();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
+            this.bodyPathBox = new System.Windows.Forms.TextBox();
+            this.swapBodyButton = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.appearancePreviewBox)).BeginInit();
@@ -300,6 +302,8 @@ namespace CP2077SaveEditor
             // 
             // appearancePanel
             // 
+            this.appearancePanel.Controls.Add(this.swapBodyButton);
+            this.appearancePanel.Controls.Add(this.bodyPathBox);
             this.appearancePanel.Controls.Add(this.appearancePreviewBox);
             this.appearancePanel.Controls.Add(this.appearanceOptionsPanel);
             this.appearancePanel.Controls.Add(this.label18);
@@ -1155,6 +1159,29 @@ namespace CP2077SaveEditor
             this.loadTimer.Interval = 1;
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
+            // bodyPathBox
+            // 
+            this.bodyPathBox.Location = new System.Drawing.Point(71, 10);
+            this.bodyPathBox.Name = "bodyPathBox";
+            this.bodyPathBox.Size = new System.Drawing.Size(306, 22);
+            this.bodyPathBox.TabIndex = 20;
+            this.bodyPathBox.Text = "base\\characters\\appearances\\main_npc\\evelyn.app";
+            // 
+            // swapBodyButton
+            // 
+            this.swapBodyButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.swapBodyButton.ClickEffectEnabled = true;
+            this.swapBodyButton.DefaultColor = System.Drawing.Color.White;
+            this.swapBodyButton.HoverColor = System.Drawing.Color.LightGray;
+            this.swapBodyButton.Location = new System.Drawing.Point(383, 10);
+            this.swapBodyButton.Name = "swapBodyButton";
+            this.swapBodyButton.Size = new System.Drawing.Size(83, 22);
+            this.swapBodyButton.TabIndex = 21;
+            this.swapBodyButton.Text = "Swap Body";
+            this.swapBodyButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.swapBodyButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.swapBodyButton.Click += new System.EventHandler(this.swapBodyButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1296,6 +1323,8 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.ColumnHeader vehicleIDHeader;
         private ModernButton vehiclesButton;
         private System.Windows.Forms.Timer loadTimer;
+        private ModernButton swapBodyButton;
+        private System.Windows.Forms.TextBox bodyPathBox;
     }
 }
 

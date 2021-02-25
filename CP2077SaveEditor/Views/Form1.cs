@@ -1259,6 +1259,12 @@ namespace CP2077SaveEditor
             statusLabel.Text = status;
         }
 
+        private void swapBodyButton_Click(object sender, EventArgs e)
+        {
+            activeSaveFile.Appearance.SwapBody(bodyPathBox.Text);
+            MessageBox.Show("Swapped body to " + bodyPathBox.Text);
+        }
+
         private void PlayerStatChanged(object sender, EventArgs e)
         {
             if (!loadingSave)
