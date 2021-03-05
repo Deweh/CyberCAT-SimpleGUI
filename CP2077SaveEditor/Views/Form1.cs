@@ -528,6 +528,14 @@ namespace CP2077SaveEditor
                     maxProgress = 0;
                     currentNode = string.Empty;
 
+                    if (e.Error != null)
+                    {
+                        File.WriteAllText("error.txt", e.Error.Message + Environment.NewLine + e.Error.StackTrace);
+                        MessageBox.Show("Failed to parse save file: " + e.Error.Message + " An error.txt file has been generated with additional information.");
+                        statusLabel.Text = "Load cancelled.";
+                        return;
+                    }
+
                     if (wrongDefaultInfo != null)
                     {
                         if (new WrongDefaultDialog(wrongDefaultInfo.ClassName, wrongDefaultInfo.PropertyName, wrongDefaultInfo.Value).ShowDialog() != DialogResult.OK)
