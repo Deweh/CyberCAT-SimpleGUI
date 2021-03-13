@@ -36,6 +36,12 @@ namespace CP2077SaveEditor
             }
             set
             {
+                if (!Form1.psDataEnabled)
+                {
+                    MessageBox.Show("PSData is disabled. Body Gender cannot be changed.", "Notice");
+                    return;
+                }
+
                 if (value != BodyGender)
                 {
                     if (!SuppressBodyGenderPrompt)

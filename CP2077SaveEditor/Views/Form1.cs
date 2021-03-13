@@ -32,7 +32,7 @@ namespace CP2077SaveEditor
         private bool cancelLoad = false;
         private int saveType = 0;
         private Random globalRand = new Random();
-        private WrongDefaultValueEventArgs wrongDefaultInfo = null;
+        public static bool psDataEnabled = true;
 
         //GUI
         private ModernButton activeTabButton = new ModernButton();
@@ -171,6 +171,11 @@ namespace CP2077SaveEditor
                     else if(config["SaveButtonPosition"] > 1)
                     {
                         saveChangesButton.Location = new Point(saveChangesButton.Location.X, saveChangesButton.Location.Y - config["SaveButtonPosition"]);
+                    }
+
+                    if (config["EnablePSData"] == 0)
+                    {
+                        psDataEnabled = false;
                     }
                 }
                 catch (Exception)
@@ -492,10 +497,13 @@ namespace CP2077SaveEditor
                 parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
                     new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
-                    new StatsSystemParser(), new ScriptableSystemsContainerParser(), new PSDataParser()
+                    new StatsSystemParser(), new ScriptableSystemsContainerParser()
                 });
 
-                wrongDefaultInfo = null;
+                if (psDataEnabled)
+                {
+                    parsers.Add(new PSDataParser());
+                }
 
                 var newSave = new SaveFileHelper(parsers);
                 editorPanel.Enabled = false;
@@ -534,14 +542,6 @@ namespace CP2077SaveEditor
                         MessageBox.Show("Failed to parse save file: " + e.Error.Message + " An error.txt file has been generated with additional information.");
                         statusLabel.Text = "Load cancelled.";
                         return;
-                    }
-
-                    if (wrongDefaultInfo != null)
-                    {
-                        if (new WrongDefaultDialog(wrongDefaultInfo.ClassName, wrongDefaultInfo.PropertyName, wrongDefaultInfo.Value).ShowDialog() != DialogResult.OK)
-                        {
-                            cancelLoad = true;
-                        }
                     }
 
                     if (cancelLoad)
@@ -630,37 +630,47 @@ namespace CP2077SaveEditor
                     attrPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == null)].Unspent);
 
                     //PSData parsing
-                    var ps = activeSaveFile.GetPSDataContainer();
-                    var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
-                    var unlockedVehicles = new List<string>();
 
-                    var vehicles = itemResolver.TdbIdIndex.Values.Where(x => x.Name.StartsWith("Vehicle.") && x.Name.EndsWith("_player")).Select(x => x.Name);
                     var listItems = new List<ListViewItem>();
 
-                    if (vehiclePS != null)
+                    if (!psDataEnabled)
                     {
-                        vehiclesListView.Enabled = true;
-                        if (vehiclePS.UnlockedVehicleArray == null)
-                        {
-                            vehiclePS.UnlockedVehicleArray = new CyberCAT.Core.Classes.DumpedClasses.VehicleUnlockedVehicle[0];
-                        }
-                        else
-                        {
-                            unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name).ToList();
-                        }
-
-                        foreach (var info in vehicles)
-                        {
-                            var newItem = new ListViewItem(info);
-                            newItem.Checked = true;
-                            newItem.Checked = unlockedVehicles.Contains(info);
-                            listItems.Add(newItem);
-                        }
+                        vehiclesListView.Enabled = false;
+                        listItems.Add(new ListViewItem("PSData disabled."));
                     }
                     else
                     {
-                        vehiclesListView.Enabled = false;
-                        listItems.Add(new ListViewItem("No vehicle data found. Try unlocking at least 1 vehicle in-game first."));
+                        var ps = activeSaveFile.GetPSDataContainer();
+                        var vehiclePS = (CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS)ps.ClassList.Where(x => x is CyberCAT.Core.Classes.DumpedClasses.VehicleGarageComponentPS).FirstOrDefault();
+                        var unlockedVehicles = new List<string>();
+
+                        var vehicles = itemResolver.TdbIdIndex.Values.Where(x => x.Name.StartsWith("Vehicle.") && x.Name.EndsWith("_player")).Select(x => x.Name);
+
+                        if (vehiclePS != null)
+                        {
+                            vehiclesListView.Enabled = true;
+                            if (vehiclePS.UnlockedVehicleArray == null)
+                            {
+                                vehiclePS.UnlockedVehicleArray = new CyberCAT.Core.Classes.DumpedClasses.VehicleUnlockedVehicle[0];
+                            }
+                            else
+                            {
+                                unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.Name).ToList();
+                            }
+
+                            foreach (var info in vehicles)
+                            {
+                                var newItem = new ListViewItem(info);
+                                newItem.Checked = true;
+                                newItem.Checked = unlockedVehicles.Contains(info);
+                                listItems.Add(newItem);
+                            }
+                        }
+                        else
+                        {
+                            vehiclesListView.Enabled = false;
+                            listItems.Add(new ListViewItem("No vehicle data found. Try unlocking at least 1 vehicle in-game first."));
+                        }
                     }
 
                     vehiclesListView.SetVirtualItems(listItems);
@@ -722,10 +732,15 @@ namespace CP2077SaveEditor
 
                     var parsers = new List<INodeParser>();
                     parsers.AddRange(new INodeParser[] {
-                    new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
-                    new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
-                    new StatsSystemParser(), new ScriptableSystemsContainerParser(), new PSDataParser()
-                });
+                        new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
+                        new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
+                        new StatsSystemParser(), new ScriptableSystemsContainerParser()
+                    });
+
+                    if (psDataEnabled)
+                    {
+                        parsers.Add(new PSDataParser());
+                    }
 
                     var testFile = new SaveFileHelper(parsers);
                     try
