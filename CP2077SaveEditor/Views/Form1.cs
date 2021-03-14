@@ -538,9 +538,18 @@ namespace CP2077SaveEditor
 
                     if (e.Error != null)
                     {
-                        File.WriteAllText("error.txt", e.Error.Message + Environment.NewLine + e.Error.StackTrace);
-                        MessageBox.Show("Failed to parse save file: " + e.Error.Message + " An error.txt file has been generated with additional information.");
                         statusLabel.Text = "Load cancelled.";
+
+                        try
+                        {
+                            File.WriteAllText("error.txt", e.Error.Message + Environment.NewLine + e.Error.StackTrace);
+                            MessageBox.Show("Failed to parse save file: " + e.Error.Message + " An error.txt file has been generated with additional information.");
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Failed to parse save file: " + e.Error.Message + " \n\n Stack Trace: \n" + e.Error.StackTrace);
+                        }
+                        
                         return;
                     }
 
@@ -757,8 +766,16 @@ namespace CP2077SaveEditor
                     catch (Exception ex)
                     {
                         statusLabel.Text = "Save cancelled.";
-                        File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
-                        MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
+                        try
+                        {
+                            File.WriteAllText("error.txt", ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
+                            MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI. \n\n" + ex.Message + "\n" + ex.StackTrace);
+                        }
+
                         return;
                     }
                     finally
