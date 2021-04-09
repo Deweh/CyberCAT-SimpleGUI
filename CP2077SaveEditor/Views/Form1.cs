@@ -424,7 +424,14 @@ namespace CP2077SaveEditor
                 listViewRows.Add(newItem);
                 if (item.ItemTdbId.GameName == "Eddies" && containerID == "1")
                 {
-                    moneyUpDown.Value = ((ItemData.SimpleItemData)item.Data).Quantity;
+                    var money = ((ItemData.SimpleItemData)item.Data).Quantity;
+
+                    if(money > moneyUpDown.Maximum)
+                    {
+                        moneyUpDown.Maximum = money;
+                    }
+
+                    moneyUpDown.Value = money;
                     moneyUpDown.Enabled = true;
                 }
             }
