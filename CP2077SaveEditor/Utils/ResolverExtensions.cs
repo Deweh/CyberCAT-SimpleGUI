@@ -85,7 +85,7 @@ namespace CP2077SaveEditor.Extensions
     {
         private BinaryReader br;
         private TweakDbParser parser = new TweakDbParser();
-        public Dictionary<ulong, TdbIdInfo> TdbIdIndex = new Dictionary<ulong, TdbIdInfo>();
+        public Dictionary<ulong, TdbIdInfo> TdbIdIndex;
 
         public string GetName(TweakDbId tdbid)
         {
@@ -152,6 +152,8 @@ namespace CP2077SaveEditor.Extensions
             var totalItemsCount = br.ReadUInt32();
             var infoItemsCount = br.ReadUInt32();
             var infoIndex = new List<ulong>();
+
+            TdbIdIndex = new Dictionary<ulong, TdbIdInfo>((int)totalItemsCount);
 
             for (uint i = 0; i < totalItemsCount; i++)
             {

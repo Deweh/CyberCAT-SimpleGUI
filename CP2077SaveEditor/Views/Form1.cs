@@ -727,16 +727,7 @@ namespace CP2077SaveEditor
                 var worker = new BackgroundWorker();
                 worker.DoWork += (object sender, DoWorkEventArgs e) =>
                 {
-                    byte[] saveBytes;
-                    if (saveType == 0)
-                    {
-                        saveBytes = activeSaveFile.Save();
-                    }
-                    else
-                    {
-                        saveBytes = activeSaveFile.Save(false);
-                    }
-                    e.Result = saveBytes;
+                    e.Result = activeSaveFile.Save(saveType == 0);
                 };
                 worker.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) =>
                 {
@@ -892,6 +883,12 @@ namespace CP2077SaveEditor
                 }
 
                 var contextMenu = new ContextMenuStrip();
+                contextMenu.Items.Add("New Item").Click += (object sender, EventArgs e) =>
+                {
+                    var inventory = activeSaveFile.GetInventory(1);
+                    inventory.Items.Add(inventory.Items.Last().CreateSimpleItem());
+                };
+
                 if (containerID == "1")
                 {
                     var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;

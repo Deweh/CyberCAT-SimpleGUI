@@ -352,6 +352,106 @@ namespace CP2077SaveEditor
             }
         }
 
+        public int Beard
+        {
+            get
+            {
+                if(BodyGender != AppearanceGender.Female)
+                {
+                    var entries = GetEntries("first.main.beard_color_");
+                    foreach(HashValueEntry singleEntry in entries)
+                    {
+                        var name = singleEntry.GetPath().Split('\\').Last();
+                        var searchString = name.Substring(0, name.Length - ".app".Length).Substring("hb_000_pma__".Length).Split("__");
+
+                        return AppearanceValueLists.Beards.FindIndex(x => x == searchString[0]) + 1;
+                    }
+                    return 0;
+                }
+                return -1;
+            }
+            set
+            {
+                if (value < 0 || value > AppearanceValueLists.Beards.Count)
+                {
+                    return;
+                }
+
+                SetNullableHashEntry("beard_color_", new HashValueEntry()
+                {
+                    FirstString = "01_blonde_platinum",
+                    Hash = value == 0 ? 0 : CyberCAT.Extra.Utils.HashGenerator.CalcFNV1A64("base\\characters\\head\\player_base_heads\\appearances\\facial_hairs\\hb_000_pma__" + AppearanceValueLists.Beards[value - 1] + ".app"),
+                    SecondString = "beard_color1_0"
+                },
+                new[] { "TPP", "character_customization" }, AppearanceField.Hash);
+            }
+        }
+
+        public int BeardStyle
+        {
+            get
+            {
+                if (BodyGender != AppearanceGender.Female)
+                {
+                    var entries = GetEntries("first.main.beard_color_");
+                    foreach (HashValueEntry singleEntry in entries)
+                    {
+                        var name = singleEntry.GetPath().Split('\\').Last();
+                        var searchString = name.Substring(0, name.Length - ".app".Length).Substring("hb_000_pma__".Length).Split("__");
+
+                        if (searchString.Count() > 1)
+                        {
+                            return AppearanceValueLists.BeardStyles[searchString[0]].FindIndex(x => x == searchString[1]) + 1;
+                        }
+                        else if (AppearanceValueLists.BeardStyles[searchString[0]].Count < 2)
+                        {
+                            return -1;
+                        }
+                        else
+                        {
+                            return 1;
+                        }
+                    }
+                }
+                return -1;
+            }
+            set
+            {
+                var entries = GetEntries("first.main.beard_color_");
+
+                var path = ((HashValueEntry)entries[0]).GetPath().Split('\\');
+                var parts = path.Last().Substring(0, path.Last().Length - ".app".Length).Split("__").ToList();
+
+                var options = AppearanceValueLists.BeardStyles[parts[1]];
+
+                if (value < 1 || value > options.Count)
+                {
+                    return;
+                }
+
+                if (options[value - 1] == string.Empty && parts.Count > 2)
+                {
+                    parts.RemoveAt(2);
+                }
+                else if (options[value - 1] != string.Empty && parts.Count < 3)
+                {
+                    parts.Add(options[value - 1]);
+                }
+                else if (options[value - 1] != string.Empty && parts.Count > 2)
+                {
+                    parts[2] = options[value - 1];
+                }
+
+                path[path.Length - 1] = string.Join("__", parts) + ".app";
+                var finalPath = string.Join('\\', path);
+
+                foreach (HashValueEntry singleEntry in entries)
+                {
+                    singleEntry.SetPath(finalPath);
+                }
+            }
+        }
+
         public int Cyberware
         {
             get
@@ -1709,5 +1809,7 @@ namespace CP2077SaveEditor
         public static List<string> PenisSizes { get; } = Values["PenisSizes"].ToObject<List<string>>();
         public static List<ulong> PubicHairStyles { get; } = Values["PubicHairStyles"].ToObject<List<ulong>>();
         public static List<string> NailColors { get; } = Values["NailColors"].ToObject<List<string>>();
+        public static List<string> Beards { get; } = Values["Beards"].ToObject<List<string>>();
+        public static Dictionary<string, List<string>> BeardStyles { get; } = Values["BeardStyles"].ToObject<Dictionary<string, List<string>>>();
     }
 }
