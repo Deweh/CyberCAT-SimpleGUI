@@ -33,6 +33,7 @@ namespace CP2077SaveEditor
         private int saveType = 0;
         private Random globalRand = new Random();
         public static bool psDataEnabled = true;
+        public static bool wipEnabled = false;
 
         //GUI
         private ModernButton activeTabButton = new ModernButton();
@@ -58,6 +59,11 @@ namespace CP2077SaveEditor
             { 0x7901DE03D136A5AF, "V's Wardrobe" },
             { 0xE5F556FCBB62A706, "V's Stash" },
             { 0xEDAD8C9B086A615E, "River's Stash" }
+        };
+        private List<string> wipFields = new()
+        {
+            "Beard",
+            "BeardStyle"
         };
 
         public Form1()
@@ -132,6 +138,37 @@ namespace CP2077SaveEditor
                 numUpDown.ValueChanged += PlayerStatChanged;
             }
 
+            if (File.Exists(Environment.CurrentDirectory + "\\config.json"))
+            {
+                try
+                {
+                    var config = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(Environment.CurrentDirectory + "\\config.json"));
+                    if (config.ContainsKey("SaveButtonPosition") && config["SaveButtonPosition"] == 1)
+                    {
+                        saveChangesButton.Location = new Point(saveChangesButton.Location.X, factsButton.Location.Y + factsButton.Height - 1);
+                        saveChangesButton.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+                    }
+                    else if (config.ContainsKey("SaveButtonPosition") && config["SaveButtonPosition"] > 1)
+                    {
+                        saveChangesButton.Location = new Point(saveChangesButton.Location.X, saveChangesButton.Location.Y - config["SaveButtonPosition"]);
+                    }
+
+                    if (config.ContainsKey("EnablePSData") && config["EnablePSData"] == 0)
+                    {
+                        psDataEnabled = false;
+                    }
+
+                    if (config.ContainsKey("EnableWIPFeatures") && config["EnableWIPFeatures"] == 1)
+                    {
+                        wipEnabled = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Unable to read config.json", "Notice");
+                }
+            }
+
             var lastPos = 20;
             foreach (PropertyInfo property in typeof(AppearanceHelper).GetProperties())
             {
@@ -139,6 +176,11 @@ namespace CP2077SaveEditor
                 //{
                 //    MessageBox.Show(property.Name);
                 //}
+
+                if (!wipEnabled && wipFields.Contains(property.Name))
+                {
+                    continue;
+                }
 
                 if (property.PropertyType.Name != "Object" && property.PropertyType.Name != "Boolean" && property.Name != "MainSections" && property.CanWrite == true)
                 {
@@ -158,31 +200,6 @@ namespace CP2077SaveEditor
                 }
             }
 
-            if (File.Exists(Environment.CurrentDirectory + "\\config.json"))
-            {
-                try
-                {
-                    var config = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(Environment.CurrentDirectory + "\\config.json"));
-                    if (config["SaveButtonPosition"] == 1)
-                    {
-                        saveChangesButton.Location = new Point(saveChangesButton.Location.X, factsButton.Location.Y + factsButton.Height - 1);
-                        saveChangesButton.Anchor = AnchorStyles.Left | AnchorStyles.Top;
-                    }
-                    else if(config["SaveButtonPosition"] > 1)
-                    {
-                        saveChangesButton.Location = new Point(saveChangesButton.Location.X, saveChangesButton.Location.Y - config["SaveButtonPosition"]);
-                    }
-
-                    if (config["EnablePSData"] == 0)
-                    {
-                        psDataEnabled = false;
-                    }
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Unable to read config.json", "Notice");
-                }
-            }
         }
 
         private void SaveFile_ProgressChanged(object sender, SaveProgressChangedEventArgs e)
