@@ -900,11 +900,14 @@ namespace CP2077SaveEditor
                 }
 
                 var contextMenu = new ContextMenuStrip();
-                contextMenu.Items.Add("New Item").Click += (object sender, EventArgs e) =>
+                if (wipEnabled)
                 {
-                    var inventory = activeSaveFile.GetInventory(1);
-                    inventory.Items.Add(inventory.Items.Last().CreateSimpleItem());
-                };
+                    contextMenu.Items.Add("New Item").Click += (object sender, EventArgs e) =>
+                    {
+                        var inventory = activeSaveFile.GetInventory(1);
+                        inventory.Items.Add(inventory.Items.Last().CreateSimpleItem());
+                    };
+                }
 
                 if (containerID == "1")
                 {
