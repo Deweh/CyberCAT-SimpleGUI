@@ -25,7 +25,7 @@ namespace CP2077SaveEditor
     public partial class Form1 : Form
     {
         //Save File Object
-        private SaveFileHelper activeSaveFile;
+        public static SaveFileHelper activeSaveFile;
 
         //Save Info
         private bool loadingSave = false;
@@ -169,7 +169,7 @@ namespace CP2077SaveEditor
                 }
             }
 
-            var lastPos = 20;
+            var lastPos = 0;
             foreach (PropertyInfo property in typeof(AppearanceHelper).GetProperties())
             {
                 //if (property.PropertyType.Name == "Object")
@@ -1350,6 +1350,12 @@ namespace CP2077SaveEditor
                 points[Array.FindIndex(points, x => x.Type == CyberCAT.Core.DumpedEnums.gamedataDevelopmentPointType.Primary)].Unspent = (int)perkPointsUpDown.Value;
                 points[Array.FindIndex(points, x => x.Type == null)].Unspent = (int)attrPointsUpDown.Value;
             }
+        }
+
+        private void advancedAppearanceButton_Click(object sender, EventArgs e)
+        {
+            var advancedDialog = new AdvancedAppearanceDialog();
+            advancedDialog.ShowDialog();
         }
     }
 }

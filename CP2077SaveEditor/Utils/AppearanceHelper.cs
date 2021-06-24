@@ -62,7 +62,7 @@ namespace CP2077SaveEditor
                 var playerPuppet = (PlayerPuppetPS)activeSave.GetPSDataContainer().ClassList.Where(x => x is PlayerPuppetPS).FirstOrDefault();
                 if (value == AppearanceGender.Female)
                 {
-                    playerPuppet.Gender = string.Empty;
+                    playerPuppet.Gender = "Female";
                     if (!SuppressBodyGenderPrompt)
                     {
                         SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.FemaleDefaultPreset));
