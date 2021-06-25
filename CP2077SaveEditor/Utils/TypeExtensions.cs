@@ -216,5 +216,10 @@ namespace CP2077SaveEditor.Extensions
         {
             entry.Hash = HashGenerator.CalcFNV1A64(value);
         }
+
+        public static bool IsPathValid(this CharacterCustomizationAppearances.HashValueEntry entry, string value)
+        {
+            return pathHashes.Values.Contains(value);
+        }
     }
 }

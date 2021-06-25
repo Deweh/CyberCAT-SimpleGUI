@@ -15,16 +15,20 @@ namespace CP2077SaveEditor
     public partial class AdvancedAppearanceDialog : Form
     {
         private Dictionary<string, HashValueEntry> options = new Dictionary<string, HashValueEntry>();
-        private Form1 parent;
+        public delegate void ApplyEvent();
+        public ApplyEvent ChangesApplied;
 
         public AdvancedAppearanceDialog()
         {
             InitializeComponent();
+
+            firstBox.TextChanged += inputBox_TextChanged;
+            secondBox.TextChanged += inputBox_TextChanged;
+            pathBox.TextChanged += inputBox_TextChanged;
         }
 
         private void AdvancedAppearanceDialog_Load(object sender, EventArgs e)
         {
-            parent = this.Owner as Form1;
             var container = Form1.activeSaveFile.GetAppearanceContainer();
 
             foreach (var section in container.FirstSection.AppearanceSections)
@@ -64,6 +68,43 @@ namespace CP2077SaveEditor
                 secondBox.Text = entry.SecondString;
                 pathBox.Text = entry.GetPath();
             }
+            else
+            {
+                firstBox.Text = string.Empty;
+                secondBox.Text = string.Empty;
+                pathBox.Text = string.Empty;
+            }
+
+            applyButton.Enabled = false;
+        }
+
+        private void inputBox_TextChanged(object sender, EventArgs e)
+        {
+            applyButton.Enabled = true;
+        }
+
+        private void applyButton_Click(object sender, EventArgs e)
+        {
+            if (optionsBox.SelectedItem is null)
+            {
+                MessageBox.Show("Error: No appearance entry selected.");
+                return;
+            }
+
+            HashValueEntry entry = options[(string)optionsBox.SelectedItem];
+
+            if (!entry.IsPathValid(pathBox.Text))
+            {
+                MessageBox.Show("Invalid path. Must be a valid path to a base game '.app' file.");
+                return;
+            }
+
+            entry.FirstString = firstBox.Text;
+            entry.SecondString = secondBox.Text;
+            entry.SetPath(pathBox.Text);
+
+            ChangesApplied();
+            applyButton.Enabled = false;
         }
     }
 }

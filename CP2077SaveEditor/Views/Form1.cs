@@ -242,7 +242,7 @@ namespace CP2077SaveEditor
             activeTabPanel = tabPanel;
         }
 
-        private void RefreshAppearanceValues()
+        public void RefreshAppearanceValues()
         {
             foreach (ModernValuePicker picker in appearanceOptionsPanel.Controls)
             {
@@ -1355,6 +1355,7 @@ namespace CP2077SaveEditor
         private void advancedAppearanceButton_Click(object sender, EventArgs e)
         {
             var advancedDialog = new AdvancedAppearanceDialog();
+            advancedDialog.ChangesApplied += RefreshAppearanceValues;
             advancedDialog.ShowDialog();
         }
     }

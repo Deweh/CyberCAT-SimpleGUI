@@ -36,7 +36,7 @@ namespace CP2077SaveEditor
             this.firstBox = new System.Windows.Forms.TextBox();
             this.secondBox = new System.Windows.Forms.TextBox();
             this.pathBox = new System.Windows.Forms.TextBox();
-            this.modernButton1 = new CP2077SaveEditor.ModernButton();
+            this.applyButton = new CP2077SaveEditor.ModernButton();
             this.SuspendLayout();
             // 
             // optionsBox
@@ -97,20 +97,22 @@ namespace CP2077SaveEditor
             this.pathBox.Size = new System.Drawing.Size(431, 50);
             this.pathBox.TabIndex = 6;
             // 
-            // modernButton1
+            // applyButton
             // 
-            this.modernButton1.BackColor = System.Drawing.Color.White;
-            this.modernButton1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.modernButton1.ClickEffectEnabled = true;
-            this.modernButton1.DefaultColor = System.Drawing.Color.White;
-            this.modernButton1.HoverColor = System.Drawing.Color.LightGray;
-            this.modernButton1.Location = new System.Drawing.Point(925, 247);
-            this.modernButton1.Name = "modernButton1";
-            this.modernButton1.Size = new System.Drawing.Size(120, 29);
-            this.modernButton1.TabIndex = 7;
-            this.modernButton1.Text = "Apply";
-            this.modernButton1.TextColor = System.Drawing.SystemColors.ControlText;
-            this.modernButton1.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.applyButton.BackColor = System.Drawing.Color.White;
+            this.applyButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.applyButton.ClickEffectEnabled = true;
+            this.applyButton.DefaultColor = System.Drawing.Color.White;
+            this.applyButton.Enabled = false;
+            this.applyButton.HoverColor = System.Drawing.Color.LightGray;
+            this.applyButton.Location = new System.Drawing.Point(925, 247);
+            this.applyButton.Name = "applyButton";
+            this.applyButton.Size = new System.Drawing.Size(120, 29);
+            this.applyButton.TabIndex = 7;
+            this.applyButton.Text = "Apply";
+            this.applyButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.applyButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // AdvancedAppearanceDialog
             // 
@@ -118,7 +120,7 @@ namespace CP2077SaveEditor
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1061, 291);
-            this.Controls.Add(this.modernButton1);
+            this.Controls.Add(this.applyButton);
             this.Controls.Add(this.pathBox);
             this.Controls.Add(this.secondBox);
             this.Controls.Add(this.firstBox);
@@ -146,6 +148,6 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.TextBox firstBox;
         private System.Windows.Forms.TextBox secondBox;
         private System.Windows.Forms.TextBox pathBox;
-        private ModernButton modernButton1;
+        private ModernButton applyButton;
     }
 }
