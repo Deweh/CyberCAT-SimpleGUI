@@ -32,7 +32,8 @@ namespace CP2077SaveEditor
         private bool cancelLoad = false;
         private int saveType = 0;
         private Random globalRand = new Random();
-        public static bool psDataEnabled = true;
+        public static bool psDataEnabled = false;
+        public static bool statsSystemEnabled = false;
         public static bool wipEnabled = false;
 
         //GUI
@@ -521,12 +522,17 @@ namespace CP2077SaveEditor
                 parsers.AddRange(new INodeParser[] {
                     new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
                     new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
-                    new StatsSystemParser(), new ScriptableSystemsContainerParser()
+                    new ScriptableSystemsContainerParser()
                 });
 
                 if (psDataEnabled)
                 {
                     parsers.Add(new PSDataParser());
+                }
+
+                if (statsSystemEnabled)
+                {
+                    parsers.Add(new StatsSystemParser());
                 }
 
                 var newSave = new SaveFileHelper(parsers);
@@ -758,12 +764,17 @@ namespace CP2077SaveEditor
                     parsers.AddRange(new INodeParser[] {
                         new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
                         new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
-                        new StatsSystemParser(), new ScriptableSystemsContainerParser()
+                        new ScriptableSystemsContainerParser()
                     });
 
                     if (psDataEnabled)
                     {
                         parsers.Add(new PSDataParser());
+                    }
+
+                    if (statsSystemEnabled)
+                    {
+                        parsers.Add(new StatsSystemParser());
                     }
 
                     var testFile = new SaveFileHelper(parsers);
@@ -1142,6 +1153,11 @@ namespace CP2077SaveEditor
 
         private void additionalPlayerStatsButton_Click(object sender, EventArgs e)
         {
+            if (!statsSystemEnabled)
+            {
+                MessageBox.Show("Stats system disabled.");
+                return;
+            }
             var i = Array.FindIndex(activeSaveFile.GetStatsMap().Keys, x => x.EntityHash == 1);
             var details = new ItemDetails();
             details.LoadStatsOnly(activeSaveFile.GetStatsMap().Values[i].Seed, activeSaveFile, "Player");

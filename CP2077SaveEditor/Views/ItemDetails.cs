@@ -110,50 +110,59 @@ namespace CP2077SaveEditor
             }
 
             //Stats parsing
-            if (activeSaveFile.GetItemStatData(activeItem) == null)
+            if (Form1.statsSystemEnabled)
             {
-                detailsTabControl.TabPages.Remove(statsTab);
-            }
-            else
-            {
-                detailsTabControl.TabPages.Remove(statsPlaceholderTab);
-                statsListView.Items.Clear();
-                var listRows = new List<ListViewItem>();
-                var statsData = activeSaveFile.GetItemStatData(activeItem);
-                if (statsData.StatModifiers != null)
+                if (activeSaveFile.GetItemStatData(activeItem) == null)
                 {
-                    foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
-                    {
-                        var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
-
-                        if (modifier.Value is GameCombinedStatModifierData combinedData)
-                        {
-                            row[0] = "Combined";
-                            row[3] = combinedData.Value.ToString();
-                        }
-                        else if (modifier.Value is GameConstantStatModifierData constantData)
-                        {
-                            row[3] = constantData.Value.ToString();
-                        }
-                        else
-                        {
-                            row[0] = "Curve";
-                        }
-
-                        var newItem = new ListViewItem(row);
-                        newItem.Tag = modifier;
-                        listRows.Add(newItem);
-                    }
-
-                    statsListView.BeginUpdate();
-                    statsListView.Items.AddRange(listRows.ToArray());
-                    statsListView.EndUpdate();
+                    detailsTabControl.TabPages.Remove(statsTab);
                 }
                 else
                 {
-                    statsData.StatModifiers = new Handle<GameStatModifierData>[0];
+                    detailsTabControl.TabPages.Remove(statsPlaceholderTab);
+                    statsListView.Items.Clear();
+                    var listRows = new List<ListViewItem>();
+                    var statsData = activeSaveFile.GetItemStatData(activeItem);
+                    if (statsData.StatModifiers != null)
+                    {
+                        foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
+                        {
+                            var row = new string[] { "Constant", modifier.Value.ModifierType.ToString(), modifier.Value.StatType.ToString(), "" };
+
+                            if (modifier.Value is GameCombinedStatModifierData combinedData)
+                            {
+                                row[0] = "Combined";
+                                row[3] = combinedData.Value.ToString();
+                            }
+                            else if (modifier.Value is GameConstantStatModifierData constantData)
+                            {
+                                row[3] = constantData.Value.ToString();
+                            }
+                            else
+                            {
+                                row[0] = "Curve";
+                            }
+
+                            var newItem = new ListViewItem(row);
+                            newItem.Tag = modifier;
+                            listRows.Add(newItem);
+                        }
+
+                        statsListView.BeginUpdate();
+                        statsListView.Items.AddRange(listRows.ToArray());
+                        statsListView.EndUpdate();
+                    }
+                    else
+                    {
+                        statsData.StatModifiers = new Handle<GameStatModifierData>[0];
+                    }
                 }
             }
+            else
+            {
+                detailsTabControl.TabPages.Remove(statsTab);
+                detailsTabControl.TabPages.Remove(statsPlaceholderTab);
+            }
+            
 
             if (!statsOnly)
             {
@@ -176,6 +185,12 @@ namespace CP2077SaveEditor
 
         public void LoadStatsOnly(uint seed, object _saveFile, string name)
         {
+            if (!Form1.statsSystemEnabled)
+            {
+                MessageBox.Show("Stats system disabled.");
+                this.Close();
+            }
+
             callbackFunc1 = delegate{ return true; };
             var dummyItem = new ItemData();
             dummyItem.Header.Seed = seed;
