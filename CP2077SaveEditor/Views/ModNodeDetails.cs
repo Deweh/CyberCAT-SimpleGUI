@@ -51,7 +51,12 @@ namespace CP2077SaveEditor
             unknown2Box.Text = node.Unknown3.ToString();
             unknown3Box.Text = node.Unknown4.ToString();
 
-            var resolvedStats = activeSaveFile.GetStatsFromSeed(node.Header.Seed);
+            object resolvedStats = null;
+
+            if (Form1.statsSystemEnabled)
+            {
+                resolvedStats = activeSaveFile.GetStatsFromSeed(node.Header.Seed);
+            }
 
             if (resolvedStats != null)
             {
