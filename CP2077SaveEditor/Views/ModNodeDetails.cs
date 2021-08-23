@@ -47,9 +47,11 @@ namespace CP2077SaveEditor
             }
             
             item1IdBox.Text = node.ItemTdbId.Raw64.ToString();
+            unknownIDBox.Text = node.TdbId2.Raw64.ToString();
             unknown1Box.Text = node.Unknown2.ToString();
             unknown2Box.Text = node.Unknown3.ToString();
             unknown3Box.Text = node.Unknown4.ToString();
+            unknown4Box.Text = node.UnknownString;
 
             object resolvedStats = null;
 
@@ -75,6 +77,7 @@ namespace CP2077SaveEditor
             {
                 ulong.Parse(attachmentIdBox.Text);
                 ulong.Parse(item1IdBox.Text);
+                ulong.Parse(unknownIDBox.Text);
                 uint.Parse(unknown1Box.Text);
                 uint.Parse(unknown2Box.Text);
                 float.Parse(unknown3Box.Text);
@@ -85,9 +88,11 @@ namespace CP2077SaveEditor
 
             activeNode.AttachmentSlotTdbId.Raw64 = ulong.Parse(attachmentIdBox.Text);
             activeNode.ItemTdbId.Raw64 = ulong.Parse(item1IdBox.Text);
+            activeNode.TdbId2.Raw64 = ulong.Parse(unknownIDBox.Text);
             activeNode.Unknown2 = uint.Parse(unknown1Box.Text);
             activeNode.Unknown3 = uint.Parse(unknown2Box.Text);
             activeNode.Unknown4 = float.Parse(unknown3Box.Text);
+            activeNode.UnknownString = unknown4Box.Text;
 
             callbackFunc.Invoke();
             this.Close();

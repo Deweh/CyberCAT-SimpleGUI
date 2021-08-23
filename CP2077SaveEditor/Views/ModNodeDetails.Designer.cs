@@ -47,6 +47,10 @@ namespace CP2077SaveEditor
             this.label5 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.resolvedItemLabel = new System.Windows.Forms.LinkLabel();
+            this.unknown4Box = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.unknownIDBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -106,18 +110,18 @@ namespace CP2077SaveEditor
             this.applyCloseButton.ClickEffectEnabled = true;
             this.applyCloseButton.DefaultColor = System.Drawing.Color.White;
             this.applyCloseButton.HoverColor = System.Drawing.Color.LightGray;
-            this.applyCloseButton.Location = new System.Drawing.Point(12, 244);
+            this.applyCloseButton.Location = new System.Drawing.Point(12, 302);
             this.applyCloseButton.Name = "applyCloseButton";
             this.applyCloseButton.Size = new System.Drawing.Size(359, 25);
             this.applyCloseButton.TabIndex = 9;
             this.applyCloseButton.Text = "Apply && Close";
             this.applyCloseButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.applyCloseButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.applyCloseButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.applyCloseButton.Click += new System.EventHandler(this.applyCloseButton_Click);
             // 
             // unknown1Box
             // 
-            this.unknown1Box.Location = new System.Drawing.Point(134, 115);
+            this.unknown1Box.Location = new System.Drawing.Point(134, 149);
             this.unknown1Box.Name = "unknown1Box";
             this.unknown1Box.Size = new System.Drawing.Size(231, 22);
             this.unknown1Box.TabIndex = 12;
@@ -125,7 +129,7 @@ namespace CP2077SaveEditor
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 118);
+            this.label4.Location = new System.Drawing.Point(12, 152);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(113, 13);
             this.label4.TabIndex = 10;
@@ -133,7 +137,7 @@ namespace CP2077SaveEditor
             // 
             // unknown2Box
             // 
-            this.unknown2Box.Location = new System.Drawing.Point(134, 146);
+            this.unknown2Box.Location = new System.Drawing.Point(134, 180);
             this.unknown2Box.Name = "unknown2Box";
             this.unknown2Box.Size = new System.Drawing.Size(231, 22);
             this.unknown2Box.TabIndex = 15;
@@ -141,7 +145,7 @@ namespace CP2077SaveEditor
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 149);
+            this.label6.Location = new System.Drawing.Point(12, 183);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(113, 13);
             this.label6.TabIndex = 13;
@@ -149,7 +153,7 @@ namespace CP2077SaveEditor
             // 
             // unknown3Box
             // 
-            this.unknown3Box.Location = new System.Drawing.Point(134, 177);
+            this.unknown3Box.Location = new System.Drawing.Point(134, 211);
             this.unknown3Box.Name = "unknown3Box";
             this.unknown3Box.Size = new System.Drawing.Size(231, 22);
             this.unknown3Box.TabIndex = 18;
@@ -157,7 +161,7 @@ namespace CP2077SaveEditor
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(20, 180);
+            this.label8.Location = new System.Drawing.Point(20, 214);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(105, 13);
             this.label8.TabIndex = 16;
@@ -184,7 +188,7 @@ namespace CP2077SaveEditor
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(90, 210);
+            this.label7.Location = new System.Drawing.Point(90, 273);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(35, 13);
             this.label7.TabIndex = 21;
@@ -193,7 +197,7 @@ namespace CP2077SaveEditor
             // resolvedItemLabel
             // 
             this.resolvedItemLabel.AutoSize = true;
-            this.resolvedItemLabel.Location = new System.Drawing.Point(131, 210);
+            this.resolvedItemLabel.Location = new System.Drawing.Point(131, 273);
             this.resolvedItemLabel.Name = "resolvedItemLabel";
             this.resolvedItemLabel.Size = new System.Drawing.Size(35, 13);
             this.resolvedItemLabel.TabIndex = 22;
@@ -201,12 +205,48 @@ namespace CP2077SaveEditor
             this.resolvedItemLabel.Text = "None";
             this.resolvedItemLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.resolvedItemLabel_LinkClicked);
             // 
+            // unknown4Box
+            // 
+            this.unknown4Box.Location = new System.Drawing.Point(134, 241);
+            this.unknown4Box.Name = "unknown4Box";
+            this.unknown4Box.Size = new System.Drawing.Size(231, 22);
+            this.unknown4Box.TabIndex = 24;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(15, 244);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(110, 13);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "Unknown 4 (String):";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(50, 119);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(75, 13);
+            this.label10.TabIndex = 26;
+            this.label10.Text = "Unknown ID:";
+            // 
+            // unknownIDBox
+            // 
+            this.unknownIDBox.Location = new System.Drawing.Point(134, 116);
+            this.unknownIDBox.Name = "unknownIDBox";
+            this.unknownIDBox.Size = new System.Drawing.Size(231, 22);
+            this.unknownIDBox.TabIndex = 25;
+            // 
             // ModNodeDetails
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(383, 281);
+            this.ClientSize = new System.Drawing.Size(383, 338);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.unknownIDBox);
+            this.Controls.Add(this.unknown4Box);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.resolvedItemLabel);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label5);
@@ -224,7 +264,7 @@ namespace CP2077SaveEditor
             this.Controls.Add(this.attachmentIdBox);
             this.Controls.Add(this.attachmentNameLabel);
             this.Controls.Add(this.label1);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ModNodeDetails";
@@ -255,5 +295,9 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.LinkLabel resolvedItemLabel;
+        private System.Windows.Forms.TextBox unknown4Box;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox unknownIDBox;
     }
 }
