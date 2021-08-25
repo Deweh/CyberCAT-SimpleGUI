@@ -70,6 +70,16 @@ namespace CP2077SaveEditor
         public Form1()
         {
             InitializeComponent();
+
+            var args = Environment.GetCommandLineArgs();
+            foreach (var singleArg in args)
+            {
+                if (File.Exists(singleArg) && Path.GetExtension(singleArg) == ".preset")
+                {
+                    InstantApplyPreset(singleArg);
+                }
+            }
+
             this.Size = new Size(1040, 627);
             this.CenterToScreen();
             editorPanel.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right);
@@ -201,6 +211,65 @@ namespace CP2077SaveEditor
                 }
             }
 
+        }
+
+        private void InstantApplyPreset(string presetPath)
+        {
+            var fileWindow = new OpenFileDialog()
+            {
+                Title = "Choose Save File To Apply Preset To",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Saved Games\\CD Projekt Red\\Cyberpunk 2077\\",
+                Filter = "Cyberpunk 2077 Save File|*.dat"
+            };
+
+            if (fileWindow.ShowDialog() == DialogResult.OK && MessageBox.Show("Are you sure you wish to apply " + Path.GetFileName(presetPath) + " to " + fileWindow.FileName + "?", "Apply Preset", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                var tempSave = new SaveFileHelper(new INodeParser[] { new CharacterCustomizationAppearancesParser() });
+
+                try
+                {
+                    tempSave.Load(new MemoryStream(File.ReadAllBytes(fileWindow.FileName)));
+                }
+                catch(Exception)
+                {
+                    MessageBox.Show("Unable to apply preset: failed to parse save file.", "Error");
+                    Close();
+                }
+
+                var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(presetPath));
+
+                if (newValues.UnknownFirstBytes.Length > 6)
+                {
+                    newValues.UnknownFirstBytes = newValues.UnknownFirstBytes.Skip(newValues.UnknownFirstBytes.Length - 6).ToArray();
+                }
+
+                if (newValues.UnknownFirstBytes[4] != tempSave.GetAppearanceContainer().UnknownFirstBytes[4])
+                {
+                    tempSave.Appearance.SuppressBodyGenderPrompt = true;
+                    tempSave.Appearance.BodyGender = (AppearanceGender)newValues.UnknownFirstBytes[4];
+                }
+                tempSave.Appearance.SetAllValues(newValues);
+
+                byte[] newSave = null;
+                try
+                {
+                    newSave = tempSave.Save();
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Unable to apply preset: failed to rebuild save file.", "Error");
+                    Close();
+                }
+
+                if (!File.Exists(Path.GetDirectoryName(fileWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(fileWindow.FileName) + ".old"))
+                {
+                    File.Copy(fileWindow.FileName, Path.GetDirectoryName(fileWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(fileWindow.FileName) + ".old");
+                }
+
+                File.WriteAllBytes(fileWindow.FileName, newSave);
+                MessageBox.Show(Path.GetFileName(presetPath) + " successfully applied to " + fileWindow.FileName, "Success");
+            }
+            Close();
         }
 
         private void SaveFile_ProgressChanged(object sender, SaveProgressChangedEventArgs e)
