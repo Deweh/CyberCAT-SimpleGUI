@@ -83,8 +83,8 @@ namespace CP2077SaveEditor.Extensions
 
     public class BinaryResolver : ITweakDbResolver
     {
-        private BinaryReader br;
         private TweakDbParser parser = new TweakDbParser();
+        private byte[] decompressedData;
         public Dictionary<ulong, TdbIdInfo> TdbIdIndex;
 
         public string GetName(TweakDbId tdbid)
@@ -106,8 +106,14 @@ namespace CP2077SaveEditor.Extensions
 
             if (TdbIdIndex.Keys.Contains(tdbid.Raw64) && TdbIdIndex[tdbid.Raw64].InfoOffset != 0)
             {
-                br.BaseStream.Seek(TdbIdIndex[tdbid.Raw64].InfoOffset, SeekOrigin.Begin);
-                return br.ReadString();
+                using (var ms = new MemoryStream(decompressedData))
+                {
+                    using (var br = new BinaryReader(ms, Encoding.UTF8))
+                    {
+                        br.BaseStream.Seek(TdbIdIndex[tdbid.Raw64].InfoOffset, SeekOrigin.Begin);
+                        return br.ReadString();
+                    }
+                }
             }
             else
             {
@@ -124,9 +130,15 @@ namespace CP2077SaveEditor.Extensions
 
             if (TdbIdIndex.Keys.Contains(tdbid.Raw64) && TdbIdIndex[tdbid.Raw64].InfoOffset != 0)
             {
-                br.BaseStream.Seek(TdbIdIndex[tdbid.Raw64].InfoOffset, SeekOrigin.Begin);
-                br.ReadString();
-                return br.ReadString();
+                using (var ms = new MemoryStream(decompressedData))
+                {
+                    using (var br = new BinaryReader(ms, Encoding.UTF8))
+                    {
+                        br.BaseStream.Seek(TdbIdIndex[tdbid.Raw64].InfoOffset, SeekOrigin.Begin);
+                        br.ReadString();
+                        return br.ReadString();
+                    }
+                }
             }
             else
             {
@@ -143,33 +155,38 @@ namespace CP2077SaveEditor.Extensions
         {
             SaveFile.ReportProgress(new SaveProgressChangedEventArgs(0, 0, "Item Database"));
 
-            var decompressed = new MemoryStream(Decompress(data));
-            br = new BinaryReader(decompressed, Encoding.UTF8);
+            decompressedData = Decompress(data);
 
-            // Magic
-            if (br.ReadByte() != 0x5 || br.ReadByte() != 0x8) throw new Exception();
-
-            var totalItemsCount = br.ReadUInt32();
-            var infoItemsCount = br.ReadUInt32();
-            var infoIndex = new List<ulong>();
-
-            TdbIdIndex = new Dictionary<ulong, TdbIdInfo>((int)totalItemsCount);
-
-            for (uint i = 0; i < totalItemsCount; i++)
+            using (var ms = new MemoryStream(decompressedData))
             {
-                var name = br.ReadString();
-                var tdbid = parser.GetTweakDBID(name);
-                TdbIdIndex.Add(tdbid, new TdbIdInfo() { Name = name, InfoOffset = 0 });
-                if (i < infoItemsCount) infoIndex.Add(tdbid);
+                using (var br = new BinaryReader(ms, Encoding.UTF8))
+                {
+                    // Magic
+                    if (br.ReadByte() != 0x5 || br.ReadByte() != 0x8) throw new Exception();
 
-                SaveFile.ReportProgress(new SaveProgressChangedEventArgs((int)i, (int)totalItemsCount));
-            }
+                    var totalItemsCount = br.ReadUInt32();
+                    var infoItemsCount = br.ReadUInt32();
+                    var infoIndex = new List<ulong>();
 
-            for (uint i = 0; i < infoItemsCount; i++)
-            {
-                TdbIdIndex[infoIndex[(int)i]].InfoOffset = br.BaseStream.Position;
-                br.BaseStream.Seek(br.Read7BitEncodedInt(), SeekOrigin.Current);
-                br.BaseStream.Seek(br.Read7BitEncodedInt(), SeekOrigin.Current);
+                    TdbIdIndex = new Dictionary<ulong, TdbIdInfo>((int)totalItemsCount);
+
+                    for (uint i = 0; i < totalItemsCount; i++)
+                    {
+                        var name = br.ReadString();
+                        var tdbid = parser.GetTweakDBID(name);
+                        TdbIdIndex.Add(tdbid, new TdbIdInfo() { Name = name, InfoOffset = 0 });
+                        if (i < infoItemsCount) infoIndex.Add(tdbid);
+
+                        SaveFile.ReportProgress(new SaveProgressChangedEventArgs((int)i, (int)totalItemsCount));
+                    }
+
+                    for (uint i = 0; i < infoItemsCount; i++)
+                    {
+                        TdbIdIndex[infoIndex[(int)i]].InfoOffset = br.BaseStream.Position;
+                        br.BaseStream.Seek(br.Read7BitEncodedInt(), SeekOrigin.Current);
+                        br.BaseStream.Seek(br.Read7BitEncodedInt(), SeekOrigin.Current);
+                    }
+                }
             }
         }
 

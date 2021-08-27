@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CP2077SaveEditor.Extensions;
-using static CyberCAT.Core.Classes.NodeRepresentations.CharacterCustomizationAppearances;
+using static WolvenKit.RED4.Save.CharacterCustomizationAppearances;
 
 namespace CP2077SaveEditor
 {
@@ -66,7 +66,7 @@ namespace CP2077SaveEditor
 
                 firstBox.Text = entry.FirstString;
                 secondBox.Text = entry.SecondString;
-                pathBox.Text = entry.GetPath();
+                pathBox.Text = entry.Hash.DepotPath.ToString();
             }
             else
             {
@@ -93,15 +93,9 @@ namespace CP2077SaveEditor
 
             HashValueEntry entry = options[(string)optionsBox.SelectedItem];
 
-            if (!entry.IsPathValid(pathBox.Text))
-            {
-                MessageBox.Show("Invalid path. Must be a valid path to a base game '.app' file.");
-                return;
-            }
-
             entry.FirstString = firstBox.Text;
             entry.SecondString = secondBox.Text;
-            entry.SetPath(pathBox.Text);
+            entry.Hash.DepotPath = pathBox.Text;
 
             ChangesApplied();
             applyButton.Enabled = false;

@@ -1,6 +1,4 @@
-﻿using CyberCAT.Core.Classes.NodeRepresentations;
-using CyberCAT.Core.Classes.DumpedClasses;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,7 +7,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static CP2077SaveEditor.SaveFileHelper;
-using static CyberCAT.Core.Classes.NodeRepresentations.CharacterCustomizationAppearances;
+using static WolvenKit.RED4.Save.CharacterCustomizationAppearances;
+using WolvenKit.RED4.Save;
+using WolvenKit.RED4.Types;
 using CP2077SaveEditor.Extensions;
 using System.Windows.Forms;
 
@@ -59,7 +59,7 @@ namespace CP2077SaveEditor
 
                 activeSave.GetAppearanceContainer().UnknownFirstBytes[4] = (byte)value;
 
-                var playerPuppet = (PlayerPuppetPS)activeSave.GetPSDataContainer().ClassList.Where(x => x is PlayerPuppetPS).FirstOrDefault();
+                var playerPuppet = (PlayerPuppetPS)activeSave.GetPSDataContainer().Entries.Where(x => x.Data is PlayerPuppetPS).FirstOrDefault().Data;
                 if (value == AppearanceGender.Female)
                 {
                     playerPuppet.Gender = "Female";
@@ -121,7 +121,7 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetAllEntries(AppearanceEntryType.MainListEntry, "skin_type_", (object entry) => { ((HashValueEntry)entry).Hash = AppearanceValueLists.SkinTypes[value - 1]; });
+                SetAllEntries(AppearanceEntryType.MainListEntry, "skin_type_", (object entry) => { ((HashValueEntry)entry).Hash = UlongToResource(AppearanceValueLists.SkinTypes[value - 1]); });
             }
         }
 
@@ -149,7 +149,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("hair_color", new HashValueEntry()
                 {
                     FirstString = AppearanceValueLists.HairColors[0],
-                    Hash = AppearanceValueLists.HairStylesDict[value],
+                    Hash = UlongToResource(AppearanceValueLists.HairStylesDict[value]),
                     SecondString = "hair_color1"
                 },
                 new[] { "hairs" });
@@ -252,7 +252,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("eyebrows_color", new HashValueEntry()
                 {
                     FirstString = "heb_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__01_black",
-                    Hash = AppearanceValueLists.Eyebrows[value],
+                    Hash = UlongToResource(AppearanceValueLists.Eyebrows[value]),
                     SecondString = "eyebrows_color1"
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, true);
@@ -361,7 +361,7 @@ namespace CP2077SaveEditor
                     var entries = GetEntries("first.main.beard_color_");
                     foreach(HashValueEntry singleEntry in entries)
                     {
-                        var name = singleEntry.GetPath().Split('\\').Last();
+                        var name = singleEntry.Hash.DepotPath.ToString().Split('\\').Last();
                         var searchString = name.Substring(0, name.Length - ".app".Length).Substring("hb_000_pma__".Length).Split("__");
 
                         return AppearanceValueLists.Beards.FindIndex(x => x == searchString[0]) + 1;
@@ -380,7 +380,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("beard_color_", new HashValueEntry()
                 {
                     FirstString = "01_blonde_platinum",
-                    Hash = value == 0 ? 0 : CyberCAT.Extra.Utils.HashGenerator.CalcFNV1A64("base\\characters\\head\\player_base_heads\\appearances\\facial_hairs\\hb_000_pma__" + AppearanceValueLists.Beards[value - 1] + ".app"),
+                    Hash = UlongToResource(value == 0 ? 0 : CyberCAT.Extra.Utils.HashGenerator.CalcFNV1A64("base\\characters\\head\\player_base_heads\\appearances\\facial_hairs\\hb_000_pma__" + AppearanceValueLists.Beards[value - 1] + ".app")),
                     SecondString = "beard_color1_0"
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.Hash);
@@ -396,7 +396,7 @@ namespace CP2077SaveEditor
                     var entries = GetEntries("first.main.beard_color_");
                     foreach (HashValueEntry singleEntry in entries)
                     {
-                        var name = singleEntry.GetPath().Split('\\').Last();
+                        var name = singleEntry.Hash.DepotPath.ToString().Split('\\').Last();
                         var searchString = name.Substring(0, name.Length - ".app".Length).Substring("hb_000_pma__".Length).Split("__");
 
                         if (searchString.Count() > 1)
@@ -419,7 +419,7 @@ namespace CP2077SaveEditor
             {
                 var entries = GetEntries("first.main.beard_color_");
 
-                var path = ((HashValueEntry)entries[0]).GetPath().Split('\\');
+                var path = ((HashValueEntry)entries[0]).Hash.DepotPath.ToString().Split('\\');
                 var parts = path.Last().Substring(0, path.Last().Length - ".app".Length).Split("__").ToList();
 
                 var options = AppearanceValueLists.BeardStyles[parts[1]];
@@ -447,7 +447,7 @@ namespace CP2077SaveEditor
 
                 foreach (HashValueEntry singleEntry in entries)
                 {
-                    singleEntry.SetPath(finalPath);
+                    singleEntry.Hash.DepotPath = finalPath;
                 }
             }
         }
@@ -482,7 +482,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("cyberware_", new HashValueEntry()
                 {
                     FirstString = first,
-                    Hash = 6513893019731746558,
+                    Hash = UlongToResource(6513893019731746558),
                     SecondString = "cyberware_" + value.ToString("00")
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.FirstString, null, true);
@@ -513,7 +513,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("scars", new HashValueEntry
                 {
                     FirstString = (value > 0 ? "h0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__scars_01__" + AppearanceValueLists.FacialScars[value - 1] : null),
-                    Hash = 5491315604699331944,
+                    Hash = UlongToResource(5491315604699331944),
                     SecondString = "scars"
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.FirstString);
@@ -544,7 +544,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("facial_tattoo_", new HashValueEntry
                 {
                     FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = AppearanceValueLists.FacialTattoos[value],
+                    Hash = UlongToResource(AppearanceValueLists.FacialTattoos[value]),
                     SecondString = "facial_tattoo_" + value.ToString("00")
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, false, true);
@@ -552,7 +552,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("tattoo", new HashValueEntry
                 {
                     FirstString = (value == 0 ? null : "h0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__tattoo_" + value.ToString("00")),
-                    Hash = 2355758180805363120,
+                    Hash = UlongToResource(2355758180805363120),
                     SecondString = "tattoo"
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.FirstString);
@@ -584,7 +584,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("piercings_", new HashValueEntry
                 {
                     FirstString = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__earring__07_pearl",
-                    Hash = AppearanceValueLists.Piercings[value],
+                    Hash = UlongToResource(AppearanceValueLists.Piercings[value]),
                     SecondString = "piercings_01"
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.Hash);
@@ -666,7 +666,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("makeupEyes_", new HashValueEntry()
                 {
                     FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead_makeup_eyes__01_black",
-                    Hash = AppearanceValueLists.EyeMakeups[value],
+                    Hash = UlongToResource(AppearanceValueLists.EyeMakeups[value]),
                     SecondString = "makeupEyes_01"
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, true);
@@ -725,7 +725,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("makeupLips_", new HashValueEntry()
                 {
                     FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__makeup_lips_01__01_black",
-                    Hash = AppearanceValueLists.LipMakeups[value],
+                    Hash = UlongToResource(AppearanceValueLists.LipMakeups[value]),
                     SecondString = "makeupLips_01"
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, true);
@@ -793,7 +793,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("makeupCheeks_", new HashValueEntry
                 {
                     FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__morphs_makeup_freckles_01__" + (value == 5 ? "02_pink" : "03_light_brown"),
-                    Hash = AppearanceValueLists.CheekMakeups[value],
+                    Hash = UlongToResource(AppearanceValueLists.CheekMakeups[value]),
                     SecondString = "makeupCheeks_01"
                 },
                 new[] { "TPP", "character_customization" });
@@ -849,7 +849,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("makeupPimples_", new HashValueEntry
                 {
                     FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead_pimples_01__brown_01",
-                    Hash = AppearanceValueLists.Blemishes[value],
+                    Hash = UlongToResource(AppearanceValueLists.Blemishes[value]),
                     SecondString = "makeupPimples_01"
                 },
                 new[] { "TPP", "character_customization" });
@@ -1042,7 +1042,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("fpp_nipples_", new HashValueEntry
                 {
                     FirstString = (first == null ? null : first.Replace("base", "fpp")),
-                    Hash = 8383615550749140678,
+                    Hash = UlongToResource(8383615550749140678),
                     SecondString = "fpp_nipples_01"
                 },
                 new[] { "FPP_Body" }, AppearanceField.FirstString, MainSections[2]);
@@ -1050,7 +1050,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("nipples_", new HashValueEntry
                 {
                     FirstString = first,
-                    Hash = 17949477145130904651,
+                    Hash = UlongToResource(17949477145130904651),
                     SecondString = "nipples_01"
                 },
                 new[] { "TPP_Body", "character_creation" }, AppearanceField.FirstString, MainSections[2]);
@@ -1081,7 +1081,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("body_tattoo_", new HashValueEntry()
                 {
                     FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = AppearanceValueLists.BodyTattoos["TPP"][value],
+                    Hash = UlongToResource(AppearanceValueLists.BodyTattoos["TPP"][value]),
                     SecondString = "body_tattoo_01"
                 },
                 new[] { "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2]);
@@ -1089,7 +1089,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("fpp_body_tattoo_", new HashValueEntry()
                 {
                     FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = AppearanceValueLists.BodyTattoos["FPP"][value],
+                    Hash = UlongToResource(AppearanceValueLists.BodyTattoos["FPP"][value]),
                     SecondString = "fpp_body_tattoo_01"
                 },
                 new[] { "FPP_Body" }, AppearanceField.Hash, MainSections[2]);
@@ -1120,7 +1120,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("body_scars_", new HashValueEntry
                 {
                     FirstString = "scars_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_001__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = AppearanceValueLists.BodyScars[value],
+                    Hash = UlongToResource(AppearanceValueLists.BodyScars[value]),
                     SecondString = "body_scars_" + value.ToString("00")
                 },
                 new[] { "FPP_Body", "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2], false, true);
@@ -1184,7 +1184,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("genitals_", new HashValueEntry
                 {
                     FirstString = first,
-                    Hash = 3178724759333055970,
+                    Hash = UlongToResource(3178724759333055970),
                     SecondString = "genitals_" + value.ToString("00")
                 },
                 new[] { "character_creation", "genitals" }, AppearanceField.FirstString, MainSections[2], false, true);
@@ -1273,7 +1273,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry(AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_", new HashValueEntry
                 {
                     FirstString = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__" + AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle__01_black",
-                    Hash = AppearanceValueLists.PubicHairStyles[value],
+                    Hash = UlongToResource(AppearanceValueLists.PubicHairStyles[value]),
                     SecondString = AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_01"
                 },
                 new[] { "character_creation", "genitals" }, AppearanceField.Hash, MainSections[2]);
@@ -1422,7 +1422,7 @@ namespace CP2077SaveEditor
                             ((CharacterCustomizationAppearances.HashValueEntry)entry).FirstString = (string)value;
                             break;
                         case AppearanceField.Hash:
-                            ((CharacterCustomizationAppearances.HashValueEntry)entry).Hash = (ulong)value;
+                            ((CharacterCustomizationAppearances.HashValueEntry)entry).Hash = UlongToResource((ulong)value);
                             break;
                         case AppearanceField.SecondString:
                             ((CharacterCustomizationAppearances.HashValueEntry)entry).SecondString = (string)value;
@@ -1462,7 +1462,7 @@ namespace CP2077SaveEditor
                 }
                 else if (fieldToGet == AppearanceField.Hash)
                 {
-                    return castedEntry.Hash.ToString();
+                    return ((ulong)castedEntry.Hash.DepotPath).ToString();
                 }
                 else
                 {
@@ -1628,7 +1628,7 @@ namespace CP2077SaveEditor
         public void SetNullableHashEntry(string searchString, HashValueEntry defaultEntry, string[] sectionNames, AppearanceField setValueField = AppearanceField.Hash, Section baseMainSection = null, bool createAllMainSections = false, bool allFields = false)
         {
             var entries = GetAllEntries(AppearanceEntryType.MainListEntry, searchString);
-            if (defaultEntry.Hash == 0 || defaultEntry.FirstString == null || defaultEntry.SecondString == null)
+            if (defaultEntry.Hash == UlongToResource(0) || defaultEntry.FirstString == null || defaultEntry.SecondString == null)
             {
                 RemoveEntries(entries);
             }
@@ -1754,6 +1754,11 @@ namespace CP2077SaveEditor
         public bool CompareMainListAppearanceEntries(string entry1, string entry2)
         {
             return Regex.Replace(entry1, @"[\d-]", string.Empty) == Regex.Replace(entry2, @"[\d-]", string.Empty);
+        }
+
+        public static WolvenKit.RED4.Types.CResourceReference<WolvenKit.RED4.Types.appearanceAppearanceResource> UlongToResource(ulong input)
+        {
+            return new WolvenKit.RED4.Types.CResourceReference<WolvenKit.RED4.Types.appearanceAppearanceResource>() { DepotPath = input };
         }
     }
 

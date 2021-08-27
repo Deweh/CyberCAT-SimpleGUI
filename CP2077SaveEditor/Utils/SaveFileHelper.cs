@@ -5,19 +5,18 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CyberCAT.Core.Classes;
-using CyberCAT.Core.Classes.DumpedClasses;
-using CyberCAT.Core.Classes.Interfaces;
-using CyberCAT.Core.Classes.Mapping;
-using CyberCAT.Core.Classes.NodeRepresentations;
-using CyberCAT.Core.DumpedEnums;
+using WolvenKit.RED4.Save;
+using static WolvenKit.RED4.Types.Enums;
 using Newtonsoft.Json;
+using WolvenKit.RED4.Types;
+using WolvenKit.RED4.Archive.Buffer;
 
 namespace CP2077SaveEditor
 {
-    public class SaveFileHelper : SaveFile
+    public class SaveFileHelper
     {
         public AppearanceHelper Appearance { get; }
+        public CyberpunkSaveFile SaveFile { get; set; }
 
         public enum AppearanceEntryType
         {
@@ -32,65 +31,59 @@ namespace CP2077SaveEditor
             SecondString
         }
 
-        public SaveFileHelper(IEnumerable<INodeParser> parsers) : base(parsers)
+        public SaveFileHelper() : base()
         {
             Appearance = new AppearanceHelper(this);
         }
 
-        public new void Load(System.IO.Stream inputStream)
-        {
-            base.Load(inputStream);
-            Appearance.SetMainSections();
-        }
-
         public CharacterCustomizationAppearances GetAppearanceContainer()
         {
-            return (CharacterCustomizationAppearances)this.Nodes[this.Nodes.FindIndex(x => x.Name == "CharacetrCustomization_Appearances")].Value;
+            return (CharacterCustomizationAppearances)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "CharacetrCustomization_Appearances")].Value;
         }
 
         public Inventory GetInventoriesContainer()
         {
-            return (Inventory)this.Nodes[this.Nodes.FindIndex(x => x.Name == "inventory")].Value;
+            return (Inventory)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "inventory")].Value;
         }
 
         public NodeEntry GetFactsContainer()
         {
-            var questSystem = this.Nodes[this.Nodes.FindIndex(x => x.Name == "questSystem")]; return questSystem.Children[questSystem.Children.FindIndex(x => x.Name == "FactsDB")];
+            var questSystem = SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "questSystem")]; return questSystem.Children[questSystem.Children.FindIndex(x => x.Name == "FactsDB")];
         }
 
-        public GenericUnknownStruct GetStatsContainer()
+        public gameStatsStateMapStructure GetStatsContainer()
         {
-            return (GenericUnknownStruct)this.Nodes[this.Nodes.FindIndex(x => x.Name == "StatsSystem")].Value;
+            return (gameStatsStateMapStructure)((Package04)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "StatsSystem")].Value).Content).RootChunk;
         }
 
-        public GenericUnknownStruct GetScriptableContainer()
+        public Package04 GetScriptableContainer()
         {
-            return (GenericUnknownStruct)this.Nodes[this.Nodes.FindIndex(x => x.Name == "ScriptableSystemsContainer")].Value;
+            return (Package04)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "ScriptableSystemsContainer")].Value).Content;
         }
 
-        public Handle<PlayerDevelopmentData> GetPlayerDevelopmentData()
+        public PlayerDevelopmentData GetPlayerDevelopmentData()
         {
-            var devSystem = (PlayerDevelopmentSystem)this.GetScriptableContainer().ClassList[Array.FindIndex(this.GetScriptableContainer().ClassList, x => x.GetType().Name == "PlayerDevelopmentSystem")];
-            return devSystem.PlayerData[Array.FindIndex(devSystem.PlayerData, x => x.Value.OwnerID.Hash == 1)];
+            var devSystem = (PlayerDevelopmentSystem)this.GetScriptableContainer().Chunks.FirstOrDefault(x => x is PlayerDevelopmentSystem);
+            return devSystem.PlayerData.FirstOrDefault(x => x.Chunk.OwnerID.Hash == 1).Chunk;
         }
 
-        public GenericUnknownStruct GetPSDataContainer()
+        public PersistencySystem2 GetPSDataContainer()
         {
-            var persistSystem = this.Nodes.Where(x => x.Name == "PersistencySystem").FirstOrDefault(); return (GenericUnknownStruct)persistSystem.Children.Where(x => x.Name == "PSData").FirstOrDefault().Value;
+            return (PersistencySystem2)SaveFile.Nodes.Where(x => x.Name == "PersistencySystem2").FirstOrDefault().Value;
         }
 
-        public Dictionary<GameItemID, string> GetEquippedItems()
+        public Dictionary<gameItemID, string> GetEquippedItems()
         {
             var playerEquipAreas = GetEquipAreas();
-            var equippedItems = new Dictionary<GameItemID, string>();
+            var equippedItems = new Dictionary<gameItemID, string>();
 
             var weaponSlotNum = 1;
-            foreach (GameSEquipArea area in playerEquipAreas)
+            foreach (gameSEquipArea area in playerEquipAreas)
             {
                 var areaName = area.AreaType.ToString();
                 if (area.EquipSlots != null)
                 {
-                    foreach (GameSEquipSlot slot in area.EquipSlots)
+                    foreach (gameSEquipSlot slot in area.EquipSlots)
                     {
                         if (area.AreaType == gamedataEquipmentArea.Weapon)
                         {
@@ -107,22 +100,22 @@ namespace CP2077SaveEditor
             return equippedItems;
         }
 
-        public GameSEquipArea[] GetEquipAreas()
+        public CArray<gameSEquipArea> GetEquipAreas()
         {
-            var equipSystem = (EquipmentSystem)this.GetScriptableContainer().ClassList[Array.FindIndex(this.GetScriptableContainer().ClassList, x => x.GetType().Name == "EquipmentSystem")];
-            return equipSystem.OwnerData.Where(x => x.Value.OwnerID.Hash == 1).FirstOrDefault().Value.Equipment.EquipAreas;
+            var equipSystem = (EquipmentSystem)this.GetScriptableContainer().Chunks.FirstOrDefault(x => x is EquipmentSystem);
+            return equipSystem.OwnerData.FirstOrDefault(x => x.Chunk.OwnerID.Hash == 1).Chunk.Equipment.EquipAreas;
         }
 
-        public List<GameSEquipSlot> GetEquipSlotsFromID(GameItemID id)
+        public List<gameSEquipSlot> GetEquipSlotsFromID(gameItemID id)
         {
-            var slots = new List<GameSEquipSlot>();
-            foreach (GameSEquipArea area in this.GetEquipAreas())
+            var slots = new List<gameSEquipSlot>();
+            foreach (gameSEquipArea area in this.GetEquipAreas())
             {
                 if (area.EquipSlots != null)
                 {
-                    foreach (GameSEquipSlot slot in area.EquipSlots)
+                    foreach (gameSEquipSlot slot in area.EquipSlots)
                     {
-                        if (slot.ItemID != null && slot.ItemID.Id.Raw64 == id.Id.Raw64)
+                        if (slot.ItemID != null && slot.ItemID.Id == id.Id)
                         {
                             slots.Add(slot);
                         }
@@ -132,18 +125,22 @@ namespace CP2077SaveEditor
             return slots;
         }
 
-        public GameStatsStateMapStructure GetStatsMap()
+        /// <summary>
+        /// Deprecated function. Use GetStatsContainer() instead.
+        /// </summary>
+        /// <returns></returns>
+        public gameStatsStateMapStructure GetStatsMap()
         {
-            return (GameStatsStateMapStructure)this.GetStatsContainer().ClassList[Array.FindIndex(this.GetStatsContainer().ClassList, x => x.GetType().FullName.EndsWith("GameStatsStateMapStructure"))];
+            return GetStatsContainer();
         }
 
-        public GameSavedStatsData GetItemStatData(ItemData item)
+        public gameSavedStatsData GetItemStatData(InventoryHelper.ItemData item)
         {
             var result = this.GetStatsFromSeed(item.Header.Seed);
 
-            if (result == null && item.Data != null && item.Data is ItemData.SimpleItemData)
+            if (result == null && item.Data != null && item.Data is InventoryHelper.SimpleItemData)
             {
-                var i = Array.FindIndex(this.GetStatsMap().Values, x => x.RecordID.Id == item.ItemTdbId.Id);
+                var i = Array.FindIndex(this.GetStatsMap().Values.ToArray(), x => x.RecordID == item.ItemTdbId);
                 if (i > -1)
                 {
                     return this.GetStatsMap().Values[i];
@@ -153,9 +150,9 @@ namespace CP2077SaveEditor
             return result;
         }
 
-        public GameSavedStatsData GetStatsFromSeed(uint seed)
+        public gameSavedStatsData GetStatsFromSeed(uint seed)
         {
-            var i = Array.FindIndex(this.GetStatsMap().Values, x => x.Seed == seed);
+            var i = Array.FindIndex(this.GetStatsMap().Values.ToArray(), x => x.Seed == seed);
             if (i > -1)
             {
                 return this.GetStatsMap().Values[i];
@@ -163,12 +160,12 @@ namespace CP2077SaveEditor
             return null;
         }
 
-        public void SetConstantStat(gamedataStatType stat, float value, GameSavedStatsData statsData, gameStatModifierType mod = gameStatModifierType.Additive)
+        public void SetConstantStat(gamedataStatType stat, float value, gameSavedStatsData statsData, gameStatModifierType mod = gameStatModifierType.Additive)
         {
             var foundStat = false;
-            foreach (Handle<GameStatModifierData> modifier in statsData.StatModifiers)
+            foreach (gameStatModifierData_Deprecated modifier in statsData.StatModifiers)
             {
-                if (modifier.Value is GameConstantStatModifierData constantModifier)
+                if (modifier is gameConstantStatModifierData_Deprecated constantModifier)
                 {
                     if (constantModifier.StatType == stat && constantModifier.ModifierType == mod)
                     {
@@ -180,25 +177,25 @@ namespace CP2077SaveEditor
 
             if (!foundStat)
             {
-                var newModifierData = new GameConstantStatModifierData 
+                var newModifierData = new gameConstantStatModifierData_Deprecated
                 {
                     ModifierType = mod,
                     StatType = stat,
                     Value = value
                 };
 
-                this.AddStat(typeof(GameConstantStatModifierData), statsData, newModifierData);
+                this.AddStat(typeof(gameConstantStatModifierData_Deprecated), statsData, newModifierData);
             }
         }
 
-        public uint AddStat(Type statType, GameSavedStatsData statsData, GameStatModifierData modifierData = null)
+        public int AddStat(Type statType, gameSavedStatsData statsData, gameStatModifierData_Deprecated modifierData = null)
         {
-            var newModifierData = Activator.CreateInstance(statType);
+            var newModifierData = System.Activator.CreateInstance(statType);
 
-            if (statType == typeof(GameCurveStatModifierData))
+            if (statType == typeof(gameCurveStatModifierData_Deprecated))
             {
-                ((GameCurveStatModifierData)newModifierData).ColumnName = "<null>";
-                ((GameCurveStatModifierData)newModifierData).CurveName = "<null>";
+                ((gameCurveStatModifierData_Deprecated)newModifierData).ColumnName = "<null>";
+                ((gameCurveStatModifierData_Deprecated)newModifierData).CurveName = "<null>";
 
             }
 
@@ -207,36 +204,33 @@ namespace CP2077SaveEditor
                 newModifierData = modifierData;
             }
 
-            var newModifier = this.GetStatsContainer().CreateHandle<GameStatModifierData>((GameStatModifierData)newModifierData);
-            statsData.StatModifiers = statsData.StatModifiers.Append(newModifier).ToArray();
-
-            return newModifier.Id;
+            return statsData.StatModifiers.Add(newModifierData);
         }
 
-        public void RemoveStat(Handle<GameStatModifierData> statsHandle, GameSavedStatsData statsData)
+        public void RemoveStat(CHandle<gameStatModifierData_Deprecated> statsHandle, gameSavedStatsData statsData)
         {
-            var modifiersList = statsData.StatModifiers.ToList();
-            modifiersList.Remove(statsHandle);
-            statsData.StatModifiers = modifiersList.ToArray();
+            var modifiersList = statsData.StatModifiers.Remove(statsHandle);
+            //modifiersList.Remove(statsHandle);
+            //statsData.StatModifiers = modifiersList.ToArray();
 
-            this.GetStatsContainer().RemoveHandle(statsHandle.Id);
+            //this.GetStatsContainer().RemoveHandle(statsHandle.Id);
 
-            foreach (GameSavedStatsData value in this.GetStatsMap().Values)
-            {
-                if (value.StatModifiers != null)
-                {
-                    foreach (Handle<GameStatModifierData> modifierData in value.StatModifiers)
-                    {
-                        if (modifierData.Id > statsHandle.Id)
-                        {
-                            modifierData.Id = (modifierData.Id - 1);
-                        }
-                    }
-                }
-            }
+            //foreach (GameSavedStatsData value in this.GetStatsMap().Values)
+            //{
+            //    if (value.StatModifiers != null)
+            //    {
+            //        foreach (Handle<GameStatModifierData> modifierData in value.StatModifiers)
+            //        {
+            //            if (modifierData.Id > statsHandle.Id)
+            //            {
+            //                modifierData.Id = (modifierData.Id - 1);
+            //            }
+            //        }
+            //    }
+            //}
         }
 
-        public GameSavedStatsData CreateStatData(ItemData item, Random rand)
+        public gameSavedStatsData CreateStatData(InventoryHelper.ItemData item, Random rand)
         {
             var randBytes = new byte[4];
             rand.NextBytes(randBytes);
@@ -248,7 +242,7 @@ namespace CP2077SaveEditor
                 newSeed = BitConverter.ToUInt32(randBytes);
             }
 
-            if (item.Data.GetType() != typeof(ItemData.SimpleItemData))
+            if (item.Data.GetType() != typeof(InventoryHelper.SimpleItemData))
             {
                 item.Header.Seed = newSeed;
             }
@@ -257,20 +251,20 @@ namespace CP2077SaveEditor
                 newSeed = 2;
             }
 
-            this.GetStatsMap().Keys = this.GetStatsMap().Keys.Append(new GameStatsObjectID
+            this.GetStatsMap().Keys.Add(new gameStatsObjectID
             {
                 IdType = gameStatIDType.ItemID,
-                EntityHash = GetItemIdHash(item.ItemTdbId.Raw64, newSeed, 0)
-            }).ToArray();
+                EntityHash = GetItemIdHash(item.ItemTdbId, newSeed, 0)
+            });
 
-            var statsEntry = new GameSavedStatsData
+            var statsEntry = new gameSavedStatsData
             {
                 RecordID = item.ItemTdbId,
                 Seed = newSeed,
-                StatModifiers = new Handle<GameStatModifierData>[0]
+                StatModifiers = new()
             };
 
-            this.GetStatsMap().Values = this.GetStatsMap().Values.Append(statsEntry).ToArray();
+            this.GetStatsMap().Values.Add(statsEntry);
             return statsEntry;
         }
 
@@ -304,7 +298,7 @@ namespace CP2077SaveEditor
                 var tableData = (FactsTable)tableEntry.Value;
                 foreach (FactsTable.FactEntry fact in tableData.FactEntries)
                 {
-                    if (!fact.FactName.StartsWith("Unknown_"))
+                    if (!fact.FactName.ToString().StartsWith("Unknown"))
                     {
                         factsList.Add(fact);
                     }
@@ -335,40 +329,40 @@ namespace CP2077SaveEditor
             }
 
             var factHash = factsList.FirstOrDefault(x => x.Value == factName).Key;
-            AddFactByHash(factHash, factValue);
+            //AddFactByHash(factHash, factValue);
             return true;
         }
 
         public void AddFactByHash(uint factHash, uint factValue)
         {
-            var newFact = new FactsTable.FactEntry();
-            newFact.Hash = factHash;
-            newFact.Value = factValue;
+            //var newFact = new FactsTable.FactEntry();
+            //newFact.FactName = new Fact(factHash);
+            //newFact.Value = factValue;
 
-            var hashesList = new List<uint>();
-            var currentFacts = ((FactsDB)this.GetFactsContainer().Value).FactsTables[0].FactEntries;
+            //var hashesList = new List<uint>();
+            //var currentFacts = ((FactsDB)this.GetFactsContainer().Value).FactsTables[0].FactEntries;
 
-            foreach (FactsTable.FactEntry fact in currentFacts)
-            {
-                hashesList.Add(fact.Hash);
-            }
-            hashesList.Sort();
+            //foreach (FactsTable.FactEntry fact in currentFacts)
+            //{
+            //    hashesList.Add(fact.Hash);
+            //}
+            //hashesList.Sort();
 
-            foreach (uint hash in hashesList)
-            {
-                if (hash > factHash)
-                {
-                    var i = currentFacts.IndexOf(currentFacts.Where(x => x.Hash == hash).FirstOrDefault());
-                    currentFacts.Insert(i, newFact);
-                    return;
-                }
-            }
-            currentFacts.Add(newFact);
+            //foreach (uint hash in hashesList)
+            //{
+            //    if (hash > factHash)
+            //    {
+            //        var i = currentFacts.IndexOf(currentFacts.Where(x => x.Hash == hash).FirstOrDefault());
+            //        currentFacts.Insert(i, newFact);
+            //        return;
+            //    }
+            //}
+            //currentFacts.Add(newFact);
         }
 
-        public Inventory.SubInventory GetInventory(ulong id)
+        public InventoryHelper.SubInventory GetInventory(ulong id)
         {
-            return this.GetInventoriesContainer().SubInventories[this.GetInventoriesContainer().SubInventories.IndexOf(this.GetInventoriesContainer().SubInventories.Where(x => x.InventoryId == id).FirstOrDefault())];
+            return this.GetInventoriesContainer().SubInventories.FirstOrDefault(x => x.InventoryId == id);
         }
     }
 

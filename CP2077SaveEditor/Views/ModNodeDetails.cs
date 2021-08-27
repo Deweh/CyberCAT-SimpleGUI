@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CyberCAT.Core.Classes;
-using CyberCAT.Core.Classes.NodeRepresentations;
+using WolvenKit.RED4.Save;
+using static WolvenKit.RED4.Save.InventoryHelper;
 
 namespace CP2077SaveEditor
 {
     public partial class ModNodeDetails : Form
     {
-        private ItemData.ItemModData activeNode;
+        private ItemModData activeNode;
         private Func<bool> callbackFunc;
         private SaveFileHelper activeSaveFile;
 
@@ -28,26 +28,18 @@ namespace CP2077SaveEditor
 
         }
 
-        public void LoadNode(ItemData.ItemModData node, Func<bool> callback, object saveFileObj)
+        public void LoadNode(ItemModData node, Func<bool> callback, object saveFileObj)
         {
             activeNode = node;
             callbackFunc = callback;
             activeSaveFile = (SaveFileHelper)saveFileObj;
 
-            attachmentNameLabel.Text = node.AttachmentSlotTdbId.Name;
-            attachmentIdBox.Text = node.AttachmentSlotTdbId.Raw64.ToString();
-
-            if (node.ItemTdbId.GameName.Length > 0)
-            {
-                item1NameLabel.Text = node.ItemTdbId.GameName;
-            }
-            else
-            {
-                item1NameLabel.Text = node.ItemTdbId.Name;
-            }
+            attachmentNameLabel.Text = node.AttachmentSlotTdbId.ResolvedText;
+            attachmentIdBox.Text = ((ulong)node.AttachmentSlotTdbId).ToString();
+            item1NameLabel.Text = node.ItemTdbId.ResolvedText;
             
-            item1IdBox.Text = node.ItemTdbId.Raw64.ToString();
-            unknownIDBox.Text = node.TdbId2.Raw64.ToString();
+            item1IdBox.Text = ((ulong)node.ItemTdbId).ToString();
+            unknownIDBox.Text = ((ulong)node.TdbId2).ToString();
             unknown1Box.Text = node.Unknown2.ToString();
             unknown2Box.Text = node.Unknown3.ToString();
             unknown3Box.Text = node.Unknown4.ToString();
@@ -67,7 +59,7 @@ namespace CP2077SaveEditor
                 resolvedItemLabel.Enabled = false;
             }
 
-            this.Text = node.AttachmentSlotTdbId.Name + " :: " + node.ItemTdbId.Name;
+            this.Text = node.AttachmentSlotTdbId.ResolvedText + " :: " + node.ItemTdbId.ResolvedText;
             this.ShowDialog();
         }
 
@@ -86,9 +78,9 @@ namespace CP2077SaveEditor
                 return;
             }
 
-            activeNode.AttachmentSlotTdbId.Raw64 = ulong.Parse(attachmentIdBox.Text);
-            activeNode.ItemTdbId.Raw64 = ulong.Parse(item1IdBox.Text);
-            activeNode.TdbId2.Raw64 = ulong.Parse(unknownIDBox.Text);
+            activeNode.AttachmentSlotTdbId = ulong.Parse(attachmentIdBox.Text);
+            activeNode.ItemTdbId = ulong.Parse(item1IdBox.Text);
+            activeNode.TdbId2 = ulong.Parse(unknownIDBox.Text);
             activeNode.Unknown2 = uint.Parse(unknown1Box.Text);
             activeNode.Unknown3 = uint.Parse(unknown2Box.Text);
             activeNode.Unknown4 = float.Parse(unknown3Box.Text);
@@ -101,13 +93,13 @@ namespace CP2077SaveEditor
         private void resolvedItemLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var details = new ItemDetails();
-            if (activeNode.ItemTdbId.GameName.Length > 0)
+            if (activeNode.ItemTdbId.ResolvedText.Length > 0)
             {
-                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.GameName);
+                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.ResolvedText);
             }
             else
             {
-                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.Name);
+                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.ResolvedText);
             }
             
         }

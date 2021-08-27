@@ -10,14 +10,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CyberCAT.Core.Classes.DumpedClasses;
+using WolvenKit.RED4.Save;
+using WolvenKit.RED4.Types;
 
 namespace CP2077SaveEditor
 {
     public partial class StatDetails : Form
     {
         private Func<bool> callbackFunc;
-        private Handle<GameStatModifierData> activeStat;
+        private CHandle<gameStatModifierData_Deprecated> activeStat;
 
         public StatDetails()
         {
@@ -35,45 +36,42 @@ namespace CP2077SaveEditor
             ((ComboBox)sender).Items.AddRange(statTypes);
         }
 
-        public void LoadStat(Handle<GameStatModifierData> stat, Func<bool> callback)
+        public void LoadStat(CHandle<gameStatModifierData_Deprecated> stat, Func<bool> callback)
         {
             callbackFunc = callback;
             activeStat = stat;
 
-            if (stat.Value.GetType().Name == "GameCombinedStatModifierData")
+            if (stat.Chunk is gameCombinedStatModifierData_Deprecated comStat)
             {
                 statTabControl.TabPages.Remove(constantStatTab);
                 statTabControl.TabPages.Remove(curveStatTab);
-                var data = ((GameCombinedStatModifierData)stat.Value);
 
-                combinedModifier.Text = data.ModifierType.ToString();
-                combinedOperation.Text = data.Operation.ToString();
-                combinedRefObject.Text = data.RefObject.ToString();
-                combinedRefStatType.Text = data.RefStatType.ToString();
-                combinedStatType.Text = data.StatType.ToString();
-                combinedValue.Text = data.Value.ToString();                
+                combinedModifier.Text = comStat.ModifierType.ToString();
+                combinedOperation.Text = comStat.Operation.ToString();
+                combinedRefObject.Text = comStat.RefObject.ToString();
+                combinedRefStatType.Text = comStat.RefStatType.ToString();
+                combinedStatType.Text = comStat.StatType.ToString();
+                combinedValue.Text = comStat.Value.ToString();                
             }
-            else if (stat.Value.GetType().Name == "GameConstantStatModifierData")
+            else if (stat.Chunk is gameConstantStatModifierData_Deprecated constantStat)
             {
                 statTabControl.TabPages.Remove(combinedStatTab);
                 statTabControl.TabPages.Remove(curveStatTab);
-                var data = ((GameConstantStatModifierData)stat.Value);
 
-                constantModifier.Text = data.ModifierType.ToString();
-                constantStatType.Text = data.StatType.ToString();
-                constantValue.Text = data.Value.ToString();
+                constantModifier.Text = constantStat.ModifierType.ToString();
+                constantStatType.Text = constantStat.StatType.ToString();
+                constantValue.Text = constantStat.Value.ToString();
             }
-            else if (stat.Value.GetType().Name == "GameCurveStatModifierData")
+            else if (stat.Chunk is gameCurveStatModifierData_Deprecated curvStat)
             {
                 statTabControl.TabPages.Remove(constantStatTab);
                 statTabControl.TabPages.Remove(combinedStatTab);
-                var data = ((GameCurveStatModifierData)stat.Value);
 
-                curveColumnName.Text = data.ColumnName.ToString();
-                curveName.Text = data.CurveName.ToString();
-                curveStat.Text = data.CurveStat.ToString();
-                curveModifier.Text = data.ModifierType.ToString();
-                curveStatType.Text = data.StatType.ToString();
+                curveColumnName.Text = curvStat.ColumnName.ToString();
+                curveName.Text = curvStat.CurveName.ToString();
+                curveStat.Text = curvStat.CurveStat.ToString();
+                curveModifier.Text = curvStat.ModifierType.ToString();
+                curveStatType.Text = curvStat.StatType.ToString();
             }
 
             this.ShowDialog();
@@ -100,7 +98,7 @@ namespace CP2077SaveEditor
                 return true;
             }
 
-            if (activeStat.Value.GetType().Name == "GameCombinedStatModifierData")
+            if (activeStat.Chunk is gameCombinedStatModifierData_Deprecated comStat)
             {
                 if (!CheckInput(new List<bool> {
                     Enum.TryParse<gameStatModifierType>(combinedModifier.Text, out _),
@@ -110,33 +108,29 @@ namespace CP2077SaveEditor
                     Enum.TryParse<gamedataStatType>(combinedStatType.Text, out _)
                 }, combinedValue.Text)) { return; }
 
-                var data = (GameCombinedStatModifierData)activeStat.Value;
+                comStat.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), combinedModifier.Text);
+                comStat.Operation = (gameCombinedStatOperation)Enum.Parse(typeof(gameCombinedStatOperation), combinedOperation.Text);
+                comStat.RefObject = (gameStatObjectsRelation)Enum.Parse(typeof(gameStatObjectsRelation), combinedRefObject.Text);
+                comStat.RefStatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedRefStatType.Text);
+                comStat.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedStatType.Text);
 
-                data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), combinedModifier.Text);
-                data.Operation = (gameCombinedStatOperation)Enum.Parse(typeof(gameCombinedStatOperation), combinedOperation.Text);
-                data.RefObject = (gameStatObjectsRelation)Enum.Parse(typeof(gameStatObjectsRelation), combinedRefObject.Text);
-                data.RefStatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedRefStatType.Text);
-                data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), combinedStatType.Text);
-
-                data.Value = float.Parse(combinedValue.Text);
+                comStat.Value = float.Parse(combinedValue.Text);
 
             }
-            else if (activeStat.Value.GetType().Name == "GameConstantStatModifierData")
+            else if (activeStat.Chunk is gameConstantStatModifierData_Deprecated constantStat)
             {
                 if (!CheckInput(new List<bool> {
                     Enum.TryParse<gameStatModifierType>(constantModifier.Text, out _),
                     Enum.TryParse<gamedataStatType>(constantStatType.Text, out _)
                 }, constantValue.Text)) { return; }
 
-                var data = (GameConstantStatModifierData)activeStat.Value;
+                constantStat.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), constantModifier.Text);
+                constantStat.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), constantStatType.Text);
 
-                data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), constantModifier.Text);
-                data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), constantStatType.Text);
-
-                data.Value = float.Parse(constantValue.Text);
+                constantStat.Value = float.Parse(constantValue.Text);
 
             }
-            else if (activeStat.Value.GetType().Name == "GameCurveStatModifierData")
+            else if (activeStat.Chunk is gameCurveStatModifierData_Deprecated curvStat)
             {
                 if (!CheckInput(new List<bool> {
                     Enum.TryParse<gamedataStatType>(curveStat.Text, out _),
@@ -144,14 +138,12 @@ namespace CP2077SaveEditor
                     Enum.TryParse<gamedataStatType>(curveStatType.Text, out _)
                 })) { return; }
 
-                var data = (GameCurveStatModifierData)activeStat.Value;
+                curvStat.ColumnName = curveColumnName.Text;
+                curvStat.CurveName = curveName.Text;
 
-                data.ColumnName = curveColumnName.Text;
-                data.CurveName = curveName.Text;
-
-                data.CurveStat = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStat.Text);
-                data.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), curveModifier.Text);
-                data.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStatType.Text);
+                curvStat.CurveStat = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStat.Text);
+                curvStat.ModifierType = (gameStatModifierType)Enum.Parse(typeof(gameStatModifierType), curveModifier.Text);
+                curvStat.StatType = (gamedataStatType)Enum.Parse(typeof(gamedataStatType), curveStatType.Text);
             }
 
             callbackFunc.Invoke();

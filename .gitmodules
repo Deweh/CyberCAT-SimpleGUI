@@ -1,0 +1,4 @@
+[submodule "WolvenKit"]
+	path = WolvenKit
+	url = https://github.com/WolvenKit/WolvenKit.git
+	branch = feature/savegame

@@ -2,13 +2,20 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WolvenKit\WolvenKit.Common\WolvenKit.Common.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Archive\WolvenKit.RED4.Archive.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Save\WolvenKit.RED4.Save.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Types\WolvenKit.RED4.Types.csproj" />
   </ItemGroup>
 
   <ItemGroup>
