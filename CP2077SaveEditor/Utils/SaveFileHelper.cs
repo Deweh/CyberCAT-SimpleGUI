@@ -366,6 +366,16 @@ namespace CP2077SaveEditor
             currentFacts.Add(newFact);
         }
 
+        public void SetFacts(IList<FactsTable.FactEntry> importedFacts)
+        {
+            var currentFacts = ((FactsDB)this.GetFactsContainer().Value).FactsTables[0].FactEntries;
+            currentFacts.Clear();
+            foreach(var fact in importedFacts)
+            {
+                currentFacts.Add(fact);
+            }
+        }
+
         public Inventory.SubInventory GetInventory(ulong id)
         {
             return this.GetInventoriesContainer().SubInventories[this.GetInventoriesContainer().SubInventories.IndexOf(this.GetInventoriesContainer().SubInventories.Where(x => x.InventoryId == id).FirstOrDefault())];

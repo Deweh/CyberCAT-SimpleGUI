@@ -1184,6 +1184,29 @@ namespace CP2077SaveEditor
             }
         }
 
+        private void factsLoadButton_Click(object sender, EventArgs e)
+        {
+            var loadWindow = new OpenFileDialog { Filter = "Text File|*.txt" };
+
+            if (loadWindow.ShowDialog() == DialogResult.OK)
+            {
+                var questFactsTxt = File.ReadAllText(loadWindow.FileName);
+                try
+                {
+                    var questFacts = JsonConvert.DeserializeObject<IList<FactsTable.FactEntry>>(questFactsTxt);
+                    activeSaveFile.SetFacts(questFacts);
+                }
+                catch (JsonReaderException readerException)
+                {
+                    MessageBox.Show(
+                        $"Please verify document is in correct format (i.e. Json FactEntry). Use the export button to view format.\n\nException: {readerException.Message}", 
+                        "Deserialization Error", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
+
         private void statsButton_Click(object sender, EventArgs e)
         {
             SwapTab(statsButton, statsPanel);

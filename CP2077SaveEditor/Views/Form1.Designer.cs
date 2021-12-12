@@ -107,6 +107,7 @@ namespace CP2077SaveEditor
             this.vehiclesListView = new System.Windows.Forms.ListView();
             this.vehicleIDHeader = new System.Windows.Forms.ColumnHeader();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
+            this.factsLoadButton = new CP2077SaveEditor.ModernButton();
             this.optionsPanel.SuspendLayout();
             this.appearancePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.appearancePreviewBox)).BeginInit();
@@ -577,6 +578,7 @@ namespace CP2077SaveEditor
             // 
             this.factsPanel.Controls.Add(this.makeAllRomanceableButton);
             this.factsPanel.Controls.Add(this.factsSaveButton);
+            this.factsPanel.Controls.Add(this.factsLoadButton);
             this.factsPanel.Controls.Add(this.enableSecretEndingButton);
             this.factsPanel.Controls.Add(this.addFactButton);
             this.factsPanel.Controls.Add(this.factsSearchBox);
@@ -602,6 +604,23 @@ namespace CP2077SaveEditor
             this.makeAllRomanceableButton.TextColor = System.Drawing.SystemColors.ControlText;
             this.makeAllRomanceableButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.makeAllRomanceableButton.Click += new System.EventHandler(this.makeAllRomanceableButton_Click);
+            // 
+            // factsLoadButton
+            // 
+            this.factsLoadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.factsLoadButton.BackColor = System.Drawing.Color.White;
+            this.factsLoadButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.factsLoadButton.ClickEffectEnabled = true;
+            this.factsLoadButton.DefaultColor = System.Drawing.Color.White;
+            this.factsLoadButton.HoverColor = System.Drawing.Color.LightGray;
+            this.factsLoadButton.Location = new System.Drawing.Point(673, -1);
+            this.factsLoadButton.Name = "factsLoadButton";
+            this.factsLoadButton.Size = new System.Drawing.Size(75, 18);
+            this.factsLoadButton.TabIndex = 6;
+            this.factsLoadButton.Text = "Load";
+            this.factsLoadButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.factsLoadButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.factsLoadButton.Click += new System.EventHandler(this.factsLoadButton_Click);
             // 
             // factsSaveButton
             // 
@@ -1299,6 +1318,7 @@ namespace CP2077SaveEditor
         private ModernButton vehiclesButton;
         private System.Windows.Forms.Timer loadTimer;
         private ModernButton advancedAppearanceButton;
+        private ModernButton factsLoadButton;
     }
 }
 
