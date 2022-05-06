@@ -1,7 +1,4 @@
-﻿using CyberCAT.Core.Classes.Mapping;
-using CyberCAT.Core.DumpedEnums;
-using CyberCAT.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WolvenKit.RED4.Save;
 using WolvenKit.RED4.Types;
+using static WolvenKit.RED4.Types.Enums;
 
 namespace CP2077SaveEditor
 {

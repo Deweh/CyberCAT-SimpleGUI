@@ -188,7 +188,7 @@ namespace CP2077SaveEditor
             }
         }
 
-        public int AddStat(Type statType, gameSavedStatsData statsData, gameStatModifierData_Deprecated modifierData = null)
+        public CHandle<gameStatModifierData_Deprecated> AddStat(Type statType, gameSavedStatsData statsData, gameStatModifierData_Deprecated modifierData = null)
         {
             var newModifierData = System.Activator.CreateInstance(statType);
 
@@ -204,7 +204,10 @@ namespace CP2077SaveEditor
                 newModifierData = modifierData;
             }
 
-            return statsData.StatModifiers.Add(newModifierData);
+            var final = new CHandle<gameStatModifierData_Deprecated>((gameStatModifierData_Deprecated)newModifierData);
+            statsData.StatModifiers.Add(final);
+
+            return final;
         }
 
         public void RemoveStat(CHandle<gameStatModifierData_Deprecated> statsHandle, gameSavedStatsData statsData)

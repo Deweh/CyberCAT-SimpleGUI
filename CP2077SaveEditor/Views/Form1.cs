@@ -26,7 +26,8 @@ namespace CP2077SaveEditor
         public static SaveFileHelper activeSaveFile;
 
         //Services
-        private static WolvenKit.Common.Services.TweakDBService tdbService;
+        public static WolvenKit.Common.Services.TweakDBService tdbService;
+        public static WolvenKit.Common.Services.HashService hashService;
 
         //Save Info
         private bool loadingSave = false;
@@ -610,6 +611,11 @@ namespace CP2077SaveEditor
             if (tdbService == null)
             {
                 await Task.Run(() => tdbService = new());
+            }
+
+            if (hashService == null)
+            {
+                await Task.Run(() => hashService = new());
             }
 
             CyberpunkSaveFile bufferFile = null;

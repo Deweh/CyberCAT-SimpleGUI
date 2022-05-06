@@ -192,7 +192,7 @@ namespace CP2077SaveEditor
 
             callbackFunc1 = delegate{ return true; };
             var dummyItem = new ItemData();
-            dummyItem.Header.Seed = seed;
+            dummyItem.Header = new() { Seed = seed };
             activeItem = dummyItem;
             activeSaveFile = (SaveFileHelper)_saveFile;
             this.Text = name;
@@ -341,7 +341,7 @@ namespace CP2077SaveEditor
             ReloadData();
 
             var statDialog = new StatDetails();
-            statDialog.LoadStat(activeSaveFile.GetItemStatData(activeItem).StatModifiers[newId], ReloadData);
+            statDialog.LoadStat(newId, ReloadData);
         }
 
         private void removeStatButton_Click(object sender, EventArgs e)
@@ -359,7 +359,7 @@ namespace CP2077SaveEditor
             ReloadData();
 
             var statDialog = new StatDetails();
-            statDialog.LoadStat(activeSaveFile.GetItemStatData(activeItem).StatModifiers[newId], ReloadData);
+            statDialog.LoadStat(newId, ReloadData);
         }
 
         private void addCurveStatButton_Click(object sender, EventArgs e)
@@ -368,7 +368,7 @@ namespace CP2077SaveEditor
             ReloadData();
 
             var statDialog = new StatDetails();
-            statDialog.LoadStat(activeSaveFile.GetItemStatData(activeItem).StatModifiers[newId], ReloadData);
+            statDialog.LoadStat(newId, ReloadData);
         }
 
         private void deleteModNodeButton_Click(object sender, EventArgs e)
