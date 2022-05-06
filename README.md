@@ -11,6 +11,13 @@ Edit the quantity, flags, & mod tree of items in your inventory.                
 Edit quest facts.                                                               | Stable
 Quick actions - dedicated controls for changing money & making items legendary. | Semi-Stable
 
+## Game Version Support
+
+**Game Version**    | **Support** | **CyberCAT-SimpleGUI Version**
+--------------------| ------------|-----------------------------
+Patch 1.3           | Partial     | >=v0.10a_r1
+Patch 1.23          | Full        | >=v0.10a
+
 ## Usage
 
 1. Run **CP2077SaveEditor.exe**
