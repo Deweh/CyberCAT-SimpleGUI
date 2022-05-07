@@ -19,7 +19,7 @@ namespace CP2077SaveEditor.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -131,7 +131,7 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;DataExists&quot;:true,&quot;Unknown1&quot;:0,&quot;UnknownFirstBytes&quot;:&quot;AwAAAAAA&quot;,&quot;FirstSection&quot;:{&quot;AppearanceSections&quot;:[{&quot;SectionName&quot;:&quot;TPP&quot;,&quot;MainList&quot;:[{&quot;Hash&quot;:11127614498395143143,&quot;FirstString&quot;:&quot;h0_000_pwa__basehead__03_ca_senna&quot;,&quot;SecondString&quot;:&quot;skin_type_01&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:16043278657831145316,&quot;FirstString&quot;:&quot;he_000_pwa__basehead__15_gradient_light_blue&quot;,&quot;SecondString&quot;:&quot;eyes_color&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:5580371224339221950,&quot;FirstString&quot;:&quot;heb_pwa__basehead__02_blonde&quot;,&quot;SecondString&quot; [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {&quot;DataExists&quot;:true,&quot;Unknown1&quot;:0,&quot;UnknownFirstBytes&quot;:&quot;CAAAAAAA&quot;,&quot;FirstSection&quot;:{&quot;AppearanceSections&quot;:[{&quot;SectionName&quot;:&quot;TPP&quot;,&quot;MainList&quot;:[{&quot;Hash&quot;:4202529424089658858,&quot;FirstString&quot;:&quot;h0_000_pwa__basehead__face_rig&quot;,&quot;SecondString&quot;:&quot;tpp_head_face_rig&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:11127614498395143143,&quot;FirstString&quot;:&quot;h0_000_pwa__basehead__03_ca_senna&quot;,&quot;SecondString&quot;:&quot;skin_type_01&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:16043278657831145316,&quot;FirstString&quot;:&quot;he_000_pwa__basehead__14_gradient_grey&quot;,&quot;SecondStri [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FemaleDefaultPreset {
             get {
@@ -177,7 +177,7 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;DataExists&quot;:true,&quot;Unknown1&quot;:0,&quot;UnknownFirstBytes&quot;:&quot;AwAAAAEB&quot;,&quot;FirstSection&quot;:{&quot;AppearanceSections&quot;:[{&quot;SectionName&quot;:&quot;TPP&quot;,&quot;MainList&quot;:[{&quot;Hash&quot;:8412290529705602186,&quot;FirstString&quot;:&quot;h0_000_pma__basehead__04_ca_almond_00_umber&quot;,&quot;SecondString&quot;:&quot;skin_type_02&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:16043278657831145316,&quot;FirstString&quot;:&quot;he_000_pma__basehead__12_gradient_brown&quot;,&quot;SecondString&quot;:&quot;eyes_color&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:16883307788927853167,&quot;FirstString&quot;:&quot;heb_pma__basehead__01_black&quot;,&quot;SecondStr [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {&quot;DataExists&quot;:true,&quot;Unknown1&quot;:0,&quot;UnknownFirstBytes&quot;:&quot;CAAAAAEB&quot;,&quot;FirstSection&quot;:{&quot;AppearanceSections&quot;:[{&quot;SectionName&quot;:&quot;TPP&quot;,&quot;MainList&quot;:[{&quot;Hash&quot;:4202529424089658858,&quot;FirstString&quot;:&quot;h0_000_pma__basehead__face_rig&quot;,&quot;SecondString&quot;:&quot;tpp_head_face_rig&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:11127614498395143143,&quot;FirstString&quot;:&quot;h0_000_pma__basehead__01_ca_pale&quot;,&quot;SecondString&quot;:&quot;skin_type_01&quot;,&quot;TrailingBytes&quot;:&quot;AAAAAAAAAAA=&quot;},{&quot;Hash&quot;:16043278657831145316,&quot;FirstString&quot;:&quot;he_000_pma__basehead__18_gradient_yellow&quot;,&quot;SecondStr [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string MaleDefaultPreset {
             get {

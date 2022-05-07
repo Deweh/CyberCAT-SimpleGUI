@@ -574,13 +574,13 @@ namespace CP2077SaveEditor
             {
                 if (search != "")
                 {
-                    if (!fact.FactName.ToString().ToLower().Contains(search.ToLower()))
+                    if (!activeSaveFile.KnownFacts[fact.FactName].ToLower().Contains(search.ToLower()))
                     {
                         continue;
                     }
                 }
 
-                var newItem = new ListViewItem(new string[] { fact.Value.ToString(), fact.FactName });
+                var newItem = new ListViewItem(new string[] { fact.Value.ToString(), activeSaveFile.KnownFacts[fact.FactName] });
                 newItem.Tag = fact;
 
                 listViewRows.Add(newItem);
