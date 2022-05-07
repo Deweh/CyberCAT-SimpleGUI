@@ -765,7 +765,7 @@ namespace CP2077SaveEditor
                 var vehiclePS = (vehicleGarageComponentPS)ps.Entries.Where(x => x.Data is vehicleGarageComponentPS).FirstOrDefault().Data;
                 var unlockedVehicles = new List<string>();
 
-                var vehicles = tdbService.GetRecords().Where(x => x.ResolvedText.StartsWith("Vehicle.") && x.ResolvedText.EndsWith("_player")).Select(x => x.ResolvedText);
+                var vehicles = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.Vehicles);
 
                 if (vehiclePS != null)
                 {
@@ -1348,8 +1348,10 @@ namespace CP2077SaveEditor
             var vehiclePS = (vehicleGarageComponentPS)ps.Entries.Where(x => x.Data is vehicleGarageComponentPS).FirstOrDefault().Data;
             var unlockedVehicles = vehiclePS.UnlockedVehicleArray.Select(x => x.VehicleID.RecordID.ResolvedText);
 
-            foreach (var selectedItem in vehiclesListView.GetVirtualInfo().Items)
+            foreach (var selectedItem in vehiclesListView.SelectedVirtualItems())
             {
+                selectedItem.Checked = !selectedItem.Checked;
+
                 if (selectedItem.Checked)
                 {
                     if (!unlockedVehicles.Contains(selectedItem.Text))
@@ -1364,18 +1366,20 @@ namespace CP2077SaveEditor
                 {
                     if (unlockedVehicles.Contains(selectedItem.Text))
                     {
-                        var list = vehiclePS.UnlockedVehicleArray.ToList();
-                        foreach (var unlocked in vehiclePS.UnlockedVehicleArray)
+                        var list = vehiclePS.UnlockedVehicleArray;
+                        for(int i = 0; i < list.Count; i++)
                         {
+                            var unlocked = list[i];
+
                             if (unlocked.VehicleID.RecordID.ResolvedText == selectedItem.Text)
                             {
                                 list.Remove(unlocked);
+                                break;
                             }
                         }
-                        vehiclePS.UnlockedVehicleArray.Clear();
-                        foreach (var itm in list)
+                        foreach (var unlocked in vehiclePS.UnlockedVehicleArray)
                         {
-                            vehiclePS.UnlockedVehicleArray.Add(itm);
+                            
                         }
                     }
                 }

@@ -242,5 +242,14 @@ namespace CP2077SaveEditor.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [&quot;Vehicle.v_standard25_thorton_colby_pickup_player&quot;,&quot;Vehicle.v_sportbike1_yaiba_kusanagi_tyger_player&quot;,&quot;Vehicle.v_sportbike1_yaiba_kusanagi_player&quot;,&quot;Vehicle.v_standard25_thorton_colby_pickup_02_player&quot;,&quot;Vehicle.v_standard25_mahir_supron_player&quot;,&quot;Vehicle.v_sport2_quadra_type66_02_player&quot;,&quot;Vehicle.v_standard3_thorton_mackinaw_player&quot;,&quot;Vehicle.v_standard3_chevalier_emperor_player&quot;,&quot;Vehicle.v_sport2_villefort_alvarado_valentinos_player&quot;,&quot;Vehicle.v_standard2_thorton_galena_nomad_player&quot;,&quot;Vehicle.v_sport1_quadra_ [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Vehicles {
+            get {
+                return ResourceManager.GetString("Vehicles", resourceCulture);
+            }
+        }
     }
 }
