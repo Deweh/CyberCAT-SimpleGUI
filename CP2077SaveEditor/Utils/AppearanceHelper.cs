@@ -65,7 +65,7 @@ namespace CP2077SaveEditor
                     playerPuppet.Gender = "Female";
                     if (!SuppressBodyGenderPrompt)
                     {
-                        SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.FemaleDefaultPreset));
+                        SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.FemaleDefaultPreset, new Utils.JsonConverters.AppearanceResourceConverter()));
                     }
                 }
                 else
@@ -73,7 +73,7 @@ namespace CP2077SaveEditor
                     playerPuppet.Gender = "Male";
                     if (!SuppressBodyGenderPrompt)
                     {
-                        SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.MaleDefaultPreset));
+                        SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.MaleDefaultPreset, new Utils.JsonConverters.AppearanceResourceConverter()));
                     }
                 }
 

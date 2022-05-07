@@ -676,6 +676,7 @@ namespace CP2077SaveEditor
             }
 
             activeSaveFile = new SaveFileHelper() { SaveFile = bufferFile };
+            activeSaveFile.Appearance.SetMainSections();
 
             GC.Collect();
 
@@ -921,33 +922,33 @@ namespace CP2077SaveEditor
             saveWindow.Filter = "Cyberpunk 2077 Character Preset|*.preset";
             if (saveWindow.ShowDialog() == DialogResult.OK)
             {
-                File.WriteAllText(saveWindow.FileName, JsonConvert.SerializeObject(activeSaveFile.GetAppearanceContainer()));
+                File.WriteAllText(saveWindow.FileName, JsonConvert.SerializeObject(activeSaveFile.GetAppearanceContainer(), new Utils.JsonConverters.AppearanceResourceConverter()));
                 statusLabel.Text = "Appearance preset saved.";
             }
         }
 
         private void loadAppearButton_Click(object sender, EventArgs e)
         {
-            //var fileWindow = new OpenFileDialog();
-            //fileWindow.Filter = "Cyberpunk 2077 Character Preset|*.preset";
-            //if (fileWindow.ShowDialog() == DialogResult.OK)
-            //{
-            //    var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName));
+            var fileWindow = new OpenFileDialog();
+            fileWindow.Filter = "Cyberpunk 2077 Character Preset|*.preset";
+            if (fileWindow.ShowDialog() == DialogResult.OK)
+            {
+                var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName), new Utils.JsonConverters.AppearanceResourceConverter());
 
-            //    if (newValues.UnknownFirstBytes.Length > 6)
-            //    {
-            //        newValues.UnknownFirstBytes = newValues.UnknownFirstBytes.Skip(newValues.UnknownFirstBytes.Length - 6).ToArray();
-            //    }
+                if (newValues.UnknownFirstBytes.Length > 6)
+                {
+                    newValues.UnknownFirstBytes = newValues.UnknownFirstBytes.Skip(newValues.UnknownFirstBytes.Length - 6).ToArray();
+                }
 
-            //    if (newValues.UnknownFirstBytes[4] != activeSaveFile.GetAppearanceContainer().UnknownFirstBytes[4])
-            //    {
-            //        activeSaveFile.Appearance.SuppressBodyGenderPrompt = true;
-            //        activeSaveFile.Appearance.BodyGender = (AppearanceGender)newValues.UnknownFirstBytes[4];
-            //    }
-            //    activeSaveFile.Appearance.SetAllValues(newValues);
-            //    RefreshAppearanceValues();
-            //    statusLabel.Text = "Appearance preset loaded.";
-            //}
+                if (newValues.UnknownFirstBytes[4] != activeSaveFile.GetAppearanceContainer().UnknownFirstBytes[4])
+                {
+                    activeSaveFile.Appearance.SuppressBodyGenderPrompt = true;
+                    activeSaveFile.Appearance.BodyGender = (AppearanceGender)newValues.UnknownFirstBytes[4];
+                }
+                activeSaveFile.Appearance.SetAllValues(newValues);
+                RefreshAppearanceValues();
+                statusLabel.Text = "Appearance preset loaded.";
+            }
         }
 
         private void factsButton_Click(object sender, EventArgs e)
