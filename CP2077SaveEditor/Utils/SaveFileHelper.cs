@@ -213,25 +213,7 @@ namespace CP2077SaveEditor
 
         public void RemoveStat(CHandle<gameStatModifierData_Deprecated> statsHandle, gameSavedStatsData statsData)
         {
-            var modifiersList = statsData.StatModifiers.Remove(statsHandle);
-            //modifiersList.Remove(statsHandle);
-            //statsData.StatModifiers = modifiersList.ToArray();
-
-            //this.GetStatsContainer().RemoveHandle(statsHandle.Id);
-
-            //foreach (GameSavedStatsData value in this.GetStatsMap().Values)
-            //{
-            //    if (value.StatModifiers != null)
-            //    {
-            //        foreach (Handle<GameStatModifierData> modifierData in value.StatModifiers)
-            //        {
-            //            if (modifierData.Id > statsHandle.Id)
-            //            {
-            //                modifierData.Id = (modifierData.Id - 1);
-            //            }
-            //        }
-            //    }
-            //}
+            statsData.StatModifiers.Remove(statsHandle);
         }
 
         public gameSavedStatsData CreateStatData(InventoryHelper.ItemData item, Random rand)
