@@ -606,6 +606,8 @@ namespace CP2077SaveEditor
             loadingSave = true;
             editorPanel.Enabled = false;
             optionsPanel.Enabled = false;
+            openSaveButton.Enabled = false;
+            swapSaveType.Enabled = false;
             loadTimer.Start();
 
             if (tdbService == null)
@@ -646,6 +648,9 @@ namespace CP2077SaveEditor
             maxProgress = 0;
             currentNode = string.Empty;
 
+            openSaveButton.Enabled = true;
+            swapSaveType.Enabled = true;
+
             if (cancelLoad)
             {
                 cancelLoad = false;
@@ -671,6 +676,8 @@ namespace CP2077SaveEditor
             }
 
             activeSaveFile = new SaveFileHelper() { SaveFile = bufferFile };
+
+            GC.Collect();
 
             //Appearance parsing
             RefreshAppearanceValues();
@@ -815,91 +822,68 @@ namespace CP2077SaveEditor
         //    //wrongDefaultInfo = e;
         //}
 
-        private void saveChangesButton_Click(object sender, EventArgs e)
+        private async void saveChangesButton_Click(object sender, EventArgs e)
         {
-            //var saveWindow = new SaveFileDialog();
-            //saveWindow.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Saved Games\\CD Projekt Red\\Cyberpunk 2077\\";
-            //saveWindow.Filter = "Cyberpunk 2077 Save File|*.dat";
-            //if (saveWindow.ShowDialog() == DialogResult.OK)
-            //{
-            //    if (File.Exists(saveWindow.FileName) && !File.Exists(Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old"))
-            //    {
-            //        File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
-            //    }
+            var saveWindow = new SaveFileDialog();
+            saveWindow.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Saved Games\\CD Projekt Red\\Cyberpunk 2077\\";
+            saveWindow.Filter = "Cyberpunk 2077 Save File|*.dat";
+            if (saveWindow.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
 
-            //    editorPanel.Enabled = false;
-            //    optionsPanel.Enabled = false;
-            //    loadTimer.Start();
-            //    var worker = new BackgroundWorker();
-            //    worker.DoWork += (object sender, DoWorkEventArgs e) =>
-            //    {
-            //        e.Result = activeSaveFile.Save(saveType == 0);
-            //    };
-            //    worker.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs e) =>
-            //    {
-            //        byte[] saveBytes = (byte[])e.Result;
-            //        loadTimer.Stop();
-            //        currentProgress = 0;
-            //        maxProgress = 0;
-            //        currentNode = string.Empty;
+            if (File.Exists(saveWindow.FileName) && !File.Exists(Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old"))
+            {
+                File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
+            }
 
-            //        var parsers = new List<INodeParser>();
-            //        parsers.AddRange(new INodeParser[] {
-            //            new CharacterCustomizationAppearancesParser(), new InventoryParser(), new ItemDataParser(), new FactsDBParser(),
-            //            new FactsTableParser(), new GameSessionConfigParser(), new ItemDropStorageManagerParser(), new ItemDropStorageParser(),
-            //            new ScriptableSystemsContainerParser()
-            //        });
+            openSaveButton.Enabled = false;
+            swapSaveType.Enabled = false;
+            editorPanel.Enabled = false;
+            optionsPanel.Enabled = false;
+            loadTimer.Start();
 
-            //        if (psDataEnabled)
-            //        {
-            //            parsers.Add(new PSDataParser());
-            //        }
+            Exception error = null;
 
-            //        if (statsSystemEnabled)
-            //        {
-            //            parsers.Add(new StatsSystemParser());
-            //        }
+            try
+            {
+                var writer = new CyberpunkSaveWriter(new MemoryStream());
+                var data = await Task.Run(() => writer.WriteFile(activeSaveFile.SaveFile));
 
-            //        var testFile = new SaveFileHelper(parsers);
-            //        try
-            //        {
-            //            if (saveType == 0)
-            //            {
-            //                testFile.Load(new MemoryStream(saveBytes));
-            //            }
-            //            else
-            //            {
-            //                testFile.Load(new MemoryStream(saveBytes));
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            statusLabel.Text = "Save cancelled.";
-            //            try
-            //            {
-            //                File.WriteAllText(Path.Combine(appLocation, "error.txt"), ex.Message + '\n' + ex.TargetSite + '\n' + ex.StackTrace);
-            //                MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI with the generated error.txt file.");
-            //            }
-            //            catch (Exception)
-            //            {
-            //                MessageBox.Show("Corruption has been detected in the edited save file. No data has been written. Please report this issue on github.com/Deweh/CyberCAT-SimpleGUI. \n\n" + ex.Message + "\n" + ex.StackTrace);
-            //            }
+                File.WriteAllBytes(saveWindow.FileName, data);
+            }
+            catch (Exception err)
+            {
+                error = err;
+            }
 
-            //            return;
-            //        }
-            //        finally
-            //        {
-            //            editorPanel.Enabled = true;
-            //            optionsPanel.Enabled = true;
-            //        }
+            loadTimer.Stop();
+            currentProgress = 0;
+            maxProgress = 0;
+            currentNode = string.Empty;
 
-            //        File.WriteAllBytes(saveWindow.FileName, saveBytes);
-            //        activeSaveFile = testFile;
-            //        statusLabel.Text = "File saved.";
-            //    };
+            openSaveButton.Enabled = true;
+            swapSaveType.Enabled = true;
+            editorPanel.Enabled = true;
+            optionsPanel.Enabled = true;
 
-            //    worker.RunWorkerAsync();
-            //}
+            if (error != null)
+            {
+                try
+                {
+                    File.WriteAllText(Path.Combine(appLocation, "error.txt"), error.Message + '\n' + error.TargetSite + '\n' + error.StackTrace);
+                    MessageBox.Show("Failed to save changes: " + error.Message + " An error.txt file has been generated with additional information.");
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Failed to save changes: " + error.Message + error.StackTrace);
+                }
+                return;
+            }
+
+            statusLabel.Text = "File saved.";
+
+            GC.Collect();
         }
 
         private void appearanceButton_Click(object sender, EventArgs e)
@@ -1410,7 +1394,7 @@ namespace CP2077SaveEditor
             }
             else
             {
-                status += "Rebuilding";
+                status += "Saving";
             }
 
             if (currentNode != string.Empty)
