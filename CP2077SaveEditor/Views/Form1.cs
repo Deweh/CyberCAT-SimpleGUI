@@ -70,7 +70,7 @@ namespace CP2077SaveEditor
         };
 
         //Etc
-        public static string appLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static string appLocation = Directory.GetCurrentDirectory();
 
         public Form1()
         {
