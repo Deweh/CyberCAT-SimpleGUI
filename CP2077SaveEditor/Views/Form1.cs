@@ -749,7 +749,7 @@ namespace CP2077SaveEditor
 
             var points = activeSaveFile.GetPlayerDevelopmentData().DevPoints.ToArray();
             perkPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == gamedataDevelopmentPointType.Primary)].Unspent);
-            attrPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == gamedataDevelopmentPointType.Secondary)].Unspent);
+            attrPointsUpDown.SetValue(points[Array.FindIndex(points, x => x.Type == gamedataDevelopmentPointType.Attribute)].Unspent);
 
             //PSData parsing
 
@@ -1433,7 +1433,7 @@ namespace CP2077SaveEditor
                 var points = activeSaveFile.GetPlayerDevelopmentData().DevPoints;
 
                 points[Array.FindIndex(points.ToArray(), x => x.Type == gamedataDevelopmentPointType.Primary)].Unspent = (int)perkPointsUpDown.Value;
-                points[Array.FindIndex(points.ToArray(), x => x.Type == gamedataDevelopmentPointType.Secondary)].Unspent = (int)attrPointsUpDown.Value;
+                points[Array.FindIndex(points.ToArray(), x => x.Type == gamedataDevelopmentPointType.Attribute)].Unspent = (int)attrPointsUpDown.Value;
             }
         }
 
