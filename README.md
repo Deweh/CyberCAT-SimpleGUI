@@ -15,6 +15,7 @@ Quick actions - dedicated controls for changing money & making items legendary. 
 
 **Game Version**    | **Support** | **CyberCAT-SimpleGUI Version**
 --------------------| ------------|-----------------------------
+Patch 1.5X          | Full        | >=v0.20a
 Patch 1.3           | Partial     | >=v0.10a_r1
 Patch 1.23          | Full        | >=v0.10a
 
@@ -37,6 +38,7 @@ Patch 1.23          | Full        | >=v0.10a
 ## Credits
 
 [CyberCAT by SirBitesalot and other contributors](https://github.com/WolvenKit/CyberCAT)
+[WolvenKit by the WolvenKit team](https://github.com/WolvenKit/WolvenKit)
 
 ## Contribution
 
