@@ -36,6 +36,16 @@ namespace CP2077SaveEditor
             unknownFlag1CheckBox.CheckedChanged += ApplyableControlChanged;
             questItemCheckBox.CheckedChanged += ApplyableControlChanged;
             modsBaseIdBox.TextChanged += ApplyableControlChanged;
+
+            //Shown += (object s, EventArgs e) =>
+            //{
+            //    var record = Form1.tdbService.GetRecord(activeItem.ItemTdbId);
+
+            //    foreach(var member in record.GetEnumerator())
+            //    {
+            //        MessageBox.Show(member.propPath + ": " + member.value.ToString());
+            //    }
+            //};
         }
 
         private void IterativeBuildModTree(ItemModData nodeData, TreeNode rootNode)

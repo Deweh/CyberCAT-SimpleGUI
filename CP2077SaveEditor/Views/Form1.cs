@@ -613,6 +613,12 @@ namespace CP2077SaveEditor
             if (tdbService == null)
             {
                 await Task.Run(() => tdbService = new());
+
+                //var openDbDialog = new OpenFileDialog();
+                //if (openDbDialog.ShowDialog() == DialogResult.OK)
+                //{
+                //    await Task.Run(() => tdbService.LoadDB(openDbDialog.FileName));
+                //}
             }
 
             if (hashService == null)
@@ -849,7 +855,7 @@ namespace CP2077SaveEditor
             try
             {
                 var writer = new CyberpunkSaveWriter(new MemoryStream());
-                var data = await Task.Run(() => writer.WriteFile(activeSaveFile.SaveFile));
+                var data = await Task.Run(() => writer.WriteFile(activeSaveFile.SaveFile, saveType == 0));
 
                 File.WriteAllBytes(saveWindow.FileName, data);
             }
