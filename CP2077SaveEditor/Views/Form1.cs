@@ -1179,7 +1179,15 @@ namespace CP2077SaveEditor
             saveWindow.Filter = "Text File|*.txt";
             if (saveWindow.ShowDialog() == DialogResult.OK)
             {
-                File.WriteAllText(saveWindow.FileName, JsonConvert.SerializeObject(activeSaveFile.GetKnownFacts(), Formatting.Indented));
+                var facts = activeSaveFile.GetKnownFacts();
+                var final = new List<KeyValuePair<string, uint>>(facts.Count);
+
+                foreach (var singleFact in facts)
+                {
+                    final.Add(new KeyValuePair<string, uint>(activeSaveFile.KnownFacts[singleFact.FactName], singleFact.Value));
+                }
+
+                File.WriteAllText(saveWindow.FileName, JsonConvert.SerializeObject(final, Formatting.Indented));
             }
         }
 
