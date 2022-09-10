@@ -12,6 +12,7 @@ using WolvenKit.RED4.Save;
 using WolvenKit.RED4.Types;
 using CP2077SaveEditor.Extensions;
 using System.Windows.Forms;
+using WolvenKit.Common.FNV1A;
 
 namespace CP2077SaveEditor
 {
@@ -380,7 +381,7 @@ namespace CP2077SaveEditor
                 SetNullableHashEntry("beard_color_", new HashValueEntry()
                 {
                     FirstString = "01_blonde_platinum",
-                    Hash = UlongToResource(value == 0 ? 0 : CyberCAT.Extra.Utils.HashGenerator.CalcFNV1A64("base\\characters\\head\\player_base_heads\\appearances\\facial_hairs\\hb_000_pma__" + AppearanceValueLists.Beards[value - 1] + ".app")),
+                    Hash = UlongToResource(value == 0 ? 0 : FNV1A64HashAlgorithm.HashString("base\\characters\\head\\player_base_heads\\appearances\\facial_hairs\\hb_000_pma__" + AppearanceValueLists.Beards[value - 1] + ".app")),
                     SecondString = "beard_color1_0"
                 },
                 new[] { "TPP", "character_customization" }, AppearanceField.Hash);

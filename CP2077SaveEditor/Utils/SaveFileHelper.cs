@@ -54,12 +54,12 @@ namespace CP2077SaveEditor
 
         public gameStatsStateMapStructure GetStatsContainer()
         {
-            return (gameStatsStateMapStructure)((Package04)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "StatsSystem")].Value).Content).RootChunk;
+            return (gameStatsStateMapStructure)((RedPackage)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "StatsSystem")].Value).Content).RootChunk;
         }
 
-        public Package04 GetScriptableContainer()
+        public RedPackage GetScriptableContainer()
         {
-            return (Package04)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "ScriptableSystemsContainer")].Value).Content;
+            return (RedPackage)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "ScriptableSystemsContainer")].Value).Content;
         }
 
         public PlayerDevelopmentData GetPlayerDevelopmentData()

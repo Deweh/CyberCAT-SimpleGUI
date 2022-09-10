@@ -1,62 +1,58 @@
-﻿using CyberCAT.Core.Classes;
-using CyberCAT.Core.Classes.Interfaces;
-using CyberCAT.Core.Classes.Mapping;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using CyberCAT.Extra;
+using WolvenKit.RED4.Types;
 
 namespace CP2077SaveEditor.Extensions
 {
-    public class JsonResolver : ITweakDbResolver
+    /*public class JsonResolver : ITweakDbResolver
     {
         private static Dictionary<ulong, NameStruct> _items = new Dictionary<ulong, NameStruct>();
         private static Dictionary<string, ulong> _nameToHash = new Dictionary<string, ulong>();
 
-        public string GetName(TweakDbId tdbid)
+        public string GetName(TweakDBID tdbid)
         {
             if (tdbid == null)
             {
                 return "<null>";
             }
 
-            if (_items.ContainsKey(tdbid.Raw64))
+            if (_items.ContainsKey(tdbid))
             {
-                return _items[tdbid.Raw64].Name;
+                return _items[tdbid].Name;
             }
 
             return $"Unknown_{tdbid}";
         }
 
-        public string GetGameName(TweakDbId tdbid)
+        public string GetGameName(TweakDBID tdbid)
         {
             if (tdbid == null)
             {
                 return "<null>";
             }
 
-            if (_items.ContainsKey(tdbid.Raw64))
+            if (_items.ContainsKey(tdbid))
             {
-                return _items[tdbid.Raw64].GameName;
+                return _items[tdbid].GameName;
             }
 
             return $"";
         }
 
-        public string GetGameDescription(TweakDbId tdbid)
+        public string GetGameDescription(TweakDBID tdbid)
         {
             if (tdbid == null)
             {
                 return "<null>";
             }
 
-            if (_items.ContainsKey(tdbid.Raw64))
+            if (_items.ContainsKey(tdbid))
             {
-                return _items[tdbid.Raw64].GameDescription;
+                return _items[tdbid].GameDescription;
             }
 
             return $"";
@@ -79,38 +75,38 @@ namespace CP2077SaveEditor.Extensions
             public string GameName { get; set; }
             public string GameDescription { get; set; }
         }
-    }
+    }*/
 
-    public class BinaryResolver : ITweakDbResolver
+    /*public class BinaryResolver : ITweakDbResolver
     {
         private TweakDbParser parser = new TweakDbParser();
         private byte[] decompressedData;
         public Dictionary<ulong, TdbIdInfo> TdbIdIndex;
 
-        public string GetName(TweakDbId tdbid)
+        public string GetName(TweakDBID tdbid)
         {
             if (tdbid == null)
             {
                 return "<null>";
             }
 
-            return TdbIdIndex.Keys.Contains(tdbid.Raw64) ? TdbIdIndex[tdbid.Raw64].Name : $"Unknown_{tdbid}";
+            return TdbIdIndex.Keys.Contains(tdbid) ? TdbIdIndex[tdbid].Name : $"Unknown_{tdbid}";
         }
 
-        public string GetGameName(TweakDbId tdbid)
+        public string GetGameName(TweakDBID tdbid)
         {
             if (tdbid == null)
             {
                 return "<null>";
             }
 
-            if (TdbIdIndex.Keys.Contains(tdbid.Raw64) && TdbIdIndex[tdbid.Raw64].InfoOffset != 0)
+            if (TdbIdIndex.Keys.Contains(tdbid) && TdbIdIndex[tdbid].InfoOffset != 0)
             {
                 using (var ms = new MemoryStream(decompressedData))
                 {
                     using (var br = new BinaryReader(ms, Encoding.UTF8))
                     {
-                        br.BaseStream.Seek(TdbIdIndex[tdbid.Raw64].InfoOffset, SeekOrigin.Begin);
+                        br.BaseStream.Seek(TdbIdIndex[tdbid].InfoOffset, SeekOrigin.Begin);
                         return br.ReadString();
                     }
                 }
@@ -121,20 +117,20 @@ namespace CP2077SaveEditor.Extensions
             }
         }
 
-        public string GetGameDescription(TweakDbId tdbid)
+        public string GetGameDescription(TweakDBID tdbid)
         {
             if (tdbid == null)
             {
                 return "<null>";
             }
 
-            if (TdbIdIndex.Keys.Contains(tdbid.Raw64) && TdbIdIndex[tdbid.Raw64].InfoOffset != 0)
+            if (TdbIdIndex.Keys.Contains(tdbid) && TdbIdIndex[tdbid].InfoOffset != 0)
             {
                 using (var ms = new MemoryStream(decompressedData))
                 {
                     using (var br = new BinaryReader(ms, Encoding.UTF8))
                     {
-                        br.BaseStream.Seek(TdbIdIndex[tdbid.Raw64].InfoOffset, SeekOrigin.Begin);
+                        br.BaseStream.Seek(TdbIdIndex[tdbid].InfoOffset, SeekOrigin.Begin);
                         br.ReadString();
                         return br.ReadString();
                     }
@@ -153,7 +149,7 @@ namespace CP2077SaveEditor.Extensions
 
         public BinaryResolver(byte[] data)
         {
-            SaveFile.ReportProgress(new SaveProgressChangedEventArgs(0, 0, "Item Database"));
+            // SaveFile.ReportProgress(new SaveProgressChangedEventArgs(0, 0, "Item Database"));
 
             decompressedData = Decompress(data);
 
@@ -177,7 +173,7 @@ namespace CP2077SaveEditor.Extensions
                         TdbIdIndex.Add(tdbid, new TdbIdInfo() { Name = name, InfoOffset = 0 });
                         if (i < infoItemsCount) infoIndex.Add(tdbid);
 
-                        SaveFile.ReportProgress(new SaveProgressChangedEventArgs((int)i, (int)totalItemsCount));
+                        // SaveFile.ReportProgress(new SaveProgressChangedEventArgs((int)i, (int)totalItemsCount));
                     }
 
                     for (uint i = 0; i < infoItemsCount; i++)
@@ -220,10 +216,10 @@ namespace CP2077SaveEditor.Extensions
         public static byte[] Write(Dictionary<ulong, JsonResolver.NameStruct> sourceJson, string tweakStrPath = "")
         {
             var filteredItems = sourceJson.Where(x => !string.IsNullOrEmpty(x.Value.GameName) || !string.IsNullOrEmpty(x.Value.GameDescription));
-            Dictionary<CyberCAT.Extra.Types.Primitive.TweakDBID, string> allStrings;
+            Dictionary<TweakDBID, string> allStrings;
             if (string.IsNullOrEmpty(tweakStrPath))
             {
-                allStrings = new Dictionary<CyberCAT.Extra.Types.Primitive.TweakDBID, string>();
+                allStrings = new Dictionary<TweakDBID, string>();
                 foreach (var item in sourceJson)
                 {
                     allStrings.Add(item.Key, item.Value.Name);
@@ -285,5 +281,5 @@ namespace CP2077SaveEditor.Extensions
                 return result.ToArray();
             }
         }
-    }
+    }*/
 }

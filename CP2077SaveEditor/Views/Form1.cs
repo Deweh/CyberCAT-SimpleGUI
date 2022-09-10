@@ -48,7 +48,7 @@ namespace CP2077SaveEditor
 
         //Lookup Dictionaries
         private Dictionary<Enum, NumericUpDown> attrFields, proficFields;
-        private static BinaryResolver itemResolver;
+        // private static BinaryResolver itemResolver;
         private static readonly Dictionary<string, string> itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(CP2077SaveEditor.Properties.Resources.ItemClasses);
         private static readonly Dictionary<ulong, string> inventoryNames = new()
         {
@@ -481,7 +481,7 @@ namespace CP2077SaveEditor
                     row[1] = "[M] ";
                 }
 
-                var id = item.ItemTdbId.ToString();
+                var id = $"{item.ItemTdbId & 0xFFFFFFFF:X}:{(item.ItemTdbId >> 32 & 0xFF):X}";
                 if (itemClasses.ContainsKey(id))
                 {
                     row[1] += itemClasses[id];

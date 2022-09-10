@@ -8,11 +8,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CyberCAT.Core.Classes;
-using CyberCAT.Core.Classes.Interfaces;
-using CyberCAT.Core.Classes.NodeRepresentations;
-using CyberCAT.Extra.Utils;
 using Newtonsoft.Json;
+using WolvenKit.Common.FNV1A;
+using WolvenKit.RED4.Save;
 
 namespace CP2077SaveEditor.Extensions
 {
@@ -203,18 +201,18 @@ namespace CP2077SaveEditor.Extensions
 
             for(int i = 0; i < names.Length; i++)
             {
-                pathHashes.Add(HashGenerator.CalcFNV1A64(names[i]), names[i]);
+                pathHashes.Add(FNV1A64HashAlgorithm.HashString(names[i]), names[i]);
             }
         }
 
         public static string GetPath(this CharacterCustomizationAppearances.HashValueEntry entry)
         {
-            return pathHashes.ContainsKey(entry.Hash) ? pathHashes[entry.Hash] : string.Empty;
+            return pathHashes.ContainsKey(entry.Hash.DepotPath) ? pathHashes[entry.Hash.DepotPath] : string.Empty;
         }
 
         public static void SetPath(this CharacterCustomizationAppearances.HashValueEntry entry, string value)
         {
-            entry.Hash = HashGenerator.CalcFNV1A64(value);
+            entry.Hash.DepotPath = value;
         }
 
         public static bool IsPathValid(this CharacterCustomizationAppearances.HashValueEntry entry, string value)
