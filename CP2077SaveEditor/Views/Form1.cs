@@ -481,7 +481,7 @@ namespace CP2077SaveEditor
                     row[1] = "[M] ";
                 }
 
-                var id = $"{item.ItemTdbId & 0xFFFFFFFF:X}:{(item.ItemTdbId >> 32 & 0xFF):X}";
+                var id = $"{item.ItemTdbId & 0xFFFFFFFF:X8}:{(item.ItemTdbId >> 32 & 0xFF):X2}";
                 if (itemClasses.ContainsKey(id))
                 {
                     row[1] += itemClasses[id];
