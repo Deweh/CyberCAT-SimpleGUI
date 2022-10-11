@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ using Newtonsoft.Json;
 using CP2077SaveEditor.Extensions;
 using System.Text.RegularExpressions;
 using System.Reflection;
-using System.Threading;
+using WolvenKit.Core.Compression;
 using WolvenKit.RED4.Types;
 
 namespace CP2077SaveEditor
@@ -75,6 +74,9 @@ namespace CP2077SaveEditor
         public Form1()
         {
             InitializeComponent();
+
+            CompressionSettings.Get().UseOodle = false;
+
             this.Size = new Size(1040, 627);
             this.CenterToScreen();
             editorPanel.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right);
