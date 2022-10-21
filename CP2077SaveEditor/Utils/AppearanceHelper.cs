@@ -1,23 +1,47 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static CP2077SaveEditor.SaveFileHelper;
-using static WolvenKit.RED4.Save.CharacterCustomizationAppearances;
+using System.Windows.Forms;
+using CP2077SaveEditor.Extensions;
+using CP2077SaveEditor.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using WolvenKit.RED4.CR2W.JSON;
 using WolvenKit.RED4.Save;
 using WolvenKit.RED4.Types;
-using CP2077SaveEditor.Extensions;
-using System.Windows.Forms;
-using WolvenKit.Common.FNV1A;
+using static CP2077SaveEditor.AppearanceHelper;
 
 namespace CP2077SaveEditor
 {
     public class AppearanceHelper
     {
+        public enum CustomizationGroupType
+        {
+            Customization,
+            Morphs
+        }
+
+        public enum CustomizationAppearanceField
+        {
+            Resource,
+            Definition,
+            Name
+        }
+
+        public enum CustomizationMorphField
+        {
+            RegionName,
+            TargetName
+        }
+
+        public enum CustomizationField
+        {
+            FirstCName,
+            Resource,
+            SecondCName
+        }
+
         private SaveFileHelper activeSave;
 
         public AppearanceHelper(SaveFileHelper _saveFile)
@@ -25,7 +49,7 @@ namespace CP2077SaveEditor
             activeSave = _saveFile;
         }
 
-        public Section[] MainSections { get; set; }
+        public gameuiCharacterCustomizationPresetWrapper PresetWrapper => activeSave.GetAppearanceContainer();
 
         public bool SuppressBodyGenderPrompt { get; set; } = false;
 
@@ -33,7 +57,7 @@ namespace CP2077SaveEditor
         {
             get
             {
-                return (AppearanceGender)activeSave.GetAppearanceContainer().UnknownFirstBytes[4];
+                return PresetWrapper.Preset.IsMale ? AppearanceGender.Male : AppearanceGender.Female;
             }
             set
             {
@@ -58,7 +82,7 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                activeSave.GetAppearanceContainer().UnknownFirstBytes[4] = (byte)value;
+                activeSave.GetAppearanceContainer().Preset.IsMale = value == AppearanceGender.Male;
 
                 var playerPuppet = (PlayerPuppetPS)activeSave.GetPSDataContainer().Entries.Where(x => x.Data is PlayerPuppetPS).FirstOrDefault().Data;
                 if (value == AppearanceGender.Female)
@@ -66,7 +90,7 @@ namespace CP2077SaveEditor
                     playerPuppet.Gender = "Female";
                     if (!SuppressBodyGenderPrompt)
                     {
-                        SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.FemaleDefaultPreset, new Utils.JsonConverters.AppearanceResourceConverter()));
+                        SetAllValues(RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(Properties.Resources.FemaleDefaultPreset, "0.0.3"));
                     }
                 }
                 else
@@ -74,7 +98,7 @@ namespace CP2077SaveEditor
                     playerPuppet.Gender = "Male";
                     if (!SuppressBodyGenderPrompt)
                     {
-                        SetAllValues(JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(CP2077SaveEditor.Properties.Resources.MaleDefaultPreset, new Utils.JsonConverters.AppearanceResourceConverter()));
+                        SetAllValues(RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(Properties.Resources.MaleDefaultPreset, "0.0.3"));
                     }
                 }
 
@@ -86,11 +110,11 @@ namespace CP2077SaveEditor
         {
             get
             {
-                return (AppearanceGender)activeSave.GetAppearanceContainer().UnknownFirstBytes[5];
+                return PresetWrapper.IsBrainGenderMale ? AppearanceGender.Male : AppearanceGender.Female;
             }
             set
             {
-                activeSave.GetAppearanceContainer().UnknownFirstBytes[5] = (byte)value;
+                PresetWrapper.IsBrainGenderMale = value == AppearanceGender.Male;
             }
         }
 
@@ -122,7 +146,7 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetAllEntries(AppearanceEntryType.MainListEntry, "skin_type_", (object entry) => { ((HashValueEntry)entry).Hash = UlongToResource(AppearanceValueLists.SkinTypes[value - 1]); });
+                SetAllEntries(CustomizationGroupType.Customization, "skin_type_", (entry) => { ((gameuiCustomizationAppearance)entry).Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.SkinTypes[value - 1], InternalEnums.EImportFlags.Soft); });
             }
         }
 
@@ -147,13 +171,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("hair_color", new HashValueEntry()
-                {
-                    FirstString = AppearanceValueLists.HairColors[0],
-                    Hash = UlongToResource(AppearanceValueLists.HairStylesDict[value]),
-                    SecondString = "hair_color1"
-                },
-                new[] { "hairs" });
+                SetCustomizationAppearance("hair_color", new gameuiCustomizationAppearance
+                    {
+                        Name = "hair_color1",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.HairStylesDict[value], InternalEnums.EImportFlags.Soft),
+                        Definition =  AppearanceValueLists.HairColors[0]
+                    },
+                    new CName[] { "hairs" });
             }
         }
 
@@ -180,16 +204,15 @@ namespace CP2077SaveEditor
 
                 if (GetValue("first.main.first.hair_color") != "default")
                 {
-                    SetValue(AppearanceField.FirstString, "first.main.hair_color", AppearanceValueLists.HairColors[value - 1]);
-                    var container = activeSave.GetAppearanceContainer();
-                    if (container.Strings.Count < 1)
+                    SetValue(CustomizationField.FirstCName, "first.main.hair_color", AppearanceValueLists.HairColors[value - 1]);
+                    if (PresetWrapper.Preset.Tags.Tags.Count == 0)
                     {
-                        container.Strings.Add(AppearanceValueLists.HairColors[value - 1].Substring(3));
-                        container.Strings.Add("Short");
+                        PresetWrapper.Preset.Tags.Tags.Add(AppearanceValueLists.HairColors[value - 1].Substring(3));
+                        PresetWrapper.Preset.Tags.Tags.Add("Short");
                     }
                     else
                     {
-                        container.Strings[0] = AppearanceValueLists.HairColors[value - 1].Substring(3);
+                        PresetWrapper.Preset.Tags.Tags[0] = AppearanceValueLists.HairColors[value - 1].Substring(3);
                     }
                 }
             }
@@ -250,13 +273,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("eyebrows_color", new HashValueEntry()
-                {
-                    FirstString = "heb_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__01_black",
-                    Hash = UlongToResource(AppearanceValueLists.Eyebrows[value]),
-                    SecondString = "eyebrows_color1"
-                },
-                new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, true);
+                SetCustomizationAppearance("eyebrows_color", new gameuiCustomizationAppearance
+                    {
+                        Name = "eyebrows_color1",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.Eyebrows[value], InternalEnums.EImportFlags.Soft),
+                        Definition =  "heb_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__01_black"
+                    },
+                    new CName[] { "TPP", "character_customization" }, CustomizationAppearanceField.Resource, null, true);
             }
         }
 
@@ -360,9 +383,14 @@ namespace CP2077SaveEditor
                 if(BodyGender != AppearanceGender.Female)
                 {
                     var entries = GetEntries("first.main.beard_color_");
-                    foreach(HashValueEntry singleEntry in entries)
+                    foreach (var entry in entries)
                     {
-                        var name = singleEntry.Hash.DepotPath.ToString().Split('\\').Last();
+                        if (entry is not gameuiCustomizationAppearance singleEntry)
+                        {
+                            throw new Exception();
+                        }
+
+                        var name = singleEntry.Resource.DepotPath.ToString().Split('\\').Last();
                         var searchString = name.Substring(0, name.Length - ".app".Length).Substring("hb_000_pma__".Length).Split("__");
 
                         return AppearanceValueLists.Beards.FindIndex(x => x == searchString[0]) + 1;
@@ -378,13 +406,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("beard_color_", new HashValueEntry()
-                {
-                    FirstString = "01_blonde_platinum",
-                    Hash = UlongToResource(value == 0 ? 0 : FNV1A64HashAlgorithm.HashString("base\\characters\\head\\player_base_heads\\appearances\\facial_hairs\\hb_000_pma__" + AppearanceValueLists.Beards[value - 1] + ".app")),
-                    SecondString = "beard_color1_0"
-                },
-                new[] { "TPP", "character_customization" }, AppearanceField.Hash);
+                SetCustomizationAppearance("beard_color_", new gameuiCustomizationAppearance
+                    {
+                        Name = "beard_color1_0",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>("base\\characters\\head\\player_base_heads\\appearances\\facial_hairs\\hb_000_pma__" + AppearanceValueLists.Beards[value - 1] + ".app", InternalEnums.EImportFlags.Soft),
+                        Definition =  "01_blonde_platinum"
+                    },
+                    new CName[] { "TPP", "character_customization" }, CustomizationAppearanceField.Resource);
             }
         }
 
@@ -395,9 +423,14 @@ namespace CP2077SaveEditor
                 if (BodyGender != AppearanceGender.Female)
                 {
                     var entries = GetEntries("first.main.beard_color_");
-                    foreach (HashValueEntry singleEntry in entries)
+                    foreach (var entry in entries)
                     {
-                        var name = singleEntry.Hash.DepotPath.ToString().Split('\\').Last();
+                        if (entry is not gameuiCustomizationAppearance singleEntry)
+                        {
+                            throw new Exception();
+                        }
+
+                        var name = singleEntry.Resource.DepotPath.ToString().Split('\\').Last();
                         var searchString = name.Substring(0, name.Length - ".app".Length).Substring("hb_000_pma__".Length).Split("__");
 
                         if (searchString.Count() > 1)
@@ -420,7 +453,7 @@ namespace CP2077SaveEditor
             {
                 var entries = GetEntries("first.main.beard_color_");
 
-                var path = ((HashValueEntry)entries[0]).Hash.DepotPath.ToString().Split('\\');
+                var path = ((gameuiCustomizationAppearance)entries[0]).Resource.DepotPath.ToString().Split('\\');
                 var parts = path.Last().Substring(0, path.Last().Length - ".app".Length).Split("__").ToList();
 
                 var options = AppearanceValueLists.BeardStyles[parts[1]];
@@ -446,9 +479,14 @@ namespace CP2077SaveEditor
                 path[path.Length - 1] = string.Join("__", parts) + ".app";
                 var finalPath = string.Join('\\', path);
 
-                foreach (HashValueEntry singleEntry in entries)
+                foreach (var entry in entries)
                 {
-                    singleEntry.Hash.DepotPath = finalPath;
+                    if (entry is not gameuiCustomizationAppearance singleEntry)
+                    {
+                        throw new Exception();
+                    }
+
+                    singleEntry.Resource = new CResourceAsyncReference<appearanceAppearanceResource>(finalPath, singleEntry.Resource.Flags);
                 }
             }
         }
@@ -480,13 +518,13 @@ namespace CP2077SaveEditor
                     first = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__cyberware_" + value.ToString("00") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1];
                 }
 
-                SetNullableHashEntry("cyberware_", new HashValueEntry()
-                {
-                    FirstString = first,
-                    Hash = UlongToResource(6513893019731746558),
-                    SecondString = "cyberware_" + value.ToString("00")
-                },
-                new[] { "TPP", "character_customization" }, AppearanceField.FirstString, null, true);
+                SetCustomizationAppearance("cyberware_", new gameuiCustomizationAppearance
+                    {
+                        Name = "cyberware_" + value.ToString("00"),
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(6513893019731746558, InternalEnums.EImportFlags.Soft),
+                        Definition =  first
+                    },
+                    new CName[] { "TPP", "character_customization" }, CustomizationAppearanceField.Definition, null, true);
             }
         }
 
@@ -511,13 +549,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("scars", new HashValueEntry
-                {
-                    FirstString = (value > 0 ? "h0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__scars_01__" + AppearanceValueLists.FacialScars[value - 1] : null),
-                    Hash = UlongToResource(5491315604699331944),
-                    SecondString = "scars"
-                },
-                new[] { "TPP", "character_customization" }, AppearanceField.FirstString);
+                SetCustomizationAppearance("scars", new gameuiCustomizationAppearance
+                    {
+                        Name = "scars",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(5491315604699331944, InternalEnums.EImportFlags.Soft),
+                        Definition =  (value > 0 ? "h0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__scars_01__" + AppearanceValueLists.FacialScars[value - 1] : null)
+                    },
+                    new CName[] { "TPP", "character_customization" }, CustomizationAppearanceField.Definition);
             }
         }
 
@@ -542,21 +580,21 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("facial_tattoo_", new HashValueEntry
-                {
-                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = UlongToResource(AppearanceValueLists.FacialTattoos[value]),
-                    SecondString = "facial_tattoo_" + value.ToString("00")
-                },
-                new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, false, true);
+                SetCustomizationAppearance("facial_tattoo_", new gameuiCustomizationAppearance
+                    {
+                        Name = "facial_tattoo_" + value.ToString("00"),
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.FacialTattoos[value], InternalEnums.EImportFlags.Soft),
+                        Definition = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1]
+                    },
+                    new CName[] { "TPP", "character_customization" }, CustomizationAppearanceField.Resource, null, false, true);
 
-                SetNullableHashEntry("tattoo", new HashValueEntry
-                {
-                    FirstString = (value == 0 ? null : "h0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__tattoo_" + value.ToString("00")),
-                    Hash = UlongToResource(2355758180805363120),
-                    SecondString = "tattoo"
-                },
-                new[] { "TPP", "character_customization" }, AppearanceField.FirstString);
+                SetCustomizationAppearance("tattoo", new gameuiCustomizationAppearance
+                    {
+                        Name = "tattoo",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(2355758180805363120, InternalEnums.EImportFlags.Soft),
+                        Definition = (value == 0 ? null : "h0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__tattoo_" + value.ToString("00"))
+                    },
+                    new CName[] { "TPP", "character_customization" }, CustomizationAppearanceField.Definition);
             }
         }
 
@@ -582,13 +620,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("piercings_", new HashValueEntry
-                {
-                    FirstString = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__earring__07_pearl",
-                    Hash = UlongToResource(AppearanceValueLists.Piercings[value]),
-                    SecondString = "piercings_01"
-                },
-                new[] { "TPP", "character_customization" }, AppearanceField.Hash);
+                SetCustomizationAppearance("piercings_", new gameuiCustomizationAppearance
+                    {
+                        Name = "piercings_01",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.Piercings[value]),
+                        Definition = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__earring__07_pearl"
+                    },
+                    new CName[] { "TPP", "character_customization" }, CustomizationAppearanceField.Resource);
             }
         }
 
@@ -639,7 +677,7 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetValue(AppearanceField.FirstString, "first.main.first.teeth", (BodyGender == AppearanceGender.Female ? "female" : "male") + "_ht_000__basehead" + AppearanceValueLists.Teeth[value]);
+                SetValue(CustomizationField.FirstCName, "first.main.first.teeth", (BodyGender == AppearanceGender.Female ? "female" : "male") + "_ht_000__basehead" + AppearanceValueLists.Teeth[value]);
             }
         }
 
@@ -664,15 +702,15 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("makeupEyes_", new HashValueEntry()
-                {
-                    FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead_makeup_eyes__01_black",
-                    Hash = UlongToResource(AppearanceValueLists.EyeMakeups[value]),
-                    SecondString = "makeupEyes_01"
-                },
-                new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, true);
+                SetCustomizationAppearance("makeupEyes_", new gameuiCustomizationAppearance
+                    {
+                        Name = "makeupEyes_01",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.EyeMakeups[value], InternalEnums.EImportFlags.Soft),
+                        Definition = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead_makeup_eyes__01_black"
+                    },
+                    new CName[] { "TPP", "character_customization" }, CustomizationAppearanceField.Resource, null, true);
 
-                SetAllEntries(AppearanceEntryType.MainListEntry, "makeupEyes_", (object entry) => { ((HashValueEntry)entry).SecondString = "makeupEyes_" + value.ToString("00"); });
+                SetAllEntries(CustomizationGroupType.Customization, "makeupEyes_", (entry) => { ((gameuiCustomizationAppearance)entry).Name = "makeupEyes_" + value.ToString("00"); });
             }
         }
 
@@ -723,13 +761,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("makeupLips_", new HashValueEntry()
-                {
-                    FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__makeup_lips_01__01_black",
-                    Hash = UlongToResource(AppearanceValueLists.LipMakeups[value]),
-                    SecondString = "makeupLips_01"
-                },
-                new[] { "TPP", "character_customization" }, AppearanceField.Hash, null, true);
+                SetCustomizationAppearance("makeupLips_", new gameuiCustomizationAppearance
+                    {
+                        Name = "makeupLips_01",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.LipMakeups[value], InternalEnums.EImportFlags.Soft),
+                        Definition = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead__makeup_lips_01__01_black"
+                    },
+                    new CName[] { "TPP", "character_customization" }, CustomizationAppearanceField.Resource, null, true);
             }
         }
 
@@ -791,13 +829,13 @@ namespace CP2077SaveEditor
                     }
                 }
 
-                SetNullableHashEntry("makeupCheeks_", new HashValueEntry
-                {
-                    FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__morphs_makeup_freckles_01__" + (value == 5 ? "02_pink" : "03_light_brown"),
-                    Hash = UlongToResource(AppearanceValueLists.CheekMakeups[value]),
-                    SecondString = "makeupCheeks_01"
-                },
-                new[] { "TPP", "character_customization" });
+                SetCustomizationAppearance("makeupCheeks_", new gameuiCustomizationAppearance
+                    {
+                        Name = "makeupCheeks_01",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.CheekMakeups[value], InternalEnums.EImportFlags.Soft),
+                        Definition = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__morphs_makeup_freckles_01__" + (value == 5 ? "02_pink" : "03_light_brown")
+                    },
+                    new CName[] { "TPP", "character_customization" });
             }
         }
 
@@ -847,13 +885,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("makeupPimples_", new HashValueEntry
-                {
-                    FirstString = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead_pimples_01__brown_01",
-                    Hash = UlongToResource(AppearanceValueLists.Blemishes[value]),
-                    SecondString = "makeupPimples_01"
-                },
-                new[] { "TPP", "character_customization" });
+                SetCustomizationAppearance("makeupPimples_", new gameuiCustomizationAppearance
+                    {
+                        Name = "makeupPimples_01",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.Blemishes[value], InternalEnums.EImportFlags.Soft),
+                        Definition = "hx_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a__basehead_pimples_01__brown_01"
+                    },
+                    new CName[] { "TPP", "character_customization" });
             }
         }
 
@@ -877,7 +915,7 @@ namespace CP2077SaveEditor
                 } else {
                     if (entries.Count < 1)
                     {
-                        var sectionNames = new[]
+                        var sectionNames = new CName[]
                         {
                             "holstered_default",
                             "holstered_nanowire",
@@ -891,7 +929,7 @@ namespace CP2077SaveEditor
 
                         if (BodyGender == AppearanceGender.Female)
                         {
-                            sectionNames = new[]
+                            sectionNames = new CName[]
                             {
                                 "holstered_default_tpp",
                                 "holstered_default_fpp",
@@ -912,11 +950,11 @@ namespace CP2077SaveEditor
 
                         foreach (string side in leftRight)
                         {
-                            CreateEntry(new ValueEntry()
+                            CreateEntry(new gameuiCustomizationMorph()
                             {
-                                FirstString = "nails_" + side,
-                                SecondString = "a0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__nails_" + side + (BodyGender == AppearanceGender.Male ? "_001" : string.Empty)
-                            }, sectionNames, MainSections[1]);
+                                RegionName = "nails_" + side,
+                                TargetName = "a0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__nails_" + side + (BodyGender == AppearanceGender.Male ? "_001" : string.Empty)
+                            }, sectionNames, PresetWrapper.Preset.ArmsGroups);
                         }
                     }
                 }
@@ -937,7 +975,7 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                List<object> entries;
+                List<gameuiCensorshipInfo> entries;
                 if (BodyGender == AppearanceGender.Female)
                 {
                     entries = GetEntries("second.main.nails_color_tpp");
@@ -951,11 +989,11 @@ namespace CP2077SaveEditor
                 entries.AddRange(GetEntries("second.main.u_launcher_nails_color"));
                 entries.AddRange(GetEntries("second.main.u_mantise_nails_color"));
 
-                SetAllEntries(entries, (object entry) =>
+                SetAllEntries(entries, (entry) =>
                 {
-                    var entryValue = entry as HashValueEntry;
+                    var entryValue = entry as gameuiCustomizationAppearance;
 
-                    entryValue.FirstString = "a0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_" + (entryValue.FirstString.Contains("fpp") ? "fpp" : "base") + "__nails_" + AppearanceValueLists.NailColors[value - 1];
+                    entryValue.Definition = "a0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_" + (entryValue.Definition.Contains("fpp") ? "fpp" : "base") + "__nails_" + AppearanceValueLists.NailColors[value - 1];
                 });
             }
         }
@@ -998,15 +1036,20 @@ namespace CP2077SaveEditor
 
                     if (entries.Count < 1)
                     {
-                        CreateEntry(new ValueEntry() { FirstString = "breast", SecondString = string.Empty }, new[] { "breast", "character_creation" }, MainSections[2]);
+                        CreateEntry(new gameuiCustomizationMorph { RegionName = "breast" }, new CName[] { "breast", "character_creation" }, PresetWrapper.Preset.BodyGroups);
                         entries = GetEntries("third.additional.breast");
                     }
 
-                    foreach (ValueEntry entry in entries)
+                    foreach (var entry in entries)
                     {
-                        entry.SecondString = "t0_000_wa_base__" + valueString;
-                        entry.TrailingBytes[0] = 1;
-                        entry.TrailingBytes[4] = 1;
+                        if (entry is not gameuiCustomizationMorph singleEntry)
+                        {
+                            throw new Exception();
+                        }
+
+                        singleEntry.TargetName = "t0_000_wa_base__" + valueString;
+                        singleEntry.CensorFlag = Enums.CensorshipFlags.Censor_Nudity;
+                        singleEntry.CensorFlagAction = Enums.gameuiCharacterCustomizationActionType.Deactivate;
                     }
                 }
             }
@@ -1040,21 +1083,21 @@ namespace CP2077SaveEditor
                     first = (BodyGender == AppearanceGender.Female ? "female" : "male") + "_i0_00" + (value == 0 ? 0 : (value - 1)).ToString() + "_base__nipple__" + AppearanceValueLists.SkinTones[SkinTone - 1];
                 }
 
-                SetNullableHashEntry("fpp_nipples_", new HashValueEntry
-                {
-                    FirstString = (first == null ? null : first.Replace("base", "fpp")),
-                    Hash = UlongToResource(8383615550749140678),
-                    SecondString = "fpp_nipples_01"
-                },
-                new[] { "FPP_Body" }, AppearanceField.FirstString, MainSections[2]);
+                SetCustomizationAppearance("fpp_nipples_", new gameuiCustomizationAppearance
+                    {
+                        Name = "fpp_nipples_01",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(8383615550749140678, InternalEnums.EImportFlags.Soft),
+                        Definition = (first == null ? null : first.Replace("base", "fpp"))
+                    },
+                    new CName[] { "FPP_Body" }, CustomizationAppearanceField.Definition, PresetWrapper.Preset.BodyGroups);
 
-                SetNullableHashEntry("nipples_", new HashValueEntry
-                {
-                    FirstString = first,
-                    Hash = UlongToResource(17949477145130904651),
-                    SecondString = "nipples_01"
-                },
-                new[] { "TPP_Body", "character_creation" }, AppearanceField.FirstString, MainSections[2]);
+                SetCustomizationAppearance("nipples_", new gameuiCustomizationAppearance
+                    {
+                        Name = "nipples_01",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(17949477145130904651, InternalEnums.EImportFlags.Soft),
+                        Definition = first
+                    },
+                    new CName[] { "TPP_Body", "character_creation" }, CustomizationAppearanceField.Definition, PresetWrapper.Preset.BodyGroups);
             }
         }
 
@@ -1079,21 +1122,21 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("body_tattoo_", new HashValueEntry()
-                {
-                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = UlongToResource(AppearanceValueLists.BodyTattoos["TPP"][value]),
-                    SecondString = "body_tattoo_01"
-                },
-                new[] { "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2]);
+                SetCustomizationAppearance("body_tattoo_", new gameuiCustomizationAppearance
+                    {
+                        Name = "body_tattoo_01",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.BodyTattoos["TPP"][value], InternalEnums.EImportFlags.Soft),
+                        Definition = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1]
+                    },
+                    new CName[] { "TPP_Body", "character_creation" }, CustomizationAppearanceField.Resource, PresetWrapper.Preset.BodyGroups);
 
-                SetNullableHashEntry("fpp_body_tattoo_", new HashValueEntry()
-                {
-                    FirstString = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = UlongToResource(AppearanceValueLists.BodyTattoos["FPP"][value]),
-                    SecondString = "fpp_body_tattoo_01"
-                },
-                new[] { "FPP_Body" }, AppearanceField.Hash, MainSections[2]);
+                SetCustomizationAppearance("fpp_body_tattoo_", new gameuiCustomizationAppearance
+                    {
+                        Name = "fpp_body_tattoo_01",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.BodyTattoos["FPP"][value], InternalEnums.EImportFlags.Soft),
+                        Definition = (BodyGender == AppearanceGender.Female ? "w" : "m") + "__" + AppearanceValueLists.SkinTones[SkinTone - 1]
+                    },
+                    new CName[] { "FPP_Body" }, CustomizationAppearanceField.Resource, PresetWrapper.Preset.BodyGroups);
             }
         }
 
@@ -1118,13 +1161,13 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry("body_scars_", new HashValueEntry
-                {
-                    FirstString = "scars_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_001__" + AppearanceValueLists.SkinTones[SkinTone - 1],
-                    Hash = UlongToResource(AppearanceValueLists.BodyScars[value]),
-                    SecondString = "body_scars_" + value.ToString("00")
-                },
-                new[] { "FPP_Body", "TPP_Body", "character_creation" }, AppearanceField.Hash, MainSections[2], false, true);
+                SetCustomizationAppearance("body_scars_", new gameuiCustomizationAppearance
+                    {
+                        Name = "body_scars_" + value.ToString("00"),
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.BodyScars[value], InternalEnums.EImportFlags.Soft),
+                        Definition = "scars_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_001__" + AppearanceValueLists.SkinTones[SkinTone - 1]
+                    },
+                    new CName[] { "FPP_Body", "TPP_Body", "character_creation" }, CustomizationAppearanceField.Resource, PresetWrapper.Preset.BodyGroups, false, true);
             }
         }
 
@@ -1169,28 +1212,26 @@ namespace CP2077SaveEditor
                     }
                     else
                     {
-                        SetAllEntries(entries, (object entry) =>
+                        SetAllEntries(entries, (entry) =>
                         {
-                            var entryValue = entry as HashValueEntry;
+                            var entryValue = entry as gameuiCustomizationAppearance;
 
-                            var parts = entryValue.FirstString.Split("__", StringSplitOptions.None);
+                            var parts = entryValue.Definition.Split("__", StringSplitOptions.None);
                             parts[1] = AppearanceValueLists.Genitals[value - 1] + "_hairstyle";
-                            entryValue.FirstString = string.Join("__", parts);
+                            entryValue.Definition = string.Join("__", parts);
 
-                            entryValue.SecondString = AppearanceValueLists.Genitals[value - 1] + "_hairstyle_01";
+                            entryValue.Name = AppearanceValueLists.Genitals[value - 1] + "_hairstyle_01";
                         });
                     }
                 }
 
-                SetNullableHashEntry("genitals_", new HashValueEntry
-                {
-                    FirstString = first,
-                    Hash = UlongToResource(3178724759333055970),
-                    SecondString = "genitals_" + value.ToString("00")
-                },
-                new[] { "character_creation", "genitals" }, AppearanceField.FirstString, MainSections[2], false, true);
-
-                
+                SetCustomizationAppearance("genitals_", new gameuiCustomizationAppearance
+                    {
+                        Definition = first,
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(3178724759333055970, InternalEnums.EImportFlags.Soft),
+                        Name = "genitals_" + value.ToString("00")
+                    },
+                    new CName[] { "character_creation", "genitals" }, CustomizationAppearanceField.Definition, PresetWrapper.Preset.BodyGroups, false, true);
             }
         }
 
@@ -1230,16 +1271,11 @@ namespace CP2077SaveEditor
                     var newValue = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__" + AppearanceValueLists.PenisSizes[value - 1];
                     if (entries.Count < 1)
                     {
-                        CreateEntry(new ValueEntry
-                        {
-                            FirstString = "penis_base",
-                            SecondString = newValue
-                        },
-                        new[] { "character_creation", "genitals" }, MainSections[2]);
+                        CreateEntry(new gameuiCustomizationMorph { RegionName = "penis_base", TargetName = newValue }, new CName[] { "genitals", "character_creation" }, PresetWrapper.Preset.BodyGroups);
                     }
                     else
                     {
-                        SetValue(AppearanceField.SecondString, "third.additional.penis_base", newValue);
+                        SetValue(CustomizationField.SecondCName, "third.additional.penis_base", newValue);
                     }
                 }
             }
@@ -1271,54 +1307,59 @@ namespace CP2077SaveEditor
                     return;
                 }
 
-                SetNullableHashEntry(AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_", new HashValueEntry
-                {
-                    FirstString = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__" + AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle__01_black",
-                    Hash = UlongToResource(AppearanceValueLists.PubicHairStyles[value]),
-                    SecondString = AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_01"
-                },
-                new[] { "character_creation", "genitals" }, AppearanceField.Hash, MainSections[2]);
+                SetCustomizationAppearance(AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_", new gameuiCustomizationAppearance
+                    {
+                        Definition = "i0_000_p" + (BodyGender == AppearanceGender.Female ? "w" : "m") + "a_base__" + AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle__01_black",
+                        Resource = new CResourceAsyncReference<appearanceAppearanceResource>(AppearanceValueLists.PubicHairStyles[value], InternalEnums.EImportFlags.Soft),
+                        Name = AppearanceValueLists.Genitals[Genitals - 1] + "_hairstyle_01"
+                    },
+                    new CName[] { "character_creation", "genitals" }, CustomizationAppearanceField.Resource, PresetWrapper.Preset.BodyGroups);
             }
         }
 
         public object PubicHairColor { get; set; }
 
-        public void SetMainSections()
+        public List<gameuiCensorshipInfo> GetEntries(CArray<gameuiCustomizationGroup> customizationGroups, CustomizationGroupType entryType, string searchString)
         {
-            MainSections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
-        }
+            var foundEntries = new List<gameuiCensorshipInfo>();
 
-        public List<object> GetEntries(CharacterCustomizationAppearances.Section appearanceSection, AppearanceEntryType entryType, string searchString)
-        {
-            var foundEntries = new List<object>();
-            if (entryType == AppearanceEntryType.MainListEntry)
+            if (entryType == CustomizationGroupType.Customization)
             {
-                foundEntries.AddRange(appearanceSection.AppearanceSections.SelectMany(x => x.MainList).Where(x => CompareMainListAppearanceEntries(x.SecondString, searchString)).ToList());
+                foundEntries.AddRange(customizationGroups.SelectMany(x => x.Customization).Where(x => CompareMainListAppearanceEntries(x.Name, searchString)).ToList());
             }
             else
             {
-                foundEntries.AddRange(appearanceSection.AppearanceSections.SelectMany(x => x.AdditionalList).Where(x => x.FirstString == searchString).ToList());
+                foundEntries.AddRange(customizationGroups.SelectMany(x => x.Morphs).Where(x => x.RegionName == searchString).ToList());
             }
+
             return foundEntries;
         }
 
-        public List<object> GetEntries(string searchString)
+        public List<gameuiCensorshipInfo> GetEntries(string searchString)
         {
             var location = StringToLocation(searchString);
             if (location != null)
             {
-                return GetEntries(location.Section, location.EntryType, location.SearchString);
+                return GetEntries(location.Groups, location.EntryType, location.SearchString);
             }
             else
             {
-                return new List<object>();
+                return new List<gameuiCensorshipInfo>();
             }
         }
 
-        public void SetAllEntries(AppearanceEntryType entryType, string searchString, Action<object> entriesAction)
+        public void SetAllEntries(CustomizationGroupType entryType, string searchString, Action<gameuiCensorshipInfo> entriesAction)
         {
             var entries = GetAllEntries(entryType, searchString);
-            foreach (object entry in entries)
+            foreach (var entry in entries)
+            {
+                entriesAction(entry);
+            }
+        }
+
+        public void SetAllEntries(List<gameuiCensorshipInfo> entries, Action<gameuiCensorshipInfo> entriesAction)
+        {
+            foreach (var entry in entries)
             {
                 entriesAction(entry);
             }
@@ -1332,152 +1373,210 @@ namespace CP2077SaveEditor
             }
         }
 
-        public List<object> GetAllEntries(AppearanceEntryType entryType, string searchString)
+        public List<gameuiCensorshipInfo> GetAllEntries(CustomizationGroupType entryType, string searchString)
         {
-            var foundEntries = new List<object>();
-            foreach (CharacterCustomizationAppearances.Section section in MainSections)
-            {
-                foundEntries.AddRange(GetEntries(section, entryType, searchString));
-            }
+            var foundEntries = new List<gameuiCensorshipInfo>();
+
+            foundEntries.AddRange(GetEntries(PresetWrapper.Preset.HeadGroups, entryType, searchString));
+            foundEntries.AddRange(GetEntries(PresetWrapper.Preset.ArmsGroups, entryType, searchString));
+            foundEntries.AddRange(GetEntries(PresetWrapper.Preset.BodyGroups, entryType, searchString));
+
             return foundEntries;
         }
 
-        public void EnumerateAllEntries(Action<object> entryAction)
+        public void EnumerateAllEntries(Action<gameuiCensorshipInfo> entryAction)
         {
-            foreach (CharacterCustomizationAppearances.Section section in MainSections)
+            foreach (var customizationGroup in PresetWrapper.Preset.HeadGroups)
             {
-                foreach (CharacterCustomizationAppearances.AppearanceSection subSection in section.AppearanceSections)
+                foreach (var customizationAppearance in customizationGroup.Customization)
                 {
-                    foreach (CharacterCustomizationAppearances.HashValueEntry mainEntry in subSection.MainList)
+                    entryAction(customizationAppearance);
+                }
+
+                foreach (var customizationMorph in customizationGroup.Morphs)
+                {
+                    entryAction(customizationMorph);
+                }
+            }
+
+            foreach (var customizationGroup in PresetWrapper.Preset.ArmsGroups)
+            {
+                foreach (var customizationAppearance in customizationGroup.Customization)
+                {
+                    entryAction(customizationAppearance);
+                }
+
+                foreach (var customizationMorph in customizationGroup.Morphs)
+                {
+                    entryAction(customizationMorph);
+                }
+            }
+
+            foreach (var customizationGroup in PresetWrapper.Preset.BodyGroups)
+            {
+                foreach (var customizationAppearance in customizationGroup.Customization)
+                {
+                    entryAction(customizationAppearance);
+                }
+
+                foreach (var customizationMorph in customizationGroup.Morphs)
+                {
+                    entryAction(customizationMorph);
+                }
+            }
+        }
+
+        public void RemoveEntry(gameuiCensorshipInfo entry)
+        {
+            foreach (var customizationGroup in PresetWrapper.Preset.HeadGroups)
+            {
+                if (entry is gameuiCustomizationAppearance)
+                {
+                    if (customizationGroup.Customization.Contains((gameuiCustomizationAppearance)entry))
                     {
-                        entryAction(mainEntry);
+                        customizationGroup.Customization.Remove((gameuiCustomizationAppearance)entry);
                     }
-                    foreach(ValueEntry additionalEntry in subSection.AdditionalList)
+                }
+                else
+                {
+                    if (customizationGroup.Morphs.Contains((gameuiCustomizationMorph)entry))
                     {
-                        entryAction(additionalEntry);
+                        customizationGroup.Morphs.Remove((gameuiCustomizationMorph)entry);
+                    }
+                }
+            }
+
+            foreach (var customizationGroup in PresetWrapper.Preset.ArmsGroups)
+            {
+                if (entry is gameuiCustomizationAppearance)
+                {
+                    if (customizationGroup.Customization.Contains((gameuiCustomizationAppearance)entry))
+                    {
+                        customizationGroup.Customization.Remove((gameuiCustomizationAppearance)entry);
+                    }
+                }
+                else
+                {
+                    if (customizationGroup.Morphs.Contains((gameuiCustomizationMorph)entry))
+                    {
+                        customizationGroup.Morphs.Remove((gameuiCustomizationMorph)entry);
+                    }
+                }
+            }
+
+            foreach (var customizationGroup in PresetWrapper.Preset.BodyGroups)
+            {
+                if (entry is gameuiCustomizationAppearance)
+                {
+                    if (customizationGroup.Customization.Contains((gameuiCustomizationAppearance)entry))
+                    {
+                        customizationGroup.Customization.Remove((gameuiCustomizationAppearance)entry);
+                    }
+                }
+                else
+                {
+                    if (customizationGroup.Morphs.Contains((gameuiCustomizationMorph)entry))
+                    {
+                        customizationGroup.Morphs.Remove((gameuiCustomizationMorph)entry);
                     }
                 }
             }
         }
 
-        public void RemoveEntry(object entry)
+        public void RemoveEntries(List<gameuiCensorshipInfo> entries)
         {
-            foreach (CharacterCustomizationAppearances.Section section in MainSections)
-            {
-                foreach (CharacterCustomizationAppearances.AppearanceSection subSection in section.AppearanceSections)
-                {
-                    if (entry is CharacterCustomizationAppearances.HashValueEntry)
-                    {
-                        if (subSection.MainList.Contains((CharacterCustomizationAppearances.HashValueEntry)entry))
-                        {
-                            subSection.MainList.Remove((CharacterCustomizationAppearances.HashValueEntry)entry);
-                        }
-                    } else {
-                        if (subSection.AdditionalList.Contains((CharacterCustomizationAppearances.ValueEntry)entry))
-                        {
-                            subSection.AdditionalList.Remove((CharacterCustomizationAppearances.ValueEntry)entry);
-                        }
-                    }
-                }
-            }
-        }
-
-        public void RemoveEntries(List<object> entries)
-        {
-            foreach (object entry in entries)
+            foreach (var entry in entries)
             {
                 RemoveEntry(entry);
             }
         }
 
-        public void CreateEntry(object entry, string[] sectionNames, CharacterCustomizationAppearances.Section section)
+        public void CreateEntry(gameuiCensorshipInfo entry, CName[] groupNames, CArray<gameuiCustomizationGroup> groupArray)
         {
-            var subSections = section.AppearanceSections.Where(x => sectionNames.Contains(x.SectionName));
-            if (subSections != null)
+            foreach (var customizationGroup in groupArray.Where(x => groupNames.Contains(x.Name)))
             {
-                foreach (CharacterCustomizationAppearances.AppearanceSection singleSubSection in subSections)
+                if (entry is gameuiCustomizationAppearance)
                 {
-                    if (entry is CharacterCustomizationAppearances.HashValueEntry)
-                    {
-                        singleSubSection.MainList.Add((CharacterCustomizationAppearances.HashValueEntry)entry);
-                    }
-                    else
-                    {
-                        singleSubSection.AdditionalList.Add((CharacterCustomizationAppearances.ValueEntry)entry);
-                    }
-                    
+                    customizationGroup.Customization.Add((gameuiCustomizationAppearance)entry);
+                }
+                else
+                {
+                    customizationGroup.Customization.Add((gameuiCustomizationMorph)entry);
                 }
             }
         }
 
-        public void SetValue(AppearanceField field, string searchString, object value)
+        public void SetValue(CustomizationField field, string searchString, object value)
         {
             var entries = GetEntries(searchString);
-            foreach (object entry in entries)
+            foreach (var entry in entries)
             {
-                if (entry is CharacterCustomizationAppearances.HashValueEntry)
+                if (entry is gameuiCustomizationAppearance)
                 {
+                    var castedEntry = (gameuiCustomizationAppearance)entry;
                     switch (field)
                     {
-                        case AppearanceField.FirstString:
-                            ((CharacterCustomizationAppearances.HashValueEntry)entry).FirstString = (string)value;
+                        case CustomizationField.FirstCName:
+                            castedEntry.Definition = (string)value;
                             break;
-                        case AppearanceField.Hash:
-                            ((CharacterCustomizationAppearances.HashValueEntry)entry).Hash = UlongToResource((ulong)value);
+                        case CustomizationField.Resource:
+                            castedEntry.Resource = new CResourceAsyncReference<appearanceAppearanceResource>((ulong)value, InternalEnums.EImportFlags.Soft);
                             break;
-                        case AppearanceField.SecondString:
-                            ((CharacterCustomizationAppearances.HashValueEntry)entry).SecondString = (string)value;
+                        case CustomizationField.SecondCName:
+                            castedEntry.Name = (string)value;
                             break;
                     }
                 }
-                else if (entry is CharacterCustomizationAppearances.ValueEntry)
+                else
                 {
+                    var castedEntry = (gameuiCustomizationMorph)entries[0];
                     switch (field)
                     {
-                        case AppearanceField.FirstString:
-                            ((CharacterCustomizationAppearances.ValueEntry)entry).FirstString = (string)value;
+                        case CustomizationField.FirstCName:
+                            castedEntry.RegionName = (string)value;
                             break;
-                        case AppearanceField.SecondString:
-                            ((CharacterCustomizationAppearances.ValueEntry)entry).SecondString = (string)value;
+                        case CustomizationField.SecondCName:
+                            castedEntry.TargetName = (string)value;
                             break;
                     }
                 }
             }
         }
 
-        public string GetValue(CharacterCustomizationAppearances.Section appearanceSection, AppearanceEntryType entryType, AppearanceField fieldToGet, string searchString)
+        public string GetValue(CArray<gameuiCustomizationGroup> customizationGroups, CustomizationGroupType entryType, CustomizationField fieldToGet, string searchString)
         {
-            var entries = GetEntries(appearanceSection, entryType, searchString);
+            var entries = GetEntries(customizationGroups, entryType, searchString);
 
-            if (entries.Count < 1)
+            if (entries.Count == 0)
             {
                 return "default";
             }
-
-            if (entries[0] is CharacterCustomizationAppearances.HashValueEntry)
+            if (entries[0] is gameuiCustomizationAppearance)
             {
-                var castedEntry = (CharacterCustomizationAppearances.HashValueEntry)entries[0];
-                if (fieldToGet == AppearanceField.FirstString)
+                var castedEntry = (gameuiCustomizationAppearance)entries[0];
+                switch (fieldToGet)
                 {
-                    return castedEntry.FirstString;
+                    case CustomizationField.FirstCName:
+                        return castedEntry.Definition;
+                    case CustomizationField.Resource:
+                        return ((ulong)castedEntry.Resource.DepotPath).ToString();
+                    case CustomizationField.SecondCName:
+                        return castedEntry.Name;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(fieldToGet), fieldToGet, null);
                 }
-                else if (fieldToGet == AppearanceField.Hash)
+            } 
+            else 
+            {
+                var castedEntry = (gameuiCustomizationMorph)entries[0];
+                switch (fieldToGet)
                 {
-                    return ((ulong)castedEntry.Hash.DepotPath).ToString();
-                }
-                else
-                {
-                    return castedEntry.SecondString;
-                }
-            } else {
-                var castedEntry = (CharacterCustomizationAppearances.ValueEntry)entries[0];
-                if (fieldToGet == AppearanceField.FirstString)
-                {
-                    return castedEntry.FirstString;
-                }
-                else
-                {
-                    return castedEntry.SecondString;
+                    case CustomizationField.FirstCName:
+                        return castedEntry.RegionName;
+                    case CustomizationField.SecondCName:
+                        return castedEntry.TargetName;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(fieldToGet), fieldToGet, null);
                 }
             }
         }
@@ -1487,7 +1586,7 @@ namespace CP2077SaveEditor
             var location = StringToLocation(searchString);
             if (location != null)
             {
-                return GetValue(location.Section, location.EntryType, location.EntryField, location.SearchString);
+                return GetValue(location.Groups, location.EntryType, location.EntryField, location.SearchString);
             }
             else
             {
@@ -1502,18 +1601,18 @@ namespace CP2077SaveEditor
                 searchCollection = new[] { GetValue(searchString).Split("__", StringSplitOptions.None).LastOrIndex(position) };
             }
 
-            EnumerateAllEntries((object entry) =>
+            EnumerateAllEntries((entry) =>
             {
-                if (entry is HashValueEntry mainEntry)
+                if (entry is gameuiCustomizationAppearance mainEntry)
                 {
                     try
                     {
-                        if (CompareMainListAppearanceEntries(mainEntry.SecondString, searchString.Split(".").Last()) != true && wideSearch == false)
+                        if (CompareMainListAppearanceEntries(mainEntry.Name, searchString.Split(".").Last()) != true && wideSearch == false)
                         {
                             return;
                         }
 
-                        var valueParts = mainEntry.FirstString.Split("__", StringSplitOptions.None);
+                        var valueParts = mainEntry.Definition.Split("__", StringSplitOptions.None);
                         var targetPart = valueParts.LastOrIndex(position);
 
                         if (searchCollection.Contains(targetPart))
@@ -1527,7 +1626,7 @@ namespace CP2077SaveEditor
                                 valueParts[position] = newValue;
                             }
 
-                            mainEntry.FirstString = string.Join("__", valueParts);
+                            mainEntry.Definition = string.Join("__", valueParts);
                         }
                     }
                     catch (Exception)
@@ -1558,28 +1657,29 @@ namespace CP2077SaveEditor
         {
             var entries = GetEntries("first.additional." + fieldName);
 
-            if (entries.Count < 1)
+            if (entries.Count == 0)
             {
-                var newEntry = new CharacterCustomizationAppearances.ValueEntry();
-                newEntry.FirstString = fieldName;
-                newEntry.SecondString = "h000";
-
-                CreateEntry(newEntry, new[] { "TPP", "character_customization" }, MainSections[0]);
+                CreateEntry(new gameuiCustomizationMorph { RegionName = fieldName, TargetName = "h000" }, new CName[] { "TPP", "character_creation" }, PresetWrapper.Preset.HeadGroups);
                 SetFacialValue(fieldName, fieldNum, value);
             }
             else
             {
                 if (value == 1)
                 {
-                    foreach (CharacterCustomizationAppearances.ValueEntry entry in entries)
+                    foreach (var entry in entries)
                     {
                         RemoveEntry(entry);
                     }
                 }
                 else
                 {
-                    foreach (CharacterCustomizationAppearances.ValueEntry entry in entries)
+                    foreach (var entry in entries)
                     {
+                        if (entry is not gameuiCustomizationMorph singleEntry)
+                        {
+                            throw new Exception();
+                        }
+
                         var finalValue = value;
                         if (fieldName == "nose" && BodyGender == AppearanceGender.Female)
                         {
@@ -1594,7 +1694,7 @@ namespace CP2077SaveEditor
                             }
                         }
                         finalValue--;
-                        entry.SecondString = "h" + finalValue.ToString("00") + fieldNum.ToString();
+                        singleEntry.TargetName = "h" + finalValue.ToString("00") + fieldNum.ToString();
                     }
                 }
             }
@@ -1626,95 +1726,94 @@ namespace CP2077SaveEditor
             }
         }
 
-        public void SetNullableHashEntry(string searchString, HashValueEntry defaultEntry, string[] sectionNames, AppearanceField setValueField = AppearanceField.Hash, Section baseMainSection = null, bool createAllMainSections = false, bool allFields = false)
+        public void SetCustomizationAppearance(string searchString,
+            gameuiCustomizationAppearance defaultEntry, CName[] customizationGroupNames,
+            CustomizationAppearanceField setValueField = CustomizationAppearanceField.Resource,
+            CArray<gameuiCustomizationGroup> groupArray = null, bool createAllMainSections = false,
+            bool allFields = false)
         {
-            var entries = GetAllEntries(AppearanceEntryType.MainListEntry, searchString);
-            if (defaultEntry.Hash == UlongToResource(0) || defaultEntry.FirstString == null || defaultEntry.SecondString == null)
+            var entries = GetAllEntries(CustomizationGroupType.Customization, searchString);
+            if (defaultEntry.Resource.DepotPath == CName.Empty || defaultEntry.Name == CName.Empty || defaultEntry.Definition == CName.Empty)
             {
                 RemoveEntries(entries);
             }
             else
             {
-                if (entries.Count < 1)
+                if (entries.Count == 0)
                 {
-                    if (createAllMainSections == true)
+                    if (createAllMainSections)
                     {
-                        foreach (Section mainSection in MainSections)
-                        {
-                            CreateEntry(defaultEntry, sectionNames, mainSection);
-                        }
-                    } else {
-                        if (baseMainSection == null)
-                        {
-                            baseMainSection = MainSections[0];
-                        }
-                        CreateEntry(defaultEntry, sectionNames, baseMainSection);
+                        CreateEntry(defaultEntry, customizationGroupNames, PresetWrapper.Preset.HeadGroups);
+                        CreateEntry(defaultEntry, customizationGroupNames, PresetWrapper.Preset.ArmsGroups);
+                        CreateEntry(defaultEntry, customizationGroupNames, PresetWrapper.Preset.BodyGroups);
+                    } 
+                    else
+                    {
+                        groupArray ??= PresetWrapper.Preset.HeadGroups;
+                        CreateEntry(defaultEntry, customizationGroupNames, groupArray);
                     }
                 }
                 else
                 {
-                    SetAllEntries(entries, (object entry) => 
+                    SetAllEntries(entries, (entry) => 
                     {
-                        if (setValueField == AppearanceField.FirstString || allFields == true)
+                        if (setValueField == CustomizationAppearanceField.Definition || allFields)
                         {
-                            ((HashValueEntry)entry).FirstString = defaultEntry.FirstString;
+                            ((gameuiCustomizationAppearance)entry).Definition = defaultEntry.Definition;
                         }
 
-                        if (setValueField == AppearanceField.SecondString || allFields == true)
+                        if (setValueField == CustomizationAppearanceField.Name || allFields)
                         {
-                            ((HashValueEntry)entry).SecondString = defaultEntry.SecondString;
+                            ((gameuiCustomizationAppearance)entry).Name = defaultEntry.Name;
                         }
 
-                        if(setValueField == AppearanceField.Hash || allFields == true)
+                        if(setValueField == CustomizationAppearanceField.Resource || allFields)
                         {
-                            ((HashValueEntry)entry).Hash = defaultEntry.Hash;
+                            ((gameuiCustomizationAppearance)entry).Resource = defaultEntry.Resource;
                         }
                     });
                 }
             }
         }
 
-        public void SetAllValues(CharacterCustomizationAppearances newValues)
+        public void SetAllValues(gameuiCharacterCustomizationPresetWrapper newValues)
         {
-            var sections = new[] { activeSave.GetAppearanceContainer().FirstSection, activeSave.GetAppearanceContainer().SecondSection, activeSave.GetAppearanceContainer().ThirdSection };
-            var newSections = new[] { newValues.FirstSection, newValues.SecondSection, newValues.ThirdSection };
+            PresetWrapper.Preset.Version = newValues.Preset.Version;
+            PresetWrapper.Preset.IsMale = newValues.Preset.IsMale;
+            PresetWrapper.IsBrainGenderMale = newValues.IsBrainGenderMale;
 
-            var i = 0;
-            foreach (CharacterCustomizationAppearances.Section section in sections)
+            PresetWrapper.Preset.HeadGroups.Clear();
+            foreach (var customizationGroup in newValues.Preset.HeadGroups)
             {
-                section.AppearanceSections.Clear();
-                foreach (CharacterCustomizationAppearances.AppearanceSection subSection in newSections[i].AppearanceSections)
-                {
-                    section.AppearanceSections.Add(subSection);
-                }
-                i++;
+                PresetWrapper.Preset.HeadGroups.Add((gameuiCustomizationGroup)customizationGroup.DeepCopy());
             }
 
-            if (newValues.Strings != null)
+            PresetWrapper.Preset.ArmsGroups.Clear();
+            foreach (var customizationGroup in newValues.Preset.ArmsGroups)
             {
-                activeSave.GetAppearanceContainer().Strings.Clear();
-                foreach (string singleString in newValues.Strings)
-                {
-                    activeSave.GetAppearanceContainer().Strings.Add(singleString);
-                }
+                PresetWrapper.Preset.ArmsGroups.Add((gameuiCustomizationGroup)customizationGroup.DeepCopy());
             }
 
-            if (newValues.StringTriples != null)
+            PresetWrapper.Preset.BodyGroups.Clear();
+            foreach (var customizationGroup in newValues.Preset.BodyGroups)
             {
-                activeSave.GetAppearanceContainer().StringTriples.Clear();
-                foreach (var tripleString in newValues.StringTriples)
-                {
-                    activeSave.GetAppearanceContainer().StringTriples.Add(tripleString);
-                }
+                PresetWrapper.Preset.BodyGroups.Add((gameuiCustomizationGroup)customizationGroup.DeepCopy());
             }
 
-            if (newValues.UnknownFirstBytes.Length == 6)
+            PresetWrapper.Preset.Tags.Tags.Clear();
+            foreach (var tag in newValues.Preset.Tags.Tags)
             {
-                activeSave.GetAppearanceContainer().UnknownFirstBytes = newValues.UnknownFirstBytes;
+                PresetWrapper.Preset.Tags.Tags.Add(tag);
+            }
+
+            PresetWrapper.Preset.PerspectiveInfo.Clear();
+            foreach (var perspectiveInfo in newValues.Preset.PerspectiveInfo)
+            {
+                PresetWrapper.Preset.PerspectiveInfo.Add((gameuiPerspectiveInfo)perspectiveInfo.DeepCopy());
             }
         }
 
-        public AppearanceEntryLocation StringToLocation(string searchString)
+        public CustomizationGroupLocation StringToLocation(string searchString)
         {
             var searchValues = searchString.Split('.');
             if (searchValues.Length < 3 && searchValues.Length > 4)
@@ -1722,30 +1821,30 @@ namespace CP2077SaveEditor
                 return null;
             }
 
-            var result = new AppearanceEntryLocation(activeSave.GetAppearanceContainer().FirstSection, AppearanceEntryType.MainListEntry, (searchValues.Length == 3) ? searchValues[2] : searchValues[3], AppearanceField.FirstString);
+            var result = new CustomizationGroupLocation(PresetWrapper.Preset.HeadGroups, CustomizationGroupType.Customization, (searchValues.Length == 3) ? searchValues[2] : searchValues[3], CustomizationField.FirstCName);
             if (searchValues[0] == "second")
             {
-                result.Section = activeSave.GetAppearanceContainer().SecondSection;
+                result.Groups = PresetWrapper.Preset.ArmsGroups;
             }
             else if (searchValues[0] == "third")
             {
-                result.Section = activeSave.GetAppearanceContainer().ThirdSection;
+                result.Groups = PresetWrapper.Preset.BodyGroups;
             }
 
             if (searchValues[1] == "additional")
             {
-                result.EntryType = AppearanceEntryType.AdditionalListEntry;
+                result.EntryType = CustomizationGroupType.Morphs;
             }
 
             if (searchValues.Length == 4)
             {
                 if (searchValues[2] == "hash")
                 {
-                    result.EntryField = AppearanceField.Hash;
+                    result.EntryField = CustomizationField.Resource;
                 }
                 else if (searchValues[2] == "second")
                 {
-                    result.EntryField = AppearanceField.SecondString;
+                    result.EntryField = CustomizationField.SecondCName;
                 }
             }
             
@@ -1757,9 +1856,9 @@ namespace CP2077SaveEditor
             return Regex.Replace(entry1, @"[\d-]", string.Empty) == Regex.Replace(entry2, @"[\d-]", string.Empty);
         }
 
-        public static WolvenKit.RED4.Types.CResourceReference<WolvenKit.RED4.Types.appearanceAppearanceResource> UlongToResource(ulong input)
+        public static CResourceReference<appearanceAppearanceResource> UlongToResource(ulong input)
         {
-            return new WolvenKit.RED4.Types.CResourceReference<WolvenKit.RED4.Types.appearanceAppearanceResource>() { DepotPath = input };
+            return new CResourceReference<appearanceAppearanceResource>(input);
         }
     }
 
@@ -1769,19 +1868,19 @@ namespace CP2077SaveEditor
         Male
     }
 
-    public class AppearanceEntryLocation
+    public class CustomizationGroupLocation
     {
-        public CharacterCustomizationAppearances.Section Section { get; set; }
-        public AppearanceEntryType EntryType { get; set; }
-        public AppearanceField EntryField { get; set; }
+        public CArray<gameuiCustomizationGroup> Groups { get; set; }
+        public CustomizationGroupType EntryType { get; set; }
+        public CustomizationField EntryField { get; set; }
         public string SearchString { get; set; }
 
-        public AppearanceEntryLocation(CharacterCustomizationAppearances.Section _sec, AppearanceEntryType _type, string _searchString, AppearanceField _field = AppearanceField.FirstString)
+        public CustomizationGroupLocation(CArray<gameuiCustomizationGroup> groups, CustomizationGroupType type, string searchString, CustomizationField field = CustomizationField.FirstCName)
         {
-            Section = _sec;
-            EntryType = _type;
-            EntryField = _field;
-            SearchString = _searchString;
+            Groups = groups;
+            EntryType = type;
+            EntryField = field;
+            SearchString = searchString;
         }
     }
 

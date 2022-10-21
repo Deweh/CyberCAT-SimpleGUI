@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using WolvenKit.Core.Compression;
 using WolvenKit.RED4.Types;
+using WolvenKit.RED4.CR2W.JSON;
 
 namespace CP2077SaveEditor
 {
@@ -450,7 +451,6 @@ namespace CP2077SaveEditor
                 appearancePreviewBox.Image = null;
             }
             oldImg?.Dispose();
-
         }
 
         public bool RefreshInventory(string search = "", int searchField = -1)
@@ -468,7 +468,7 @@ namespace CP2077SaveEditor
 
             foreach (ItemData item in activeSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
-                var row = new string[] { item.ItemTdbId.ResolvedText, "", item.ItemTdbId.ResolvedText, "", "1", item.ItemTdbId.ResolvedText };
+                var row = new string[] { item.Header.ItemId.Id.ResolvedText, "", item.Header.ItemId.Id.ResolvedText, "", "1", item.Header.ItemId.Id.ResolvedText };
 
                 if (item.Data.GetType() == typeof(SimpleItemData))
                 {
@@ -483,7 +483,7 @@ namespace CP2077SaveEditor
                     row[1] = "[M] ";
                 }
 
-                var id = $"{item.ItemTdbId & 0xFFFFFFFF:X8}:{(item.ItemTdbId >> 32 & 0xFF):X2}";
+                var id = $"{item.Header.ItemId.Id & 0xFFFFFFFF:X8}:{(item.Header.ItemId.Id >> 32 & 0xFF):X2}";
                 if (itemClasses.ContainsKey(id))
                 {
                     row[1] += itemClasses[id];
@@ -522,7 +522,7 @@ namespace CP2077SaveEditor
                 newItem.Tag = item;
 
                 listViewRows.Add(newItem);
-                if (item.ItemTdbId.ResolvedText == "Items.money" && containerID == "1")
+                if (item.Header.ItemId.Id.ResolvedText == "Items.money" && containerID == "1")
                 {
                     var money = ((SimpleItemData)item.Data).Quantity;
 
@@ -540,7 +540,7 @@ namespace CP2077SaveEditor
             {
                 foreach (KeyValuePair<gameItemID, string> equipInfo in activeSaveFile.GetEquippedItems().Reverse())
                 {
-                    var equippedItem = listViewRows.Where(x => ((ItemData)x.Tag).ItemTdbId == equipInfo.Key.Id).FirstOrDefault();
+                    var equippedItem = listViewRows.Where(x => ((ItemData)x.Tag).Header.ItemId.Id == equipInfo.Key.Id).FirstOrDefault();
 
                     if (equippedItem != null)
                     {
@@ -684,7 +684,6 @@ namespace CP2077SaveEditor
             }
 
             activeSaveFile = new SaveFileHelper() { SaveFile = bufferFile };
-            activeSaveFile.Appearance.SetMainSections();
 
             GC.Collect();
 
@@ -856,10 +855,11 @@ namespace CP2077SaveEditor
 
             try
             {
-                var writer = new CyberpunkSaveWriter(new MemoryStream());
-                var data = await Task.Run(() => writer.WriteFile(activeSaveFile.SaveFile, saveType == 0));
+                var ms = new MemoryStream();
+                var writer = new CyberpunkSaveWriter(ms);
+                await Task.Run(() => writer.WriteFile(activeSaveFile.SaveFile, saveType == 0));
 
-                File.WriteAllBytes(saveWindow.FileName, data);
+                File.WriteAllBytes(saveWindow.FileName, ms.ToArray());
             }
             catch (Exception err)
             {
@@ -910,7 +910,7 @@ namespace CP2077SaveEditor
             if (moneyUpDown.Enabled)
             {
                 var playerInventory = activeSaveFile.GetInventory(1);
-                ((SimpleItemData)playerInventory.Items[ playerInventory.Items.IndexOf( playerInventory.Items.Where(x => x.ItemTdbId.ResolvedText == "Items.money").FirstOrDefault() )].Data).Quantity = (uint)moneyUpDown.Value;
+                ((SimpleItemData)playerInventory.Items[ playerInventory.Items.IndexOf( playerInventory.Items.Where(x => x.Header.ItemId.Id.ResolvedText == "Items.money").FirstOrDefault() )].Data).Quantity = (uint)moneyUpDown.Value;
             }
         }
 
@@ -941,17 +941,12 @@ namespace CP2077SaveEditor
             fileWindow.Filter = "Cyberpunk 2077 Character Preset|*.preset";
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
-                var newValues = JsonConvert.DeserializeObject<CharacterCustomizationAppearances>(File.ReadAllText(fileWindow.FileName), new Utils.JsonConverters.AppearanceResourceConverter());
+                var newValues = RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(File.ReadAllText(fileWindow.FileName));
 
-                if (newValues.UnknownFirstBytes.Length > 6)
-                {
-                    newValues.UnknownFirstBytes = newValues.UnknownFirstBytes.Skip(newValues.UnknownFirstBytes.Length - 6).ToArray();
-                }
-
-                if (newValues.UnknownFirstBytes[4] != activeSaveFile.GetAppearanceContainer().UnknownFirstBytes[4])
+                if ((bool)newValues.Preset.IsMale != (bool)activeSaveFile.GetAppearanceContainer().Preset.IsMale)
                 {
                     activeSaveFile.Appearance.SuppressBodyGenderPrompt = true;
-                    activeSaveFile.Appearance.BodyGender = (AppearanceGender)newValues.UnknownFirstBytes[4];
+                    activeSaveFile.Appearance.BodyGender = newValues.Preset.IsMale ? AppearanceGender.Male : AppearanceGender.Female;
                 }
                 activeSaveFile.Appearance.SetAllValues(newValues);
                 RefreshAppearanceValues();
@@ -999,7 +994,7 @@ namespace CP2077SaveEditor
                 if (containerID == "1")
                 {
                     var activeItem = (InventoryHelper.ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
-                    var equipSlot = activeSaveFile.GetEquippedItems().Where(x => x.Key.Id == activeItem.ItemTdbId).FirstOrDefault().Key;
+                    var equipSlot = activeSaveFile.GetEquippedItems().Where(x => x.Key.Id == activeItem.Header.ItemId.Id).FirstOrDefault().Key;
 
                     if (equipSlot != null)
                     {
@@ -1050,7 +1045,7 @@ namespace CP2077SaveEditor
         {
             var slot = (gameSEquipSlot)((ToolStripItem)sender).Tag;
             var currentItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
-            slot.ItemID = new gameItemID() { Id = currentItem.ItemTdbId };
+            slot.ItemID = new gameItemID() { Id = currentItem.Header.ItemId.Id };
             RefreshInventory();
             inventoryListView.SelectedVirtualItems()[0].Selected = false;
         }
@@ -1081,14 +1076,14 @@ namespace CP2077SaveEditor
             var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
             activeSaveFile.GetInventory(ulong.Parse(containerID)).Items.Remove(activeItem);
 
-            if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).ItemTdbId.ResolvedText == "Items.money" && containerID == "1")
+            if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).Header.ItemId.Id.ResolvedText == "Items.money" && containerID == "1")
             {
                 moneyUpDown.Enabled = false;
                 moneyUpDown.Value = 0;
             }
 
             inventoryListView.RemoveVirtualItem(inventoryListView.SelectedVirtualItems()[0]);
-            statusLabel.Text = "'" + activeItem.ItemTdbId.ResolvedText + "' deleted.";
+            statusLabel.Text = "'" + activeItem.Header.ItemId.Id.ResolvedText + "' deleted.";
         }
 
         private void factsListView_KeyDown(object sender, KeyEventArgs e)
@@ -1455,7 +1450,7 @@ namespace CP2077SaveEditor
 
         private void advancedAppearanceButton_Click(object sender, EventArgs e)
         {
-            var advancedDialog = new AdvancedAppearanceDialog();
+            var advancedDialog = new AdvancedAppearanceDialog(activeSaveFile.GetAppearanceContainer());
             advancedDialog.ChangesApplied += RefreshAppearanceValues;
             advancedDialog.ShowDialog();
         }

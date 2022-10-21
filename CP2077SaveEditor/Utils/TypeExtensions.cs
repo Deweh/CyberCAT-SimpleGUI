@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using WolvenKit.Common.FNV1A;
 using WolvenKit.RED4.Save;
+using WolvenKit.RED4.Types;
 
 namespace CP2077SaveEditor.Extensions
 {
@@ -187,37 +188,6 @@ namespace CP2077SaveEditor.Extensions
                 value = numericUpDown.Maximum;
             }
             numericUpDown.Value = value;
-        }
-    }
-
-    public static class HashValueEntryExtensions
-    {
-        private static Dictionary<ulong, string> pathHashes;
-
-        static HashValueEntryExtensions()
-        {
-            pathHashes = new Dictionary<ulong, string>();
-            var names = JsonConvert.DeserializeObject<string[]>(CP2077SaveEditor.Properties.Resources.AppearancePaths);
-
-            for(int i = 0; i < names.Length; i++)
-            {
-                pathHashes.Add(FNV1A64HashAlgorithm.HashString(names[i]), names[i]);
-            }
-        }
-
-        public static string GetPath(this CharacterCustomizationAppearances.HashValueEntry entry)
-        {
-            return pathHashes.ContainsKey(entry.Hash.DepotPath) ? pathHashes[entry.Hash.DepotPath] : string.Empty;
-        }
-
-        public static void SetPath(this CharacterCustomizationAppearances.HashValueEntry entry, string value)
-        {
-            entry.Hash.DepotPath = value;
-        }
-
-        public static bool IsPathValid(this CharacterCustomizationAppearances.HashValueEntry entry, string value)
-        {
-            return pathHashes.Values.Contains(value);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace CP2077SaveEditor.Utils
                     final = Convert.ToUInt64(value);
                 }
 
-                return new CResourceReference<appearanceAppearanceResource>() { DepotPath = final };
+                return new CResourceReference<appearanceAppearanceResource>(final);
             }
         }
     }

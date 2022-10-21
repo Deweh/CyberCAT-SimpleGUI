@@ -52,7 +52,7 @@ namespace CP2077SaveEditor
         {
             foreach (ItemModData childNode in nodeData.Children)
             {
-                var newNode = rootNode.Nodes.Add(childNode.AttachmentSlotTdbId.ResolvedText + " :: " + childNode.ItemTdbId.ResolvedText + " [" + childNode.Children.Count + "]");
+                var newNode = rootNode.Nodes.Add(childNode.AttachmentSlotTdbId.ResolvedText + " :: " + childNode.Header.ItemId.Id.ResolvedText + " [" + childNode.Children.Count + "]");
                 newNode.Tag = childNode;
                 if (childNode.Children.Count > 0)
                 {
@@ -85,7 +85,7 @@ namespace CP2077SaveEditor
                 if (activeItem.Data is SimpleItemData simpleData)
                 {
                     //SimpleItemData parsing
-                    this.Text = activeItem.ItemTdbId.ResolvedText + " (Simple Item)";
+                    this.Text = activeItem.Header.ItemId.Id.ResolvedText + " (Simple Item)";
 
                     if (detailsTabControl.TabPages.Contains(modInfoTab))
                     {
@@ -98,7 +98,7 @@ namespace CP2077SaveEditor
                 if (activeItem.Data is ModableItemData modableData)
                 {
                     //ModableItemData parsing
-                    this.Text = activeItem.ItemTdbId.ResolvedText + " (Modable Item)";
+                    this.Text = activeItem.Header.ItemId.Id.ResolvedText + " (Modable Item)";
 
                     if (activeItem.Data is ModableItemWithQuantityData modableQuantityData)
                     {
@@ -112,7 +112,7 @@ namespace CP2077SaveEditor
                     modsBaseIdBox.Text = ((ulong)modableData.TdbId1).ToString();
 
                     modsTreeView.Nodes.Clear();
-                    var rootNode = modsTreeView.Nodes.Add(modableData.RootNode.AttachmentSlotTdbId.ResolvedText, modableData.RootNode.AttachmentSlotTdbId.ResolvedText + " :: " + modableData.RootNode.ItemTdbId.ResolvedText + " [" + modableData.RootNode.Children.Count.ToString() + "]");
+                    var rootNode = modsTreeView.Nodes.Add(modableData.RootNode.AttachmentSlotTdbId.ResolvedText, modableData.RootNode.AttachmentSlotTdbId.ResolvedText + " :: " + modableData.RootNode.Header.ItemId.Id.ResolvedText + " [" + modableData.RootNode.Children.Count.ToString() + "]");
                     rootNode.Tag = modableData.RootNode;
                     IterativeBuildModTree(modableData.RootNode, rootNode);
                 }
@@ -202,7 +202,7 @@ namespace CP2077SaveEditor
 
             callbackFunc1 = delegate{ return true; };
             var dummyItem = new ItemData();
-            dummyItem.Header = new() { Seed = seed };
+            dummyItem.Header = new() { ItemId = new() { RngSeed = seed } };
             activeItem = dummyItem;
             activeSaveFile = (SaveFileHelper)_saveFile;
             this.Text = name;
@@ -323,12 +323,12 @@ namespace CP2077SaveEditor
 
                     data.RootNode.Children.Clear();
                     data.RootNode.AttachmentSlotTdbId = 0;
-                    data.RootNode.ItemTdbId = 0;
+                    data.RootNode.Header.ItemId.Id = 0;
                     data.RootNode.TdbId2 = 0;
                     data.RootNode.Unknown2 = 0;
                     data.RootNode.Unknown3 = 0;
                     data.RootNode.Unknown4 = 0;
-                    data.RootNode.UnknownString = "";
+                    data.RootNode.AppearanceName = "";
                     ReloadData();
                 }
             }
@@ -397,12 +397,12 @@ namespace CP2077SaveEditor
 
                     data.RootNode.Children.Clear();
                     data.RootNode.AttachmentSlotTdbId = 0;
-                    data.RootNode.ItemTdbId = 0;
+                    data.RootNode.Header.ItemId.Id = 0;
                     data.RootNode.TdbId2 = 0;
                     data.RootNode.Unknown2 = 0;
                     data.RootNode.Unknown3 = 0;
                     data.RootNode.Unknown4 = 0;
-                    data.RootNode.UnknownString = "";
+                    data.RootNode.AppearanceName = "";
                     ReloadData();
                 }
             }
