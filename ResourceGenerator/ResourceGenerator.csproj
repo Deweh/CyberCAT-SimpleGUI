@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WolvenKit\WolvenKit.Common\WolvenKit.Common.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.Core\WolvenKit.Core.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Archive\WolvenKit.RED4.Archive.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.TweakDB\WolvenKit.RED4.TweakDB.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Types\WolvenKit.RED4.Types.csproj" />
+  </ItemGroup>
+
+</Project>

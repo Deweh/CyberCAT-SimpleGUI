@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolvenKit.RED4.Save", "Wolv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolvenKit.RED4.TweakDB", "WolvenKit\WolvenKit.RED4.TweakDB\WolvenKit.RED4.TweakDB.csproj", "{6D7A367F-0FAF-46B2-A935-307373904631}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceGenerator", "ResourceGenerator\ResourceGenerator.csproj", "{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,10 @@ Global
 		{6D7A367F-0FAF-46B2-A935-307373904631}.Debug|x64.Build.0 = Debug|x64
 		{6D7A367F-0FAF-46B2-A935-307373904631}.Release|x64.ActiveCfg = Release|x64
 		{6D7A367F-0FAF-46B2-A935-307373904631}.Release|x64.Build.0 = Release|x64
+		{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}.Debug|x64.ActiveCfg = Debug|x64
+		{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}.Debug|x64.Build.0 = Debug|x64
+		{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}.Release|x64.ActiveCfg = Release|Any CPU
+		{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
