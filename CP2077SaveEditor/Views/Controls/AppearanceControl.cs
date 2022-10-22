@@ -42,7 +42,7 @@ namespace CP2077SaveEditor.Views.Controls
                 //    MessageBox.Show(property.Name);
                 //}
 
-                if (!_parentForm.wipEnabled && wipFields.Contains(property.Name))
+                if (!Global.IsDebug && wipFields.Contains(property.Name))
                 {
                     continue;
                 }

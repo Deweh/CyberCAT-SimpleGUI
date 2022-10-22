@@ -169,7 +169,7 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void additionalPlayerStatsButton_Click(object sender, EventArgs e)
         {
-            if (!_parentForm.StatsSystemEnabled)
+            if (!Global.StatsSystemEnabled)
             {
                 MessageBox.Show("Stats system disabled.");
                 return;

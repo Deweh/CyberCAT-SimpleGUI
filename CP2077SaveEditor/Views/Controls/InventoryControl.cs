@@ -366,7 +366,7 @@ namespace CP2077SaveEditor.Views.Controls
                 }
 
                 var contextMenu = new ContextMenuStrip();
-                if (_parentForm.wipEnabled)
+                if (Global.IsDebug)
                 {
                     contextMenu.Items.Add("New Item").Click += (object sender, EventArgs e) =>
                     {

@@ -21,12 +21,9 @@ namespace CP2077SaveEditor.Views
         internal static TweakDBStringHelper TweakDbStringHelper;
         internal HashService HashService;
 
-        internal bool wipEnabled;
-
         internal Random GlobalRand = new();
         
         internal bool IsLoaded;
-        internal bool StatsSystemEnabled = true;
 
         private SaveFileHelper _activeSaveFile;
         private int _saveType = 0;
