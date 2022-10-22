@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CP2077SaveEditor.ModSupport;
@@ -21,8 +22,6 @@ namespace CP2077SaveEditor.Views
         internal static TweakDBStringHelper TweakDbStringHelper;
         internal HashService HashService;
 
-        internal Random GlobalRand = new();
-        
         internal bool IsLoaded;
 
         private SaveFileHelper _activeSaveFile;
@@ -41,6 +40,27 @@ namespace CP2077SaveEditor.Views
             RegisterControl(new VehiclesControl(this));
             RegisterControl(new QuestFactsControl(this));
             RegisterControl(new ModsControl(this));
+
+            if (File.Exists(Environment.CurrentDirectory + "\\config.json"))
+            {
+                try
+                {
+                    var config = JsonSerializer.Deserialize<Dictionary<string, int>>(File.ReadAllText(Environment.CurrentDirectory + "\\config.json"));
+                    if (config.ContainsKey("EnablePSData") && config["EnablePSData"] == 0)
+                    {
+                        // Global.PSDataEnabled = false;
+                    }
+
+                    if (config.ContainsKey("EnableWIPFeatures") && config["EnableWIPFeatures"] == 1)
+                    {
+                        Global.IsDebug = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Unable to read config.json", "Notice");
+                }
+            }
         }
 
         private async void Form2_Load(object sender, EventArgs e)

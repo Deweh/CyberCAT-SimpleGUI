@@ -20,6 +20,8 @@ namespace CP2077SaveEditor.Views.Controls
 
         private readonly Form2 _parentForm;
 
+        private Random _random = new();
+
         private string debloatInfo = "";
         private readonly Dictionary<ulong, string> _inventoryNames = new()
         {
@@ -458,7 +460,7 @@ namespace CP2077SaveEditor.Views.Controls
             if (inventoryListView.SelectedIndices.Count > 0)
             {
                 var activeDetails = new ItemDetails();
-                activeDetails.LoadItem((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag, _parentForm.ActiveSaveFile, RefreshInventory, _parentForm.GlobalRand);
+                activeDetails.LoadItem((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag, _parentForm.ActiveSaveFile, RefreshInventory, _random);
             }
         }
 
