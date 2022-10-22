@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Text.Json;
 using System.Windows.Forms;
 using CP2077SaveEditor.Extensions;
 using CP2077SaveEditor.Utils;
-using Newtonsoft.Json;
 using WolvenKit.RED4.Save;
 
 namespace CP2077SaveEditor.Views.Controls
@@ -141,7 +141,7 @@ namespace CP2077SaveEditor.Views.Controls
                     final.Add(new KeyValuePair<string, uint>(_parentForm.ActiveSaveFile.KnownFacts[singleFact.FactName], singleFact.Value));
                 }
 
-                File.WriteAllText(saveWindow.FileName, JsonConvert.SerializeObject(final, Formatting.Indented));
+                File.WriteAllText(saveWindow.FileName, JsonSerializer.Serialize(final, new JsonSerializerOptions { WriteIndented = true }));
             }
         }
 

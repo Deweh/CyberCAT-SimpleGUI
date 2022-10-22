@@ -10,18 +10,15 @@ using CP2077SaveEditor.Utils;
 using CP2077SaveEditor.Views.Controls;
 using WolvenKit.Common.Services;
 using WolvenKit.Core.Compression;
-using WolvenKit.RED4.CR2W.JSON;
-using WolvenKit.RED4.Save;
 using WolvenKit.RED4.Save.IO;
 using WolvenKit.RED4.TweakDB.Helper;
 using WolvenKit.RED4.Types;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CP2077SaveEditor.Views
 {
     public partial class Form2 : Form, INotifyPropertyChanged
     {
-        internal TweakDBStringHelper TweakDbStringHelper;
+        internal static TweakDBStringHelper TweakDbStringHelper;
         internal HashService HashService;
 
         internal bool wipEnabled;
@@ -47,6 +44,17 @@ namespace CP2077SaveEditor.Views
             RegisterControl(new VehiclesControl(this));
             RegisterControl(new QuestFactsControl(this));
             RegisterControl(new ModsControl(this));
+        }
+
+        private async void Form2_Load(object sender, EventArgs e)
+        {
+            SetStatus("Init...");
+
+            await Init();
+
+            openSaveButton.Enabled = true;
+
+            SetStatus("Idle");
         }
 
         internal SaveFileHelper ActiveSaveFile
@@ -129,11 +137,7 @@ namespace CP2077SaveEditor.Views
             openSaveButton.Enabled = false;
             saveChangesButton.Enabled = false;
 
-            SetStatus("Init");
-
-            await Init();
-
-            SetStatus("Loading save");
+            SetStatus("Loading save...");
 
             try
             {
@@ -149,6 +153,8 @@ namespace CP2077SaveEditor.Views
                         this.InvokeIfRequired(() => { saveChangesButton.Enabled = true; });
                     }
                 });
+
+                filePathLabel.Text = Path.GetFileName(Path.GetDirectoryName(savePath));
 
                 GC.Collect();
             }
@@ -211,6 +217,8 @@ namespace CP2077SaveEditor.Views
             {
                 File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
             }
+
+            SetStatus("Saving...");
 
             try
             {

@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 using System.Windows.Forms;
 using CP2077SaveEditor.Extensions;
 using CP2077SaveEditor.Utils;
-using Newtonsoft.Json;
 using WolvenKit.RED4.Types;
 
 namespace CP2077SaveEditor.Views.Controls
@@ -94,7 +89,7 @@ namespace CP2077SaveEditor.Views.Controls
             var vehiclePS = (vehicleGarageComponentPS)ps.Entries.FirstOrDefault(x => x.Data is vehicleGarageComponentPS)?.Data;
             var unlockedVehicles = new List<string>();
 
-            var vehicles = JsonConvert.DeserializeObject<List<string>>(CP2077SaveEditor.Properties.Resources.Vehicles);
+            var vehicles = JsonSerializer.Deserialize<List<string>>(CP2077SaveEditor.Properties.Resources.Vehicles);
 
             if (vehiclePS != null)
             {

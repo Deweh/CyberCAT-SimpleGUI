@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using CP2077SaveEditor.ModSupport;
 using CP2077SaveEditor.Utils;
@@ -39,7 +33,7 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void Init()
         {
-            gb_WardrobeExtra.Enabled = EnhancedCraftHelper.IsInstalled(_parentForm.ActiveSaveFile);
+            gb_WardrobeExtra.Enabled = _parentForm.ActiveSaveFile.GetScriptableSystem<WardrobeSystemExtra>() != null;
         }
 
         private void btn_ClearBlacklist_Click(object sender, EventArgs e)

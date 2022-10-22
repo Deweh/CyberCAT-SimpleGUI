@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using CP2077SaveEditor.Utils;
-using Newtonsoft.Json;
 using WolvenKit.RED4.CR2W.JSON;
 using WolvenKit.RED4.Save;
-using static System.Net.Mime.MediaTypeNames;
-using Application = System.Windows.Forms.Application;
 using Image = System.Drawing.Image;
 
 namespace CP2077SaveEditor.Views.Controls
@@ -36,6 +29,10 @@ namespace CP2077SaveEditor.Views.Controls
 
             _parentForm = parentForm;
             _parentForm.PropertyChanged += OnParentFormPropertyChanged;
+
+            appearanceOptionsPanel.Enabled = Global.IsDebug;
+            appearancePreviewBox.Enabled = Global.IsDebug;
+            advancedAppearanceButton.Enabled = Global.IsDebug;
 
             var lastPos = 0;
             foreach (PropertyInfo property in typeof(AppearanceHelper).GetProperties())

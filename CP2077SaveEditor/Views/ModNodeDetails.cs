@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WolvenKit.RED4.Save;
 using static WolvenKit.RED4.Save.InventoryHelper;
 
 namespace CP2077SaveEditor
@@ -47,7 +39,7 @@ namespace CP2077SaveEditor
 
             object resolvedStats = null;
 
-            if (Form1.statsSystemEnabled)
+            if (Global.StatsSystemEnabled)
             {
                 resolvedStats = activeSaveFile.GetStatsFromSeed(node.Header.ItemId.RngSeed);
             }

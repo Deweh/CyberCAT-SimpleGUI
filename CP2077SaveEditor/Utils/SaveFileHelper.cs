@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Text.Json;
 using WolvenKit.RED4.Save;
 using static WolvenKit.RED4.Types.Enums;
-using Newtonsoft.Json;
 using WolvenKit.RED4.Types;
 using WolvenKit.RED4.Archive.Buffer;
 
@@ -18,19 +14,6 @@ namespace CP2077SaveEditor
         public AppearanceHelper Appearance { get; }
         public CyberpunkSaveFile SaveFile { get; set; }
         public Dictionary<uint, string> KnownFacts;
-
-        public enum AppearanceEntryType
-        {
-            MainListEntry,
-            AdditionalListEntry
-        }
-
-        public enum AppearanceField
-        {
-            FirstString,
-            Hash,
-            SecondString
-        }
 
         public SaveFileHelper() : base()
         {
@@ -290,7 +273,7 @@ namespace CP2077SaveEditor
         {
             if (KnownFacts == null)
             {
-                KnownFacts = JsonConvert.DeserializeObject<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
+                KnownFacts = JsonSerializer.Deserialize<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
             }
 
             var factsList = new List<FactsTable.FactEntry>();

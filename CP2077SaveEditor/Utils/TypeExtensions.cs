@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
-using WolvenKit.Common.FNV1A;
-using WolvenKit.RED4.Save;
-using WolvenKit.RED4.Types;
 
 namespace CP2077SaveEditor.Extensions
 {

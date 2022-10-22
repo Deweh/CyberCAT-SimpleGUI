@@ -167,29 +167,20 @@ namespace ResourceGenerator
             File.WriteAllText("ItemClasses.json", JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
         }
 
-        private static void GenerateAppearanceValues(string archivePath)
+        private static HashService? _hashService = null;
+
+        private static T? LoadFile<T>(string archivePath, CName filePath) where T : RedBaseClass
         {
-            var hashService = new HashService();
+            if (_hashService == null)
+            {
+                _hashService = new HashService();
+            }
 
             var am = new ArchiveReader();
 
-            if (am.ReadArchive(archivePath, hashService, out var archive) == EFileReadErrorCodes.NoError)
+            if (am.ReadArchive(archivePath, _hashService, out var archive) == EFileReadErrorCodes.NoError)
             {
-                var maleOptions = archive.Files.FirstOrDefault(x => x.Key == 5205075720019286593).Value;
-                if (maleOptions != null)
-                {
-                    var ms = new MemoryStream();
-                    maleOptions.Extract(ms);
-                    ms.Position = 0;
-
-                    using var cr = new CR2WReader(ms);
-                    if (cr.ReadFile(out var cr2w) == EFileReadErrorCodes.NoError)
-                    {
-
-                    }
-                }
-
-                var femaleOptions = archive.Files.FirstOrDefault(x => x.Key == 3179227268398507574).Value;
+                var femaleOptions = archive.Files.FirstOrDefault(x => x.Key == filePath).Value;
                 if (femaleOptions != null)
                 {
                     var ms = new MemoryStream();
@@ -199,9 +190,47 @@ namespace ResourceGenerator
                     using var cr = new CR2WReader(ms);
                     if (cr.ReadFile(out var cr2w) == EFileReadErrorCodes.NoError)
                     {
-
+                        return (T)cr2w.RootChunk;
                     }
                 }
+            }
+
+            return null;
+        }
+
+        private static void GenerateAppearanceValues(string archivePath)
+        {
+            var hashService = new HashService();
+
+            // male : 5205075720019286593
+            var femaleFile = LoadFile<gameuiCharacterCustomizationInfoResource>(archivePath, 3179227268398507574);
+            if (femaleFile != null)
+            {
+                var dict = new Dictionary<string, List<string>>();
+
+                var headOptions = ParseOptions(femaleFile.HeadCustomizationOptions);
+                var armsOptions = ParseOptions(femaleFile.ArmsCustomizationOptions);
+                var bodyOptions = ParseOptions(femaleFile.BodyCustomizationOptions);
+            }
+
+            Dictionary<string, List<string>> ParseOptions(CArray<CHandle<gameuiCharacterCustomizationInfo>> options)
+            {
+                var dict = new Dictionary<string, List<string>>();
+
+                foreach (var optionHandle in options)
+                {
+                    if (optionHandle.Chunk is gameuiSwitcherInfo switcherInfo)
+                    {
+                        dict.Add(switcherInfo.Name, new List<string>());
+
+                        foreach (var switcherOption in switcherInfo.Options)
+                        {
+                            dict[switcherInfo.Name].Add(switcherOption.Names[0]);
+                        }
+                    }
+                }
+
+                return dict;
             }
         }
     }

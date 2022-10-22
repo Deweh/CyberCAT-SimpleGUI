@@ -26,6 +26,12 @@ public static class ModManager
         RedReflection.AddEnumType(typeof(gameWardrobeClothingSetIndexExtra));
         RedReflection.AddRedType(typeof(ClothingSetExtra));
         RedReflection.AddRedType(typeof(WardrobeSystemExtra));
+
+        // Edgerunning
+        RedReflection.AddEnumType(typeof(EdgerunningSystem));
+
+        // MarkToSell
+        RedReflection.AddEnumType(typeof(MarkToSellSystem));
         
         _isLoaded = true;
     }

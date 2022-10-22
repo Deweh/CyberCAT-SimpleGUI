@@ -1,12 +1,11 @@
 ﻿using CP2077SaveEditor.Extensions;
 using CP2077SaveEditor.Utils;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Reactive;
+using System.Text.Json;
 using System.Windows.Forms;
 using CP2077SaveEditor.ModSupport;
 using WolvenKit.RED4.Save;
@@ -17,7 +16,7 @@ namespace CP2077SaveEditor.Views.Controls
 {
     public partial class InventoryControl : UserControl, IGameControl
     {
-        private static readonly Dictionary<string, string> s_itemClasses = JsonConvert.DeserializeObject<Dictionary<string, string>>(Properties.Resources.ItemClasses);
+        private static readonly Dictionary<string, string> s_itemClasses = JsonSerializer.Deserialize<Dictionary<string, string>>(Properties.Resources.ItemClasses);
 
         private readonly Form2 _parentForm;
 

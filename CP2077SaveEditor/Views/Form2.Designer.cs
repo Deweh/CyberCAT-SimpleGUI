@@ -1,4 +1,6 @@
-﻿namespace CP2077SaveEditor.Views
+﻿using CP2077SaveEditor.Properties;
+
+namespace CP2077SaveEditor.Views
 {
     partial class Form2
     {
@@ -28,6 +30,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.swapSaveType = new CP2077SaveEditor.ModernButton();
             this.filePathLabel = new System.Windows.Forms.Label();
             this.openSaveButton = new CP2077SaveEditor.ModernButton();
@@ -73,6 +76,7 @@
             this.openSaveButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.openSaveButton.ClickEffectEnabled = true;
             this.openSaveButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
+            this.openSaveButton.Enabled = false;
             this.openSaveButton.HoverColor = System.Drawing.Color.LightGray;
             this.openSaveButton.Location = new System.Drawing.Point(12, 12);
             this.openSaveButton.Name = "openSaveButton";
@@ -143,14 +147,14 @@
             // tssl_Empty
             // 
             this.tssl_Empty.Name = "tssl_Empty";
-            this.tssl_Empty.Size = new System.Drawing.Size(690, 17);
+            this.tssl_Empty.Size = new System.Drawing.Size(696, 17);
             this.tssl_Empty.Spring = true;
             // 
             // tssl_Info
             // 
             this.tssl_Info.Name = "tssl_Info";
-            this.tssl_Info.Size = new System.Drawing.Size(293, 17);
-            this.tssl_Info.Text = "v0.23a // WolvenKit.RED4.Save by the WolvenKit team.";
+            this.tssl_Info.Size = new System.Drawing.Size(287, 17);
+            this.tssl_Info.Text = "v0.24 // WolvenKit.RED4.Save by the WolvenKit team.";
             // 
             // Form2
             // 
@@ -164,8 +168,10 @@
             this.Controls.Add(this.swapSaveType);
             this.Controls.Add(this.filePathLabel);
             this.Controls.Add(this.openSaveButton);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form2";
-            this.Text = "Form2";
+            this.Text = "Cyberpunk 2077 Save Editor (CyberCAT-SimpleGUI)";
+            this.Load += new System.EventHandler(this.Form2_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);

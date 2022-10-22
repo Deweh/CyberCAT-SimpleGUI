@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CP2077SaveEditor.Extensions;
 using CP2077SaveEditor.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using WolvenKit.RED4.CR2W.JSON;
 using WolvenKit.RED4.Save;
 using WolvenKit.RED4.Types;
@@ -61,7 +60,7 @@ namespace CP2077SaveEditor
             }
             set
             {
-                if (!Form1.psDataEnabled)
+                if (!Global.PSDataEnabled)
                 {
                     MessageBox.Show("PSData is disabled. Body Gender cannot be changed.", "Notice");
                     return;
@@ -154,7 +153,13 @@ namespace CP2077SaveEditor
         {
             get
             {
-                var hash = GetValue("first.main.hash.hair_color");
+                var str = "head.customization.resource.hair_color";
+                if (Cyberware > 0)
+                {
+                    str += "_cyberware_";
+                }
+
+                var hash = GetValue(str);
                 if (hash == "default")
                 {
                     return "Shaved";
@@ -1821,33 +1826,73 @@ namespace CP2077SaveEditor
                 return null;
             }
 
-            var result = new CustomizationGroupLocation(PresetWrapper.Preset.HeadGroups, CustomizationGroupType.Customization, (searchValues.Length == 3) ? searchValues[2] : searchValues[3], CustomizationField.FirstCName);
-            if (searchValues[0] == "second")
+            var result = new CustomizationGroupLocation();
+            switch (searchValues[0])
             {
-                result.Groups = PresetWrapper.Preset.ArmsGroups;
-            }
-            else if (searchValues[0] == "third")
-            {
-                result.Groups = PresetWrapper.Preset.BodyGroups;
+                case "first":
+                case "head":
+                    result.Groups = PresetWrapper.Preset.HeadGroups;
+                    break;
+
+                case "second":
+                case "arms":
+                    result.Groups = PresetWrapper.Preset.ArmsGroups;
+                    break;
+
+                case "third":
+                case "body":
+                    result.Groups = PresetWrapper.Preset.BodyGroups;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(searchValues[0]);
             }
 
-            if (searchValues[1] == "additional")
+            switch (searchValues[1])
             {
-                result.EntryType = CustomizationGroupType.Morphs;
+                case "main":
+                case "customization":
+                    result.EntryType = CustomizationGroupType.Customization;
+                    break;
+
+                case "additional":
+                case "morphs":
+                    result.EntryType = CustomizationGroupType.Morphs;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(searchValues[1]);
             }
 
-            if (searchValues.Length == 4)
+            if (searchValues.Length == 3)
             {
-                if (searchValues[2] == "hash")
-                {
+                result.SearchString = searchValues[2];
+                result.EntryField = CustomizationField.FirstCName;
+
+                return result;
+            }
+
+            switch (searchValues[2])
+            {
+                case "first":
+                    result.EntryField = CustomizationField.FirstCName;
+                    break;
+
+                case "hash":
+                case "resource":
                     result.EntryField = CustomizationField.Resource;
-                }
-                else if (searchValues[2] == "second")
-                {
+                    break;
+
+                case "second":
                     result.EntryField = CustomizationField.SecondCName;
-                }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(searchValues[2]);
             }
-            
+
+            result.SearchString = searchValues[3];
+
             return result;
         }
 
@@ -1875,6 +1920,8 @@ namespace CP2077SaveEditor
         public CustomizationField EntryField { get; set; }
         public string SearchString { get; set; }
 
+        public CustomizationGroupLocation(){}
+
         public CustomizationGroupLocation(CArray<gameuiCustomizationGroup> groups, CustomizationGroupType type, string searchString, CustomizationField field = CustomizationField.FirstCName)
         {
             Groups = groups;
@@ -1886,35 +1933,69 @@ namespace CP2077SaveEditor
 
     public static class AppearanceValueLists
     {
-        private static JObject Values = JsonConvert.DeserializeObject<JObject>(CP2077SaveEditor.Properties.Resources.AppearanceValues);
-        public static Dictionary<string, ulong> HairStylesDict { get; } = Values["HairStyles"].ToObject<Dictionary<string, ulong>>();
-        public static List<string> HairStyles { get; } = HairStylesDict.Keys.ToList();
-        public static List<string> HairColors { get; } = Values["HairColors"].ToObject<List<string>>();
-        public static List<string> SkinTones { get; } = Values["SkinTones"].ToObject<List<string>>();
-        public static List<ulong> SkinTypes { get; } = Values["SkinTypes"].ToObject<List<ulong>>();
-        public static List<string> EyeColors { get; } = Values["EyeColors"].ToObject<List<string>>();
-        public static List<ulong> Eyebrows { get; } = Values["Eyebrows"].ToObject<List<ulong>>();
-        public static List<ulong> LipMakeups { get; } = Values["LipMakeups"].ToObject<List<ulong>>();
-        public static List<string> EyebrowColors { get; } = Values["EyebrowColors"].ToObject<List<string>>();
-        public static List<string> LipMakeupColors { get; } = Values["LipMakeupColors"].ToObject<List<string>>();
-        public static List<ulong> EyeMakeups { get; } = Values["EyeMakeups"].ToObject<List<ulong>>();
-        public static List<string> EyeMakeupColors { get; } = Values["EyeMakeupColors"].ToObject<List<string>>();
-        public static Dictionary<string, List<ulong>> BodyTattoos { get; } = Values["BodyTattoos"].ToObject<Dictionary<string, List<ulong>>>();
-        public static List<string> Nailss { get; } = new List<string> { "Short", "Long" };
-        public static List<ulong> FacialTattoos { get; } = Values["FacialTattoos"].ToObject<List<ulong>>();
-        public static List<ulong> Piercings { get; } = Values["Piercings"].ToObject<List<ulong>>();
-        public static List<string> Teeth { get; } = Values["Teeth"].ToObject<List<string>>();
-        public static List<string> FacialScars { get; } = Values["FacialScars"].ToObject<List<string>>();
-        public static List<ulong> BodyScars { get; } = Values["BodyScars"].ToObject<List<ulong>>();
-        public static List<string> PiercingColors { get; } = Values["PiercingColors"].ToObject<List<string>>();
-        public static List<ulong> CheekMakeups { get; } = Values["CheekMakeups"].ToObject<List<ulong>>();
-        public static List<string> CheekMakeupColors { get; } = Values["CheekMakeupColors"].ToObject<List<string>>();
-        public static List<ulong> Blemishes { get; } = Values["Blemishes"].ToObject<List<ulong>>();
-        public static List<string> Genitals { get; } = Values["Genitals"].ToObject<List<string>>();
-        public static List<string> PenisSizes { get; } = Values["PenisSizes"].ToObject<List<string>>();
-        public static List<ulong> PubicHairStyles { get; } = Values["PubicHairStyles"].ToObject<List<ulong>>();
-        public static List<string> NailColors { get; } = Values["NailColors"].ToObject<List<string>>();
-        public static List<string> Beards { get; } = Values["Beards"].ToObject<List<string>>();
-        public static Dictionary<string, List<string>> BeardStyles { get; } = Values["BeardStyles"].ToObject<Dictionary<string, List<string>>>();
+        public static Dictionary<string, ulong> HairStylesDict { get; }
+        public static List<string> HairStyles { get; }
+        public static List<string> HairColors { get; }
+        public static List<string> SkinTones { get; }
+        public static List<ulong> SkinTypes { get; }
+        public static List<string> EyeColors { get; }
+        public static List<ulong> Eyebrows { get; }
+        public static List<ulong> LipMakeups { get; }
+        public static List<string> EyebrowColors { get; }
+        public static List<string> LipMakeupColors { get; }
+        public static List<ulong> EyeMakeups { get; }
+        public static List<string> EyeMakeupColors { get; }
+        public static Dictionary<string, List<ulong>> BodyTattoos { get; }
+        public static List<string> Nailss { get; }
+        public static List<ulong> FacialTattoos { get; }
+        public static List<ulong> Piercings { get; }
+        public static List<string> Teeth { get; }
+        public static List<string> FacialScars { get; }
+        public static List<ulong> BodyScars { get; }
+        public static List<string> PiercingColors { get; }
+        public static List<ulong> CheekMakeups { get; }
+        public static List<string> CheekMakeupColors { get; }
+        public static List<ulong> Blemishes { get; }
+        public static List<string> Genitals { get; }
+        public static List<string> PenisSizes { get; }
+        public static List<ulong> PubicHairStyles { get; }
+        public static List<string> NailColors { get; }
+        public static List<string> Beards { get; }
+        public static Dictionary<string, List<string>> BeardStyles { get; }
+
+        static AppearanceValueLists()
+        {
+            var values = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(Properties.Resources.AppearanceValues);
+
+            HairStylesDict = values["HairStyles"].Deserialize<Dictionary<string, ulong>>();
+            HairStyles = HairStylesDict.Keys.ToList();
+            HairColors = values["HairColors"].Deserialize<List<string>>();
+            SkinTones = values["SkinTones"].Deserialize<List<string>>();
+            SkinTypes = values["SkinTypes"].Deserialize<List<ulong>>();
+            EyeColors = values["EyeColors"].Deserialize<List<string>>();
+            Eyebrows = values["Eyebrows"].Deserialize<List<ulong>>();
+            LipMakeups = values["LipMakeups"].Deserialize<List<ulong>>();
+            EyebrowColors = values["EyebrowColors"].Deserialize<List<string>>();
+            LipMakeupColors = values["LipMakeupColors"].Deserialize<List<string>>();
+            EyeMakeups = values["EyeMakeups"].Deserialize<List<ulong>>();
+            EyeMakeupColors = values["EyeMakeupColors"].Deserialize<List<string>>();
+            BodyTattoos = values["BodyTattoos"].Deserialize<Dictionary<string, List<ulong>>>();
+            Nailss = new List<string> { "Short", "Long" };
+            FacialTattoos = values["FacialTattoos"].Deserialize<List<ulong>>();
+            Piercings = values["Piercings"].Deserialize<List<ulong>>();
+            Teeth = values["Teeth"].Deserialize<List<string>>();
+            FacialScars = values["FacialScars"].Deserialize<List<string>>();
+            BodyScars = values["BodyScars"].Deserialize<List<ulong>>();
+            PiercingColors = values["PiercingColors"].Deserialize<List<string>>();
+            CheekMakeups = values["CheekMakeups"].Deserialize<List<ulong>>();
+            CheekMakeupColors = values["CheekMakeupColors"].Deserialize<List<string>>();
+            Blemishes = values["Blemishes"].Deserialize<List<ulong>>();
+            Genitals = values["Genitals"].Deserialize<List<string>>();
+            PenisSizes = values["PenisSizes"].Deserialize<List<string>>();
+            PubicHairStyles = values["PubicHairStyles"].Deserialize<List<ulong>>();
+            NailColors = values["NailColors"].Deserialize<List<string>>();
+            Beards = values["Beards"].Deserialize<List<string>>();
+            BeardStyles = values["BeardStyles"].Deserialize<Dictionary<string, List<string>>>();
+        }
     }
 }

@@ -1,13 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WolvenKit.RED4.Save;
 using WolvenKit.RED4.Types;
 using static WolvenKit.RED4.Types.Enums;
 using static WolvenKit.RED4.Save.InventoryHelper;
@@ -119,7 +112,7 @@ namespace CP2077SaveEditor
             }
 
             //Stats parsing
-            if (Form1.statsSystemEnabled)
+            if (Global.StatsSystemEnabled)
             {
                 if (activeSaveFile.GetItemStatData(activeItem) == null)
                 {
@@ -194,7 +187,7 @@ namespace CP2077SaveEditor
 
         public void LoadStatsOnly(uint seed, object _saveFile, string name)
         {
-            if (!Form1.statsSystemEnabled)
+            if (!Global.StatsSystemEnabled)
             {
                 MessageBox.Show("Stats system disabled.");
                 this.Close();
@@ -414,7 +407,13 @@ namespace CP2077SaveEditor
             {
                 MessageBox.Show("Must select parent node.");
             } else {
-                var newNode = new ItemModData();
+                var newNode = new ItemModData
+                {
+                    Header = new gameItemIdWrapper
+                    {
+                        ItemId = new gameItemID()
+                    }
+                };
                 ((ItemModData)modsTreeView.SelectedNode.Tag).Children.Add(newNode);
                 ReloadData();
                 var nodeDialog = new ModNodeDetails();
