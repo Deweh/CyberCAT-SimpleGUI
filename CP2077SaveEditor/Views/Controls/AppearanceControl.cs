@@ -145,7 +145,7 @@ namespace CP2077SaveEditor.Views.Controls
                 }
                 else
                 {
-                    newValues = RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(File.ReadAllText(fileWindow.FileName), "0.0.3");
+                    newValues = RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(File.ReadAllText(fileWindow.FileName));
                 }
 
                 if ((bool)newValues.Preset.IsMale != (bool)_parentForm.ActiveSaveFile.GetAppearanceContainer().Preset.IsMale)

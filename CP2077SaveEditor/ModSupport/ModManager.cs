@@ -28,11 +28,11 @@ public static class ModManager
         RedReflection.AddRedType(typeof(WardrobeSystemExtra));
 
         // Edgerunning
-        RedReflection.AddEnumType(typeof(EdgerunningSystem));
+        RedReflection.AddRedType(typeof(EdgerunningSystem));
 
         // MarkToSell
-        RedReflection.AddEnumType(typeof(MarkToSellSystem));
-        
+        RedReflection.AddRedType(typeof(MarkToSellSystem));
+
         _isLoaded = true;
     }
 }

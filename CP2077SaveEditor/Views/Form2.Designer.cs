@@ -147,14 +147,14 @@ namespace CP2077SaveEditor.Views
             // tssl_Empty
             // 
             this.tssl_Empty.Name = "tssl_Empty";
-            this.tssl_Empty.Size = new System.Drawing.Size(696, 17);
+            this.tssl_Empty.Size = new System.Drawing.Size(658, 17);
             this.tssl_Empty.Spring = true;
             // 
             // tssl_Info
             // 
             this.tssl_Info.Name = "tssl_Info";
-            this.tssl_Info.Size = new System.Drawing.Size(287, 17);
-            this.tssl_Info.Text = "v0.24 // WolvenKit.RED4.Save by the WolvenKit team.";
+            this.tssl_Info.Size = new System.Drawing.Size(294, 17);
+            this.tssl_Info.Text = "v0.24b // WolvenKit.RED4.Save by the WolvenKit team.";
             // 
             // Form2
             // 
