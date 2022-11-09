@@ -156,6 +156,8 @@ namespace CP2077SaveEditor.Views
 
             SetStatus("Loading save...");
 
+            var status = EFileReadErrorCodes.NoCSav;
+
             try
             {
                 await Task.Run(() =>
@@ -163,11 +165,25 @@ namespace CP2077SaveEditor.Views
                     using var fs = File.Open(savePath, FileMode.Open);
                     using var reader = new CyberpunkSaveReader(fs);
 
-                    if (reader.ReadFile(out var save) == EFileReadErrorCodes.NoError)
+                    status = reader.ReadFile(out var save);
+                    switch (status)
                     {
-                        ActiveSaveFile = new SaveFileHelper() { SaveFile = save };
+                        case EFileReadErrorCodes.NoError:
+                            ActiveSaveFile = new SaveFileHelper() { SaveFile = save };
+                            this.InvokeIfRequired(() => { saveChangesButton.Enabled = true; });
+                            break;
+                        case EFileReadErrorCodes.NoCSav:
+                            MessageBox.Show("Failed to parse save file: File contains invalid data");
+                            return;
+                        case EFileReadErrorCodes.UnsupportedVersion:
+                            fs.Position = 0;
+                            reader.ReadFileInfo(out var info);
 
-                        this.InvokeIfRequired(() => { saveChangesButton.Enabled = true; });
+                            MessageBox.Show(
+                                $"Failed to parse save file: Game version {info.Value.gameVersion} is not supported!");
+                            return;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                 });
 
@@ -180,19 +196,24 @@ namespace CP2077SaveEditor.Views
                 try
                 {
                     await File.WriteAllTextAsync("error.txt", e.Message + Environment.NewLine + e.StackTrace);
-                    MessageBox.Show("Failed to parse save file: " + e.Message + " An error.txt file has been generated with additional information.");
+                    MessageBox.Show("Failed to parse save file: " + e.Message +
+                                    " An error.txt file has been generated with additional information.");
                 }
                 catch (Exception)
                 {
                     MessageBox.Show("Failed to parse save file: " + e.Message + " \n\n Stack Trace: \n" + e.StackTrace);
                 }
             }
-
+            
             SetStatus("Idle");
 
             openSaveButton.Enabled = true;
-            pnl_Content.Enabled = true;
-            IsLoaded = true;
+
+            if (status == EFileReadErrorCodes.NoError)
+            {
+                pnl_Content.Enabled = true;
+                IsLoaded = true;
+            }
         }
 
         internal void SetStatus(string message)
