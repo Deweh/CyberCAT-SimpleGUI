@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WolvenKit.RED4.Save;
 using static WolvenKit.RED4.Save.InventoryHelper;
 
 namespace CP2077SaveEditor
@@ -36,20 +28,20 @@ namespace CP2077SaveEditor
 
             attachmentNameLabel.Text = node.AttachmentSlotTdbId.ResolvedText;
             attachmentIdBox.Text = ((ulong)node.AttachmentSlotTdbId).ToString();
-            item1NameLabel.Text = node.ItemTdbId.ResolvedText;
+            item1NameLabel.Text = node.Header.ItemId.Id.ResolvedText;
             
-            item1IdBox.Text = ((ulong)node.ItemTdbId).ToString();
+            item1IdBox.Text = ((ulong)node.Header.ItemId.Id).ToString();
             unknownIDBox.Text = ((ulong)node.TdbId2).ToString();
             unknown1Box.Text = node.Unknown2.ToString();
             unknown2Box.Text = node.Unknown3.ToString();
             unknown3Box.Text = node.Unknown4.ToString();
-            unknown4Box.Text = node.UnknownString;
+            unknown4Box.Text = node.AppearanceName;
 
             object resolvedStats = null;
 
-            if (Form1.statsSystemEnabled)
+            if (Global.StatsSystemEnabled)
             {
-                resolvedStats = activeSaveFile.GetStatsFromSeed(node.Header.Seed);
+                resolvedStats = activeSaveFile.GetStatsFromSeed(node.Header.ItemId.RngSeed);
             }
 
             if (resolvedStats != null)
@@ -59,7 +51,7 @@ namespace CP2077SaveEditor
                 resolvedItemLabel.Enabled = false;
             }
 
-            this.Text = node.AttachmentSlotTdbId.ResolvedText + " :: " + node.ItemTdbId.ResolvedText;
+            this.Text = node.AttachmentSlotTdbId.ResolvedText + " :: " + node.Header.ItemId.Id.ResolvedText;
             this.ShowDialog();
         }
 
@@ -79,12 +71,12 @@ namespace CP2077SaveEditor
             }
 
             activeNode.AttachmentSlotTdbId = ulong.Parse(attachmentIdBox.Text);
-            activeNode.ItemTdbId = ulong.Parse(item1IdBox.Text);
+            activeNode.Header.ItemId.Id = ulong.Parse(item1IdBox.Text);
             activeNode.TdbId2 = ulong.Parse(unknownIDBox.Text);
             activeNode.Unknown2 = uint.Parse(unknown1Box.Text);
             activeNode.Unknown3 = uint.Parse(unknown2Box.Text);
             activeNode.Unknown4 = float.Parse(unknown3Box.Text);
-            activeNode.UnknownString = unknown4Box.Text;
+            activeNode.AppearanceName = unknown4Box.Text;
 
             callbackFunc.Invoke();
             this.Close();
@@ -93,13 +85,13 @@ namespace CP2077SaveEditor
         private void resolvedItemLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var details = new ItemDetails();
-            if (activeNode.ItemTdbId.ResolvedText.Length > 0)
+            if (activeNode.Header.ItemId.Id.ResolvedText.Length > 0)
             {
-                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.ResolvedText);
+                details.LoadStatsOnly(activeNode.Header.ItemId.RngSeed, activeSaveFile, activeNode.Header.ItemId.Id.ResolvedText);
             }
             else
             {
-                details.LoadStatsOnly(activeNode.Header.Seed, activeSaveFile, activeNode.ItemTdbId.ResolvedText);
+                details.LoadStatsOnly(activeNode.Header.ItemId.RngSeed, activeSaveFile, activeNode.Header.ItemId.Id.ResolvedText);
             }
             
         }

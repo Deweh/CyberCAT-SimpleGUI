@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Text.Json;
 using WolvenKit.RED4.Save;
 using static WolvenKit.RED4.Types.Enums;
-using Newtonsoft.Json;
 using WolvenKit.RED4.Types;
 using WolvenKit.RED4.Archive.Buffer;
 
@@ -19,27 +15,14 @@ namespace CP2077SaveEditor
         public CyberpunkSaveFile SaveFile { get; set; }
         public Dictionary<uint, string> KnownFacts;
 
-        public enum AppearanceEntryType
-        {
-            MainListEntry,
-            AdditionalListEntry
-        }
-
-        public enum AppearanceField
-        {
-            FirstString,
-            Hash,
-            SecondString
-        }
-
         public SaveFileHelper() : base()
         {
             Appearance = new AppearanceHelper(this);
         }
 
-        public CharacterCustomizationAppearances GetAppearanceContainer()
+        public gameuiCharacterCustomizationPresetWrapper GetAppearanceContainer()
         {
-            return (CharacterCustomizationAppearances)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "CharacetrCustomization_Appearances")].Value;
+            return (gameuiCharacterCustomizationPresetWrapper)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "CharacetrCustomization_Appearances")].Value;
         }
 
         public Inventory GetInventoriesContainer()
@@ -54,12 +37,17 @@ namespace CP2077SaveEditor
 
         public gameStatsStateMapStructure GetStatsContainer()
         {
-            return (gameStatsStateMapStructure)((Package04)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "StatsSystem")].Value).Content).RootChunk;
+            return (gameStatsStateMapStructure)((RedPackage)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "StatsSystem")].Value).Content).RootChunk;
         }
 
-        public Package04 GetScriptableContainer()
+        public RedPackage GetScriptableContainer()
         {
-            return (Package04)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "ScriptableSystemsContainer")].Value).Content;
+            return (RedPackage)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "ScriptableSystemsContainer")].Value).Content;
+        }
+
+        public T GetScriptableSystem<T>() where T : gameScriptableSystem
+        {
+            return (T)GetScriptableContainer().Chunks.FirstOrDefault(x => x is T);
         }
 
         public PlayerDevelopmentData GetPlayerDevelopmentData()
@@ -70,7 +58,12 @@ namespace CP2077SaveEditor
 
         public PersistencySystem2 GetPSDataContainer()
         {
-            return (PersistencySystem2)SaveFile.Nodes.Where(x => x.Name == "PersistencySystem2").FirstOrDefault().Value;
+            return GetSystem<PersistencySystem2>();
+        }
+
+        public T GetSystem<T>()
+        {
+            return (T)SaveFile.Nodes.FirstOrDefault(x => x.Value.GetType() == typeof(T))?.Value;
         }
 
         public Dictionary<gameItemID, string> GetEquippedItems()
@@ -137,11 +130,11 @@ namespace CP2077SaveEditor
 
         public gameSavedStatsData GetItemStatData(InventoryHelper.ItemData item)
         {
-            var result = this.GetStatsFromSeed(item.Header.Seed);
+            var result = this.GetStatsFromSeed(item.Header.ItemId.RngSeed);
 
             if (result == null && item.Data != null && item.Data is InventoryHelper.SimpleItemData)
             {
-                var i = Array.FindIndex(this.GetStatsMap().Values.ToArray(), x => x.RecordID == item.ItemTdbId);
+                var i = Array.FindIndex(this.GetStatsMap().Values.ToArray(), x => x.RecordID == item.Header.ItemId.Id);
                 if (i > -1)
                 {
                     return this.GetStatsMap().Values[i];
@@ -230,7 +223,7 @@ namespace CP2077SaveEditor
 
             if (item.Data.GetType() != typeof(InventoryHelper.SimpleItemData))
             {
-                item.Header.Seed = newSeed;
+                item.Header.ItemId.RngSeed = newSeed;
             }
             else
             {
@@ -240,12 +233,12 @@ namespace CP2077SaveEditor
             this.GetStatsMap().Keys.Add(new gameStatsObjectID
             {
                 IdType = gameStatIDType.ItemID,
-                EntityHash = GetItemIdHash(item.ItemTdbId, newSeed, 0)
+                EntityHash = GetItemIdHash(item.Header.ItemId.Id, newSeed, 0)
             });
 
             var statsEntry = new gameSavedStatsData
             {
-                RecordID = item.ItemTdbId,
+                RecordID = item.Header.ItemId.Id,
                 Seed = newSeed,
                 StatModifiers = new()
             };
@@ -280,7 +273,7 @@ namespace CP2077SaveEditor
         {
             if (KnownFacts == null)
             {
-                KnownFacts = JsonConvert.DeserializeObject<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
+                KnownFacts = JsonSerializer.Deserialize<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
             }
 
             var factsList = new List<FactsTable.FactEntry>();

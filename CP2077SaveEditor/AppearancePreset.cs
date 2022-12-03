@@ -12,7 +12,6 @@ namespace CP2077SaveEditor
     {
         public static readonly string[] IgnoredProperties = new[]
         {
-            nameof(AppearanceHelper.MainSections),
             nameof(AppearanceHelper.SuppressBodyGenderPrompt),
             nameof(AppearanceHelper.NailColor),
             nameof(AppearanceHelper.PubicHairColor)

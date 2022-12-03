@@ -1,12 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 using System.Windows.Forms;
 
 namespace CP2077SaveEditor
@@ -40,7 +35,7 @@ namespace CP2077SaveEditor
                 }
                 activeSaveFile.AddFactByHash(uint.Parse(factEntryBox.Text), (uint)factValueUpDown.Value);
             } else {
-                var factsList = JsonConvert.DeserializeObject<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
+                var factsList = JsonSerializer.Deserialize<Dictionary<uint, string>>(CP2077SaveEditor.Properties.Resources.Facts);
                 if (!factsList.Values.Contains(factEntryBox.Text))
                 {
                     MessageBox.Show("Fact name '" + factEntryBox.Text + "' could not be found on the known facts list.");

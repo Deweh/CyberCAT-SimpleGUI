@@ -5,26 +5,19 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="YamlDotNet" Version="12.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WolvenKit\WolvenKit.Common\WolvenKit.Common.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.Core\WolvenKit.Core.csproj" />
     <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Archive\WolvenKit.RED4.Archive.csproj" />
     <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Save\WolvenKit.RED4.Save.csproj" />
     <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Types\WolvenKit.RED4.Types.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="CyberCAT.Core">
-      <HintPath>..\CyberCAT\CyberCAT.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="CyberCAT.Extra">
-      <HintPath>..\CyberCAT\CyberCAT.Extra.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +33,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ModSupport\Edgerunning\" />
+    <Folder Include="ModSupport\MarkToSell\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
