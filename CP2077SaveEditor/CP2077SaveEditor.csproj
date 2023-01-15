@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <Platforms>x64</Platforms>
@@ -38,6 +38,7 @@
   <ItemGroup>
     <Folder Include="ModSupport\Edgerunning\" />
     <Folder Include="ModSupport\MarkToSell\" />
+    <Folder Include="ModSupport\EquipmentEx\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
