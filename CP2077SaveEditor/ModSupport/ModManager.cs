@@ -33,6 +33,12 @@ public static class ModManager
         // MarkToSell
         RedReflection.AddRedType(typeof(MarkToSellSystem));
 
+        // Equipment-EX
+        RedReflection.AddRedType(typeof(OutfitPart));
+        RedReflection.AddRedType(typeof(OutfitSet));
+        RedReflection.AddRedType(typeof(OutfitState));
+        RedReflection.AddRedType(typeof(OutfitSystem));
+
         _isLoaded = true;
     }
 }
