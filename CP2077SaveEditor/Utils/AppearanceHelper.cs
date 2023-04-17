@@ -1738,7 +1738,7 @@ namespace CP2077SaveEditor
             bool allFields = false)
         {
             var entries = GetAllEntries(CustomizationGroupType.Customization, searchString);
-            if (defaultEntry.Resource.DepotPath == CName.Empty || defaultEntry.Name == CName.Empty || defaultEntry.Definition == CName.Empty)
+            if (defaultEntry.Resource.DepotPath == ResourcePath.Empty || defaultEntry.Name == CName.Empty || defaultEntry.Definition == CName.Empty)
             {
                 RemoveEntries(entries);
             }
