@@ -38,6 +38,8 @@ public static class ModManager
         RedReflection.AddRedType(typeof(OutfitSet));
         RedReflection.AddRedType(typeof(OutfitState));
         RedReflection.AddRedType(typeof(OutfitSystem));
+        RedReflection.AddRedType(typeof(ViewManager));
+        RedReflection.AddRedType(typeof(ViewState));
 
         _isLoaded = true;
     }
