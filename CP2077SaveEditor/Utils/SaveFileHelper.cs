@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using CP2077SaveEditor.Utils;
 using WolvenKit.RED4.Save;
 using static WolvenKit.RED4.Types.Enums;
 using WolvenKit.RED4.Types;
@@ -11,18 +12,23 @@ namespace CP2077SaveEditor
 {
     public class SaveFileHelper
     {
-        public AppearanceHelper Appearance { get; }
+        public AppearanceHelper2 Appearance { get; }
         public CyberpunkSaveFile SaveFile { get; set; }
         public Dictionary<uint, string> KnownFacts;
 
         public SaveFileHelper() : base()
         {
-            Appearance = new AppearanceHelper(this);
+            Appearance = new AppearanceHelper2(this);
         }
 
         public gameuiCharacterCustomizationPresetWrapper GetAppearanceContainer()
         {
             return (gameuiCharacterCustomizationPresetWrapper)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "CharacetrCustomization_Appearances")].Value;
+        }
+
+        public void SetAppearanceContainer(gameuiCharacterCustomizationPresetWrapper preset)
+        {
+            SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "CharacetrCustomization_Appearances")].Value = preset;
         }
 
         public Inventory GetInventoriesContainer()
