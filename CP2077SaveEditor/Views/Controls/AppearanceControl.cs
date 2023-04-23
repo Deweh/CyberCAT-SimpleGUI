@@ -160,7 +160,7 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void SetAppearanceImage(string name, string value)
         {
-            var oldImg = appearancePreviewBox.Image;
+            /*var oldImg = appearancePreviewBox.Image;
             var imgExists = true;
             var path = Directory.GetCurrentDirectory() + "\\previews\\" + name + "\\" + _parentForm.ActiveSaveFile.Appearance.BodyGender.ToString() + value + ".jpg";
             if (!File.Exists(path)) {
@@ -186,7 +186,7 @@ namespace CP2077SaveEditor.Views.Controls
             {
                 appearancePreviewBox.Image = null;
             }
-            oldImg?.Dispose();
+            oldImg?.Dispose();*/
         }
 
         public void RefreshAppearanceValues()

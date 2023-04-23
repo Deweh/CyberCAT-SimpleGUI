@@ -10,7 +10,7 @@ namespace CP2077SaveEditor
     public partial class StatDetails : Form
     {
         private Func<bool> callbackFunc;
-        private CHandle<gameStatModifierData_Deprecated> activeStat;
+        private gameStatModifierData_Deprecated activeStat;
 
         public StatDetails()
         {
@@ -28,12 +28,12 @@ namespace CP2077SaveEditor
             ((ComboBox)sender).Items.AddRange(statTypes);
         }
 
-        public void LoadStat(CHandle<gameStatModifierData_Deprecated> stat, Func<bool> callback)
+        public void LoadStat(gameStatModifierData_Deprecated stat, Func<bool> callback)
         {
             callbackFunc = callback;
             activeStat = stat;
 
-            if (stat.Chunk is gameCombinedStatModifierData_Deprecated comStat)
+            if (stat is gameCombinedStatModifierData_Deprecated comStat)
             {
                 statTabControl.TabPages.Remove(constantStatTab);
                 statTabControl.TabPages.Remove(curveStatTab);
@@ -45,7 +45,7 @@ namespace CP2077SaveEditor
                 combinedStatType.Text = comStat.StatType.ToString();
                 combinedValue.Text = comStat.Value.ToString();                
             }
-            else if (stat.Chunk is gameConstantStatModifierData_Deprecated constantStat)
+            else if (stat is gameConstantStatModifierData_Deprecated constantStat)
             {
                 statTabControl.TabPages.Remove(combinedStatTab);
                 statTabControl.TabPages.Remove(curveStatTab);
@@ -54,7 +54,7 @@ namespace CP2077SaveEditor
                 constantStatType.Text = constantStat.StatType.ToString();
                 constantValue.Text = constantStat.Value.ToString();
             }
-            else if (stat.Chunk is gameCurveStatModifierData_Deprecated curvStat)
+            else if (stat is gameCurveStatModifierData_Deprecated curvStat)
             {
                 statTabControl.TabPages.Remove(constantStatTab);
                 statTabControl.TabPages.Remove(combinedStatTab);
@@ -90,7 +90,7 @@ namespace CP2077SaveEditor
                 return true;
             }
 
-            if (activeStat.Chunk is gameCombinedStatModifierData_Deprecated comStat)
+            if (activeStat is gameCombinedStatModifierData_Deprecated comStat)
             {
                 if (!CheckInput(new List<bool> {
                     Enum.TryParse<gameStatModifierType>(combinedModifier.Text, out _),
@@ -109,7 +109,7 @@ namespace CP2077SaveEditor
                 comStat.Value = float.Parse(combinedValue.Text);
 
             }
-            else if (activeStat.Chunk is gameConstantStatModifierData_Deprecated constantStat)
+            else if (activeStat is gameConstantStatModifierData_Deprecated constantStat)
             {
                 if (!CheckInput(new List<bool> {
                     Enum.TryParse<gameStatModifierType>(constantModifier.Text, out _),
@@ -122,7 +122,7 @@ namespace CP2077SaveEditor
                 constantStat.Value = float.Parse(constantValue.Text);
 
             }
-            else if (activeStat.Chunk is gameCurveStatModifierData_Deprecated curvStat)
+            else if (activeStat is gameCurveStatModifierData_Deprecated curvStat)
             {
                 if (!CheckInput(new List<bool> {
                     Enum.TryParse<gamedataStatType>(curveStat.Text, out _),

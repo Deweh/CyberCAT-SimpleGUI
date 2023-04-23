@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using CP2077SaveEditor.Views;
+﻿using System.IO;
 using WolvenKit.RED4.Save;
 using WolvenKit.RED4.TweakDB;
-using WolvenKit.RED4.Types;
-using YamlDotNet.Serialization;
 
 namespace CP2077SaveEditor.ModSupport;
 
@@ -31,7 +27,7 @@ public static class EnhancedCraftHelper
 
     private static void LoadWeaponVariants(string path, TweakDB tweakDb)
     {
-        var visualTagList = new Dictionary<string, string>();
+        /*var visualTagList = new Dictionary<string, string>();
         foreach (var (id, value) in tweakDb.Flats)
         {
             if (id.ResolvedText.EndsWith(".visualTags") && value is CArray<CName> { Count: > 0 } visualTags)
@@ -63,12 +59,12 @@ public static class EnhancedCraftHelper
                     }
                 }
             }
-        }
+        }*/
     }
 
     private static void LoadClothesVariants(string path, TweakDB tweakDb)
     {
-        var appearanceNames = new Dictionary<string, string>();
+        /*var appearanceNames = new Dictionary<string, string>();
         foreach (var (id, value) in tweakDb.Flats)
         {
             if (id.ResolvedText.EndsWith(".appearanceName") && value is CName cName)
@@ -105,7 +101,7 @@ public static class EnhancedCraftHelper
                     }
                 }
             }
-        }
+        }*/
     }
 
     public static string GetName(SaveFileHelper save, InventoryHelper.ItemData itemData)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using WolvenKit.RED4.Archive.Buffer;
 using WolvenKit.RED4.Types;
 using static WolvenKit.RED4.Types.Enums;
 using static WolvenKit.RED4.Save.InventoryHelper;
@@ -14,7 +15,7 @@ namespace CP2077SaveEditor
         private SaveFileHelper activeSaveFile;
         private bool statsOnly = false;
         private Random globalRand;
-        
+
         public ItemDetails()
         {
             InitializeComponent();
@@ -28,7 +29,6 @@ namespace CP2077SaveEditor
             quantityUpDown.ValueChanged += ApplyableControlChanged;
             unknownFlag1CheckBox.CheckedChanged += ApplyableControlChanged;
             questItemCheckBox.CheckedChanged += ApplyableControlChanged;
-            modsBaseIdBox.TextChanged += ApplyableControlChanged;
 
             //Shown += (object s, EventArgs e) =>
             //{
@@ -60,7 +60,9 @@ namespace CP2077SaveEditor
             if (rootNode.Children.Contains(targetNode))
             {
                 rootNode.Children.Remove(targetNode);
-            } else {
+            }
+            else
+            {
                 foreach (ItemModData childNode in rootNode.Children)
                 {
                     if (childNode.Children.Count > 0)
@@ -96,13 +98,14 @@ namespace CP2077SaveEditor
                     if (activeItem.Data is ModableItemWithQuantityData modableQuantityData)
                     {
                         quantityUpDown.Value = modableQuantityData.Quantity;
-                    } else {
+                    }
+                    else
+                    {
                         basicInfoGroupBox.Enabled = false;
                         quantityUpDown.Value = 1;
                     }
 
                     quickActionsGroupBox.Enabled = true;
-                    modsBaseIdBox.Text = ((ulong)modableData.TdbId1).ToString();
 
                     modsTreeView.Nodes.Clear();
                     var rootNode = modsTreeView.Nodes.Add(modableData.RootNode.AttachmentSlotTdbId.ResolvedText, modableData.RootNode.AttachmentSlotTdbId.ResolvedText + " :: " + modableData.RootNode.Header.ItemId.Id.ResolvedText + " [" + modableData.RootNode.Children.Count.ToString() + "]");
@@ -114,7 +117,8 @@ namespace CP2077SaveEditor
             //Stats parsing
             if (Global.StatsSystemEnabled)
             {
-                if (activeSaveFile.GetItemStatData(activeItem) == null)
+                var statsData = activeSaveFile.GetItemStatData(activeItem);
+                if (statsData == null)
                 {
                     detailsTabControl.TabPages.Remove(statsTab);
                 }
@@ -123,19 +127,18 @@ namespace CP2077SaveEditor
                     detailsTabControl.TabPages.Remove(statsPlaceholderTab);
                     statsListView.Items.Clear();
                     var listRows = new List<ListViewItem>();
-                    var statsData = activeSaveFile.GetItemStatData(activeItem);
-                    if (statsData.StatModifiers != null)
+                    if (statsData.ModifiersBuffer.Data is ModifiersBuffer modBuffer)
                     {
-                        foreach (CHandle<gameStatModifierData_Deprecated> modifier in statsData.StatModifiers)
+                        foreach (gameStatModifierData_Deprecated modifier in modBuffer.Entries)
                         {
-                            var row = new string[] { "Constant", modifier.Chunk.ModifierType.ToString(), modifier.Chunk.StatType.ToString(), "" };
+                            var row = new string[] { "Constant", modifier.ModifierType.ToString(), modifier.StatType.ToString(), "" };
 
-                            if (modifier.Chunk is gameCombinedStatModifierData_Deprecated combinedData)
+                            if (modifier is gameCombinedStatModifierData_Deprecated combinedData)
                             {
                                 row[0] = "Combined";
                                 row[3] = combinedData.Value.ToString();
                             }
-                            else if (modifier.Chunk is gameConstantStatModifierData_Deprecated constantData)
+                            else if (modifier is gameConstantStatModifierData_Deprecated constantData)
                             {
                                 row[3] = constantData.Value.ToString();
                             }
@@ -155,7 +158,7 @@ namespace CP2077SaveEditor
                     }
                     else
                     {
-                        statsData.StatModifiers = new();
+                        statsData.ModifiersBuffer.Data = new ModifiersBuffer();
                     }
                 }
             }
@@ -164,7 +167,7 @@ namespace CP2077SaveEditor
                 detailsTabControl.TabPages.Remove(statsTab);
                 detailsTabControl.TabPages.Remove(statsPlaceholderTab);
             }
-            
+
 
             if (!statsOnly)
             {
@@ -193,7 +196,7 @@ namespace CP2077SaveEditor
                 this.Close();
             }
 
-            callbackFunc1 = delegate{ return true; };
+            callbackFunc1 = delegate { return true; };
             var dummyItem = new ItemData();
             dummyItem.Header = new() { ItemId = new() { RngSeed = seed } };
             activeItem = dummyItem;
@@ -209,7 +212,9 @@ namespace CP2077SaveEditor
             if (name == "Player")
             {
                 quickActionsGroupBox.Visible = false;
-            } else {
+            }
+            else
+            {
                 newHeight += 60;
             }
 
@@ -226,11 +231,13 @@ namespace CP2077SaveEditor
             var statData = activeSaveFile.GetItemStatData(activeItem);
             if (statData == null)
             {
-                if (MessageBox.Show("Item has no stat data. To fix this, please upgrade the item in-game at least once. Fallback to old method?", "Notice", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show("Item has no stat data. To fix this, please upgrade the item in-game at least once.", "Notice", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    modsBaseIdBox.Text = ((ulong)88400986533).ToString();
+                    //modsBaseIdBox.Text = ((ulong)88400986533).ToString();
                 }
-            } else {
+            }
+            else
+            {
                 activeSaveFile.SetConstantStat(gamedataStatType.Quality, 4, statData);
                 activeSaveFile.SetConstantStat(gamedataStatType.RandomCurveInput, 0, statData, gameStatModifierType.Multiplier);
 
@@ -243,14 +250,9 @@ namespace CP2077SaveEditor
         {
             if (!statsOnly)
             {
-                if (activeItem.Data is ModableItemData modableData)
+                if (activeItem.Data is ModableItemData modableItem)
                 {
-                    if (!ulong.TryParse(modsBaseIdBox.Text, out ulong id))
-                    {
-                        MessageBox.Show("Special ID must be a 64-bit unsigned integer.");
-                        return;
-                    }
-                    modableData.TdbId1 = id;
+                    modableItem.ModHeaderThing = modableItem.RootNode.ModHeaderThing;
                 }
 
                 if (activeItem.Data is SimpleItemData || activeItem.Data is ModableItemWithQuantityData)
@@ -299,28 +301,31 @@ namespace CP2077SaveEditor
             if (statsListView.SelectedItems.Count > 0)
             {
                 var nodeDetails = new StatDetails();
-                nodeDetails.LoadStat(((CHandle<gameStatModifierData_Deprecated>)statsListView.SelectedItems[0].Tag), ReloadData);
+                nodeDetails.LoadStat((gameStatModifierData_Deprecated)statsListView.SelectedItems[0].Tag, ReloadData);
             }
         }
 
         private void modsTreeView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete && modsTreeView.SelectedNode != null) {
+            if (e.KeyCode == Keys.Delete && modsTreeView.SelectedNode != null)
+            {
 
                 var data = (ModableItemData)activeItem.Data;
                 if (data.RootNode != (ItemModData)modsTreeView.SelectedNode.Tag)
                 {
                     IterativeDeleteModNode(((ItemModData)modsTreeView.SelectedNode.Tag), data.RootNode);
                     modsTreeView.SelectedNode.Remove();
-                } else {
+                }
+                else
+                {
 
                     data.RootNode.Children.Clear();
                     data.RootNode.AttachmentSlotTdbId = 0;
                     data.RootNode.Header.ItemId.Id = 0;
-                    data.RootNode.TdbId2 = 0;
+                    data.RootNode.ModHeaderThing.LootItemId = 0;
+                    data.RootNode.ModHeaderThing.Unknown2 = 0;
+                    data.RootNode.ModHeaderThing.RequiredLevel = 0;
                     data.RootNode.Unknown2 = 0;
-                    data.RootNode.Unknown3 = 0;
-                    data.RootNode.Unknown4 = 0;
                     data.RootNode.AppearanceName = "";
                     ReloadData();
                 }
@@ -333,7 +338,7 @@ namespace CP2077SaveEditor
             {
                 e.Handled = true;
                 e.SuppressKeyPress = true;
-                activeSaveFile.RemoveStat((CHandle<gameStatModifierData_Deprecated>)statsListView.SelectedItems[0].Tag, activeSaveFile.GetItemStatData(activeItem));
+                activeSaveFile.RemoveStat((gameStatModifierData_Deprecated)statsListView.SelectedItems[0].Tag, activeSaveFile.GetItemStatData(activeItem));
                 statsListView.Items.Remove(statsListView.SelectedItems[0]);
             }
         }
@@ -349,11 +354,12 @@ namespace CP2077SaveEditor
 
         private void removeStatButton_Click(object sender, EventArgs e)
         {
-            if (statsListView.SelectedItems.Count > 0) {
-                activeSaveFile.RemoveStat((CHandle<gameStatModifierData_Deprecated>)statsListView.SelectedItems[0].Tag, activeSaveFile.GetItemStatData(activeItem));
+            if (statsListView.SelectedItems.Count > 0)
+            {
+                activeSaveFile.RemoveStat((gameStatModifierData_Deprecated)statsListView.SelectedItems[0].Tag, activeSaveFile.GetItemStatData(activeItem));
                 statsListView.Items.Remove(statsListView.SelectedItems[0]);
             }
-            
+
         }
 
         private void addCombinedStatButton_Click(object sender, EventArgs e)
@@ -391,10 +397,10 @@ namespace CP2077SaveEditor
                     data.RootNode.Children.Clear();
                     data.RootNode.AttachmentSlotTdbId = 0;
                     data.RootNode.Header.ItemId.Id = 0;
-                    data.RootNode.TdbId2 = 0;
+                    data.RootNode.ModHeaderThing.LootItemId = 0;
+                    data.RootNode.ModHeaderThing.Unknown2 = 0;
+                    data.RootNode.ModHeaderThing.RequiredLevel = 0;
                     data.RootNode.Unknown2 = 0;
-                    data.RootNode.Unknown3 = 0;
-                    data.RootNode.Unknown4 = 0;
                     data.RootNode.AppearanceName = "";
                     ReloadData();
                 }
@@ -406,13 +412,16 @@ namespace CP2077SaveEditor
             if (modsTreeView.SelectedNode == null)
             {
                 MessageBox.Show("Must select parent node.");
-            } else {
+            }
+            else
+            {
                 var newNode = new ItemModData
                 {
                     Header = new gameItemIdWrapper
                     {
                         ItemId = new gameItemID()
-                    }
+                    },
+                    ModHeaderThing = new ModHeaderThing()
                 };
                 ((ItemModData)modsTreeView.SelectedNode.Tag).Children.Add(newNode);
                 ReloadData();
