@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -113,10 +114,16 @@ namespace CP2077SaveEditor
             }
             set
             {
+                if (MessageBox.Show("Changing voice tone can lead to major bugs. Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                {
+                    return;
+                }
+
                 PresetWrapper.IsBrainGenderMale = value == AppearanceGender.Male;
             }
         }
 
+        [Browsable(false)]
         public int SkinTone {
             get
             {
@@ -132,6 +139,7 @@ namespace CP2077SaveEditor
             }
         }
 
+        [Browsable(false)]
         public int SkinType
         {
             get
@@ -149,6 +157,7 @@ namespace CP2077SaveEditor
             }
         }
 
+        [Browsable(false)]
         public string HairStyle
         {
             get
@@ -186,6 +195,7 @@ namespace CP2077SaveEditor
             }
         }
 
+        [Browsable(false)]
         public int HairColor
         {
             get
@@ -223,6 +233,7 @@ namespace CP2077SaveEditor
             }
         }
 
+        [Browsable(false)]
         public int Eyes
         {
             get
@@ -240,6 +251,7 @@ namespace CP2077SaveEditor
             }
         }
 
+        [Browsable(false)]
         public int EyeColor
         {
             get
@@ -1738,7 +1750,7 @@ namespace CP2077SaveEditor
             bool allFields = false)
         {
             var entries = GetAllEntries(CustomizationGroupType.Customization, searchString);
-            if (defaultEntry.Resource.DepotPath == CName.Empty || defaultEntry.Name == CName.Empty || defaultEntry.Definition == CName.Empty)
+            if (defaultEntry.Resource.DepotPath == ResourcePath.Empty || defaultEntry.Name == CName.Empty || defaultEntry.Definition == CName.Empty)
             {
                 RemoveEntries(entries);
             }

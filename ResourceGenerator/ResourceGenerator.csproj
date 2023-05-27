@@ -11,9 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\WolvenKit\WolvenKit.Common\WolvenKit.Common.csproj" />
     <ProjectReference Include="..\WolvenKit\WolvenKit.Core\WolvenKit.Core.csproj" />
-    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Archive\WolvenKit.RED4.Archive.csproj" />
-    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.TweakDB\WolvenKit.RED4.TweakDB.csproj" />
-    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Types\WolvenKit.RED4.Types.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4\WolvenKit.RED4.csproj" />
   </ItemGroup>
 
 </Project>

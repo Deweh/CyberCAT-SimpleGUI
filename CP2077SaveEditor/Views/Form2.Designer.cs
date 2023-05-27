@@ -154,7 +154,7 @@ namespace CP2077SaveEditor.Views
             // 
             this.tssl_Info.Name = "tssl_Info";
             this.tssl_Info.Size = new System.Drawing.Size(294, 17);
-            this.tssl_Info.Text = "v0.24c // WolvenKit.RED4.Save by the WolvenKit team.";
+            this.tssl_Info.Text = "v0.25 // WolvenKit.RED4.Save by the WolvenKit team.";
             // 
             // Form2
             // 

@@ -30,21 +30,20 @@ namespace CP2077SaveEditor.Views.Controls
             _parentForm = parentForm;
             _parentForm.PropertyChanged += OnParentFormPropertyChanged;
 
-            appearanceOptionsPanel.Enabled = Global.IsDebug;
-            appearancePreviewBox.Enabled = Global.IsDebug;
-            advancedAppearanceButton.Enabled = Global.IsDebug;
+            //appearanceOptionsPanel.Enabled = Global.IsDebug;
+            //appearancePreviewBox.Enabled = Global.IsDebug;
+            //advancedAppearanceButton.Enabled = Global.IsDebug;
 
             var lastPos = 0;
-            foreach (PropertyInfo property in typeof(AppearanceHelper).GetProperties())
+            foreach (PropertyInfo property in typeof(AppearanceHelper2).GetProperties())
             {
-                //if (property.PropertyType.Name == "Object")
-                //{
-                //    MessageBox.Show(property.Name);
-                //}
-
-                if (!Global.IsDebug && wipFields.Contains(property.Name))
+                if (!Global.IsDebug)
                 {
-                    continue;
+                    var attr = property.GetCustomAttribute<BrowsableAttribute>();
+                    if (attr is { Browsable: false })
+                    {
+                        continue;
+                    }
                 }
 
                 if (property.PropertyType.Name != "Object" && property.PropertyType.Name != "Boolean" && property.Name != "MainSections" && property.CanWrite == true)
@@ -153,7 +152,7 @@ namespace CP2077SaveEditor.Views.Controls
                     _parentForm.ActiveSaveFile.Appearance.SuppressBodyGenderPrompt = true;
                     _parentForm.ActiveSaveFile.Appearance.BodyGender = newValues.Preset.IsMale ? AppearanceGender.Male : AppearanceGender.Female;
                 }
-                _parentForm.ActiveSaveFile.Appearance.SetAllValues(newValues);
+                _parentForm.ActiveSaveFile.SetAppearanceContainer(newValues);
                 RefreshAppearanceValues();
                 _parentForm.SetStatus("Appearance preset loaded.");
             }
@@ -161,7 +160,7 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void SetAppearanceImage(string name, string value)
         {
-            var oldImg = appearancePreviewBox.Image;
+            /*var oldImg = appearancePreviewBox.Image;
             var imgExists = true;
             var path = Directory.GetCurrentDirectory() + "\\previews\\" + name + "\\" + _parentForm.ActiveSaveFile.Appearance.BodyGender.ToString() + value + ".jpg";
             if (!File.Exists(path)) {
@@ -187,7 +186,7 @@ namespace CP2077SaveEditor.Views.Controls
             {
                 appearancePreviewBox.Image = null;
             }
-            oldImg?.Dispose();
+            oldImg?.Dispose();*/
         }
 
         public void RefreshAppearanceValues()

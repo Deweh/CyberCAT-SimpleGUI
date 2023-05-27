@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using CP2077SaveEditor.Utils;
 using WolvenKit.RED4.Save;
 using static WolvenKit.RED4.Types.Enums;
 using WolvenKit.RED4.Types;
@@ -11,18 +12,23 @@ namespace CP2077SaveEditor
 {
     public class SaveFileHelper
     {
-        public AppearanceHelper Appearance { get; }
+        public AppearanceHelper2 Appearance { get; }
         public CyberpunkSaveFile SaveFile { get; set; }
         public Dictionary<uint, string> KnownFacts;
 
         public SaveFileHelper() : base()
         {
-            Appearance = new AppearanceHelper(this);
+            Appearance = new AppearanceHelper2(this);
         }
 
         public gameuiCharacterCustomizationPresetWrapper GetAppearanceContainer()
         {
             return (gameuiCharacterCustomizationPresetWrapper)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "CharacetrCustomization_Appearances")].Value;
+        }
+
+        public void SetAppearanceContainer(gameuiCharacterCustomizationPresetWrapper preset)
+        {
+            SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == "CharacetrCustomization_Appearances")].Value = preset;
         }
 
         public Inventory GetInventoriesContainer()
@@ -157,7 +163,7 @@ namespace CP2077SaveEditor
         public void SetConstantStat(gamedataStatType stat, float value, gameSavedStatsData statsData, gameStatModifierType mod = gameStatModifierType.Additive)
         {
             var foundStat = false;
-            foreach (gameStatModifierData_Deprecated modifier in statsData.StatModifiers)
+            foreach (gameStatModifierData_Deprecated modifier in ((ModifiersBuffer)statsData.ModifiersBuffer.Data!).Entries)
             {
                 if (modifier is gameConstantStatModifierData_Deprecated constantModifier)
                 {
@@ -182,31 +188,29 @@ namespace CP2077SaveEditor
             }
         }
 
-        public CHandle<gameStatModifierData_Deprecated> AddStat(Type statType, gameSavedStatsData statsData, gameStatModifierData_Deprecated modifierData = null)
+        public gameStatModifierData_Deprecated AddStat(Type statType, gameSavedStatsData statsData, gameStatModifierData_Deprecated modifierData = null)
         {
-            var newModifierData = System.Activator.CreateInstance(statType);
-
-            if (statType == typeof(gameCurveStatModifierData_Deprecated))
+            if (modifierData == null)
             {
-                ((gameCurveStatModifierData_Deprecated)newModifierData).ColumnName = "<null>";
-                ((gameCurveStatModifierData_Deprecated)newModifierData).CurveName = "<null>";
+                modifierData = (gameStatModifierData_Deprecated)System.Activator.CreateInstance(statType);
 
+                if (modifierData is gameCurveStatModifierData_Deprecated curveStat)
+                {
+                    curveStat.ColumnName = "<null>";
+                    curveStat.CurveName = "<null>";
+                }
             }
 
-            if (modifierData != null)
-            {
-                newModifierData = modifierData;
-            }
+            statsData.ModifiersBuffer.Data ??= new ModifiersBuffer();
 
-            var final = new CHandle<gameStatModifierData_Deprecated>((gameStatModifierData_Deprecated)newModifierData);
-            statsData.StatModifiers.Add(final);
+            ((ModifiersBuffer)statsData.ModifiersBuffer.Data).Entries.Add(modifierData);
 
-            return final;
+            return modifierData;
         }
 
-        public void RemoveStat(CHandle<gameStatModifierData_Deprecated> statsHandle, gameSavedStatsData statsData)
+        public void RemoveStat(gameStatModifierData_Deprecated stats, gameSavedStatsData statsData)
         {
-            statsData.StatModifiers.Remove(statsHandle);
+            ((ModifiersBuffer)statsData.ModifiersBuffer.Data)!.Entries.Remove(stats);
         }
 
         public gameSavedStatsData CreateStatData(InventoryHelper.ItemData item, Random rand)
@@ -240,7 +244,11 @@ namespace CP2077SaveEditor
             {
                 RecordID = item.Header.ItemId.Id,
                 Seed = newSeed,
-                StatModifiers = new()
+                StatModifiers = new(),
+                ModifiersBuffer = new DataBuffer
+                {
+                    Data = new ModifiersBuffer()
+                }
             };
 
             this.GetStatsMap().Values.Add(statsEntry);

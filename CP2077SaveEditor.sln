@@ -9,15 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolvenKit.Core", "WolvenKit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolvenKit.Common", "WolvenKit\WolvenKit.Common\WolvenKit.Common.csproj", "{3BB005ED-3538-4093-96C4-D3239F8AAEE4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolvenKit.RED4.Types", "WolvenKit\WolvenKit.RED4.Types\WolvenKit.RED4.Types.csproj", "{42A835A3-1A0F-40B5-915C-ADEE8BFFAFBD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolvenKit.RED4.Archive", "WolvenKit\WolvenKit.RED4.Archive\WolvenKit.RED4.Archive.csproj", "{F801B1E3-AFC8-4D06-B954-C493D8522AD1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolvenKit.RED4.Save", "WolvenKit\WolvenKit.RED4.Save\WolvenKit.RED4.Save.csproj", "{F5FD5B0E-0120-4E60-B18C-7052DDD7DD4B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolvenKit.RED4.TweakDB", "WolvenKit\WolvenKit.RED4.TweakDB\WolvenKit.RED4.TweakDB.csproj", "{6D7A367F-0FAF-46B2-A935-307373904631}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceGenerator", "ResourceGenerator\ResourceGenerator.csproj", "{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolvenKit.RED4", "WolvenKit\WolvenKit.RED4\WolvenKit.RED4.csproj", "{EFB0B450-1056-4DC3-9719-59D443A09E71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,26 +31,14 @@ Global
 		{3BB005ED-3538-4093-96C4-D3239F8AAEE4}.Debug|x64.Build.0 = Debug|x64
 		{3BB005ED-3538-4093-96C4-D3239F8AAEE4}.Release|x64.ActiveCfg = Release|x64
 		{3BB005ED-3538-4093-96C4-D3239F8AAEE4}.Release|x64.Build.0 = Release|x64
-		{42A835A3-1A0F-40B5-915C-ADEE8BFFAFBD}.Debug|x64.ActiveCfg = Debug|x64
-		{42A835A3-1A0F-40B5-915C-ADEE8BFFAFBD}.Debug|x64.Build.0 = Debug|x64
-		{42A835A3-1A0F-40B5-915C-ADEE8BFFAFBD}.Release|x64.ActiveCfg = Release|x64
-		{42A835A3-1A0F-40B5-915C-ADEE8BFFAFBD}.Release|x64.Build.0 = Release|x64
-		{F801B1E3-AFC8-4D06-B954-C493D8522AD1}.Debug|x64.ActiveCfg = Debug|x64
-		{F801B1E3-AFC8-4D06-B954-C493D8522AD1}.Debug|x64.Build.0 = Debug|x64
-		{F801B1E3-AFC8-4D06-B954-C493D8522AD1}.Release|x64.ActiveCfg = Release|x64
-		{F801B1E3-AFC8-4D06-B954-C493D8522AD1}.Release|x64.Build.0 = Release|x64
-		{F5FD5B0E-0120-4E60-B18C-7052DDD7DD4B}.Debug|x64.ActiveCfg = Debug|x64
-		{F5FD5B0E-0120-4E60-B18C-7052DDD7DD4B}.Debug|x64.Build.0 = Debug|x64
-		{F5FD5B0E-0120-4E60-B18C-7052DDD7DD4B}.Release|x64.ActiveCfg = Release|x64
-		{F5FD5B0E-0120-4E60-B18C-7052DDD7DD4B}.Release|x64.Build.0 = Release|x64
-		{6D7A367F-0FAF-46B2-A935-307373904631}.Debug|x64.ActiveCfg = Debug|x64
-		{6D7A367F-0FAF-46B2-A935-307373904631}.Debug|x64.Build.0 = Debug|x64
-		{6D7A367F-0FAF-46B2-A935-307373904631}.Release|x64.ActiveCfg = Release|x64
-		{6D7A367F-0FAF-46B2-A935-307373904631}.Release|x64.Build.0 = Release|x64
 		{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}.Debug|x64.ActiveCfg = Debug|x64
 		{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}.Debug|x64.Build.0 = Debug|x64
 		{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}.Release|x64.ActiveCfg = Release|x64
 		{01B1D3CD-B7BD-4A04-B4E1-4505176EAFAA}.Release|x64.Build.0 = Release|x64
+		{EFB0B450-1056-4DC3-9719-59D443A09E71}.Debug|x64.ActiveCfg = Debug|x64
+		{EFB0B450-1056-4DC3-9719-59D443A09E71}.Debug|x64.Build.0 = Debug|x64
+		{EFB0B450-1056-4DC3-9719-59D443A09E71}.Release|x64.ActiveCfg = Release|x64
+		{EFB0B450-1056-4DC3-9719-59D443A09E71}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

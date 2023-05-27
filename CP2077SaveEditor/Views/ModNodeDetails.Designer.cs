@@ -30,260 +30,297 @@ namespace CP2077SaveEditor
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModNodeDetails));
-            this.label1 = new System.Windows.Forms.Label();
-            this.attachmentNameLabel = new System.Windows.Forms.Label();
-            this.attachmentIdBox = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.item1IdBox = new System.Windows.Forms.TextBox();
-            this.item1NameLabel = new System.Windows.Forms.Label();
-            this.applyCloseButton = new CP2077SaveEditor.ModernButton();
-            this.unknown1Box = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.unknown2Box = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.unknown3Box = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.resolvedItemLabel = new System.Windows.Forms.LinkLabel();
-            this.unknown4Box = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.unknownIDBox = new System.Windows.Forms.TextBox();
-            this.SuspendLayout();
+            lbl_AttachmentName = new System.Windows.Forms.Label();
+            txt_AttachmentId = new System.Windows.Forms.TextBox();
+            lbl_ModName = new System.Windows.Forms.Label();
+            txt_ModId = new System.Windows.Forms.TextBox();
+            applyCloseButton = new ModernButton();
+            unknown1Box = new System.Windows.Forms.TextBox();
+            label4 = new System.Windows.Forms.Label();
+            unknown2Box = new System.Windows.Forms.TextBox();
+            label6 = new System.Windows.Forms.Label();
+            unknown3Box = new System.Windows.Forms.TextBox();
+            label8 = new System.Windows.Forms.Label();
+            lbl_AttachmentId = new System.Windows.Forms.Label();
+            lbl_ModId = new System.Windows.Forms.Label();
+            label7 = new System.Windows.Forms.Label();
+            resolvedItemLabel = new System.Windows.Forms.LinkLabel();
+            unknown4Box = new System.Windows.Forms.TextBox();
+            label9 = new System.Windows.Forms.Label();
+            lbl_LootItemId = new System.Windows.Forms.Label();
+            txt_LootItemId = new System.Windows.Forms.TextBox();
+            lbl_LootItemName = new System.Windows.Forms.Label();
+            btn_MaxLevel = new ModernButton();
+            txt_AttachmentName = new System.Windows.Forms.TextBox();
+            txt_ModName = new System.Windows.Forms.TextBox();
+            txt_LootItemName = new System.Windows.Forms.TextBox();
+            SuspendLayout();
             // 
-            // label1
+            // lbl_AttachmentName
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(24, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Attachment Name:";
+            lbl_AttachmentName.AutoSize = true;
+            lbl_AttachmentName.Location = new System.Drawing.Point(24, 15);
+            lbl_AttachmentName.Name = "lbl_AttachmentName";
+            lbl_AttachmentName.Size = new System.Drawing.Size(101, 13);
+            lbl_AttachmentName.TabIndex = 0;
+            lbl_AttachmentName.Text = "Attachment Name:";
             // 
-            // attachmentNameLabel
+            // txt_AttachmentId
             // 
-            this.attachmentNameLabel.AutoSize = true;
-            this.attachmentNameLabel.Location = new System.Drawing.Point(131, 15);
-            this.attachmentNameLabel.Name = "attachmentNameLabel";
-            this.attachmentNameLabel.Size = new System.Drawing.Size(58, 13);
-            this.attachmentNameLabel.TabIndex = 1;
-            this.attachmentNameLabel.Text = "Unknown";
+            txt_AttachmentId.Location = new System.Drawing.Point(131, 40);
+            txt_AttachmentId.Name = "txt_AttachmentId";
+            txt_AttachmentId.Size = new System.Drawing.Size(231, 22);
+            txt_AttachmentId.TabIndex = 2;
+            txt_AttachmentId.TextChanged += txt_AttachmentId_TextChanged;
             // 
-            // attachmentIdBox
+            // lbl_ModName
             // 
-            this.attachmentIdBox.Location = new System.Drawing.Point(134, 33);
-            this.attachmentIdBox.Name = "attachmentIdBox";
-            this.attachmentIdBox.Size = new System.Drawing.Size(231, 22);
-            this.attachmentIdBox.TabIndex = 2;
+            lbl_ModName.AutoSize = true;
+            lbl_ModName.Location = new System.Drawing.Point(59, 71);
+            lbl_ModName.Name = "lbl_ModName";
+            lbl_ModName.Size = new System.Drawing.Size(66, 13);
+            lbl_ModName.TabIndex = 3;
+            lbl_ModName.Text = "Mod Name:";
             // 
-            // label2
+            // txt_ModId
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(59, 66);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Mod Name:";
-            // 
-            // item1IdBox
-            // 
-            this.item1IdBox.Location = new System.Drawing.Point(134, 84);
-            this.item1IdBox.Name = "item1IdBox";
-            this.item1IdBox.Size = new System.Drawing.Size(231, 22);
-            this.item1IdBox.TabIndex = 5;
-            // 
-            // item1NameLabel
-            // 
-            this.item1NameLabel.AutoSize = true;
-            this.item1NameLabel.Location = new System.Drawing.Point(131, 66);
-            this.item1NameLabel.Name = "item1NameLabel";
-            this.item1NameLabel.Size = new System.Drawing.Size(58, 13);
-            this.item1NameLabel.TabIndex = 4;
-            this.item1NameLabel.Text = "Unknown";
+            txt_ModId.Location = new System.Drawing.Point(131, 96);
+            txt_ModId.Name = "txt_ModId";
+            txt_ModId.Size = new System.Drawing.Size(231, 22);
+            txt_ModId.TabIndex = 5;
+            txt_ModId.TextChanged += txt_ModId_TextChanged;
             // 
             // applyCloseButton
             // 
-            this.applyCloseButton.BackColor = System.Drawing.Color.White;
-            this.applyCloseButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.applyCloseButton.ClickEffectEnabled = true;
-            this.applyCloseButton.DefaultColor = System.Drawing.Color.White;
-            this.applyCloseButton.HoverColor = System.Drawing.Color.LightGray;
-            this.applyCloseButton.Location = new System.Drawing.Point(12, 302);
-            this.applyCloseButton.Name = "applyCloseButton";
-            this.applyCloseButton.Size = new System.Drawing.Size(359, 25);
-            this.applyCloseButton.TabIndex = 9;
-            this.applyCloseButton.Text = "Apply && Close";
-            this.applyCloseButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.applyCloseButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.applyCloseButton.Click += new System.EventHandler(this.applyCloseButton_Click);
+            applyCloseButton.BackColor = System.Drawing.Color.White;
+            applyCloseButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            applyCloseButton.ClickEffectEnabled = true;
+            applyCloseButton.DefaultColor = System.Drawing.Color.White;
+            applyCloseButton.HoverColor = System.Drawing.Color.LightGray;
+            applyCloseButton.Location = new System.Drawing.Point(12, 320);
+            applyCloseButton.Name = "applyCloseButton";
+            applyCloseButton.Size = new System.Drawing.Size(350, 25);
+            applyCloseButton.TabIndex = 9;
+            applyCloseButton.Text = "Apply && Close";
+            applyCloseButton.TextColor = System.Drawing.SystemColors.ControlText;
+            applyCloseButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            applyCloseButton.Click += applyCloseButton_Click;
             // 
             // unknown1Box
             // 
-            this.unknown1Box.Location = new System.Drawing.Point(134, 149);
-            this.unknown1Box.Name = "unknown1Box";
-            this.unknown1Box.Size = new System.Drawing.Size(231, 22);
-            this.unknown1Box.TabIndex = 12;
+            unknown1Box.Location = new System.Drawing.Point(131, 180);
+            unknown1Box.Name = "unknown1Box";
+            unknown1Box.Size = new System.Drawing.Size(231, 22);
+            unknown1Box.TabIndex = 12;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 152);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(113, 13);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "Unknown 1 (UInt32):";
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(12, 183);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(113, 13);
+            label4.TabIndex = 10;
+            label4.Text = "Unknown 1 (UInt32):";
             // 
             // unknown2Box
             // 
-            this.unknown2Box.Location = new System.Drawing.Point(134, 180);
-            this.unknown2Box.Name = "unknown2Box";
-            this.unknown2Box.Size = new System.Drawing.Size(231, 22);
-            this.unknown2Box.TabIndex = 15;
+            unknown2Box.Location = new System.Drawing.Point(131, 211);
+            unknown2Box.Name = "unknown2Box";
+            unknown2Box.Size = new System.Drawing.Size(231, 22);
+            unknown2Box.TabIndex = 15;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 183);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(113, 13);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "Unknown 2 (UInt32):";
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(12, 214);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(113, 13);
+            label6.TabIndex = 13;
+            label6.Text = "Unknown 2 (UInt32):";
             // 
             // unknown3Box
             // 
-            this.unknown3Box.Location = new System.Drawing.Point(134, 211);
-            this.unknown3Box.Name = "unknown3Box";
-            this.unknown3Box.Size = new System.Drawing.Size(231, 22);
-            this.unknown3Box.TabIndex = 18;
+            unknown3Box.Location = new System.Drawing.Point(131, 242);
+            unknown3Box.Name = "unknown3Box";
+            unknown3Box.Size = new System.Drawing.Size(180, 22);
+            unknown3Box.TabIndex = 18;
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(20, 214);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(105, 13);
-            this.label8.TabIndex = 16;
-            this.label8.Text = "Unknown 3 (Float):";
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(43, 245);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(82, 13);
+            label8.TabIndex = 16;
+            label8.Text = "RequiredLevel:";
             // 
-            // label3
+            // lbl_AttachmentId
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(42, 36);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(83, 13);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Attachment ID:";
+            lbl_AttachmentId.AutoSize = true;
+            lbl_AttachmentId.Location = new System.Drawing.Point(42, 43);
+            lbl_AttachmentId.Name = "lbl_AttachmentId";
+            lbl_AttachmentId.Size = new System.Drawing.Size(83, 13);
+            lbl_AttachmentId.TabIndex = 19;
+            lbl_AttachmentId.Text = "Attachment ID:";
             // 
-            // label5
+            // lbl_ModId
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(77, 87);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(48, 13);
-            this.label5.TabIndex = 20;
-            this.label5.Text = "Mod ID:";
+            lbl_ModId.AutoSize = true;
+            lbl_ModId.Location = new System.Drawing.Point(77, 99);
+            lbl_ModId.Name = "lbl_ModId";
+            lbl_ModId.Size = new System.Drawing.Size(48, 13);
+            lbl_ModId.TabIndex = 20;
+            lbl_ModId.Text = "Mod ID:";
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(90, 273);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(35, 13);
-            this.label7.TabIndex = 21;
-            this.label7.Text = "Stats:";
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(90, 304);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(35, 13);
+            label7.TabIndex = 21;
+            label7.Text = "Stats:";
             // 
             // resolvedItemLabel
             // 
-            this.resolvedItemLabel.AutoSize = true;
-            this.resolvedItemLabel.Location = new System.Drawing.Point(131, 273);
-            this.resolvedItemLabel.Name = "resolvedItemLabel";
-            this.resolvedItemLabel.Size = new System.Drawing.Size(35, 13);
-            this.resolvedItemLabel.TabIndex = 22;
-            this.resolvedItemLabel.TabStop = true;
-            this.resolvedItemLabel.Text = "None";
-            this.resolvedItemLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.resolvedItemLabel_LinkClicked);
+            resolvedItemLabel.AutoSize = true;
+            resolvedItemLabel.Location = new System.Drawing.Point(131, 304);
+            resolvedItemLabel.Name = "resolvedItemLabel";
+            resolvedItemLabel.Size = new System.Drawing.Size(35, 13);
+            resolvedItemLabel.TabIndex = 22;
+            resolvedItemLabel.TabStop = true;
+            resolvedItemLabel.Text = "None";
+            resolvedItemLabel.LinkClicked += resolvedItemLabel_LinkClicked;
             // 
             // unknown4Box
             // 
-            this.unknown4Box.Location = new System.Drawing.Point(134, 241);
-            this.unknown4Box.Name = "unknown4Box";
-            this.unknown4Box.Size = new System.Drawing.Size(231, 22);
-            this.unknown4Box.TabIndex = 24;
+            unknown4Box.Location = new System.Drawing.Point(131, 272);
+            unknown4Box.Name = "unknown4Box";
+            unknown4Box.Size = new System.Drawing.Size(231, 22);
+            unknown4Box.TabIndex = 24;
             // 
             // label9
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(15, 244);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(110, 13);
-            this.label9.TabIndex = 23;
-            this.label9.Text = "Unknown 4 (String):";
+            label9.AutoSize = true;
+            label9.Location = new System.Drawing.Point(25, 275);
+            label9.Name = "label9";
+            label9.Size = new System.Drawing.Size(100, 13);
+            label9.TabIndex = 23;
+            label9.Text = "AppearanceName:";
             // 
-            // label10
+            // lbl_LootItemId
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(50, 119);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(75, 13);
-            this.label10.TabIndex = 26;
-            this.label10.Text = "Unknown ID:";
+            lbl_LootItemId.AutoSize = true;
+            lbl_LootItemId.Location = new System.Drawing.Point(56, 155);
+            lbl_LootItemId.Name = "lbl_LootItemId";
+            lbl_LootItemId.Size = new System.Drawing.Size(69, 13);
+            lbl_LootItemId.TabIndex = 26;
+            lbl_LootItemId.Text = "LootItem ID:";
             // 
-            // unknownIDBox
+            // txt_LootItemId
             // 
-            this.unknownIDBox.Location = new System.Drawing.Point(134, 116);
-            this.unknownIDBox.Name = "unknownIDBox";
-            this.unknownIDBox.Size = new System.Drawing.Size(231, 22);
-            this.unknownIDBox.TabIndex = 25;
+            txt_LootItemId.Location = new System.Drawing.Point(131, 152);
+            txt_LootItemId.Name = "txt_LootItemId";
+            txt_LootItemId.Size = new System.Drawing.Size(231, 22);
+            txt_LootItemId.TabIndex = 25;
+            txt_LootItemId.TextChanged += txt_LootItemId_TextChanged;
+            // 
+            // lbl_LootItemName
+            // 
+            lbl_LootItemName.AutoSize = true;
+            lbl_LootItemName.Location = new System.Drawing.Point(38, 127);
+            lbl_LootItemName.Name = "lbl_LootItemName";
+            lbl_LootItemName.Size = new System.Drawing.Size(87, 13);
+            lbl_LootItemName.TabIndex = 28;
+            lbl_LootItemName.Text = "LootItem Name:";
+            // 
+            // btn_MaxLevel
+            // 
+            btn_MaxLevel.BackColor = System.Drawing.Color.White;
+            btn_MaxLevel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_MaxLevel.ClickEffectEnabled = true;
+            btn_MaxLevel.DefaultColor = System.Drawing.Color.White;
+            btn_MaxLevel.HoverColor = System.Drawing.Color.LightGray;
+            btn_MaxLevel.Location = new System.Drawing.Point(317, 242);
+            btn_MaxLevel.Name = "btn_MaxLevel";
+            btn_MaxLevel.Size = new System.Drawing.Size(45, 22);
+            btn_MaxLevel.TabIndex = 10;
+            btn_MaxLevel.Text = "None";
+            btn_MaxLevel.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_MaxLevel.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_MaxLevel.Click += btn_MaxLevel_Click;
+            // 
+            // txt_AttachmentName
+            // 
+            txt_AttachmentName.Location = new System.Drawing.Point(131, 12);
+            txt_AttachmentName.Name = "txt_AttachmentName";
+            txt_AttachmentName.Size = new System.Drawing.Size(231, 22);
+            txt_AttachmentName.TabIndex = 29;
+            txt_AttachmentName.TextChanged += txt_AttachmentName_TextChanged;
+            // 
+            // txt_ModName
+            // 
+            txt_ModName.Location = new System.Drawing.Point(131, 68);
+            txt_ModName.Name = "txt_ModName";
+            txt_ModName.Size = new System.Drawing.Size(231, 22);
+            txt_ModName.TabIndex = 30;
+            txt_ModName.TextChanged += txt_ModName_TextChanged;
+            // 
+            // txt_LootItemName
+            // 
+            txt_LootItemName.Location = new System.Drawing.Point(131, 124);
+            txt_LootItemName.Name = "txt_LootItemName";
+            txt_LootItemName.Size = new System.Drawing.Size(231, 22);
+            txt_LootItemName.TabIndex = 31;
+            txt_LootItemName.TextChanged += txt_LootItemName_TextChanged;
             // 
             // ModNodeDetails
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(383, 338);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.unknownIDBox);
-            this.Controls.Add(this.unknown4Box);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.resolvedItemLabel);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.unknown3Box);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.unknown2Box);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.unknown1Box);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.applyCloseButton);
-            this.Controls.Add(this.item1IdBox);
-            this.Controls.Add(this.item1NameLabel);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.attachmentIdBox);
-            this.Controls.Add(this.attachmentNameLabel);
-            this.Controls.Add(this.label1);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "ModNodeDetails";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ModNodeDetails";
-            this.Load += new System.EventHandler(this.ModNodeDetails_Load);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.White;
+            ClientSize = new System.Drawing.Size(374, 356);
+            Controls.Add(txt_LootItemName);
+            Controls.Add(txt_ModName);
+            Controls.Add(txt_AttachmentName);
+            Controls.Add(btn_MaxLevel);
+            Controls.Add(lbl_LootItemName);
+            Controls.Add(lbl_LootItemId);
+            Controls.Add(txt_LootItemId);
+            Controls.Add(unknown4Box);
+            Controls.Add(label9);
+            Controls.Add(resolvedItemLabel);
+            Controls.Add(label7);
+            Controls.Add(lbl_ModId);
+            Controls.Add(lbl_AttachmentId);
+            Controls.Add(unknown3Box);
+            Controls.Add(label8);
+            Controls.Add(unknown2Box);
+            Controls.Add(label6);
+            Controls.Add(unknown1Box);
+            Controls.Add(label4);
+            Controls.Add(applyCloseButton);
+            Controls.Add(txt_ModId);
+            Controls.Add(lbl_ModName);
+            Controls.Add(txt_AttachmentId);
+            Controls.Add(lbl_AttachmentName);
+            Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Name = "ModNodeDetails";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "ModNodeDetails";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lbl_AttachmentName;
         private System.Windows.Forms.Label attachmentNameLabel;
-        private System.Windows.Forms.TextBox attachmentIdBox;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox item1IdBox;
-        private System.Windows.Forms.Label item1NameLabel;
+        private System.Windows.Forms.TextBox txt_AttachmentId;
+        private System.Windows.Forms.Label lbl_ModName;
+        private System.Windows.Forms.TextBox txt_ModId;
         private ModernButton applyCloseButton;
         private System.Windows.Forms.TextBox unknown1Box;
         private System.Windows.Forms.Label label4;
@@ -291,13 +328,18 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox unknown3Box;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lbl_AttachmentId;
+        private System.Windows.Forms.Label lbl_ModId;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.LinkLabel resolvedItemLabel;
         private System.Windows.Forms.TextBox unknown4Box;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox unknownIDBox;
+        private System.Windows.Forms.Label lbl_LootItemId;
+        private System.Windows.Forms.TextBox txt_LootItemId;
+        private System.Windows.Forms.Label lbl_LootItemName;
+        private ModernButton btn_MaxLevel;
+        private System.Windows.Forms.TextBox txt_AttachmentName;
+        private System.Windows.Forms.TextBox txt_ModName;
+        private System.Windows.Forms.TextBox txt_LootItemName;
     }
 }

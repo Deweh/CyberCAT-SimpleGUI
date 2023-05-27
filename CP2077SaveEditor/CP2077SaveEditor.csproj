@@ -9,15 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="YamlDotNet" Version="12.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\WolvenKit\WolvenKit.Common\WolvenKit.Common.csproj" />
     <ProjectReference Include="..\WolvenKit\WolvenKit.Core\WolvenKit.Core.csproj" />
-    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Archive\WolvenKit.RED4.Archive.csproj" />
-    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Save\WolvenKit.RED4.Save.csproj" />
-    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4.Types\WolvenKit.RED4.Types.csproj" />
+    <ProjectReference Include="..\WolvenKit\WolvenKit.RED4\WolvenKit.RED4.csproj" />
   </ItemGroup>
 
   <ItemGroup>
