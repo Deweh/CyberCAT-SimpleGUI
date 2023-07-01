@@ -140,6 +140,13 @@ namespace CP2077SaveEditor.Views.Controls
                 gameuiCharacterCustomizationPresetWrapper newValues;
                 if (ext == ".preset")
                 {
+                    var text = File.ReadAllText(fileWindow.FileName);
+                    if (text.StartsWith('L'))
+                    {
+                        MessageBox.Show("Loading of \"Appearance Change Unlocker\" presets is not supported!", "Error", MessageBoxButtons.OK);
+                        return;
+                    }
+
                     newValues = LegacyPresetHelper.Convert(File.ReadAllText(fileWindow.FileName));
                 }
                 else
