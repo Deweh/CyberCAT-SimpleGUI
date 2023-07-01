@@ -127,7 +127,7 @@ namespace CP2077SaveEditor
                     detailsTabControl.TabPages.Remove(statsPlaceholderTab);
                     statsListView.Items.Clear();
                     var listRows = new List<ListViewItem>();
-                    if (statsData.ModifiersBuffer.Data is ModifiersBuffer modBuffer)
+                    if (statsData.ModifiersBuffer?.Data is ModifiersBuffer modBuffer)
                     {
                         foreach (gameStatModifierData_Deprecated modifier in modBuffer.Entries)
                         {
@@ -158,7 +158,7 @@ namespace CP2077SaveEditor
                     }
                     else
                     {
-                        statsData.ModifiersBuffer.Data = new ModifiersBuffer();
+                        statsData.ModifiersBuffer = new DataBuffer { Data = new ModifiersBuffer() };
                     }
                 }
             }
