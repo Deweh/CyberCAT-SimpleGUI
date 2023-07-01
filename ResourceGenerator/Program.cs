@@ -17,7 +17,7 @@ namespace ResourceGenerator
         static void Main(string[] args)
         {
             GenerateTweakFiles(Path.Combine(_gameDir, "r6", "cache", "tweakdb.bin"));
-            GenerateAppearanceValues(Path.Combine(_gameDir, "archive", "pc", "content", "basegame_1_engine.archive"));
+            //GenerateAppearanceValues(Path.Combine(_gameDir, "archive", "pc", "content", "basegame_1_engine.archive"));
         }
 
         private static void GenerateTweakFiles(string tweakPath)
@@ -31,9 +31,51 @@ namespace ResourceGenerator
 
             if (reader.ReadFile(out var tweakDb) == WolvenKit.RED4.TweakDB.EFileReadErrorCodes.NoError)
             {
-                GenerateModList(tweakDb);
-                GenerateVehicles(tweakDb);
+                //Test(tweakDb!);
+                //GenerateModList(tweakDb);
+                //GenerateVehicles(tweakDb);
                 GenerateItemClasses(tweakDb);
+            }
+        }
+
+        private record RootSlot(string Slot, string Item);
+
+        private static void Test(TweakDB tweakDb)
+        {
+            var dict = new Dictionary<string, RootSlot>();
+
+            foreach (var (id, type) in tweakDb.Records)
+            {
+                ArgumentNullException.ThrowIfNull(id.ResolvedText);
+
+                if (id.ResolvedText.StartsWith("Items") && type.IsAssignableTo(typeof(gamedataItem_Record)))
+                {
+                    gamedataItem_Record fullRecord;
+                    try
+                    {
+                        fullRecord = (gamedataItem_Record)tweakDb.GetFullRecord(id)!;
+                    }
+                    catch (Exception e)
+                    {
+                        continue;
+                    }
+
+                    if (fullRecord.SlotPartList is { Count: > 0 })
+                    {
+                        var itemPart = (gamedataSlotItemPartListElement_Record)tweakDb.GetFullRecord(fullRecord.SlotPartList[0])!;
+                        if (itemPart.ItemPartList is { Count: > 0 })
+                        {
+                            var tmp = (gamedataItemPartListElement_Record)tweakDb.GetFullRecord(itemPart.ItemPartList[0])!;
+
+                            dict.Add(id.ResolvedText, new RootSlot(itemPart.Slot.ResolvedText!, tmp.Item.ResolvedText!));
+                        }
+
+                        if (fullRecord.SlotPartList.Count > 1)
+                        {
+
+                        }
+                    }
+                }
             }
         }
 
@@ -112,55 +154,25 @@ namespace ResourceGenerator
             File.WriteAllText("Vehicles.json", JsonSerializer.Serialize(list, new JsonSerializerOptions { WriteIndented = true }));
         }
 
+        public record ItemRecord(string Type, bool IsSingleInstance);
+
         private static void GenerateItemClasses(TweakDB tweakDb)
         {
-            var dict = new Dictionary<string, string>();
+            var dict = new Dictionary<ulong, ItemRecord>();
 
             foreach (var (id, type) in tweakDb.Records)
             {
-                var idStr = $"{id & 0xFFFFFFFF:X8}:{(id >> 32 & 0xFF):X2}";
-
-                if (type == typeof(gamedataItem_Record))
+                if (!type.IsAssignableTo(typeof(gamedataItem_Record)))
                 {
-                    dict.Add(idStr, "Item");
                     continue;
                 }
 
-                if (type == typeof(gamedataClothing_Record))
+                if (tweakDb.GetFullRecord(id) is not gamedataItem_Record record)
                 {
-                    dict.Add(idStr, "Clothing");
-                    continue;
+                    throw new Exception();
                 }
 
-                if (type == typeof(gamedataWeaponItem_Record))
-                {
-                    dict.Add(idStr, "WeaponItem");
-                    continue;
-                }
-
-                if (type == typeof(gamedataItemRecipe_Record))
-                {
-                    dict.Add(idStr, "ItemRecipe");
-                    continue;
-                }
-
-                if (type == typeof(gamedataConsumableItem_Record))
-                {
-                    dict.Add(idStr, "ConsumableItem");
-                    continue;
-                }
-
-                if (type == typeof(gamedataGrenade_Record))
-                {
-                    dict.Add(idStr, "Grenade");
-                    continue;
-                }
-
-                if (type == typeof(gamedataGadget_Record))
-                {
-                    dict.Add(idStr, "Gadget");
-                    continue;
-                }
+                dict.Add(id, new ItemRecord(type.Name[8..^7], record.IsSingleInstance));
             }
 
             dict = dict.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);

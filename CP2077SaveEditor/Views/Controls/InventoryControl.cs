@@ -16,8 +16,6 @@ namespace CP2077SaveEditor.Views.Controls
 {
     public partial class InventoryControl : UserControl, IGameControl
     {
-        private static readonly Dictionary<string, string> s_itemClasses = JsonSerializer.Deserialize<Dictionary<string, string>>(Properties.Resources.ItemClasses);
-
         private readonly Form2 _parentForm;
 
         private Random _random = new();
@@ -219,6 +217,11 @@ namespace CP2077SaveEditor.Views.Controls
 
             foreach (var item in _parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
+                if (item.Header.ItemStructure != 0)
+                {
+
+                }
+
                 var name = item.Header.ItemId.Id.ResolvedText;
                 if (string.IsNullOrEmpty(name) && hasEnhancedCraft)
                 {
@@ -246,10 +249,25 @@ namespace CP2077SaveEditor.Views.Controls
                     row[1] = "[M] ";
                 }
 
-                var id = $"{item.Header.ItemId.Id & 0xFFFFFFFF:X8}:{(item.Header.ItemId.Id >> 32 & 0xFF):X2}";
-                if (s_itemClasses.ContainsKey(id))
+                if (ResourceHelper.ItemClasses.TryGetValue(item.Header.ItemId.Id, out var itemData))
                 {
-                    row[1] += s_itemClasses[id];
+                    row[1] += itemData.Type;
+
+                    /*if (itemData.IsSingleInstance)
+                    {
+                        if (itemData.Type == "Grenade")
+                        {
+                            row[1] += " [M+]";
+                        }
+                        else
+                        {
+                            row[1] += " [S]";
+                        }
+                    }
+                    else
+                    {
+                        row[1] += " [M]";
+                    }*/
                 }
                 else
                 {
@@ -488,6 +506,20 @@ namespace CP2077SaveEditor.Views.Controls
                 ((TextBox)sender).ForeColor = Color.Silver;
                 ((TextBox)sender).Text = "Search";
             }
+        }
+
+        private void btn_AddItem_Click(object sender, EventArgs e)
+        {
+            var containerID = containersListBox.SelectedItem.ToString();
+            if (_inventoryNames.Values.Contains(containerID))
+            {
+                containerID = _inventoryNames.FirstOrDefault(x => x.Value == containerID).Key.ToString();
+            }
+
+            var itemDialog = new AddItem();
+            itemDialog.LoadDialog(_parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerID)));
+
+            RefreshInventory();
         }
     }
 }

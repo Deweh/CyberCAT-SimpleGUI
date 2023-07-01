@@ -41,7 +41,7 @@
             inventoryQuantityHeader = new System.Windows.Forms.ColumnHeader();
             inventoryDescriptionHeader = new System.Windows.Forms.ColumnHeader();
             groupBox1 = new System.Windows.Forms.GroupBox();
-            debloatButton = new ModernButton();
+            btn_AddItem = new ModernButton();
             clearQuestFlagsButton = new ModernButton();
             label2 = new System.Windows.Forms.Label();
             moneyUpDown = new System.Windows.Forms.NumericUpDown();
@@ -59,7 +59,7 @@
             groupBox2.Controls.Add(containersListBox);
             groupBox2.Location = new System.Drawing.Point(537, 3);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(311, 65);
+            groupBox2.Size = new System.Drawing.Size(311, 95);
             groupBox2.TabIndex = 10;
             groupBox2.TabStop = false;
             groupBox2.Text = "Inventories";
@@ -73,7 +73,7 @@
             containersListBox.Location = new System.Drawing.Point(3, 19);
             containersListBox.Name = "containersListBox";
             containersListBox.ScrollAlwaysVisible = true;
-            containersListBox.Size = new System.Drawing.Size(305, 43);
+            containersListBox.Size = new System.Drawing.Size(305, 73);
             containersListBox.TabIndex = 4;
             containersListBox.SelectedIndexChanged += containersListBox_SelectedIndexChanged;
             // 
@@ -82,9 +82,9 @@
             containerGroupBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             containerGroupBox.Controls.Add(inventorySearchBox);
             containerGroupBox.Controls.Add(inventoryListView);
-            containerGroupBox.Location = new System.Drawing.Point(3, 74);
+            containerGroupBox.Location = new System.Drawing.Point(3, 104);
             containerGroupBox.Name = "containerGroupBox";
-            containerGroupBox.Size = new System.Drawing.Size(845, 471);
+            containerGroupBox.Size = new System.Drawing.Size(845, 441);
             containerGroupBox.TabIndex = 9;
             containerGroupBox.TabStop = false;
             // 
@@ -112,7 +112,7 @@
             inventoryListView.Location = new System.Drawing.Point(6, 39);
             inventoryListView.MultiSelect = false;
             inventoryListView.Name = "inventoryListView";
-            inventoryListView.Size = new System.Drawing.Size(833, 426);
+            inventoryListView.Size = new System.Drawing.Size(833, 396);
             inventoryListView.TabIndex = 0;
             inventoryListView.UseCompatibleStateImageBehavior = false;
             inventoryListView.View = System.Windows.Forms.View.Details;
@@ -160,33 +160,32 @@
             // groupBox1
             // 
             groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            groupBox1.Controls.Add(debloatButton);
+            groupBox1.Controls.Add(btn_AddItem);
             groupBox1.Controls.Add(clearQuestFlagsButton);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(moneyUpDown);
             groupBox1.Location = new System.Drawing.Point(3, 3);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(528, 65);
+            groupBox1.Size = new System.Drawing.Size(528, 95);
             groupBox1.TabIndex = 8;
             groupBox1.TabStop = false;
             groupBox1.Text = "Quick Actions";
             // 
-            // debloatButton
+            // btn_AddItem
             // 
-            debloatButton.BackColor = System.Drawing.Color.White;
-            debloatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            debloatButton.ClickEffectEnabled = true;
-            debloatButton.DefaultColor = System.Drawing.Color.White;
-            debloatButton.Enabled = false;
-            debloatButton.HoverColor = System.Drawing.Color.LightGray;
-            debloatButton.Location = new System.Drawing.Point(381, 27);
-            debloatButton.Name = "debloatButton";
-            debloatButton.Size = new System.Drawing.Size(131, 22);
-            debloatButton.TabIndex = 3;
-            debloatButton.Text = "De-Bloat";
-            debloatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            debloatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            debloatButton.Click += debloatButton_Click;
+            btn_AddItem.BackColor = System.Drawing.Color.White;
+            btn_AddItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_AddItem.ClickEffectEnabled = true;
+            btn_AddItem.DefaultColor = System.Drawing.Color.White;
+            btn_AddItem.HoverColor = System.Drawing.Color.LightGray;
+            btn_AddItem.Location = new System.Drawing.Point(13, 56);
+            btn_AddItem.Name = "btn_AddItem";
+            btn_AddItem.Size = new System.Drawing.Size(107, 23);
+            btn_AddItem.TabIndex = 4;
+            btn_AddItem.Text = "Add item";
+            btn_AddItem.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_AddItem.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_AddItem.Click += btn_AddItem_Click;
             // 
             // clearQuestFlagsButton
             // 
@@ -195,9 +194,9 @@
             clearQuestFlagsButton.ClickEffectEnabled = true;
             clearQuestFlagsButton.DefaultColor = System.Drawing.Color.White;
             clearQuestFlagsButton.HoverColor = System.Drawing.Color.LightGray;
-            clearQuestFlagsButton.Location = new System.Drawing.Point(224, 27);
+            clearQuestFlagsButton.Location = new System.Drawing.Point(415, 56);
             clearQuestFlagsButton.Name = "clearQuestFlagsButton";
-            clearQuestFlagsButton.Size = new System.Drawing.Size(151, 22);
+            clearQuestFlagsButton.Size = new System.Drawing.Size(107, 23);
             clearQuestFlagsButton.TabIndex = 2;
             clearQuestFlagsButton.Text = "Clear All Item Flags";
             clearQuestFlagsButton.TextColor = System.Drawing.SystemColors.ControlText;
@@ -218,7 +217,7 @@
             moneyUpDown.Location = new System.Drawing.Point(64, 27);
             moneyUpDown.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
             moneyUpDown.Name = "moneyUpDown";
-            moneyUpDown.Size = new System.Drawing.Size(138, 23);
+            moneyUpDown.Size = new System.Drawing.Size(169, 23);
             moneyUpDown.TabIndex = 1;
             moneyUpDown.ValueChanged += moneyUpDown_ValueChanged;
             // 
@@ -252,7 +251,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ListBox containersListBox;
         private System.Windows.Forms.GroupBox containerGroupBox;
         private System.Windows.Forms.TextBox inventorySearchBox;
         private System.Windows.Forms.ListView inventoryListView;
@@ -263,11 +261,12 @@
         private System.Windows.Forms.ColumnHeader inventoryQuantityHeader;
         private System.Windows.Forms.ColumnHeader inventoryDescriptionHeader;
         private System.Windows.Forms.GroupBox groupBox1;
-        private ModernButton debloatButton;
         private ModernButton clearQuestFlagsButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown moneyUpDown;
         private System.ComponentModel.BackgroundWorker debloatWorker;
         private System.Windows.Forms.Timer debloatTimer;
+        private System.Windows.Forms.ListBox containersListBox;
+        private ModernButton btn_AddItem;
     }
 }
