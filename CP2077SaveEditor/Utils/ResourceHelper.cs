@@ -10,7 +10,14 @@ public class ItemRecord
     public bool IsSingleInstance { get; set; }
 }
 
+public class FastTravelRecord
+{
+    public string PointRecord { get; set; }
+    public string MarkerRef { get; set; }
+}
+
 public static class ResourceHelper
 {
     public static readonly Dictionary<ulong, ItemRecord> ItemClasses = JsonSerializer.Deserialize<Dictionary<ulong, ItemRecord>>(Properties.Resources.ItemClasses);
+    public static readonly List<FastTravelRecord> FastTravelRecords = JsonSerializer.Deserialize<List<FastTravelRecord>>(Properties.Resources.FastTravel);
 }

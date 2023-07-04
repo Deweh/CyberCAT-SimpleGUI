@@ -39,7 +39,7 @@ namespace CP2077SaveEditor.Views
             RegisterControl(new InventoryControl(this));
             RegisterControl(new VehiclesControl(this));
             RegisterControl(new QuestFactsControl(this));
-            RegisterControl(new ModsControl(this));
+            RegisterControl(new ExtrasControl(this));
 
             if (File.Exists(Environment.CurrentDirectory + "\\config.json"))
             {

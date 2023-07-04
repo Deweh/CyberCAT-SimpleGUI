@@ -122,6 +122,15 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die [{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_01&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_01&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_02&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_02&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_03&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_new_03&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_04&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_04&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_05&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_05&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_06&quot;,&quot;Ma [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        /// </summary>
+        internal static string FastTravel {
+            get {
+                return ResourceManager.GetString("FastTravel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die {&quot;DataExists&quot;:1,&quot;Unknown1&quot;:0,&quot;IsBrainGenderMale&quot;:0,&quot;Preset&quot;:{&quot;$type&quot;:&quot;gameuiCharacterCustomizationPreset&quot;,&quot;armsGroups&quot;:[{&quot;$type&quot;:&quot;gameuiCustomizationGroup&quot;,&quot;customization&quot;:[{&quot;$type&quot;:&quot;gameuiCustomizationAppearance&quot;,&quot;censorFlag&quot;:&quot;0&quot;,&quot;censorFlagAction&quot;:&quot;Activate&quot;,&quot;definition&quot;:&quot;holstered_arms_data_female&quot;,&quot;name&quot;:&quot;holstered_data&quot;,&quot;resource&quot;:{&quot;DepotPath&quot;:13328453398705956150,&quot;Flags&quot;:&quot;Soft&quot;}},{&quot;$type&quot;:&quot;gameuiCustomizationAppearance&quot;,&quot;censorFlag&quot;:&quot;0&quot;,&quot;censorFlagAction&quot;:&quot;Activate&quot;,&quot;definition&quot;:&quot;a0_000_pwa_base__nail [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string FemaleDefaultPreset {
@@ -132,24 +141,32 @@ namespace CP2077SaveEditor.Properties {
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die {
-        ///  &quot;0001F38D:18&quot;: &quot;ConsumableItem&quot;,
-        ///  &quot;0002DF00:18&quot;: &quot;Clothing&quot;,
-        ///  &quot;001E62F0:1D&quot;: &quot;Clothing&quot;,
-        ///  &quot;0032C251:1A&quot;: &quot;Item&quot;,
-        ///  &quot;003C51F8:13&quot;: &quot;WeaponItem&quot;,
-        ///  &quot;006AB6EB:24&quot;: &quot;Item&quot;,
-        ///  &quot;008D5D92:17&quot;: &quot;WeaponItem&quot;,
-        ///  &quot;00B5353D:1D&quot;: &quot;Item&quot;,
-        ///  &quot;00C206AA:14&quot;: &quot;Item&quot;,
-        ///  &quot;00E07A60:28&quot;: &quot;Item&quot;,
-        ///  &quot;00E6A912:1D&quot;: &quot;Item&quot;,
-        ///  &quot;00ED2150:1E&quot;: &quot;Item&quot;,
-        ///  &quot;00F1A609:16&quot;: &quot;Clothing&quot;,
-        ///  &quot;00FD5730:15&quot;: &quot;ConsumableItem&quot;,
-        ///  &quot;01079B74:2E&quot;: &quot;Item&quot;,
-        ///  &quot;011B4434:17&quot;: &quot;Item&quot;,
-        ///  &quot;011E89EA:1A&quot;: &quot;WeaponItem&quot;,
-        ///  &quot;01209933:18&quot;:  [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///  &quot;37647373161&quot;: {
+        ///    &quot;Type&quot;: &quot;Gadget&quot;,
+        ///    &quot;IsSingleInstance&quot;: true
+        ///  },
+        ///  &quot;40557222671&quot;: {
+        ///    &quot;Type&quot;: &quot;Clothing&quot;,
+        ///    &quot;IsSingleInstance&quot;: false
+        ///  },
+        ///  &quot;40707698935&quot;: {
+        ///    &quot;Type&quot;: &quot;Clothing&quot;,
+        ///    &quot;IsSingleInstance&quot;: false
+        ///  },
+        ///  &quot;42366033259&quot;: {
+        ///    &quot;Type&quot;: &quot;Item&quot;,
+        ///    &quot;IsSingleInstance&quot;: true
+        ///  },
+        ///  &quot;42943500278&quot;: {
+        ///    &quot;Type&quot;: &quot;Item&quot;,
+        ///    &quot;IsSingleInstance&quot;: false
+        ///  },
+        ///  &quot;43667576622&quot;: {
+        ///    &quot;Type&quot;: &quot;Item&quot;,
+        ///    &quot;IsSingleInstance&quot;: true
+        ///  },
+        ///  &quot;44117334148&quot;: {
+        ///    &quot;Type&quot;: &quot;G [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string ItemClasses {
             get {
@@ -168,25 +185,31 @@ namespace CP2077SaveEditor.Properties {
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die {
-        ///	&quot;Clothing&quot;:{
-        ///		&quot;Slots&quot;:[
-        ///			&quot;OuterChestFabricEnhancer1&quot;,
-        ///			&quot;OuterChestFabricEnhancer2&quot;,
-        ///			&quot;OuterChestFabricEnhancer3&quot;,
-        ///			&quot;OuterChestFabricEnhancer4&quot;,
-        ///			&quot;InnerChestFabricEnhancer1&quot;,
-        ///			&quot;InnerChestFabricEnhancer2&quot;,
-        ///			&quot;InnerChestFabricEnhancer3&quot;,
-        ///			&quot;InnerChestFabricEnhancer4&quot;,
-        ///			&quot;LegsFabricEnhancer1&quot;,
-        ///			&quot;LegsFabricEnhancer2&quot;,
-        ///			&quot;LegsFabricEnhancer3&quot;,
-        ///			&quot;LegsFabricEnhancer4&quot;,
-        ///			&quot;FaceFabricEnhancer1&quot;,
-        ///			&quot;FaceFabricEnhancer2&quot;,
-        ///			&quot;FaceFabricEnhancer3&quot;,
-        ///			&quot;FaceFabricEnhancer4&quot;,
-        ///	 [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///  &quot;Clothing&quot;: {
+        ///    &quot;152193456621&quot;: [
+        ///      122917906251,
+        ///      136186757750,
+        ///      131341932850,
+        ///      132666432922,
+        ///      133985117844,
+        ///      134256022043,
+        ///      130693152003,
+        ///      134676177754,
+        ///      134304077314,
+        ///      138324646011,
+        ///      136404677344,
+        ///      141046985623,
+        ///      133887710156,
+        ///      132191677451,
+        ///      122530387466,
+        ///      118999678073,
+        ///      124176390109,
+        ///      136837908408,
+        ///      125411252595,
+        ///      145924706992,
+        ///      109070607824,
+        ///      134428744233,
+        ///      1 [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string Mods {
             get {
