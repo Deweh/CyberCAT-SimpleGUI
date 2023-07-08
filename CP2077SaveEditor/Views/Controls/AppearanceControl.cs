@@ -4,12 +4,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CP2077SaveEditor.Utils;
 using WolvenKit.RED4.CR2W.JSON;
 using WolvenKit.RED4.Save;
-using Image = System.Drawing.Image;
 
 namespace CP2077SaveEditor.Views.Controls
 {
@@ -124,7 +124,7 @@ namespace CP2077SaveEditor.Views.Controls
             saveWindow.Filter = "Cyberpunk 2077 Character Preset|*.v2preset";
             if (saveWindow.ShowDialog() == DialogResult.OK)
             {
-                File.WriteAllText(saveWindow.FileName, RedJsonSerializer.Serialize(_parentForm.ActiveSaveFile.GetAppearanceContainer()));
+                File.WriteAllText(saveWindow.FileName, RedJsonSerializer.Serialize(new PresetDto { Data = _parentForm.ActiveSaveFile.GetAppearanceContainer() } ));
                 _parentForm.SetStatus("Appearance preset saved.");
             }
         }
@@ -136,22 +136,49 @@ namespace CP2077SaveEditor.Views.Controls
             if (fileWindow.ShowDialog() == DialogResult.OK)
             {
                 var ext = Path.GetExtension(fileWindow.FileName);
+                var text = File.ReadAllText(fileWindow.FileName);
 
                 gameuiCharacterCustomizationPresetWrapper newValues;
                 if (ext == ".preset")
                 {
-                    var text = File.ReadAllText(fileWindow.FileName);
                     if (text.StartsWith('L'))
                     {
                         MessageBox.Show("Loading of \"Appearance Change Unlocker\" presets is not supported!", "Error", MessageBoxButtons.OK);
                         return;
                     }
 
-                    newValues = LegacyPresetHelper.Convert(File.ReadAllText(fileWindow.FileName));
+                    newValues = LegacyPresetHelper.Convert(text);
                 }
                 else
                 {
-                    newValues = RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(File.ReadAllText(fileWindow.FileName));
+                    if (JsonNode.Parse(text) is not JsonObject jsonObject)
+                    {
+                        return;
+                    }
+
+                    if (((IDictionary<string, JsonNode>)jsonObject).TryGetValue("JsonVersion", out var value))
+                    {
+                        newValues = RedJsonSerializer.Deserialize<PresetDto>(text, new RedJsonSerializerOptions { JsonVersion = value.GetValue<string>() }).Data;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            newValues = RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(text, new RedJsonSerializerOptions {JsonVersion = "0.0.6"});
+                        }
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                newValues = RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(text, new RedJsonSerializerOptions { JsonVersion = "0.0.7" });
+                            }
+                            catch (Exception)
+                            {
+                                MessageBox.Show("Unknown error while reading preset!", "Error", MessageBoxButtons.OK);
+                                return;
+                            }
+                        }
+                    }
                 }
 
                 if ((bool)newValues.Preset.IsMale != (bool)_parentForm.ActiveSaveFile.GetAppearanceContainer().Preset.IsMale)
