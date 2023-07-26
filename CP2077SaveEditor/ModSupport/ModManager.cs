@@ -34,6 +34,7 @@ public static class ModManager
         RedReflection.AddRedType(typeof(MarkToSellSystem));
 
         // Equipment-EX
+        RedReflection.AddEnumType(typeof(WardrobeItemSource));
         RedReflection.AddRedType(typeof(OutfitPart));
         RedReflection.AddRedType(typeof(OutfitSet));
         RedReflection.AddRedType(typeof(OutfitState));
