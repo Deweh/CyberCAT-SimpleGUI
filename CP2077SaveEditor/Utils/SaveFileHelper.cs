@@ -16,6 +16,9 @@ namespace CP2077SaveEditor
         public CyberpunkSaveFile SaveFile { get; set; }
         public Dictionary<uint, string> KnownFacts;
 
+        public byte[] Metadata { get; set; }
+        public byte[] ImageData { get; set; }
+
         public SaveFileHelper() : base()
         {
             Appearance = new AppearanceHelper2(this);

@@ -169,7 +169,20 @@ namespace CP2077SaveEditor.Views
                     switch (status)
                     {
                         case EFileReadErrorCodes.NoError:
-                            ActiveSaveFile = new SaveFileHelper() { SaveFile = save };
+                            ActiveSaveFile = new SaveFileHelper { SaveFile = save };
+
+                            var metadataPath = Path.Combine(Path.GetDirectoryName(savePath), "metadata.9.json");
+                            if (File.Exists(metadataPath))
+                            {
+                                ActiveSaveFile.Metadata = File.ReadAllBytes(metadataPath);
+                            }
+
+                            var screenshotPath = Path.Combine(Path.GetDirectoryName(savePath), "screenshot.png");
+                            if (File.Exists(screenshotPath))
+                            {
+                                ActiveSaveFile.ImageData = File.ReadAllBytes(screenshotPath);
+                            }
+
                             this.InvokeIfRequired(() => { saveChangesButton.Enabled = true; });
                             break;
                         case EFileReadErrorCodes.NoCSav:
@@ -266,6 +279,32 @@ namespace CP2077SaveEditor.Views
                     using var writer = new CyberpunkSaveWriter(fs);
                     writer.WriteFile(ActiveSaveFile.SaveFile, _saveType == 0);
                 });
+
+                var metadataPath = Path.Combine(Path.GetDirectoryName(saveWindow.FileName), "metadata.9.json");
+                if (!File.Exists(metadataPath))
+                {
+                    if (ActiveSaveFile.Metadata != null)
+                    {
+                        await File.WriteAllBytesAsync(metadataPath, ActiveSaveFile.Metadata);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error while saving file: metadata.9.json could not be found.");
+                    }
+                }
+
+                var screenshotPath = Path.Combine(Path.GetDirectoryName(saveWindow.FileName), "screenshot.png");
+                if (!File.Exists(screenshotPath))
+                {
+                    if (ActiveSaveFile.ImageData != null)
+                    {
+                        await File.WriteAllBytesAsync(screenshotPath, ActiveSaveFile.ImageData);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error while saving file: screenshot.png could not be found.");
+                    }
+                }
             }
             catch (Exception err)
             {
