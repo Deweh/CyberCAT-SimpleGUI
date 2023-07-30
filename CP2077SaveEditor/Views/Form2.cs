@@ -25,7 +25,7 @@ namespace CP2077SaveEditor.Views
         internal bool IsLoaded;
 
         private SaveFileHelper _activeSaveFile;
-        private int _saveType = 0;
+        private SaveType _saveType = SaveType.PC;
 
         public Form2()
         {
@@ -277,32 +277,35 @@ namespace CP2077SaveEditor.Views
                 {
                     using var fs = File.Open(saveWindow.FileName, FileMode.Create);
                     using var writer = new CyberpunkSaveWriter(fs);
-                    writer.WriteFile(ActiveSaveFile.SaveFile, _saveType == 0);
+                    writer.WriteFile(ActiveSaveFile.SaveFile, _saveType == SaveType.PC);
                 });
 
-                var metadataPath = Path.Combine(Path.GetDirectoryName(saveWindow.FileName), "metadata.9.json");
-                if (!File.Exists(metadataPath))
+                if (_saveType == SaveType.PC)
                 {
-                    if (ActiveSaveFile.Metadata != null)
+                    var metadataPath = Path.Combine(Path.GetDirectoryName(saveWindow.FileName), "metadata.9.json");
+                    if (!File.Exists(metadataPath))
                     {
-                        await File.WriteAllBytesAsync(metadataPath, ActiveSaveFile.Metadata);
+                        if (ActiveSaveFile.Metadata != null)
+                        {
+                            await File.WriteAllBytesAsync(metadataPath, ActiveSaveFile.Metadata);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error while saving file: metadata.9.json could not be found.");
+                        }
                     }
-                    else
-                    {
-                        MessageBox.Show("Error while saving file: metadata.9.json could not be found.");
-                    }
-                }
 
-                var screenshotPath = Path.Combine(Path.GetDirectoryName(saveWindow.FileName), "screenshot.png");
-                if (!File.Exists(screenshotPath))
-                {
-                    if (ActiveSaveFile.ImageData != null)
+                    var screenshotPath = Path.Combine(Path.GetDirectoryName(saveWindow.FileName), "screenshot.png");
+                    if (!File.Exists(screenshotPath))
                     {
-                        await File.WriteAllBytesAsync(screenshotPath, ActiveSaveFile.ImageData);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error while saving file: screenshot.png could not be found.");
+                        if (ActiveSaveFile.ImageData != null)
+                        {
+                            await File.WriteAllBytesAsync(screenshotPath, ActiveSaveFile.ImageData);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error while saving file: screenshot.png could not be found.");
+                        }
                     }
                 }
             }
@@ -331,12 +334,12 @@ namespace CP2077SaveEditor.Views
 
         private void swapSaveType_Click(object sender, EventArgs e)
         {
-            if (_saveType == 0)
+            if (_saveType == SaveType.PC)
             {
-                _saveType = 1;
+                _saveType = SaveType.PS4;
                 swapSaveType.Text = "Save Type: PS4";
             } else {
-                _saveType = 0;
+                _saveType = SaveType.PC;
                 swapSaveType.Text = "Save Type: PC";
             }
         }
