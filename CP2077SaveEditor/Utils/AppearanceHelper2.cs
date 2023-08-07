@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -50,6 +51,34 @@ public class AppearanceHelper2
 
             PresetWrapper.Preset.IsMale = value == AppearanceGender.Male;
 
+            var hs = new HashSet<string>();
+            foreach (var entry in _saveFileHelper.GetPSDataContainer().Entries)
+            {
+                if (entry.Data == null)
+                {
+                    continue;
+                }
+
+                var typeName = entry.Data.GetType().ToString();
+
+                if (typeName.Contains("Player"))
+                {
+
+                }
+
+                if (typeName.Contains("Puppet"))
+                {
+
+                }
+
+                if (entry.Data is UnknownRedClass cls && cls.Hash != 16027069064518938876 && cls.Hash != 3328049462273361822)
+                {
+
+                }
+
+                hs.Add(typeName);
+            }
+
             var playerPuppet = (PlayerPuppetPS?)_saveFileHelper.GetPSDataContainer()?.Entries.FirstOrDefault(x => x.Data is PlayerPuppetPS)?.Data;
             if (playerPuppet == null)
             {
@@ -61,12 +90,12 @@ public class AppearanceHelper2
             if (value == AppearanceGender.Female)
             {
                 playerPuppet.Gender = "Female";
-                _saveFileHelper.SetAppearanceContainer(RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(Properties.Resources.FemaleDefaultPreset));
+                _saveFileHelper.SetAppearanceContainer(RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(Properties.Resources.FemaleDefaultPreset, new RedJsonSerializerOptions { JsonVersion = "0.0.6" }));
             }
             else
             {
                 playerPuppet.Gender = "Male";
-                _saveFileHelper.SetAppearanceContainer(RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(Properties.Resources.MaleDefaultPreset));
+                _saveFileHelper.SetAppearanceContainer(RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(Properties.Resources.MaleDefaultPreset, new RedJsonSerializerOptions { JsonVersion = "0.0.6" }));
             }
             PresetWrapper.IsBrainGenderMale = oldTone;
         }
