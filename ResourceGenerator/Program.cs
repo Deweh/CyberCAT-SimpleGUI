@@ -2,6 +2,8 @@
 using System.Reflection;
 using System.Text.Json;
 using WolvenKit.Common.Services;
+using WolvenKit.RED4.Archive;
+using WolvenKit.RED4.Archive.CR2W;
 using WolvenKit.RED4.Archive.IO;
 using WolvenKit.RED4.TweakDB;
 using WolvenKit.RED4.TweakDB.Helper;
@@ -12,11 +14,11 @@ namespace ResourceGenerator
 {
     internal class Program
     {
-        private static string _gameDir = @"C:\Games\GOG Galaxy\Cyberpunk 2077";
+        private static string _gameDir = @"C:\Games\Steam\steamapps\common\Cyberpunk 2077";
 
         static void Main(string[] args)
         {
-            GenerateTweakFiles(Path.Combine(_gameDir, "r6", "cache", "tweakdb.bin"));
+            GenerateTweakFiles(Path.Combine(_gameDir, "r6", "cache", "tweakdb_ep1.bin"));
             //GenerateAppearanceValues(Path.Combine(_gameDir, "archive", "pc", "content", "basegame_1_engine.archive"));
         }
 
@@ -32,9 +34,9 @@ namespace ResourceGenerator
             if (reader.ReadFile(out var tweakDb) == WolvenKit.RED4.TweakDB.EFileReadErrorCodes.NoError)
             {
                 //Test(tweakDb!);
-                //GenerateModList(tweakDb);
+                GenerateModList(tweakDb);
                 //GenerateVehicles(tweakDb);
-                GenerateItemClasses(tweakDb);
+                //GenerateItemClasses(tweakDb);
             }
         }
 
@@ -89,45 +91,51 @@ namespace ResourceGenerator
 
             foreach (var (id, type) in tweakDb.Records)
             {
-                if (id.ResolvedText.StartsWith("Items") && type == typeof(gamedataItem_Record))
+                if (!type.IsAssignableTo(typeof(gamedataItem_Record)))
                 {
-                    var fullRecord = (gamedataItem_Record)tweakDb.GetFullRecord(id);
-                    if (fullRecord.Tags == null)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    foreach (var tag in fullRecord.Tags)
+                if (tweakDb.GetFullRecord(id) is not gamedataItem_Record record)
+                {
+                    throw new Exception();
+                }
+
+                if (record.Tags == null)
+                {
+                    continue;
+                }
+
+                foreach (var tag in record.Tags)
+                {
+                    if (tag == "FabricEnhancer")
                     {
-                        if (tag == "FabricEnhancer")
+                        foreach (var placementSlot in record.PlacementSlots)
                         {
-                            foreach (var placementSlot in fullRecord.PlacementSlots)
+                            if (!dict["Clothing"].ContainsKey(placementSlot))
                             {
-                                if (!dict["Clothing"].ContainsKey(placementSlot))
-                                {
-                                    dict["Clothing"].Add(placementSlot, new List<ulong>());
-                                }
+                                dict["Clothing"].Add(placementSlot, new List<ulong>());
+                            }
 
-                                if (!dict["Clothing"][placementSlot].Contains(id))
-                                {
-                                    dict["Clothing"][placementSlot].Add(id);
-                                }
+                            if (!dict["Clothing"][placementSlot].Contains(id))
+                            {
+                                dict["Clothing"][placementSlot].Add(id);
                             }
                         }
+                    }
 
-                        if (tag == "WeaponMod")
+                    if (tag == "WeaponMod")
+                    {
+                        foreach (var placementSlot in record.PlacementSlots)
                         {
-                            foreach (var placementSlot in fullRecord.PlacementSlots)
+                            if (!dict["Weapon"].ContainsKey(placementSlot))
                             {
-                                if (!dict["Weapon"].ContainsKey(placementSlot))
-                                {
-                                    dict["Weapon"].Add(placementSlot, new List<ulong>());
-                                }
+                                dict["Weapon"].Add(placementSlot, new List<ulong>());
+                            }
 
-                                if (!dict["Weapon"][placementSlot].Contains(id))
-                                {
-                                    dict["Weapon"][placementSlot].Add(id);
-                                }
+                            if (!dict["Weapon"][placementSlot].Contains(id))
+                            {
+                                dict["Weapon"][placementSlot].Add(id);
                             }
                         }
                     }
@@ -141,8 +149,18 @@ namespace ResourceGenerator
         {
             var list = new List<string>();
 
-            foreach (var (id, _) in tweakDb.Records)
+            foreach (var (id, type) in tweakDb.Records)
             {
+                if (!type.IsAssignableTo(typeof(gamedataVehicle_Record)))
+                {
+                    continue;
+                }
+
+                if (tweakDb.GetFullRecord(id) is not gamedataVehicle_Record record)
+                {
+                    throw new Exception();
+                }
+
                 var resolvedText = id.GetResolvedText();
                 if (resolvedText != null && resolvedText.StartsWith("Vehicle.") && resolvedText.EndsWith("_player"))
                 {
@@ -177,6 +195,83 @@ namespace ResourceGenerator
 
             dict = dict.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             File.WriteAllText("ItemClasses.json", JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
+        }
+
+        public class ItemRecord2
+        {
+            public string? TweakName { get; set; }
+            public string TypeName { get; set; } = null!;
+
+            public string? Quality { get; set; }
+
+            public string? FemaleName { get; set; }
+            public string? FemaleDescription { get; set; }
+        }
+
+        private static void GenerateItemClasses2(TweakDB tweakDb)
+        {
+            using var fs = File.Open(@"C:\Dev\onscreens_final.json", FileMode.Open);
+            using var cr = new CR2WReader(fs);
+            if (cr.ReadFile(out var file) != EFileReadErrorCodes.NoError || file?.RootChunk is not JsonResource json)
+            {
+                return;
+            }
+
+            var primaryKeys = new Dictionary<ulong, localizationPersistenceOnScreenEntry>();
+            var secondaryKeys = new Dictionary<CString, localizationPersistenceOnScreenEntry>();
+
+            if (json.Root.Chunk is localizationPersistenceOnScreenEntries os)
+            {
+                foreach (var entry in os.Entries)
+                {
+                    primaryKeys[entry.PrimaryKey] = entry;
+                    secondaryKeys[entry.SecondaryKey] = entry;
+                }
+            }
+
+            var dict = new List<ItemRecord2>();
+
+            foreach (var (id, type) in tweakDb.Records)
+            {
+                if (!type.IsAssignableTo(typeof(gamedataItem_Record)))
+                {
+                    continue;
+                }
+
+                if (tweakDb.GetFullRecord(id) is not gamedataItem_Record record)
+                {
+                    throw new Exception();
+                }
+
+                var itemRecord = new ItemRecord2()
+                {
+                    TweakName = id.ResolvedText,
+                    TypeName = type.Name[8..^7]
+                };
+
+                if (record.Quality.IsResolvable)
+                {
+                    itemRecord.Quality = record.Quality.ResolvedText![8..];
+                }
+
+                if (record.DisplayName != null && primaryKeys.TryGetValue(record.DisplayName.Key, out var displayName))
+                {
+                    itemRecord.FemaleName = displayName.FemaleVariant;
+                }
+
+                if (record.LocalizedDescription != null && primaryKeys.TryGetValue(record.LocalizedDescription.Key, out var localizedDescription))
+                {
+                    itemRecord.FemaleDescription = localizedDescription.FemaleVariant;
+                }
+
+                if (itemRecord.TweakName != null && itemRecord.TweakName.StartsWith("Items.Preset_Katana"))
+                {
+                    dict.Add(itemRecord);
+                }
+            }
+
+            dict = dict.OrderBy(x => x.TweakName).ToList();
+            File.WriteAllText("Items.json", JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
         }
 
         private static HashService? _hashService = null;

@@ -442,7 +442,7 @@ namespace CP2077SaveEditor.Views.Controls
             var equipId = (gameItemID)((ToolStripItem)sender).Tag;
             foreach (var equipSlot in _parentForm.ActiveSaveFile.GetEquipSlotsFromID(equipId))
             {
-                equipSlot.ItemID = null;
+                equipSlot.ItemID = new gameItemID();
             }
 
             RefreshInventory();

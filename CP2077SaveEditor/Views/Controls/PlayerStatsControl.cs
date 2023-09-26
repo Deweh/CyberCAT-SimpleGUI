@@ -37,18 +37,11 @@ namespace CP2077SaveEditor.Views.Controls
             _proficiencyFields = new Dictionary<Enum, NumericUpDown> {
                 {gamedataProficiencyType.Level, levelUpDown},
                 {gamedataProficiencyType.StreetCred, streetCredUpDown},
-                {gamedataProficiencyType.Athletics, athleticsUpDown},
-                {gamedataProficiencyType.Demolition, annihilationUpDown},
-                {gamedataProficiencyType.Brawling, streetBrawlerUpDown},
-                {gamedataProficiencyType.Assault, assaultUpDown},
-                {gamedataProficiencyType.Gunslinger, handgunsUpDown},
-                {gamedataProficiencyType.Kenjutsu, bladesUpDown},
-                {gamedataProficiencyType.Crafting, craftingUpDown},
-                {gamedataProficiencyType.Engineering, engineeringUpDown},
-                {gamedataProficiencyType.Hacking, breachProtocolUpDown},
-                {gamedataProficiencyType.CombatHacking, quickhackingUpDown},
-                {gamedataProficiencyType.Stealth, stealthUpDown},
-                {gamedataProficiencyType.ColdBlood, coldBloodUpDown}
+                {gamedataProficiencyType.CoolSkill, assassineUpDown},
+                {gamedataProficiencyType.IntelligenceSkill, netrunnerUpDown},
+                {gamedataProficiencyType.ReflexesSkill, shinobiUpDown},
+                {gamedataProficiencyType.StrengthSkill, soloUpDown},
+                {gamedataProficiencyType.TechnicalAbilitySkill, techieUpDown}
             };
 
             _devPointFields = new Dictionary<Enum, NumericUpDown>
@@ -89,7 +82,7 @@ namespace CP2077SaveEditor.Views.Controls
         private void Init()
         {
             var playerData = _parentForm.ActiveSaveFile.GetPlayerDevelopmentData();
-            
+
             lifePathBox.SelectedIndex = (gamedataLifePath)playerData.LifePath switch
             {
                 gamedataLifePath.Corporate => 2,
@@ -147,6 +140,10 @@ namespace CP2077SaveEditor.Views.Controls
                 if (_proficiencyFields.TryGetValue(proficiency.Type, out var numUpDown))
                 {
                     proficiency.CurrentLevel = (CInt32)numUpDown.Value;
+                    if (proficiency.CurrentLevel == 60)
+                    {
+                        proficiency.CurrentExp = 0;
+                    }
                 }
             }
 
