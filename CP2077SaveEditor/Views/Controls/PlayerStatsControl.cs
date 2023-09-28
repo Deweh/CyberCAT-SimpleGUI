@@ -23,7 +23,7 @@ namespace CP2077SaveEditor.Views.Controls
             _parentForm = parentForm;
             _parentForm.PropertyChanged += OnParentFormPropertyChanged;
 
-            BackgroundImage = Properties.Resources.player_stats;
+            //BackgroundImage = Properties.Resources.player_stats;
 
             _attributeFields = new Dictionary<Enum, NumericUpDown>
             {
@@ -47,7 +47,8 @@ namespace CP2077SaveEditor.Views.Controls
             _devPointFields = new Dictionary<Enum, NumericUpDown>
             {
                 {gamedataDevelopmentPointType.Attribute, attrPointsUpDown},
-                {gamedataDevelopmentPointType.Primary, perkPointsUpDown}
+                {gamedataDevelopmentPointType.Primary, perkPointsUpDown},
+                {gamedataDevelopmentPointType.Espionage, relicUpDown},
             };
 
             foreach (var numUpDown in _attributeFields.Values)
