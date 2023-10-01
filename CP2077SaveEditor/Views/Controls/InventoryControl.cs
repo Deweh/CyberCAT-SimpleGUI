@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Windows.Forms;
 using CP2077SaveEditor.ModSupport;
 using WolvenKit.RED4.Save;
+using WolvenKit.RED4.Save.Classes;
 using WolvenKit.RED4.Types;
 using static WolvenKit.RED4.Save.InventoryHelper;
 
@@ -61,7 +62,7 @@ namespace CP2077SaveEditor.Views.Controls
             if (moneyUpDown.Enabled)
             {
                 var playerInventory = _parentForm.ActiveSaveFile.GetInventory(1);
-                ((SimpleItemData)playerInventory.Items[playerInventory.Items.IndexOf(playerInventory.Items.Where(x => x.Header.ItemId.Id.ResolvedText == "Items.money").FirstOrDefault())].Data).Quantity = (uint)moneyUpDown.Value;
+                playerInventory.Items[playerInventory.Items.IndexOf(playerInventory.Items.FirstOrDefault(x => x.ItemInfo.ItemId.Id.ResolvedText == "Items.money"))].Quantity = (uint)moneyUpDown.Value;
             }
         }
 
@@ -217,12 +218,7 @@ namespace CP2077SaveEditor.Views.Controls
 
             foreach (var item in _parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
-                if (item.Header.ItemStructure != 0)
-                {
-
-                }
-
-                var name = item.Header.ItemId.Id.ResolvedText;
+                var name = item.ItemInfo.ItemId.Id.ResolvedText;
                 if (string.IsNullOrEmpty(name) && hasEnhancedCraft)
                 {
                     name = EnhancedCraftHelper.GetName(_parentForm.ActiveSaveFile, item);
@@ -232,24 +228,24 @@ namespace CP2077SaveEditor.Views.Controls
                     }
                 }
 
-                var row = new string[] { name, "", item.Header.ItemId.Id.ResolvedText, "", "1", item.Header.ItemId.Id.ResolvedText };
+                var row = new string[] { name, "", item.ItemInfo.ItemId.Id.ResolvedText, "", "1", item.ItemInfo.ItemId.Id.ResolvedText };
 
-                if (item.Data.GetType() == typeof(SimpleItemData))
+                if (item.IsQuantityOnly())
                 {
-                    row[4] = ((SimpleItemData)item.Data).Quantity.ToString();
+                    row[4] = item.Quantity.ToString();
                     row[1] = "[S] ";
                 }
-                else if (item.Data.GetType() == typeof(ModableItemWithQuantityData))
-                {
-                    row[4] = ((ModableItemWithQuantityData)item.Data).Quantity.ToString();
-                    row[1] = "[M+] ";
-                }
-                else
+                else if (item.IsExtendedOnly())
                 {
                     row[1] = "[M] ";
                 }
+                else
+                {
+                    row[4] = item.Quantity.ToString();
+                    row[1] = "[M+] ";
+                }
 
-                if (ResourceHelper.ItemClasses.TryGetValue(item.Header.ItemId.Id, out var itemData))
+                if (ResourceHelper.ItemClasses.TryGetValue(item.ItemInfo.ItemId.Id, out var itemData))
                 {
                     row[1] += itemData.Type;
 
@@ -305,9 +301,9 @@ namespace CP2077SaveEditor.Views.Controls
                 newItem.Tag = item;
 
                 listViewRows.Add(newItem);
-                if (item.Header.ItemId.Id.ResolvedText == "Items.money" && containerID == "1")
+                if (item.ItemInfo.ItemId.Id.ResolvedText == "Items.money" && containerID == "1")
                 {
-                    var money = ((SimpleItemData)item.Data).Quantity;
+                    var money = item.Quantity;
 
                     if (money > moneyUpDown.Maximum)
                     {
@@ -323,7 +319,7 @@ namespace CP2077SaveEditor.Views.Controls
             {
                 foreach (KeyValuePair<gameItemID, string> equipInfo in _parentForm.ActiveSaveFile.GetEquippedItems().Reverse())
                 {
-                    var equippedItem = listViewRows.FirstOrDefault(x => ((ItemData)x.Tag).Header.ItemId.Id == equipInfo.Key.Id);
+                    var equippedItem = listViewRows.FirstOrDefault(x => ((ItemData)x.Tag).ItemInfo.ItemId.Id == equipInfo.Key.Id);
                     if (equippedItem != null)
                     {
                         equippedItem.SubItems[3].Text = equipInfo.Value;
@@ -397,8 +393,8 @@ namespace CP2077SaveEditor.Views.Controls
 
                 if (containerId == "1")
                 {
-                    var activeItem = (InventoryHelper.ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
-                    var equipSlot = _parentForm.ActiveSaveFile.GetEquippedItems().FirstOrDefault(x => x.Key.Id == activeItem.Header.ItemId.Id).Key;
+                    var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
+                    var equipSlot = _parentForm.ActiveSaveFile.GetEquippedItems().FirstOrDefault(x => x.Key.Id == activeItem.ItemInfo.ItemId.Id).Key;
 
                     if (equipSlot != null)
                     {
@@ -432,7 +428,7 @@ namespace CP2077SaveEditor.Views.Controls
         {
             var slot = (gameSEquipSlot)((ToolStripItem)sender).Tag;
             var currentItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
-            slot.ItemID = new gameItemID() { Id = currentItem.Header.ItemId.Id };
+            slot.ItemID = new gameItemID() { Id = currentItem.ItemInfo.ItemId.Id };
             RefreshInventory();
             inventoryListView.SelectedVirtualItems()[0].Selected = false;
         }
@@ -463,7 +459,7 @@ namespace CP2077SaveEditor.Views.Controls
             var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
             _parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerId)).Items.Remove(activeItem);
 
-            if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).Header.ItemId.Id.ResolvedText == "Items.money" && containerId == "1")
+            if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).ItemInfo.ItemId.Id.ResolvedText == "Items.money" && containerId == "1")
             {
                 moneyUpDown.Enabled = false;
                 moneyUpDown.Value = 0;
@@ -517,7 +513,7 @@ namespace CP2077SaveEditor.Views.Controls
             }
 
             var itemDialog = new AddItem();
-            itemDialog.LoadDialog(_parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerID)));
+            itemDialog.LoadDialog(_parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerID)), _parentForm.ActiveSaveFile);
 
             RefreshInventory();
         }

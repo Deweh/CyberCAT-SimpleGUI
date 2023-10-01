@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using WolvenKit.RED4.Save;
+using WolvenKit.RED4.Save.Classes;
 using WolvenKit.RED4.TweakDB;
 
 namespace CP2077SaveEditor.ModSupport;
@@ -104,7 +105,7 @@ public static class EnhancedCraftHelper
         }*/
     }
 
-    public static string GetName(SaveFileHelper save, InventoryHelper.ItemData itemData)
+    public static string GetName(SaveFileHelper save, ItemData itemData)
     {
         var nameRecords = save.GetScriptableSystem<EnhancedCraftSystem>().NameRecords;
         if (nameRecords == null)
@@ -112,7 +113,7 @@ public static class EnhancedCraftHelper
             return null;
         }
 
-        var itemId = InventoryHelper.GetItemIdHash(itemData.Header.ItemId.Id, itemData.Header.ItemId.RngSeed);
+        var itemId = InventoryHelper.GetItemIdHash(itemData.ItemInfo.ItemId.Id, itemData.ItemInfo.ItemId.RngSeed);
         foreach (var nameRecord in nameRecords)
         {
             if (nameRecord.Chunk.Id == itemId)

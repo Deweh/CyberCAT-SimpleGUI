@@ -177,7 +177,6 @@
             btn_AddItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             btn_AddItem.ClickEffectEnabled = true;
             btn_AddItem.DefaultColor = System.Drawing.Color.White;
-            btn_AddItem.Enabled = false;
             btn_AddItem.HoverColor = System.Drawing.Color.LightGray;
             btn_AddItem.Location = new System.Drawing.Point(13, 56);
             btn_AddItem.Name = "btn_AddItem";

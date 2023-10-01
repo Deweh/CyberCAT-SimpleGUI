@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using CP2077SaveEditor.Utils;
-using WolvenKit.RED4.Save;
+using WolvenKit.RED4.Save.Classes;
 using WolvenKit.RED4.Types;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace CP2077SaveEditor.Views
 {
     public partial class AddItem : Form
     {
-        private InventoryHelper.SubInventory _inventory;
+        private SubInventory _inventory;
+        private SaveFileHelper _activeSaveFile;
 
         private Dictionary<string, ItemRecord> _items = new();
 
@@ -23,9 +23,10 @@ namespace CP2077SaveEditor.Views
             InitializeComponent();
         }
 
-        public void LoadDialog(InventoryHelper.SubInventory inventory)
+        public void LoadDialog(SubInventory inventory, SaveFileHelper activeSaveFile)
         {
             _inventory = inventory;
+            _activeSaveFile = activeSaveFile;
 
             RefreshItems();
             ShowDialog();
@@ -77,77 +78,115 @@ namespace CP2077SaveEditor.Views
                 return;
             }
 
-            var item = new InventoryHelper.ItemData
+            var item = new ItemData
             {
-                Header = new InventoryHelper.gameItemIdWrapper
+                ItemInfo = new ItemInfo
                 {
                     ItemId = new gameItemID
                     {
-                        Id = (TweakDBID)_selectedItemId
+                        Id = (TweakDBID)_selectedItemId,
+                        UniqueCounter = _activeSaveFile.GetNextUniqueCounter()
                     }
                 }
             };
 
             if (_selectedItemRecord.Type == "Grenade")
             {
-                item.Header.ItemStructure = (Enums.gamedataItemStructure)3;
-                item.Header.ItemId.RngSeed = 2;
+                item.ItemInfo.ItemStructure = ItemStructure.Quantity | ItemStructure.Extended;
+                item.ItemInfo.ItemId.RngSeed = 2;
 
-                item.Data = new InventoryHelper.ModableItemWithQuantityData
+                item.Quantity = (uint)num_Quantity.Value;
+                item.ItemAdditionalInfo = new ItemAdditionalInfo();
+                item.ItemSlotPart = new ItemSlotPart
                 {
-                    Quantity = (uint)num_Quantity.Value,
-                    ModHeaderThing = new InventoryHelper.ModHeaderThing(),
-                    RootNode = new InventoryHelper.ItemModData
+                    ItemInfo = new ItemInfo
                     {
-                        AppearanceName = "None",
-                        Header = new InventoryHelper.gameItemIdWrapper
-                        {
-                            ItemId = new gameItemID()
-                        },
-                        ModHeaderThing = new InventoryHelper.ModHeaderThing()
-                    }
+                        ItemId = new gameItemID()
+                    },
+                    AppearanceName = "None",
+                    ItemAdditionalInfo = new ItemAdditionalInfo()
                 };
             }
             else
             {
                 if (_selectedItemRecord.IsSingleInstance)
                 {
-                    item.Header.ItemStructure = (Enums.gamedataItemStructure)0; // or 2 with any seed
-                    item.Header.ItemId.RngSeed = 2;
+                    item.ItemInfo.ItemStructure = ItemStructure.None; // or 2 with any seed
+                    item.ItemInfo.ItemId.RngSeed = 2;
 
-                    item.Data = new InventoryHelper.SimpleItemData
-                    {
-                        Quantity = (uint)num_Quantity.Value
-                    };
+                    item.Quantity = (uint)num_Quantity.Value;
                 }
                 else
                 {
-                    var randBytes = new byte[4];
-                    new Random().NextBytes(randBytes);
-                    var newSeed = BitConverter.ToUInt32(randBytes);
+                    item.ItemInfo.ItemStructure = ItemStructure.None; // or 1 with any seed
+                    item.ItemInfo.ItemId.RngSeed = _activeSaveFile.CreateUniqueSeed();
 
-                    item.Header.ItemStructure = (Enums.gamedataItemStructure)0; // or 1 with any seed
-                    item.Header.ItemId.RngSeed = newSeed;
-
-                    item.Data = new InventoryHelper.ModableItemData
+                    item.ItemAdditionalInfo = new ItemAdditionalInfo();
+                    item.ItemSlotPart = new ItemSlotPart
                     {
-                        ModHeaderThing = new InventoryHelper.ModHeaderThing(),
-                        RootNode = new InventoryHelper.ItemModData
+                        ItemInfo = new ItemInfo
                         {
-                            AppearanceName = "None",
-                            Header = new InventoryHelper.gameItemIdWrapper
-                            {
-                                ItemId = new gameItemID()
-                            },
-                            ModHeaderThing = new InventoryHelper.ModHeaderThing()
-                        }
+                            ItemId = new gameItemID()
+                        },
+                        AppearanceName = "None",
+                        ItemAdditionalInfo = new ItemAdditionalInfo()
                     };
+                }
+            }
+
+            if (item.HasExtendedData())
+            {
+                _activeSaveFile.CreateStatData(item.ItemInfo.ItemId);
+
+                if (ResourceHelper.ItemClasses.TryGetValue(item.ItemInfo.ItemId.Id, out var itemRecord))
+                {
+                    if (itemRecord.SlotParts is { Count: > 0 })
+                    {
+                        item.ItemSlotPart = CreateSlotPart(itemRecord.SlotParts[0].ItemPartPreset, itemRecord.SlotParts[0].Slot);
+                        //_activeSaveFile.CreateStatData(modableItemData.RootNode);
+
+                        if (itemRecord.SlotParts.Count > 1)
+                        {
+                            var childMods = new List<ItemSlotPart>();
+                            for (int i = 1; i < itemRecord.SlotParts.Count; i++)
+                            {
+                                var subMod = CreateSlotPart(itemRecord.SlotParts[i].ItemPartPreset, itemRecord.SlotParts[i].Slot);
+                                //_activeSaveFile.CreateStatData(subMod);
+
+                                childMods.Add(subMod);
+                            }
+
+                            item.ItemSlotPart!.Children = childMods;
+                        }
+                    }
                 }
             }
 
             _inventory.Items.Add(item);
 
             Close();
+
+            ItemSlotPart CreateSlotPart(TweakDBID id, TweakDBID slot)
+            {
+                return new ItemSlotPart
+                {
+                    ItemInfo = new ItemInfo
+                    {
+                        ItemId = new gameItemID
+                        {
+                            Id = id,
+                            RngSeed = _activeSaveFile.CreateUniqueSeed(),
+                            UniqueCounter = _activeSaveFile.GetNextUniqueCounter()
+                        }
+                    },
+                    AppearanceName = "None",
+                    AttachmentSlotTdbId = slot,
+                    ItemAdditionalInfo = new ItemAdditionalInfo
+                    {
+                        RequiredLevel = float.MaxValue
+                    }
+                };
+            }
         }
     }
 }

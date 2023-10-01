@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using WolvenKit.RED4.Archive.Buffer;
 using WolvenKit.RED4.Types;
 using static WolvenKit.RED4.Types.Enums;
-using static WolvenKit.RED4.Save.InventoryHelper;
+using WolvenKit.RED4.Save.Classes;
 
 namespace CP2077SaveEditor
 {
@@ -14,7 +14,7 @@ namespace CP2077SaveEditor
         private ItemData activeItem;
         private SaveFileHelper activeSaveFile;
         private bool statsOnly = false;
-        private Random globalRand;
+        private bool _autoUpdate;
 
         public ItemDetails()
         {
@@ -41,11 +41,11 @@ namespace CP2077SaveEditor
             //};
         }
 
-        private void IterativeBuildModTree(ItemModData nodeData, TreeNode rootNode)
+        private void IterativeBuildModTree(ItemSlotPart nodeData, TreeNode rootNode)
         {
-            foreach (ItemModData childNode in nodeData.Children)
+            foreach (var childNode in nodeData.Children)
             {
-                var newNode = rootNode.Nodes.Add(childNode.AttachmentSlotTdbId.ResolvedText + " :: " + childNode.Header.ItemId.Id.ResolvedText + " [" + childNode.Children.Count + "]");
+                var newNode = rootNode.Nodes.Add(childNode.AttachmentSlotTdbId.ResolvedText + " :: " + childNode.ItemInfo.ItemId.Id.ResolvedText + " [" + childNode.Children.Count + "]");
                 newNode.Tag = childNode;
                 if (childNode.Children.Count > 0)
                 {
@@ -54,7 +54,7 @@ namespace CP2077SaveEditor
             }
         }
 
-        private void IterativeDeleteModNode(ItemModData targetNode, ItemModData rootNode)
+        private void IterativeDeleteModNode(ItemSlotPart targetNode, ItemSlotPart rootNode)
         {
 
             if (rootNode.Children.Contains(targetNode))
@@ -63,7 +63,7 @@ namespace CP2077SaveEditor
             }
             else
             {
-                foreach (ItemModData childNode in rootNode.Children)
+                foreach (var childNode in rootNode.Children)
                 {
                     if (childNode.Children.Count > 0)
                     {
@@ -77,27 +77,22 @@ namespace CP2077SaveEditor
         {
             if (!statsOnly)
             {
-                if (activeItem.Data is SimpleItemData simpleData)
+                if (activeItem.IsQuantityOnly())
                 {
                     //SimpleItemData parsing
-                    this.Text = activeItem.Header.ItemId.Id.ResolvedText + " (Simple Item)";
+                    this.Text = activeItem.ItemInfo.ItemId.Id.ResolvedText + " (Simple Item)";
 
-                    if (detailsTabControl.TabPages.Contains(modInfoTab))
-                    {
-                        detailsTabControl.TabPages.Remove(modInfoTab);
-                    }
-
-                    quantityUpDown.Value = simpleData.Quantity;
+                    quantityUpDown.Value = activeItem.Quantity;
                 }
 
-                if (activeItem.Data is ModableItemData modableData)
+                if (activeItem.HasExtendedData())
                 {
                     //ModableItemData parsing
-                    this.Text = activeItem.Header.ItemId.Id.ResolvedText + " (Modable Item)";
+                    this.Text = activeItem.ItemInfo.ItemId.Id.ResolvedText + " (Modable Item)";
 
-                    if (activeItem.Data is ModableItemWithQuantityData modableQuantityData)
+                    if (activeItem.HasQuantity())
                     {
-                        quantityUpDown.Value = modableQuantityData.Quantity;
+                        quantityUpDown.Value = activeItem.Quantity;
                     }
                     else
                     {
@@ -107,10 +102,19 @@ namespace CP2077SaveEditor
 
                     quickActionsGroupBox.Enabled = true;
 
+                    txt_LootItemId.Text = ((ulong)activeItem.ItemAdditionalInfo!.LootItemPoolId).ToString();
+                    unknown1Box.Text = activeItem.ItemAdditionalInfo!.Unknown2.ToString();
+                    unknown3Box.Text = activeItem.ItemAdditionalInfo!.RequiredLevel.ToString();
+
                     modsTreeView.Nodes.Clear();
-                    var rootNode = modsTreeView.Nodes.Add(modableData.RootNode.AttachmentSlotTdbId.ResolvedText, modableData.RootNode.AttachmentSlotTdbId.ResolvedText + " :: " + modableData.RootNode.Header.ItemId.Id.ResolvedText + " [" + modableData.RootNode.Children.Count.ToString() + "]");
-                    rootNode.Tag = modableData.RootNode;
-                    IterativeBuildModTree(modableData.RootNode, rootNode);
+                    var rootNode = modsTreeView.Nodes.Add(activeItem.ItemSlotPart!.AttachmentSlotTdbId.ResolvedText, activeItem.ItemSlotPart.AttachmentSlotTdbId.ResolvedText + " :: " + activeItem.ItemSlotPart.ItemInfo.ItemId.Id.ResolvedText + " [" + activeItem.ItemSlotPart.Children.Count.ToString() + "]");
+                    rootNode.Tag = activeItem.ItemSlotPart;
+                    IterativeBuildModTree(activeItem.ItemSlotPart, rootNode);
+                }
+                else
+                {
+                    detailsTabControl.TabPages.Remove(additionalInfoTab);
+                    detailsTabControl.TabPages.Remove(modInfoTab);
                 }
             }
 
@@ -182,7 +186,6 @@ namespace CP2077SaveEditor
             callbackFunc1 = callback1;
             activeItem = item;
             activeSaveFile = (SaveFileHelper)_saveFile;
-            globalRand = rand;
             ReloadData();
 
             this.ShowDialog();
@@ -198,7 +201,7 @@ namespace CP2077SaveEditor
 
             callbackFunc1 = delegate { return true; };
             var dummyItem = new ItemData();
-            dummyItem.Header = new() { ItemId = new() { RngSeed = seed } };
+            dummyItem.ItemInfo = new() { ItemId = new() { RngSeed = seed } };
             activeItem = dummyItem;
             activeSaveFile = (SaveFileHelper)_saveFile;
             this.Text = name;
@@ -207,6 +210,7 @@ namespace CP2077SaveEditor
             basicInfoGroupBox.Visible = false;
             flagsGroupBox.Visible = false;
             applyButton.Visible = false;
+            detailsTabControl.TabPages.Remove(additionalInfoTab);
             detailsTabControl.TabPages.Remove(modInfoTab);
 
             if (name == "Player")
@@ -250,14 +254,19 @@ namespace CP2077SaveEditor
         {
             if (!statsOnly)
             {
-                if (activeItem.Data is ModableItemData modableItem)
+                if (activeItem.HasExtendedData())
                 {
-                    modableItem.ModHeaderThing = modableItem.RootNode.ModHeaderThing;
+                    // TODO: Check this
+                    // activeItem.ItemAdditionalInfo = activeItem.ItemSlotPart!.ItemAdditionalInfo;
+
+                    activeItem.ItemAdditionalInfo!.LootItemPoolId = ulong.Parse(txt_LootItemId.Text);
+                    activeItem.ItemAdditionalInfo.Unknown2 = uint.Parse(unknown1Box.Text);
+                    activeItem.ItemAdditionalInfo.RequiredLevel = float.Parse(unknown3Box.Text);
                 }
 
-                if (activeItem.Data is SimpleItemData || activeItem.Data is ModableItemWithQuantityData)
+                if (activeItem.HasQuantity())
                 {
-                    ((dynamic)activeItem.Data).Quantity = (uint)quantityUpDown.Value;
+                    activeItem.Quantity = (uint)quantityUpDown.Value;
                 }
 
                 if (unknownFlag1CheckBox.Checked)
@@ -293,7 +302,7 @@ namespace CP2077SaveEditor
         private void modsTreeView_DoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             var nodeDetails = new ModNodeDetails();
-            nodeDetails.LoadNode(((ItemModData)e.Node.Tag), ReloadData, activeSaveFile);
+            nodeDetails.LoadNode(((ItemSlotPart)e.Node.Tag), ReloadData, activeSaveFile);
         }
 
         private void statsListView_DoubleClick(object sender, EventArgs e)
@@ -310,23 +319,22 @@ namespace CP2077SaveEditor
             if (e.KeyCode == Keys.Delete && modsTreeView.SelectedNode != null)
             {
 
-                var data = (ModableItemData)activeItem.Data;
-                if (data.RootNode != (ItemModData)modsTreeView.SelectedNode.Tag)
+                if (activeItem.ItemSlotPart != (ItemSlotPart)modsTreeView.SelectedNode.Tag)
                 {
-                    IterativeDeleteModNode(((ItemModData)modsTreeView.SelectedNode.Tag), data.RootNode);
+                    IterativeDeleteModNode(((ItemSlotPart)modsTreeView.SelectedNode.Tag), activeItem.ItemSlotPart);
                     modsTreeView.SelectedNode.Remove();
                 }
                 else
                 {
 
-                    data.RootNode.Children.Clear();
-                    data.RootNode.AttachmentSlotTdbId = 0;
-                    data.RootNode.Header.ItemId.Id = 0;
-                    data.RootNode.ModHeaderThing.LootItemId = 0;
-                    data.RootNode.ModHeaderThing.Unknown2 = 0;
-                    data.RootNode.ModHeaderThing.RequiredLevel = 0;
-                    data.RootNode.Unknown2 = 0;
-                    data.RootNode.AppearanceName = "";
+                    activeItem.ItemSlotPart.Children.Clear();
+                    activeItem.ItemSlotPart.AttachmentSlotTdbId = 0;
+                    activeItem.ItemSlotPart.ItemInfo.ItemId.Id = 0;
+                    activeItem.ItemSlotPart.ItemAdditionalInfo.LootItemPoolId = 0;
+                    activeItem.ItemSlotPart.ItemAdditionalInfo.Unknown2 = 0;
+                    activeItem.ItemSlotPart.ItemAdditionalInfo.RequiredLevel = 0;
+                    activeItem.ItemSlotPart.Unknown2 = 0;
+                    activeItem.ItemSlotPart.AppearanceName = "";
                     ReloadData();
                 }
             }
@@ -385,23 +393,22 @@ namespace CP2077SaveEditor
             if (modsTreeView.SelectedNode != null)
             {
 
-                var data = (ModableItemData)activeItem.Data;
-                if (data.RootNode != (ItemModData)modsTreeView.SelectedNode.Tag)
+                if (activeItem.ItemSlotPart != (ItemSlotPart)modsTreeView.SelectedNode.Tag)
                 {
-                    IterativeDeleteModNode(((ItemModData)modsTreeView.SelectedNode.Tag), data.RootNode);
+                    IterativeDeleteModNode(((ItemSlotPart)modsTreeView.SelectedNode.Tag), activeItem.ItemSlotPart);
                     modsTreeView.SelectedNode.Remove();
                 }
                 else
                 {
 
-                    data.RootNode.Children.Clear();
-                    data.RootNode.AttachmentSlotTdbId = 0;
-                    data.RootNode.Header.ItemId.Id = 0;
-                    data.RootNode.ModHeaderThing.LootItemId = 0;
-                    data.RootNode.ModHeaderThing.Unknown2 = 0;
-                    data.RootNode.ModHeaderThing.RequiredLevel = 0;
-                    data.RootNode.Unknown2 = 0;
-                    data.RootNode.AppearanceName = "";
+                    activeItem.ItemSlotPart.Children.Clear();
+                    activeItem.ItemSlotPart.AttachmentSlotTdbId = 0;
+                    activeItem.ItemSlotPart.ItemInfo.ItemId.Id = 0;
+                    activeItem.ItemSlotPart.ItemAdditionalInfo.LootItemPoolId = 0;
+                    activeItem.ItemSlotPart.ItemAdditionalInfo.Unknown2 = 0;
+                    activeItem.ItemSlotPart.ItemAdditionalInfo.RequiredLevel = 0;
+                    activeItem.ItemSlotPart.Unknown2 = 0;
+                    activeItem.ItemSlotPart.AppearanceName = "";
                     ReloadData();
                 }
             }
@@ -415,15 +422,16 @@ namespace CP2077SaveEditor
             }
             else
             {
-                var newNode = new ItemModData
+                var newNode = new ItemSlotPart
                 {
-                    Header = new gameItemIdWrapper
+                    ItemInfo = new ItemInfo
                     {
                         ItemId = new gameItemID()
                     },
-                    ModHeaderThing = new ModHeaderThing()
+                    AppearanceName = "None",
+                    ItemAdditionalInfo = new ItemAdditionalInfo()
                 };
-                ((ItemModData)modsTreeView.SelectedNode.Tag).Children.Add(newNode);
+                ((ItemSlotPart)modsTreeView.SelectedNode.Tag).Children.Add(newNode);
                 ReloadData();
                 var nodeDialog = new ModNodeDetails();
                 nodeDialog.LoadNode(newNode, ReloadData, activeSaveFile);
@@ -467,11 +475,44 @@ namespace CP2077SaveEditor
 
         private void createStatDataButton_Click(object sender, EventArgs e)
         {
-            activeSaveFile.CreateStatData(activeItem, globalRand);
+            activeSaveFile.CreateStatData(activeItem.ItemInfo.ItemId);
             detailsTabControl.TabPages.Remove(statsPlaceholderTab);
             detailsTabControl.TabPages.Insert(0, statsTab);
             detailsTabControl.SelectedTab = statsTab;
             ReloadData();
+        }
+
+        private void txt_LootItemName_TextChanged(object sender, EventArgs e)
+        {
+            if (!activeItem.HasExtendedData() || _autoUpdate)
+            {
+                return;
+            }
+
+            activeItem.ItemAdditionalInfo!.LootItemPoolId = txt_LootItemName.Text;
+
+            _autoUpdate = true;
+            txt_LootItemId.Text = ((ulong)activeItem.ItemAdditionalInfo.LootItemPoolId).ToString();
+            _autoUpdate = false;
+        }
+
+        private void txt_LootItemId_TextChanged(object sender, EventArgs e)
+        {
+            if (!activeItem.HasExtendedData() || _autoUpdate)
+            {
+                return;
+            }
+
+            activeItem.ItemAdditionalInfo!.LootItemPoolId = ulong.Parse(txt_LootItemId.Text);
+
+            _autoUpdate = true;
+            txt_LootItemName.Text = activeItem.ItemAdditionalInfo.LootItemPoolId.GetResolvedText() ?? "";
+            _autoUpdate = false;
+        }
+
+        private void btn_MaxLevel_Click(object sender, EventArgs e)
+        {
+            unknown3Box.Text = float.MaxValue.ToString();
         }
     }
 }

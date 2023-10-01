@@ -55,6 +55,16 @@ namespace CP2077SaveEditor
             label4 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
             createStatDataButton = new ModernButton();
+            additionalInfoTab = new System.Windows.Forms.TabPage();
+            btn_MaxLevel = new ModernButton();
+            unknown3Box = new System.Windows.Forms.TextBox();
+            label8 = new System.Windows.Forms.Label();
+            unknown1Box = new System.Windows.Forms.TextBox();
+            label5 = new System.Windows.Forms.Label();
+            txt_LootItemName = new System.Windows.Forms.TextBox();
+            lbl_LootItemName = new System.Windows.Forms.Label();
+            lbl_LootItemId = new System.Windows.Forms.Label();
+            txt_LootItemId = new System.Windows.Forms.TextBox();
             modInfoTab = new System.Windows.Forms.TabPage();
             newModNodeButton = new ModernButton();
             deleteModNodeButton = new ModernButton();
@@ -67,6 +77,7 @@ namespace CP2077SaveEditor
             detailsTabControl.SuspendLayout();
             statsTab.SuspendLayout();
             statsPlaceholderTab.SuspendLayout();
+            additionalInfoTab.SuspendLayout();
             modInfoTab.SuspendLayout();
             SuspendLayout();
             // 
@@ -186,6 +197,7 @@ namespace CP2077SaveEditor
             detailsTabControl.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             detailsTabControl.Controls.Add(statsTab);
             detailsTabControl.Controls.Add(statsPlaceholderTab);
+            detailsTabControl.Controls.Add(additionalInfoTab);
             detailsTabControl.Controls.Add(modInfoTab);
             detailsTabControl.Location = new System.Drawing.Point(12, 201);
             detailsTabControl.Name = "detailsTabControl";
@@ -357,15 +369,116 @@ namespace CP2077SaveEditor
             createStatDataButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             createStatDataButton.Click += createStatDataButton_Click;
             // 
+            // additionalInfoTab
+            // 
+            additionalInfoTab.Controls.Add(btn_MaxLevel);
+            additionalInfoTab.Controls.Add(unknown3Box);
+            additionalInfoTab.Controls.Add(label8);
+            additionalInfoTab.Controls.Add(unknown1Box);
+            additionalInfoTab.Controls.Add(label5);
+            additionalInfoTab.Controls.Add(txt_LootItemName);
+            additionalInfoTab.Controls.Add(lbl_LootItemName);
+            additionalInfoTab.Controls.Add(lbl_LootItemId);
+            additionalInfoTab.Controls.Add(txt_LootItemId);
+            additionalInfoTab.Location = new System.Drawing.Point(4, 22);
+            additionalInfoTab.Name = "additionalInfoTab";
+            additionalInfoTab.Padding = new System.Windows.Forms.Padding(3);
+            additionalInfoTab.Size = new System.Drawing.Size(424, 330);
+            additionalInfoTab.TabIndex = 3;
+            additionalInfoTab.Text = "Additional Info";
+            additionalInfoTab.UseVisualStyleBackColor = true;
+            // 
+            // btn_MaxLevel
+            // 
+            btn_MaxLevel.BackColor = System.Drawing.Color.White;
+            btn_MaxLevel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_MaxLevel.ClickEffectEnabled = true;
+            btn_MaxLevel.DefaultColor = System.Drawing.Color.White;
+            btn_MaxLevel.HoverColor = System.Drawing.Color.LightGray;
+            btn_MaxLevel.Location = new System.Drawing.Point(373, 90);
+            btn_MaxLevel.Name = "btn_MaxLevel";
+            btn_MaxLevel.Size = new System.Drawing.Size(45, 22);
+            btn_MaxLevel.TabIndex = 36;
+            btn_MaxLevel.Text = "None";
+            btn_MaxLevel.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_MaxLevel.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_MaxLevel.Click += btn_MaxLevel_Click;
+            // 
+            // unknown3Box
+            // 
+            unknown3Box.Location = new System.Drawing.Point(130, 90);
+            unknown3Box.Name = "unknown3Box";
+            unknown3Box.Size = new System.Drawing.Size(237, 22);
+            unknown3Box.TabIndex = 40;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(42, 93);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(82, 13);
+            label8.TabIndex = 39;
+            label8.Text = "RequiredLevel:";
+            // 
+            // unknown1Box
+            // 
+            unknown1Box.Location = new System.Drawing.Point(130, 62);
+            unknown1Box.Name = "unknown1Box";
+            unknown1Box.Size = new System.Drawing.Size(288, 22);
+            unknown1Box.TabIndex = 38;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(11, 65);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(113, 13);
+            label5.TabIndex = 37;
+            label5.Text = "Unknown 1 (UInt32):";
+            // 
+            // txt_LootItemName
+            // 
+            txt_LootItemName.Location = new System.Drawing.Point(130, 6);
+            txt_LootItemName.Name = "txt_LootItemName";
+            txt_LootItemName.Size = new System.Drawing.Size(288, 22);
+            txt_LootItemName.TabIndex = 35;
+            txt_LootItemName.TextChanged += txt_LootItemName_TextChanged;
+            // 
+            // lbl_LootItemName
+            // 
+            lbl_LootItemName.AutoSize = true;
+            lbl_LootItemName.Location = new System.Drawing.Point(37, 9);
+            lbl_LootItemName.Name = "lbl_LootItemName";
+            lbl_LootItemName.Size = new System.Drawing.Size(87, 13);
+            lbl_LootItemName.TabIndex = 34;
+            lbl_LootItemName.Text = "LootItem Name:";
+            // 
+            // lbl_LootItemId
+            // 
+            lbl_LootItemId.AutoSize = true;
+            lbl_LootItemId.Location = new System.Drawing.Point(55, 37);
+            lbl_LootItemId.Name = "lbl_LootItemId";
+            lbl_LootItemId.Size = new System.Drawing.Size(69, 13);
+            lbl_LootItemId.TabIndex = 33;
+            lbl_LootItemId.Text = "LootItem ID:";
+            // 
+            // txt_LootItemId
+            // 
+            txt_LootItemId.Location = new System.Drawing.Point(130, 34);
+            txt_LootItemId.Name = "txt_LootItemId";
+            txt_LootItemId.Size = new System.Drawing.Size(288, 22);
+            txt_LootItemId.TabIndex = 32;
+            txt_LootItemId.TextChanged += txt_LootItemId_TextChanged;
+            // 
             // modInfoTab
             // 
             modInfoTab.Controls.Add(newModNodeButton);
             modInfoTab.Controls.Add(deleteModNodeButton);
             modInfoTab.Controls.Add(modsTreeView);
-            modInfoTab.Location = new System.Drawing.Point(4, 22);
+            modInfoTab.Location = new System.Drawing.Point(4, 24);
             modInfoTab.Name = "modInfoTab";
             modInfoTab.Padding = new System.Windows.Forms.Padding(3);
-            modInfoTab.Size = new System.Drawing.Size(424, 330);
+            modInfoTab.Size = new System.Drawing.Size(424, 328);
             modInfoTab.TabIndex = 0;
             modInfoTab.Text = "Mods/Special";
             modInfoTab.UseVisualStyleBackColor = true;
@@ -464,6 +577,8 @@ namespace CP2077SaveEditor
             statsTab.ResumeLayout(false);
             statsPlaceholderTab.ResumeLayout(false);
             statsPlaceholderTab.PerformLayout();
+            additionalInfoTab.ResumeLayout(false);
+            additionalInfoTab.PerformLayout();
             modInfoTab.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -500,5 +615,15 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Label label3;
         private ModernButton createStatDataButton;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TabPage additionalInfoTab;
+        private System.Windows.Forms.TextBox txt_LootItemName;
+        private System.Windows.Forms.Label lbl_LootItemName;
+        private System.Windows.Forms.Label lbl_LootItemId;
+        private System.Windows.Forms.TextBox txt_LootItemId;
+        private ModernButton btn_MaxLevel;
+        private System.Windows.Forms.TextBox unknown3Box;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox unknown1Box;
+        private System.Windows.Forms.Label label5;
     }
 }
