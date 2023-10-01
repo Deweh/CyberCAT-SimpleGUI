@@ -141,6 +141,10 @@ namespace CP2077SaveEditor
         public gameSavedStatsData GetItemStatData(ItemData item)
         {
             var result = GetStatsFromItemId(item.ItemInfo.ItemId);
+            if (result == null)
+            {
+                result = GetStatsFromSeed(item.ItemInfo.ItemId.RngSeed);
+            }
 
             if (result == null && item.ItemSlotPart != null && item.IsQuantityOnly())
             {
