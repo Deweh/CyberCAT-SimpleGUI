@@ -136,14 +136,16 @@ namespace CP2077SaveEditor.Views
 
             if (item.HasExtendedData())
             {
-                _activeSaveFile.CreateStatData(item.ItemInfo.ItemId);
-
                 if (ResourceHelper.ItemClasses.TryGetValue(item.ItemInfo.ItemId.Id, out var itemRecord))
                 {
+                    if (itemRecord.Type == "Clothing" || itemRecord.Type == "Weapon" || itemRecord.Type == "WeaponItem")
+                    {
+                        _activeSaveFile.CreateStatData(item.ItemInfo.ItemId);
+                    }
+
                     if (itemRecord.SlotParts is { Count: > 0 })
                     {
                         item.ItemSlotPart = CreateSlotPart(itemRecord.SlotParts[0].ItemPartPreset, itemRecord.SlotParts[0].Slot);
-                        //_activeSaveFile.CreateStatData(modableItemData.RootNode);
 
                         if (itemRecord.SlotParts.Count > 1)
                         {
@@ -151,7 +153,6 @@ namespace CP2077SaveEditor.Views
                             for (int i = 1; i < itemRecord.SlotParts.Count; i++)
                             {
                                 var subMod = CreateSlotPart(itemRecord.SlotParts[i].ItemPartPreset, itemRecord.SlotParts[i].Slot);
-                                //_activeSaveFile.CreateStatData(subMod);
 
                                 childMods.Add(subMod);
                             }

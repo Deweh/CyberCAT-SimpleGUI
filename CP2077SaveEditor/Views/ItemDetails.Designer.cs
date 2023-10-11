@@ -42,15 +42,6 @@ namespace CP2077SaveEditor
             unknownFlag1CheckBox = new System.Windows.Forms.CheckBox();
             detailsTabControl = new System.Windows.Forms.TabControl();
             statsTab = new System.Windows.Forms.TabPage();
-            addCurveStatButton = new ModernButton();
-            addCombinedStatButton = new ModernButton();
-            statsListView = new System.Windows.Forms.ListView();
-            statTypeHeader = new System.Windows.Forms.ColumnHeader();
-            statModifierHeader = new System.Windows.Forms.ColumnHeader();
-            statNameHeader = new System.Windows.Forms.ColumnHeader();
-            statValueHeader = new System.Windows.Forms.ColumnHeader();
-            removeStatButton = new ModernButton();
-            addConstantStatButton = new ModernButton();
             statsPlaceholderTab = new System.Windows.Forms.TabPage();
             label4 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
@@ -70,6 +61,7 @@ namespace CP2077SaveEditor
             deleteModNodeButton = new ModernButton();
             closeButton = new ModernButton();
             applyButton = new ModernButton();
+            statsControl1 = new Views.Controls.StatsControl();
             basicInfoGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)quantityUpDown).BeginInit();
             quickActionsGroupBox.SuspendLayout();
@@ -207,11 +199,7 @@ namespace CP2077SaveEditor
             // 
             // statsTab
             // 
-            statsTab.Controls.Add(addCurveStatButton);
-            statsTab.Controls.Add(addCombinedStatButton);
-            statsTab.Controls.Add(statsListView);
-            statsTab.Controls.Add(removeStatButton);
-            statsTab.Controls.Add(addConstantStatButton);
+            statsTab.Controls.Add(statsControl1);
             statsTab.Location = new System.Drawing.Point(4, 22);
             statsTab.Name = "statsTab";
             statsTab.Padding = new System.Windows.Forms.Padding(3);
@@ -219,108 +207,6 @@ namespace CP2077SaveEditor
             statsTab.TabIndex = 1;
             statsTab.Text = "Stats";
             statsTab.UseVisualStyleBackColor = true;
-            // 
-            // addCurveStatButton
-            // 
-            addCurveStatButton.BackColor = System.Drawing.Color.White;
-            addCurveStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            addCurveStatButton.ClickEffectEnabled = true;
-            addCurveStatButton.DefaultColor = System.Drawing.Color.White;
-            addCurveStatButton.HoverColor = System.Drawing.Color.LightGray;
-            addCurveStatButton.Location = new System.Drawing.Point(90, 10);
-            addCurveStatButton.Name = "addCurveStatButton";
-            addCurveStatButton.Size = new System.Drawing.Size(81, 20);
-            addCurveStatButton.TabIndex = 5;
-            addCurveStatButton.Text = "+ New Curve";
-            addCurveStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            addCurveStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            addCurveStatButton.Click += addCurveStatButton_Click;
-            // 
-            // addCombinedStatButton
-            // 
-            addCombinedStatButton.BackColor = System.Drawing.Color.White;
-            addCombinedStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            addCombinedStatButton.ClickEffectEnabled = true;
-            addCombinedStatButton.DefaultColor = System.Drawing.Color.White;
-            addCombinedStatButton.HoverColor = System.Drawing.Color.LightGray;
-            addCombinedStatButton.Location = new System.Drawing.Point(177, 10);
-            addCombinedStatButton.Name = "addCombinedStatButton";
-            addCombinedStatButton.Size = new System.Drawing.Size(107, 20);
-            addCombinedStatButton.TabIndex = 4;
-            addCombinedStatButton.Text = "+ New Combined";
-            addCombinedStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            addCombinedStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            addCombinedStatButton.Click += addCombinedStatButton_Click;
-            // 
-            // statsListView
-            // 
-            statsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            statsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { statTypeHeader, statModifierHeader, statNameHeader, statValueHeader });
-            statsListView.FullRowSelect = true;
-            statsListView.Location = new System.Drawing.Point(18, 36);
-            statsListView.MultiSelect = false;
-            statsListView.Name = "statsListView";
-            statsListView.Size = new System.Drawing.Size(379, 283);
-            statsListView.TabIndex = 5;
-            statsListView.UseCompatibleStateImageBehavior = false;
-            statsListView.View = System.Windows.Forms.View.Details;
-            // 
-            // statTypeHeader
-            // 
-            statTypeHeader.Name = "statTypeHeader";
-            statTypeHeader.Text = "Type";
-            statTypeHeader.Width = 77;
-            // 
-            // statModifierHeader
-            // 
-            statModifierHeader.DisplayIndex = 2;
-            statModifierHeader.Name = "statModifierHeader";
-            statModifierHeader.Text = "Modifier";
-            statModifierHeader.Width = 87;
-            // 
-            // statNameHeader
-            // 
-            statNameHeader.DisplayIndex = 1;
-            statNameHeader.Name = "statNameHeader";
-            statNameHeader.Text = "Stat";
-            statNameHeader.Width = 131;
-            // 
-            // statValueHeader
-            // 
-            statValueHeader.Name = "statValueHeader";
-            statValueHeader.Text = "Value";
-            // 
-            // removeStatButton
-            // 
-            removeStatButton.BackColor = System.Drawing.Color.White;
-            removeStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            removeStatButton.ClickEffectEnabled = true;
-            removeStatButton.DefaultColor = System.Drawing.Color.White;
-            removeStatButton.HoverColor = System.Drawing.Color.LightGray;
-            removeStatButton.Location = new System.Drawing.Point(18, 10);
-            removeStatButton.Name = "removeStatButton";
-            removeStatButton.Size = new System.Drawing.Size(66, 20);
-            removeStatButton.TabIndex = 4;
-            removeStatButton.Text = "- Delete";
-            removeStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            removeStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            removeStatButton.Click += removeStatButton_Click;
-            // 
-            // addConstantStatButton
-            // 
-            addConstantStatButton.BackColor = System.Drawing.Color.White;
-            addConstantStatButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            addConstantStatButton.ClickEffectEnabled = true;
-            addConstantStatButton.DefaultColor = System.Drawing.Color.White;
-            addConstantStatButton.HoverColor = System.Drawing.Color.LightGray;
-            addConstantStatButton.Location = new System.Drawing.Point(290, 10);
-            addConstantStatButton.Name = "addConstantStatButton";
-            addConstantStatButton.Size = new System.Drawing.Size(107, 20);
-            addConstantStatButton.TabIndex = 3;
-            addConstantStatButton.Text = "+ New Constant";
-            addConstantStatButton.TextColor = System.Drawing.SystemColors.ControlText;
-            addConstantStatButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            addConstantStatButton.Click += addConstantStatButton_Click;
             // 
             // statsPlaceholderTab
             // 
@@ -380,10 +266,10 @@ namespace CP2077SaveEditor
             additionalInfoTab.Controls.Add(lbl_LootItemName);
             additionalInfoTab.Controls.Add(lbl_LootItemId);
             additionalInfoTab.Controls.Add(txt_LootItemId);
-            additionalInfoTab.Location = new System.Drawing.Point(4, 22);
+            additionalInfoTab.Location = new System.Drawing.Point(4, 24);
             additionalInfoTab.Name = "additionalInfoTab";
             additionalInfoTab.Padding = new System.Windows.Forms.Padding(3);
-            additionalInfoTab.Size = new System.Drawing.Size(424, 330);
+            additionalInfoTab.Size = new System.Drawing.Size(424, 328);
             additionalInfoTab.TabIndex = 3;
             additionalInfoTab.Text = "Additional Info";
             additionalInfoTab.UseVisualStyleBackColor = true;
@@ -549,6 +435,14 @@ namespace CP2077SaveEditor
             applyButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             applyButton.Click += applyButton_Click;
             // 
+            // statsControl1
+            // 
+            statsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            statsControl1.Location = new System.Drawing.Point(3, 3);
+            statsControl1.Name = "statsControl1";
+            statsControl1.Size = new System.Drawing.Size(418, 324);
+            statsControl1.TabIndex = 0;
+            // 
             // ItemDetails
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -599,15 +493,6 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.TabControl detailsTabControl;
         private System.Windows.Forms.TabPage modInfoTab;
         private System.Windows.Forms.TabPage statsTab;
-        private ModernButton addConstantStatButton;
-        private ModernButton removeStatButton;
-        private System.Windows.Forms.ListView statsListView;
-        private System.Windows.Forms.ColumnHeader statTypeHeader;
-        private System.Windows.Forms.ColumnHeader statModifierHeader;
-        private System.Windows.Forms.ColumnHeader statNameHeader;
-        private System.Windows.Forms.ColumnHeader statValueHeader;
-        private ModernButton addCurveStatButton;
-        private ModernButton addCombinedStatButton;
         private ModernButton newModNodeButton;
         private ModernButton deleteModNodeButton;
         private ModernButton infuseLegendaryComponentsButton;
@@ -625,5 +510,6 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox unknown1Box;
         private System.Windows.Forms.Label label5;
+        private Views.Controls.StatsControl statsControl1;
     }
 }

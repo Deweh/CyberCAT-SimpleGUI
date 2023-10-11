@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using CP2077SaveEditor.Views;
 using WolvenKit.RED4.Save.Classes;
 
 namespace CP2077SaveEditor
@@ -120,7 +121,7 @@ namespace CP2077SaveEditor
 
             if (Global.StatsSystemEnabled)
             {
-                resolvedStats = activeSaveFile.GetStatsFromSeed(node.ItemInfo.ItemId.RngSeed);
+                resolvedStats = activeSaveFile.GetStatsFromItemId(node.ItemInfo.ItemId);
             }
 
             if (resolvedStats != null)
@@ -167,14 +168,14 @@ namespace CP2077SaveEditor
 
         private void resolvedItemLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var details = new ItemDetails();
-            if (activeNode.ItemInfo.ItemId.Id.ResolvedText.Length > 0)
+            var statsForm = new StatsForm();
+            if (activeNode.ItemInfo.ItemId.Id.IsResolvable)
             {
-                details.LoadStatsOnly(activeNode.ItemInfo.ItemId.RngSeed, activeSaveFile, activeNode.ItemInfo.ItemId.Id.ResolvedText);
+                statsForm.Init(activeNode.ItemInfo.ItemId.Id.ResolvedText!, activeSaveFile.GetStatsFromItemId(activeNode.ItemInfo.ItemId));
             }
             else
             {
-                details.LoadStatsOnly(activeNode.ItemInfo.ItemId.RngSeed, activeSaveFile, activeNode.ItemInfo.ItemId.Id.ResolvedText);
+                statsForm.Init(((ulong)activeNode.ItemInfo.ItemId.Id).ToString(), activeSaveFile.GetStatsFromItemId(activeNode.ItemInfo.ItemId));
             }
 
         }

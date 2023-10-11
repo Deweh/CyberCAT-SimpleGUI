@@ -23,9 +23,6 @@ namespace CP2077SaveEditor
             modsTreeView.NodeMouseDoubleClick += modsTreeView_DoubleClick;
             modsTreeView.KeyDown += modsTreeView_KeyDown;
 
-            statsListView.DoubleClick += statsListView_DoubleClick;
-            statsListView.KeyDown += statsListView_KeyDown;
-
             quantityUpDown.ValueChanged += ApplyableControlChanged;
             unknownFlag1CheckBox.CheckedChanged += ApplyableControlChanged;
             questItemCheckBox.CheckedChanged += ApplyableControlChanged;
@@ -121,7 +118,7 @@ namespace CP2077SaveEditor
             //Stats parsing
             if (Global.StatsSystemEnabled)
             {
-                var statsData = activeSaveFile.GetItemStatData(activeItem);
+                var statsData = activeSaveFile.GetStatsFromItemId(activeItem.ItemInfo.ItemId);
                 if (statsData == null)
                 {
                     detailsTabControl.TabPages.Remove(statsTab);
@@ -129,41 +126,7 @@ namespace CP2077SaveEditor
                 else
                 {
                     detailsTabControl.TabPages.Remove(statsPlaceholderTab);
-                    statsListView.Items.Clear();
-                    var listRows = new List<ListViewItem>();
-                    if (statsData.ModifiersBuffer?.Data is ModifiersBuffer modBuffer)
-                    {
-                        foreach (gameStatModifierData_Deprecated modifier in modBuffer.Entries)
-                        {
-                            var row = new string[] { "Constant", modifier.ModifierType.ToString(), modifier.StatType.ToString(), "" };
-
-                            if (modifier is gameCombinedStatModifierData_Deprecated combinedData)
-                            {
-                                row[0] = "Combined";
-                                row[3] = combinedData.Value.ToString();
-                            }
-                            else if (modifier is gameConstantStatModifierData_Deprecated constantData)
-                            {
-                                row[3] = constantData.Value.ToString();
-                            }
-                            else
-                            {
-                                row[0] = "Curve";
-                            }
-
-                            var newItem = new ListViewItem(row);
-                            newItem.Tag = modifier;
-                            listRows.Add(newItem);
-                        }
-
-                        statsListView.BeginUpdate();
-                        statsListView.Items.AddRange(listRows.ToArray());
-                        statsListView.EndUpdate();
-                    }
-                    else
-                    {
-                        statsData.ModifiersBuffer = new DataBuffer { Data = new ModifiersBuffer() };
-                    }
+                    statsControl1.Init(statsData);
                 }
             }
             else
@@ -232,7 +195,7 @@ namespace CP2077SaveEditor
 
         private void pasteLegendaryIdButton_Click(object sender, EventArgs e)
         {
-            var statData = activeSaveFile.GetItemStatData(activeItem);
+            var statData = activeSaveFile.GetStatsFromItemId(activeItem.ItemInfo.ItemId);
             if (statData == null)
             {
                 if (MessageBox.Show("Item has no stat data. To fix this, please upgrade the item in-game at least once.", "Notice", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -305,15 +268,6 @@ namespace CP2077SaveEditor
             nodeDetails.LoadNode(((ItemSlotPart)e.Node.Tag), ReloadData, activeSaveFile);
         }
 
-        private void statsListView_DoubleClick(object sender, EventArgs e)
-        {
-            if (statsListView.SelectedItems.Count > 0)
-            {
-                var nodeDetails = new StatDetails();
-                nodeDetails.LoadStat((gameStatModifierData_Deprecated)statsListView.SelectedItems[0].Tag, ReloadData);
-            }
-        }
-
         private void modsTreeView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete && modsTreeView.SelectedNode != null)
@@ -338,54 +292,6 @@ namespace CP2077SaveEditor
                     ReloadData();
                 }
             }
-        }
-
-        private void statsListView_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete && statsListView.SelectedItems.Count > 0)
-            {
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-                activeSaveFile.RemoveStat((gameStatModifierData_Deprecated)statsListView.SelectedItems[0].Tag, activeSaveFile.GetItemStatData(activeItem));
-                statsListView.Items.Remove(statsListView.SelectedItems[0]);
-            }
-        }
-
-        private void addConstantStatButton_Click(object sender, EventArgs e)
-        {
-            var newId = activeSaveFile.AddStat(typeof(gameConstantStatModifierData_Deprecated), activeSaveFile.GetItemStatData(activeItem));
-            ReloadData();
-
-            var statDialog = new StatDetails();
-            statDialog.LoadStat(newId, ReloadData);
-        }
-
-        private void removeStatButton_Click(object sender, EventArgs e)
-        {
-            if (statsListView.SelectedItems.Count > 0)
-            {
-                activeSaveFile.RemoveStat((gameStatModifierData_Deprecated)statsListView.SelectedItems[0].Tag, activeSaveFile.GetItemStatData(activeItem));
-                statsListView.Items.Remove(statsListView.SelectedItems[0]);
-            }
-
-        }
-
-        private void addCombinedStatButton_Click(object sender, EventArgs e)
-        {
-            var newId = activeSaveFile.AddStat(typeof(gameCombinedStatModifierData_Deprecated), activeSaveFile.GetItemStatData(activeItem));
-            ReloadData();
-
-            var statDialog = new StatDetails();
-            statDialog.LoadStat(newId, ReloadData);
-        }
-
-        private void addCurveStatButton_Click(object sender, EventArgs e)
-        {
-            var newId = activeSaveFile.AddStat(typeof(gameCurveStatModifierData_Deprecated), activeSaveFile.GetItemStatData(activeItem));
-            ReloadData();
-
-            var statDialog = new StatDetails();
-            statDialog.LoadStat(newId, ReloadData);
         }
 
         private void deleteModNodeButton_Click(object sender, EventArgs e)

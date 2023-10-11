@@ -71,6 +71,11 @@ namespace CP2077SaveEditor
             return GetSystem<PersistencySystem2>();
         }
 
+        public RedPackage GetGodModeSystem()
+        {
+            return (RedPackage)((Package)SaveFile.Nodes[SaveFile.Nodes.FindIndex(x => x.Name == Constants.NodeNames.GOD_MODE_SYSTEM)].Value).Content;
+        }
+
         public T GetSystem<T>()
         {
             return (T)SaveFile.Nodes.FirstOrDefault(x => x.Value.GetType() == typeof(T))?.Value;
@@ -129,66 +134,24 @@ namespace CP2077SaveEditor
             return slots;
         }
 
-        /// <summary>
-        /// Deprecated function. Use GetStatsContainer() instead.
-        /// </summary>
-        /// <returns></returns>
-        public gameStatsStateMapStructure GetStatsMap()
+        public gameSavedStatsData GetStatsFromEntityId(ulong hash)
         {
-            return GetStatsContainer();
-        }
-
-        public gameSavedStatsData GetItemStatData(ItemData item)
-        {
-            var result = GetStatsFromItemId(item.ItemInfo.ItemId);
-            if (result == null)
-            {
-                result = GetStatsFromSeed(item.ItemInfo.ItemId.RngSeed);
-            }
-
-            if (result == null && item.ItemSlotPart != null && item.IsQuantityOnly())
-            {
-                var i = Array.FindIndex(this.GetStatsMap().Values.ToArray(), x => x.RecordID == item.ItemInfo.ItemId.Id);
-                if (i > -1)
-                {
-                    return this.GetStatsMap().Values[i];
-                }
-            }
-
-            return result;
+            return GetStatsFromStatsObjectId(new gameStatsObjectID { IdType = gameStatIDType.EntityID, EntityHash = hash });
         }
 
         public gameSavedStatsData GetStatsFromItemId(gameItemID itemId)
         {
-            var id = InventoryHelper.GetItemIdHash(itemId);
-
-            var statsMap = GetStatsMap();
-
-            var index = -1;
-            for (var i = 0; i < statsMap.Keys.Count; i++)
-            {
-                if (statsMap.Keys[i].EntityHash == id)
-                {
-                    index = i;
-                    break;
-                }
-            }
-
-            if (index > -1)
-            {
-                return this.GetStatsMap().Values[index];
-            }
-            return null;
+            return GetStatsFromStatsObjectId(new gameStatsObjectID { IdType = gameStatIDType.ItemID, EntityHash = InventoryHelper.GetItemIdHash(itemId) });
         }
 
-        public gameSavedStatsData GetStatsFromSeed(uint seed)
+        public gameSavedStatsData GetStatsFromStatsObjectId(gameStatsObjectID id)
         {
-            var i = Array.FindIndex(this.GetStatsMap().Values.ToArray(), x => x.Seed == seed);
-            if (i > -1)
+            var index = GetStatsContainer().Keys.IndexOf(id);
+            if (index == -1)
             {
-                return this.GetStatsMap().Values[i];
+                return null;
             }
-            return null;
+            return GetStatsContainer().Values[index];
         }
 
         public void SetConstantStat(gamedataStatType stat, float value, gameSavedStatsData statsData, gameStatModifierType mod = gameStatModifierType.Additive)
@@ -239,11 +202,6 @@ namespace CP2077SaveEditor
             return modifierData;
         }
 
-        public void RemoveStat(gameStatModifierData_Deprecated stats, gameSavedStatsData statsData)
-        {
-            ((ModifiersBuffer)statsData.ModifiersBuffer.Data)!.Entries.Remove(stats);
-        }
-
         public uint CreateUniqueSeed(gameStatsStateMapStructure statsMap = null)
         {
             statsMap ??= GetStatsContainer();
@@ -258,6 +216,41 @@ namespace CP2077SaveEditor
                     return seed;
                 }
             } while (true);
+        }
+
+        public gameSavedStatsData CreateStatDataFromEntityId(ulong id)
+        {
+            var statsMap = GetStatsContainer();
+
+            statsMap.Keys.Add(new gameStatsObjectID
+            {
+                IdType = gameStatIDType.EntityID,
+                EntityHash = 1
+            });
+
+            var inactiveStats = new CArray<CEnum<gamedataStatType>>
+            {
+                gamedataStatType.Level,
+                gamedataStatType.QuickHackUpload
+            };
+
+            var modifierBuffer = new ModifiersBuffer();
+            modifierBuffer.Entries.Add(new gameConstantStatModifierData_Deprecated
+            {
+                StatType = gamedataStatType.Humanity,
+                ModifierType = gameStatModifierType.Additive,
+                Value = 2
+            });
+
+            var statsData = new gameSavedStatsData
+            {
+                RecordID = "Character.Player_Puppet_Base",
+                Seed = CreateUniqueSeed(statsMap)
+            };
+
+            statsMap.Values.Add(statsData);
+
+            return statsData;
         }
 
         public gameSavedStatsData CreateStatData(gameItemID gameItemId)
@@ -293,7 +286,7 @@ namespace CP2077SaveEditor
 
             if (ResourceHelper.ItemClasses.TryGetValue(gameItemId.Id, out var itemRecord))
             {
-                if (itemRecord.Type == "WeaponItem")
+                if (itemRecord.Type == "Weapon" || itemRecord.Type == "WeaponItem")
                 {
                     statsData.InactiveStats.Add(Enums.gamedataStatType.IsItemPlus);
 
@@ -301,7 +294,7 @@ namespace CP2077SaveEditor
                     {
                         StatType = gamedataStatType.IsItemPlus,
                         ModifierType = gameStatModifierType.Additive,
-                        Value = 0
+                        Value = itemRecord.IsItemPlus
                     });
                 }
 

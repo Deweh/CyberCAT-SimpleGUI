@@ -119,7 +119,7 @@
             inventoryListView.VirtualMode = true;
             inventoryListView.DoubleClick += inventoryListView_DoubleClick;
             inventoryListView.KeyDown += inventoryListView_KeyDown;
-            inventoryListView.MouseClick += inventoryListView_MouseClick;
+            inventoryListView.MouseDown += inventoryListView_MouseDown;
             // 
             // inventoryNameHeader
             // 
@@ -185,6 +185,7 @@
             btn_AddItem.Text = "Add item";
             btn_AddItem.TextColor = System.Drawing.SystemColors.ControlText;
             btn_AddItem.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_AddItem.Visible = false;
             btn_AddItem.Click += btn_AddItem_Click;
             // 
             // clearQuestFlagsButton

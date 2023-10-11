@@ -5,21 +5,28 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Text.Json;
 using System.Windows.Forms;
 using CP2077SaveEditor.ModSupport;
-using WolvenKit.RED4.Save;
 using WolvenKit.RED4.Save.Classes;
 using WolvenKit.RED4.Types;
-using static WolvenKit.RED4.Save.InventoryHelper;
 
 namespace CP2077SaveEditor.Views.Controls
 {
     public partial class InventoryControl : UserControl, IGameControl
     {
+        private enum Operation
+        {
+            None,
+            Cut,
+            Copy
+        }
+
         private readonly Form2 _parentForm;
 
         private Random _random = new();
+
+        private Operation _itemOperation;
+        private ItemData _itemHolder;
 
         private string debloatInfo = "";
         private readonly Dictionary<ulong, string> _inventoryNames = new()
@@ -248,22 +255,6 @@ namespace CP2077SaveEditor.Views.Controls
                 if (ResourceHelper.ItemClasses.TryGetValue(item.ItemInfo.ItemId.Id, out var itemData))
                 {
                     row[1] += itemData.Type;
-
-                    /*if (itemData.IsSingleInstance)
-                    {
-                        if (itemData.Type == "Grenade")
-                        {
-                            row[1] += " [M+]";
-                        }
-                        else
-                        {
-                            row[1] += " [S]";
-                        }
-                    }
-                    else
-                    {
-                        row[1] += " [M]";
-                    }*/
                 }
                 else
                 {
@@ -371,9 +362,9 @@ namespace CP2077SaveEditor.Views.Controls
             }
         }
 
-        private void inventoryListView_MouseClick(object sender, MouseEventArgs e)
+        private void inventoryListView_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right && inventoryListView.SelectedIndices.Count > 0)
+            if (e.Button == MouseButtons.Right)
             {
                 var containerId = containersListBox.SelectedItem.ToString();
                 if (_inventoryNames.Values.Contains(containerId))
@@ -382,18 +373,22 @@ namespace CP2077SaveEditor.Views.Controls
                 }
 
                 var contextMenu = new ContextMenuStrip();
-                if (Global.IsDebug)
-                {
-                    contextMenu.Items.Add("New Item").Click += (object sender, EventArgs e) =>
-                    {
-                        var inventory = _parentForm.ActiveSaveFile.GetInventory(1);
-                        //inventory.Items.Add(inventory.Items.Last().CreateSimpleItem());
-                    };
-                }
 
-                if (containerId == "1")
+                var hitTest = inventoryListView.HitTest(e.Location);
+                //if (hitTest.Item != null)
+                //{
+                //    contextMenu.Items.Add("Cut", null, CutItem).Tag = hitTest.Item;
+                //    contextMenu.Items.Add("Copy", null, CopyItem).Tag = hitTest.Item;
+                //}
+                //
+                //if (_itemHolder != null)
+                //{
+                //    contextMenu.Items.Add("Paste").Click += PasteItem;
+                //}
+
+                if (containerId == "1" && hitTest.Item != null)
                 {
-                    var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
+                    var activeItem = (ItemData)hitTest.Item.Tag;
                     var equipSlot = _parentForm.ActiveSaveFile.GetEquippedItems().FirstOrDefault(x => x.Key.Id == activeItem.ItemInfo.ItemId.Id).Key;
 
                     if (equipSlot != null)
@@ -419,8 +414,72 @@ namespace CP2077SaveEditor.Views.Controls
                         contextMenu.Items.Add(equipIn);
                     }
                 }
-                contextMenu.Items.Add("Delete").Click += DeleteInventoryItem;
+
+                if (hitTest.Item != null)
+                {
+                    contextMenu.Items.Add("Delete", null, DeleteInventoryItem).Tag = hitTest.Item;
+                }
+
                 contextMenu.Show(Cursor.Position);
+            }
+        }
+
+        private void CutItem(object sender, EventArgs e)
+        {
+            if (sender is not ToolStripMenuItem { Tag: ListViewItem { Tag: ItemData selectedItemData } selectedItem })
+            {
+                return;
+            }
+
+            var containerId = containersListBox.SelectedItem.ToString();
+            if (_inventoryNames.Values.Contains(containerId))
+            {
+                containerId = _inventoryNames.FirstOrDefault(x => x.Value == containerId).Key.ToString();
+            }
+
+            _itemOperation = Operation.Cut;
+            _itemHolder = selectedItemData;
+
+            _parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerId)).Items.Remove(selectedItemData);
+            RefreshInventory();
+        }
+
+        private void CopyItem(object sender, EventArgs e)
+        {
+            if (sender is not ToolStripMenuItem { Tag: ListViewItem { Tag: ItemData selectedItemData } selectedItem })
+            {
+                return;
+            }
+
+            _itemOperation = Operation.Cut;
+            _itemHolder = selectedItemData;
+        }
+
+        private void PasteItem(object sender, EventArgs e)
+        {
+            if (_itemHolder == null)
+            {
+                return;
+            }
+
+            var containerId = containersListBox.SelectedItem.ToString();
+            if (_inventoryNames.Values.Contains(containerId))
+            {
+                containerId = _inventoryNames.FirstOrDefault(x => x.Value == containerId).Key.ToString();
+            }
+
+            if (_itemOperation == Operation.Cut)
+            {
+                _parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerId)).Items.Add(_itemHolder);
+                RefreshInventory();
+
+                _itemOperation = Operation.Copy;
+                return;
+            }
+
+            if (_itemOperation == Operation.Copy)
+            {
+
             }
         }
 
@@ -450,16 +509,20 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void DeleteInventoryItem(object sender = null, EventArgs e = null)
         {
+            if (sender is not ToolStripMenuItem { Tag: ListViewItem { Tag: ItemData selectedItemData } selectedItem })
+            {
+                return;
+            }
+
             var containerId = containersListBox.SelectedItem.ToString();
             if (_inventoryNames.Values.Contains(containerId))
             {
                 containerId = _inventoryNames.FirstOrDefault(x => x.Value == containerId).Key.ToString();
             }
 
-            var activeItem = (ItemData)inventoryListView.SelectedVirtualItems()[0].Tag;
-            _parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerId)).Items.Remove(activeItem);
+            _parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerId)).Items.Remove(selectedItemData);
 
-            if (((ItemData)inventoryListView.SelectedVirtualItems()[0].Tag).ItemInfo.ItemId.Id.ResolvedText == "Items.money" && containerId == "1")
+            if (selectedItemData.ItemInfo.ItemId.Id.ResolvedText == "Items.money" && containerId == "1")
             {
                 moneyUpDown.Enabled = false;
                 moneyUpDown.Value = 0;

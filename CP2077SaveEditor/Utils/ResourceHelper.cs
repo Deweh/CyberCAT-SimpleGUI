@@ -8,6 +8,7 @@ public class ItemRecord
 {
     public string Type { get; set; }
     public bool IsSingleInstance { get; set; }
+    public int IsItemPlus { get; set; }
     public List<SlotPartRecord> SlotParts { get; set; }
 }
 
