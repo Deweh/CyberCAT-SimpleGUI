@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Text.Json;
 using System.Windows.Forms;
 using CP2077SaveEditor.ModSupport;
 using CP2077SaveEditor.Utils;
-using WolvenKit.RED4.CR2W.JSON;
 using WolvenKit.RED4.Types;
 
 namespace CP2077SaveEditor.Views.Controls
@@ -38,7 +34,7 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void Init()
         {
-            gb_FastTravel.Enabled = true;
+            gb_Player.Enabled = true;
             gb_WardrobeExtra.Enabled = _parentForm.ActiveSaveFile.GetScriptableSystem<WardrobeSystemExtra>() != null;
         }
 
@@ -55,6 +51,30 @@ namespace CP2077SaveEditor.Views.Controls
                         MarkerRef = record.MarkerRef,
                         PointRecord = record.PointRecord
                     });
+                }
+            }
+        }
+
+        private void btn_MakeVulnerable_Click(object sender, EventArgs e)
+        {
+            var godModeSystem = _parentForm.ActiveSaveFile.GetGodModeSystem();
+            if (godModeSystem != null)
+            {
+                var data = (gameGodModeSaveData)godModeSystem.RootChunk;
+                foreach (var entityData in data.Gods)
+                {
+                    if (entityData.EntityId.Hash != 1)
+                    {
+                        continue;
+                    }
+
+                    for (var i = entityData.Data.Overrides.Count - 1; i >= 0; i--)
+                    {
+                        if (entityData.Data.Overrides[i].Type == Enums.gameGodModeType.Invulnerable)
+                        {
+                            entityData.Data.Overrides.RemoveAt(i);
+                        }
+                    }
                 }
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,6 +27,8 @@ namespace CP2077SaveEditor.Views
 
         private SaveFileHelper _activeSaveFile;
         private SaveType _saveType = SaveType.PC;
+
+        private bool _isSaving = false;
 
         public Form2()
         {
@@ -217,7 +220,7 @@ namespace CP2077SaveEditor.Views
                     MessageBox.Show("Failed to parse save file: " + e.Message + " \n\n Stack Trace: \n" + e.StackTrace);
                 }
             }
-            
+
             SetStatus("Idle");
 
             openSaveButton.Enabled = true;
@@ -251,11 +254,20 @@ namespace CP2077SaveEditor.Views
 
         private async void saveChangesButton_Click(object sender, EventArgs e)
         {
-            var saveWindow = new SaveFileDialog();
-            saveWindow.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Saved Games\\CD Projekt Red\\Cyberpunk 2077\\";
-            saveWindow.Filter = "Cyberpunk 2077 Save File|*.dat";
+            var initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Saved Games\\CD Projekt Red\\Cyberpunk 2077";
+
+            var saveWindow = new FolderBrowserDialog();
+            saveWindow.InitialDirectory = initialDirectory;
             if (saveWindow.ShowDialog() != DialogResult.OK)
             {
+                return;
+            }
+
+            var fileDirectory = saveWindow.SelectedPath;
+
+            if (fileDirectory == initialDirectory)
+            {
+                MessageBox.Show("Saving into the root folder isn't allowed");
                 return;
             }
 
@@ -264,25 +276,35 @@ namespace CP2077SaveEditor.Views
             swapSaveType.Enabled = false;
             saveChangesButton.Enabled = false;
 
-            if (File.Exists(saveWindow.FileName) && !File.Exists(Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old"))
+            var fileName = Path.Combine(fileDirectory, "sav.dat");
+
+            if (File.Exists(fileName) && !File.Exists(Path.Combine(fileDirectory, "sav.old")))
             {
-                File.Copy(saveWindow.FileName, Path.GetDirectoryName(saveWindow.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveWindow.FileName) + ".old");
+                File.Copy(fileName, Path.Combine(fileDirectory, "sav.old"));
             }
 
             SetStatus("Saving...");
+            _isSaving = true;
 
             try
             {
+                using var ms = new MemoryStream();
+
                 await Task.Run(() =>
                 {
-                    using var fs = File.Open(saveWindow.FileName, FileMode.Create);
-                    using var writer = new CyberpunkSaveWriter(fs);
+                    using var writer = new CyberpunkSaveWriter(ms, Encoding.UTF8, true);
                     writer.WriteFile(ActiveSaveFile.SaveFile, _saveType == SaveType.PC);
                 });
 
+                await using (var fs = File.Open(fileName, FileMode.Create))
+                {
+                    ms.Position = 0;
+                    await ms.CopyToAsync(fs);
+                }
+
                 if (_saveType == SaveType.PC)
                 {
-                    var metadataPath = Path.Combine(Path.GetDirectoryName(saveWindow.FileName), "metadata.9.json");
+                    var metadataPath = Path.Combine(fileDirectory, "metadata.9.json");
                     if (!File.Exists(metadataPath))
                     {
                         if (ActiveSaveFile.Metadata != null)
@@ -295,7 +317,7 @@ namespace CP2077SaveEditor.Views
                         }
                     }
 
-                    var screenshotPath = Path.Combine(Path.GetDirectoryName(saveWindow.FileName), "screenshot.png");
+                    var screenshotPath = Path.Combine(fileDirectory, "screenshot.png");
                     if (!File.Exists(screenshotPath))
                     {
                         if (ActiveSaveFile.ImageData != null)
@@ -327,6 +349,7 @@ namespace CP2077SaveEditor.Views
             swapSaveType.Enabled = true;
             saveChangesButton.Enabled = true;
 
+            _isSaving = false;
             SetStatus("File saved.");
 
             GC.Collect();
@@ -338,9 +361,19 @@ namespace CP2077SaveEditor.Views
             {
                 _saveType = SaveType.PS4;
                 swapSaveType.Text = "Save Type: PS4";
-            } else {
+            }
+            else
+            {
                 _saveType = SaveType.PC;
                 swapSaveType.Text = "Save Type: PC";
+            }
+        }
+
+        private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_isSaving && MessageBox.Show("Saving in progress. Closing now will lead to corrupted saves.\r\nAre you sure you want to exit?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            {
+                e.Cancel = true;
             }
         }
     }

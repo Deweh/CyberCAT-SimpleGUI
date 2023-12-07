@@ -3,8 +3,8 @@ using CP2077SaveEditor.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Forms;
+using WolvenKit.RED4.Archive.Buffer;
 using WolvenKit.RED4.Types;
 using static WolvenKit.RED4.Types.Enums;
 
@@ -23,7 +23,7 @@ namespace CP2077SaveEditor.Views.Controls
             _parentForm = parentForm;
             _parentForm.PropertyChanged += OnParentFormPropertyChanged;
 
-            BackgroundImage = Properties.Resources.player_stats;
+            //BackgroundImage = Properties.Resources.player_stats;
 
             _attributeFields = new Dictionary<Enum, NumericUpDown>
             {
@@ -37,24 +37,18 @@ namespace CP2077SaveEditor.Views.Controls
             _proficiencyFields = new Dictionary<Enum, NumericUpDown> {
                 {gamedataProficiencyType.Level, levelUpDown},
                 {gamedataProficiencyType.StreetCred, streetCredUpDown},
-                {gamedataProficiencyType.Athletics, athleticsUpDown},
-                {gamedataProficiencyType.Demolition, annihilationUpDown},
-                {gamedataProficiencyType.Brawling, streetBrawlerUpDown},
-                {gamedataProficiencyType.Assault, assaultUpDown},
-                {gamedataProficiencyType.Gunslinger, handgunsUpDown},
-                {gamedataProficiencyType.Kenjutsu, bladesUpDown},
-                {gamedataProficiencyType.Crafting, craftingUpDown},
-                {gamedataProficiencyType.Engineering, engineeringUpDown},
-                {gamedataProficiencyType.Hacking, breachProtocolUpDown},
-                {gamedataProficiencyType.CombatHacking, quickhackingUpDown},
-                {gamedataProficiencyType.Stealth, stealthUpDown},
-                {gamedataProficiencyType.ColdBlood, coldBloodUpDown}
+                {gamedataProficiencyType.CoolSkill, assassineUpDown},
+                {gamedataProficiencyType.IntelligenceSkill, netrunnerUpDown},
+                {gamedataProficiencyType.ReflexesSkill, shinobiUpDown},
+                {gamedataProficiencyType.StrengthSkill, soloUpDown},
+                {gamedataProficiencyType.TechnicalAbilitySkill, techieUpDown}
             };
 
             _devPointFields = new Dictionary<Enum, NumericUpDown>
             {
                 {gamedataDevelopmentPointType.Attribute, attrPointsUpDown},
-                {gamedataDevelopmentPointType.Primary, perkPointsUpDown}
+                {gamedataDevelopmentPointType.Primary, perkPointsUpDown},
+                {gamedataDevelopmentPointType.Espionage, relicUpDown},
             };
 
             foreach (var numUpDown in _attributeFields.Values)
@@ -89,7 +83,7 @@ namespace CP2077SaveEditor.Views.Controls
         private void Init()
         {
             var playerData = _parentForm.ActiveSaveFile.GetPlayerDevelopmentData();
-            
+
             lifePathBox.SelectedIndex = (gamedataLifePath)playerData.LifePath switch
             {
                 gamedataLifePath.Corporate => 2,
@@ -147,6 +141,10 @@ namespace CP2077SaveEditor.Views.Controls
                 if (_proficiencyFields.TryGetValue(proficiency.Type, out var numUpDown))
                 {
                     proficiency.CurrentLevel = (CInt32)numUpDown.Value;
+                    if (proficiency.CurrentLevel == 60)
+                    {
+                        proficiency.CurrentExp = 0;
+                    }
                 }
             }
 
@@ -174,9 +172,34 @@ namespace CP2077SaveEditor.Views.Controls
                 MessageBox.Show("Stats system disabled.");
                 return;
             }
-            var i = Array.FindIndex(_parentForm.ActiveSaveFile.GetStatsMap().Keys.ToArray(), x => x.EntityHash == 1);
-            var details = new ItemDetails();
-            details.LoadStatsOnly(_parentForm.ActiveSaveFile.GetStatsMap().Values[i].Seed, _parentForm.ActiveSaveFile, "Player");
+
+            var statsMap = _parentForm.ActiveSaveFile.GetStatsFromEntityId(1);
+            if (statsMap == null)
+            {
+                if (MessageBox.Show("Player stats not found. Creating it can cause issues. Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                statsMap = _parentForm.ActiveSaveFile.CreateStatDataFromEntityId(1);
+                statsMap.InactiveStats.Add(gamedataStatType.Level);
+                statsMap.InactiveStats.Add(gamedataStatType.QuickHackUpload);
+
+                var modifierBuffer = new ModifiersBuffer();
+                modifierBuffer.Entries.Add(new gameConstantStatModifierData_Deprecated
+                {
+                    StatType = gamedataStatType.Humanity,
+                    ModifierType = gameStatModifierType.Additive,
+                    Value = 2
+                });
+
+                statsMap.ModifiersBuffer = new DataBuffer()
+                {
+                    Data = modifierBuffer
+                };
+            }
+
+            new StatsForm().Init("Player", statsMap);
         }
 
         private void lifePathBox_SelectedIndexChanged(object sender, EventArgs e)

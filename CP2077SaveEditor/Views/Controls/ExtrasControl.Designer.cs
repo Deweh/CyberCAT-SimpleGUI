@@ -30,10 +30,11 @@
         {
             gb_WardrobeExtra = new System.Windows.Forms.GroupBox();
             btn_ClearBlacklist = new ModernButton();
-            gb_FastTravel = new System.Windows.Forms.GroupBox();
             btn_UnlockAll = new ModernButton();
+            gb_Player = new System.Windows.Forms.GroupBox();
+            btn_MakeVulnerable = new ModernButton();
             gb_WardrobeExtra.SuspendLayout();
-            gb_FastTravel.SuspendLayout();
+            gb_Player.SuspendLayout();
             SuspendLayout();
             // 
             // gb_WardrobeExtra
@@ -64,18 +65,6 @@
             btn_ClearBlacklist.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             btn_ClearBlacklist.Click += btn_ClearBlacklist_Click;
             // 
-            // gb_FastTravel
-            // 
-            gb_FastTravel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            gb_FastTravel.Controls.Add(btn_UnlockAll);
-            gb_FastTravel.Enabled = false;
-            gb_FastTravel.Location = new System.Drawing.Point(3, 3);
-            gb_FastTravel.Name = "gb_FastTravel";
-            gb_FastTravel.Size = new System.Drawing.Size(845, 55);
-            gb_FastTravel.TabIndex = 60;
-            gb_FastTravel.TabStop = false;
-            gb_FastTravel.Text = "Fast Travel";
-            // 
             // btn_UnlockAll
             // 
             btn_UnlockAll.BackColor = System.Drawing.Color.LightGray;
@@ -87,21 +76,50 @@
             btn_UnlockAll.Name = "btn_UnlockAll";
             btn_UnlockAll.Size = new System.Drawing.Size(124, 24);
             btn_UnlockAll.TabIndex = 60;
-            btn_UnlockAll.Text = "Unlock All";
+            btn_UnlockAll.Text = "Unlock Fast Travel";
             btn_UnlockAll.TextColor = System.Drawing.SystemColors.ControlText;
             btn_UnlockAll.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             btn_UnlockAll.Click += btn_UnlockAll_Click;
+            // 
+            // gb_Player
+            // 
+            gb_Player.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            gb_Player.Controls.Add(btn_UnlockAll);
+            gb_Player.Controls.Add(btn_MakeVulnerable);
+            gb_Player.Enabled = false;
+            gb_Player.Location = new System.Drawing.Point(3, 3);
+            gb_Player.Name = "gb_Player";
+            gb_Player.Size = new System.Drawing.Size(845, 55);
+            gb_Player.TabIndex = 61;
+            gb_Player.TabStop = false;
+            gb_Player.Text = "Player";
+            // 
+            // btn_MakeVulnerable
+            // 
+            btn_MakeVulnerable.BackColor = System.Drawing.Color.LightGray;
+            btn_MakeVulnerable.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_MakeVulnerable.ClickEffectEnabled = true;
+            btn_MakeVulnerable.DefaultColor = System.Drawing.Color.LightGray;
+            btn_MakeVulnerable.HoverColor = System.Drawing.Color.Silver;
+            btn_MakeVulnerable.Location = new System.Drawing.Point(136, 22);
+            btn_MakeVulnerable.Name = "btn_MakeVulnerable";
+            btn_MakeVulnerable.Size = new System.Drawing.Size(124, 24);
+            btn_MakeVulnerable.TabIndex = 60;
+            btn_MakeVulnerable.Text = "Make Vulnerable";
+            btn_MakeVulnerable.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_MakeVulnerable.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_MakeVulnerable.Click += btn_MakeVulnerable_Click;
             // 
             // ExtrasControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(gb_FastTravel);
+            Controls.Add(gb_Player);
             Controls.Add(gb_WardrobeExtra);
             Name = "ExtrasControl";
             Size = new System.Drawing.Size(851, 548);
             gb_WardrobeExtra.ResumeLayout(false);
-            gb_FastTravel.ResumeLayout(false);
+            gb_Player.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -109,7 +127,8 @@
 
         private System.Windows.Forms.GroupBox gb_WardrobeExtra;
         private ModernButton btn_ClearBlacklist;
-        private System.Windows.Forms.GroupBox gb_FastTravel;
         private ModernButton btn_UnlockAll;
+        private System.Windows.Forms.GroupBox gb_Player;
+        private ModernButton btn_MakeVulnerable;
     }
 }

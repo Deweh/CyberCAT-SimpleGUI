@@ -119,7 +119,7 @@
             inventoryListView.VirtualMode = true;
             inventoryListView.DoubleClick += inventoryListView_DoubleClick;
             inventoryListView.KeyDown += inventoryListView_KeyDown;
-            inventoryListView.MouseClick += inventoryListView_MouseClick;
+            inventoryListView.MouseDown += inventoryListView_MouseDown;
             // 
             // inventoryNameHeader
             // 

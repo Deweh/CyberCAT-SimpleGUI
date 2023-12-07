@@ -8,6 +8,14 @@ public class ItemRecord
 {
     public string Type { get; set; }
     public bool IsSingleInstance { get; set; }
+    public int IsItemPlus { get; set; }
+    public List<SlotPartRecord> SlotParts { get; set; }
+}
+
+public class SlotPartRecord
+{
+    public ulong ItemPartPreset { get; set; }
+    public ulong Slot { get; set; }
 }
 
 public class FastTravelRecord
