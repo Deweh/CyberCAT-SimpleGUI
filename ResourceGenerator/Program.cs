@@ -34,9 +34,9 @@ namespace ResourceGenerator
             if (reader.ReadFile(out var tweakDb) == WolvenKit.RED4.TweakDB.EFileReadErrorCodes.NoError)
             {
                 //Test(tweakDb!);
-                GenerateModList(tweakDb);
+                //GenerateModList(tweakDb);
                 //GenerateVehicles(tweakDb);
-                //GenerateItemClasses(tweakDb);
+                GenerateItemClasses(tweakDb);
             }
         }
 
@@ -172,7 +172,8 @@ namespace ResourceGenerator
             File.WriteAllText("Vehicles.json", JsonSerializer.Serialize(list, new JsonSerializerOptions { WriteIndented = true }));
         }
 
-        public record ItemRecord(string Type, bool IsSingleInstance);
+        public record SlotPartRecord(ulong ItemPartPreset, ulong Slot);
+        public record ItemRecord(string Type, bool IsSingleInstance, int IsItemPlus, List<SlotPartRecord> SlotParts);
 
         private static void GenerateItemClasses(TweakDB tweakDb)
         {
@@ -190,7 +191,40 @@ namespace ResourceGenerator
                     throw new Exception();
                 }
 
-                dict.Add(id, new ItemRecord(type.Name[8..^7], record.IsSingleInstance));
+                var isItemPlus = 0;
+                if (record.Quality == "Quality.LegendaryPlusPlus")
+                {
+                    isItemPlus = 2;
+                }
+                else if (record.Quality == "Quality.LegendaryPlus")
+                {
+                    isItemPlus = 1;
+                }
+
+                var itemType = type.Name[8..^7];
+                if (record.ItemCategory != TweakDBID.Empty)
+                {
+                    itemType = record.ItemCategory.GetResolvedText()![13..];
+                }
+
+                var presets = new List<SlotPartRecord>();
+
+                if (record.SlotPartListPreset is { Count: > 0 })
+                {
+                    foreach (var slotPartId in record.SlotPartListPreset)
+                    {
+                        var slotPart = (gamedataSlotItemPartPreset_Record)tweakDb.GetFullRecord(slotPartId)!;
+
+                        if (slotPart.ItemPartPreset == TweakDBID.Empty)
+                        {
+                            continue;
+                        }
+
+                        presets.Add(new SlotPartRecord(slotPart.ItemPartPreset, slotPart.Slot));
+                    }
+                }
+
+                dict.Add(id, new ItemRecord(itemType, record.IsSingleInstance, isItemPlus, presets));
             }
 
             dict = dict.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
