@@ -49,6 +49,12 @@ public static class ModManager
         // CyberarmCycle
         RedReflection.AddRedType(typeof(SLastUsedCyberarm));
 
+        // RandomRadio
+        RedReflection.AddEnumType(typeof(RRPlayListMode));
+        RedReflection.AddRedType(typeof(SongStorage));
+        RedReflection.AddRedType(typeof(SongWrapper));
+        RedReflection.AddRedType(typeof(Songs));
+
         _isLoaded = true;
     }
 }
