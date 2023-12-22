@@ -42,6 +42,10 @@ public static class ModManager
         RedReflection.AddRedType(typeof(ViewManager));
         RedReflection.AddRedType(typeof(ViewState));
 
+        // QuickhackLoadouts
+        RedReflection.AddRedType(typeof(QuickhackLoadout));
+        RedReflection.AddRedType(typeof(QuickhackLoadoutSystem));
+
         _isLoaded = true;
     }
 }
