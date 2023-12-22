@@ -46,6 +46,9 @@ public static class ModManager
         RedReflection.AddRedType(typeof(QuickhackLoadout));
         RedReflection.AddRedType(typeof(QuickhackLoadoutSystem));
 
+        // CyberarmCycle
+        RedReflection.AddRedType(typeof(SLastUsedCyberarm));
+
         _isLoaded = true;
     }
 }
