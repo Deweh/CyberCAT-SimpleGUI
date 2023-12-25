@@ -107,6 +107,8 @@ namespace CP2077SaveEditor
                     var rootNode = modsTreeView.Nodes.Add(activeItem.ItemSlotPart!.AttachmentSlotTdbId.ResolvedText, activeItem.ItemSlotPart.AttachmentSlotTdbId.ResolvedText + " :: " + activeItem.ItemSlotPart.ItemInfo.ItemId.Id.ResolvedText + " [" + activeItem.ItemSlotPart.Children.Count.ToString() + "]");
                     rootNode.Tag = activeItem.ItemSlotPart;
                     IterativeBuildModTree(activeItem.ItemSlotPart, rootNode);
+
+                    rootNode.ExpandAll();
                 }
                 else
                 {

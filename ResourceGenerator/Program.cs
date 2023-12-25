@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using System.Text.Json;
+﻿using System.Text.Json;
 using WolvenKit.Common.Services;
-using WolvenKit.RED4.Archive;
-using WolvenKit.RED4.Archive.CR2W;
+using WolvenKit.Core.CRC;
 using WolvenKit.RED4.Archive.IO;
 using WolvenKit.RED4.TweakDB;
 using WolvenKit.RED4.TweakDB.Helper;
@@ -36,8 +33,47 @@ namespace ResourceGenerator
                 //Test(tweakDb!);
                 //GenerateModList(tweakDb);
                 //GenerateVehicles(tweakDb);
-                GenerateItemClasses(tweakDb);
+                //GenerateItemClasses(tweakDb);
+                GenerateModifierGroupsHash(tweakDb!);
             }
+        }
+
+        private record ModifierGroup(string Name, uint CRC, List<string> StatTypes);
+
+        private static void GenerateModifierGroupsHash(TweakDB tweakDb)
+        {
+            var lst = new List<ModifierGroup>();
+
+            foreach (var (id, type) in tweakDb.Records)
+            {
+                ArgumentNullException.ThrowIfNull(id.ResolvedText);
+
+                if (!id.ResolvedText.StartsWith("ModifierGroups.") || tweakDb.GetFullRecord(id) is not gamedataStatModifierGroup_Record record)
+                {
+                    continue;
+                }
+
+                var statTypes = new List<string>();
+
+                foreach (var statModifierId in record.StatModifiers)
+                {
+                    var statModifier = (gamedataStatModifier_Record)tweakDb.GetFullRecord(statModifierId)!;
+                    var statType = statModifier.StatType.ResolvedText![10..];
+
+                    if (!statTypes.Contains(statType))
+                    {
+                        statTypes.Add(statType);
+                    }
+                }
+
+                statTypes.Sort();
+
+                lst.Add(new ModifierGroup(id.ResolvedText[15..], Crc32Algorithm.Compute(id.ResolvedText), statTypes));
+            }
+
+            lst = lst.OrderBy(x => x.Name).ToList();
+
+            File.WriteAllText("ModifierGroups.json", JsonSerializer.Serialize(lst, new JsonSerializerOptions { WriteIndented = true }));
         }
 
         private record RootSlot(string Slot, string Item);

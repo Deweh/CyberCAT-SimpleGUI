@@ -101,19 +101,19 @@ namespace CP2077SaveEditor.Properties {
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die {
-        ///  &quot;2436045487&quot;: &quot;CYB-12345&quot;,
-        ///  &quot;2145224326&quot;: &quot;travelling_merchant_lives&quot;,
-        ///  &quot;141669211&quot;: &quot;CYB-596812&quot;,
-        ///  &quot;2500105824&quot;: &quot;CYB-626716&quot;,
-        ///  &quot;2061787877&quot;: &quot;holo_force_reset&quot;,
-        ///  &quot;3763092045&quot;: &quot;holo_setup_started&quot;,
-        ///  &quot;2143749004&quot;: &quot;holo_setup_ended&quot;,
-        ///  &quot;453873154&quot;: &quot;holo_interrupt_call&quot;,
-        ///  &quot;1648090866&quot;: &quot;holo_v_calls_panam_end_activate&quot;,
-        ///  &quot;1642883195&quot;: &quot;CYB-629334&quot;,
-        ///  &quot;2054825040&quot;: &quot;holo_anders_hellman_calls_v_start_done&quot;,
-        ///  &quot;2558910171&quot;: &quot;holo_anders_hellman_calls_v_end_done&quot;,
-        ///  &quot;1017146762&quot;: &quot;holo [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///  &quot;321819&quot;: &quot;sq024_claire_pose_low&quot;,
+        ///  &quot;367985&quot;: &quot;sts_ep1_13_dolls_chat_end&quot;,
+        ///  &quot;381979&quot;: &quot;web_smugglers_cache_treasures&quot;,
+        ///  &quot;452843&quot;: &quot;q001_takedown_scene_finished&quot;,
+        ///  &quot;457750&quot;: &quot;CYB-644974&quot;,
+        ///  &quot;490938&quot;: &quot;ma_wat_nid_22_psycho_killed&quot;,
+        ///  &quot;591985&quot;: &quot;mq017_kirk_briefing_ended&quot;,
+        ///  &quot;1060532&quot;: &quot;q302_caliente_ronald_lookat_loop&quot;,
+        ///  &quot;1061235&quot;: &quot;q114_training_hit&quot;,
+        ///  &quot;1283730&quot;: &quot;q302_msg_ronald_sts_ep1_12&quot;,
+        ///  &quot;1340607&quot;: &quot;q302_corruption_started&quot;,
+        ///  &quot;1404642&quot;: &quot;sq021_done_drawer3&quot;,
+        ///  &quot;1759124&quot;: &quot;cs_pa [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string Facts {
             get {
@@ -122,7 +122,7 @@ namespace CP2077SaveEditor.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die [{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_01&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_01&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_02&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_02&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_03&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_new_03&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_04&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_04&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_05&quot;,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_05&quot;},{&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_06&quot;,&quot;Ma [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die [{&quot;IsEP1&quot;:false,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_01&quot;,&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_01&quot;},{&quot;IsEP1&quot;:false,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_02&quot;,&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_02&quot;},{&quot;IsEP1&quot;:false,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_new_03&quot;,&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_03&quot;},{&quot;IsEP1&quot;:false,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_04&quot;,&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_dataterm_04&quot;},{&quot;IsEP1&quot;:false,&quot;MarkerRef&quot;:&quot;#bls_bls_dataterm_05&quot;,&quot;PointRecord&quot;:&quot;FastTravelPoints.bls_nth_d [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string FastTravel {
             get {
@@ -143,30 +143,29 @@ namespace CP2077SaveEditor.Properties {
         ///   Sucht eine lokalisierte Zeichenfolge, die {
         ///  &quot;37647373161&quot;: {
         ///    &quot;Type&quot;: &quot;Gadget&quot;,
-        ///    &quot;IsSingleInstance&quot;: true
+        ///    &quot;IsSingleInstance&quot;: true,
+        ///    &quot;IsItemPlus&quot;: 0,
+        ///    &quot;SlotParts&quot;: []
         ///  },
         ///  &quot;40557222671&quot;: {
         ///    &quot;Type&quot;: &quot;Clothing&quot;,
-        ///    &quot;IsSingleInstance&quot;: false
+        ///    &quot;IsSingleInstance&quot;: false,
+        ///    &quot;IsItemPlus&quot;: 0,
+        ///    &quot;SlotParts&quot;: []
         ///  },
         ///  &quot;40707698935&quot;: {
         ///    &quot;Type&quot;: &quot;Clothing&quot;,
-        ///    &quot;IsSingleInstance&quot;: false
+        ///    &quot;IsSingleInstance&quot;: false,
+        ///    &quot;IsItemPlus&quot;: 0,
+        ///    &quot;SlotParts&quot;: []
         ///  },
         ///  &quot;42366033259&quot;: {
         ///    &quot;Type&quot;: &quot;Item&quot;,
-        ///    &quot;IsSingleInstance&quot;: true
+        ///    &quot;IsSingleInstance&quot;: true,
+        ///    &quot;IsItemPlus&quot;: 0,
+        ///    &quot;SlotParts&quot;: []
         ///  },
-        ///  &quot;42943500278&quot;: {
-        ///    &quot;Type&quot;: &quot;Item&quot;,
-        ///    &quot;IsSingleInstance&quot;: false
-        ///  },
-        ///  &quot;43667576622&quot;: {
-        ///    &quot;Type&quot;: &quot;Item&quot;,
-        ///    &quot;IsSingleInstance&quot;: true
-        ///  },
-        ///  &quot;44117334148&quot;: {
-        ///    &quot;Type&quot;: &quot;G [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///  &quot;4294350027 [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string ItemClasses {
             get {
@@ -185,31 +184,48 @@ namespace CP2077SaveEditor.Properties {
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die {
+        ///  &quot;40732117&quot;: &quot;ModifierGroups.IntelligenceCyberwareSpecialized&quot;,
+        ///  &quot;57002797&quot;: &quot;ModifierGroups.ReflexesCyberwareAdvancedDriverUpdate&quot;,
+        ///  &quot;218059473&quot;: &quot;ModifierGroups.TechnicalAbilityCyberwareAdvanced&quot;,
+        ///  &quot;918553329&quot;: &quot;ModifierGroups.CoolCyberwareAdvancedDriverUpdate&quot;,
+        ///  &quot;1084646515&quot;: &quot;ModifierGroups.ReflexesCyberwareSimple&quot;,
+        ///  &quot;1184438707&quot;: &quot;ModifierGroups.SimpleCyberwareModifiers&quot;,
+        ///  &quot;1186551102&quot;: &quot;ModifierGroups.IntelligenceCyberwareSimple&quot;,
+        ///  &quot;1222084776&quot;: &quot;ModifierGroups.BodyCyberwareSimple&quot;,        /// [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        /// </summary>
+        internal static string ModifierGroups {
+            get {
+                return ResourceManager.GetString("ModifierGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die {
         ///  &quot;Clothing&quot;: {
-        ///    &quot;152193456621&quot;: [
-        ///      122917906251,
-        ///      136186757750,
-        ///      131341932850,
-        ///      132666432922,
-        ///      133985117844,
-        ///      134256022043,
-        ///      130693152003,
-        ///      134676177754,
-        ///      134304077314,
-        ///      138324646011,
-        ///      136404677344,
-        ///      141046985623,
+        ///    &quot;178600545795&quot;: [
+        ///      163246605411,
+        ///      133869180885,
         ///      133887710156,
-        ///      132191677451,
-        ///      122530387466,
-        ///      118999678073,
-        ///      124176390109,
-        ///      136837908408,
-        ///      125411252595,
-        ///      145924706992,
-        ///      109070607824,
+        ///      133985117844,
+        ///      138324646011,
+        ///      134143601343,
+        ///      134256022043,
+        ///      134304077314,
         ///      134428744233,
-        ///      1 [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///      134676177754,
+        ///      134691596099,
+        ///      136034267959,
+        ///      136133527151,
+        ///      118999678073,
+        ///      136186757750,
+        ///      136404677344,
+        ///      136452765433,
+        ///      136822457249,
+        ///      136837908408,
+        ///      145924706992
+        ///    ],
+        ///    &quot;176301629369&quot;: [
+        ///      163246605411, [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string Mods {
             get {
@@ -249,17 +265,17 @@ namespace CP2077SaveEditor.Properties {
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die [
+        ///  &quot;Vehicle.v_sport1_herrera_outlaw_heist_player&quot;,
+        ///  &quot;Vehicle.v_sport1_herrera_outlaw_heist_player&quot;,
         ///  &quot;Vehicle.v_sport1_herrera_outlaw_player&quot;,
+        ///  &quot;Vehicle.v_sport1_herrera_riptide_player&quot;,
+        ///  &quot;Vehicle.v_sport1_quadra_sport_r7_mrhands&quot;,
+        ///  &quot;Vehicle.v_sport1_quadra_sport_r7_netrunner&quot;,
+        ///  &quot;Vehicle.v_sport1_quadra_sport_r7_player&quot;,
+        ///  &quot;Vehicle.v_sport1_quadra_sport_r7_player_02&quot;,
+        ///  &quot;Vehicle.v_sport1_quadra_sport_r7_player_02&quot;,
         ///  &quot;Vehicle.v_sport1_quadra_turbo_player&quot;,
-        ///  &quot;Vehicle.v_sport1_quadra_turbo_r_player&quot;,
-        ///  &quot;Vehicle.v_sport1_rayfield_aerondight_player&quot;,
-        ///  &quot;Vehicle.v_sport1_rayfield_caliburn_02_player&quot;,
-        ///  &quot;Vehicle.v_sport1_rayfield_caliburn_player&quot;,
-        ///  &quot;Vehicle.v_sport2_mizutani_shion_nomad_02_player&quot;,
-        ///  &quot;Vehicle.v_sport2_mizutani_shion_nomad_player&quot;,
-        ///  &quot;Vehicle.v_sport2_mizutani_shion_player&quot;,
-        ///  &quot;Vehicle.v_sport2_porsche_911turbo_player&quot;,
-        ///  &quot;Vehicle.v_sport2_quadra_typ [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///  &quot;Vehicle.v_sport1_quadra_turbo_ [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string Vehicles {
             get {

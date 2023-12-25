@@ -1,0 +1,464 @@
+[
+  {
+    "Name": "AdvancedCyberwareModifiers",
+    "CRC": 3418179403,
+    "StatTypes": [
+      "ADSSpeedPercentBonusModifierHelper",
+      "BonusQuickHackDamageModifierHelper",
+      "BonusRicochetDamageModifierHelper",
+      "CarryCapacityModifierHelper",
+      "DamageOverTimePercentBonusModifierHelper",
+      "DamageOverTimeResistanceModifierHelper",
+      "ExplosionDamagePercentBonusModifierHelper",
+      "ExplosionResistanceModifierHelper",
+      "GrenadesChargesRegenMultModifierHelper",
+      "HeadshotDamageMultiplierModifierHelper",
+      "HealingItemsChargesRegenMultModifierHelper",
+      "HealingItemsEffectPercentBonusModifierHelper",
+      "HealthGeneralRegenRateMultModifierHelper",
+      "HealthModifierHelper",
+      "ItemArmorModifierHelper",
+      "MeleeDamagePercentBonusModifierHelper",
+      "MeleeResistanceModifierHelper",
+      "RamOnKillModifierHelper",
+      "RecoilPercentBonusModifierHelper",
+      "ReloadSpeedPercentBonusModifierHelper",
+      "StealthHitDamageBonusModifierHelper",
+      "VisibilityReductionModifierHelper"
+    ]
+  },
+  {
+    "Name": "AdvancedCyberwareModifiersDriverUpdate",
+    "CRC": 1914325129,
+    "StatTypes": [
+      "ADSSpeedPercentBonusModifierHelper",
+      "BonusQuickHackDamageModifierHelper",
+      "BonusRicochetDamageModifierHelper",
+      "CarryCapacityModifierHelper",
+      "DamageOverTimePercentBonusModifierHelper",
+      "DamageOverTimeResistanceModifierHelper",
+      "ExplosionDamagePercentBonusModifierHelper",
+      "ExplosionResistanceModifierHelper",
+      "GrenadesChargesRegenMultModifierHelper",
+      "HeadshotDamageMultiplierModifierHelper",
+      "HealingItemsChargesRegenMultModifierHelper",
+      "HealingItemsEffectPercentBonusModifierHelper",
+      "HealthGeneralRegenRateMultModifierHelper",
+      "HealthModifierHelper",
+      "ItemArmorModifierHelper",
+      "MeleeDamagePercentBonusModifierHelper",
+      "MeleeResistanceModifierHelper",
+      "RamOnKillModifierHelper",
+      "RecoilPercentBonusModifierHelper",
+      "ReloadSpeedPercentBonusModifierHelper",
+      "StealthHitDamageBonusModifierHelper",
+      "VisibilityReductionModifierHelper"
+    ]
+  },
+  {
+    "Name": "BaseCyberwareStatModifierGroup",
+    "CRC": 1831308637,
+    "StatTypes": []
+  },
+  {
+    "Name": "BodyCyberwareAdvanced",
+    "CRC": 1399714493,
+    "StatTypes": [
+      "CarryCapacityModifierHelper",
+      "ChemicalResistanceModifierHelper",
+      "ExplosionResistanceModifierHelper",
+      "HealthGeneralRegenRateAddModifierHelper",
+      "HealthModifierHelper",
+      "MeleeResistanceModifierHelper",
+      "ThermalResistanceModifierHelper"
+    ]
+  },
+  {
+    "Name": "BodyCyberwareAdvancedDriverUpdate",
+    "CRC": 3643457235,
+    "StatTypes": [
+      "ChemicalResistanceModifierHelper",
+      "ThermalResistanceModifierHelper"
+    ]
+  },
+  {
+    "Name": "BodyCyberwareSimple",
+    "CRC": 1222084776,
+    "StatTypes": [
+      "CarryCapacityModifierHelper",
+      "ExplosionResistanceModifierHelper",
+      "HealthGeneralRegenRateAddModifierHelper",
+      "HealthModifierHelper",
+      "MeleeResistanceModifierHelper"
+    ]
+  },
+  {
+    "Name": "BodyCyberwareSpecialized",
+    "CRC": 1423965573,
+    "StatTypes": [
+      "BurningApplicationRateModifierHelper",
+      "ChemicalDamageModifierHelper",
+      "PoisonedApplicationRateModifierHelper",
+      "ThermalDamageModifierHelper"
+    ]
+  },
+  {
+    "Name": "CoolCyberwareAdvanced",
+    "CRC": 2887374832,
+    "StatTypes": [
+      "ChemicalResistanceModifierHelper",
+      "ElectricResistanceModifierHelper",
+      "HeadshotDamageMultiplierModifierHelper",
+      "MitigationChanceModifierHelper",
+      "ThermalResistanceModifierHelper"
+    ]
+  },
+  {
+    "Name": "CoolCyberwareAdvancedDriverUpdate",
+    "CRC": 918553329,
+    "StatTypes": [
+      "ChemicalResistanceModifierHelper",
+      "ElectricResistanceModifierHelper",
+      "HeadshotDamageMultiplierModifierHelper",
+      "MitigationChanceModifierHelper",
+      "ThermalResistanceModifierHelper"
+    ]
+  },
+  {
+    "Name": "CoolCyberwareSimple",
+    "CRC": 3066167138,
+    "StatTypes": [
+      "BonusDamageAgainstBossesModifierHelper",
+      "HealthGeneralRegenRateAddModifierHelper",
+      "StealthHitDamageBonusModifierHelper"
+    ]
+  },
+  {
+    "Name": "CoolCyberwareSpecialized",
+    "CRC": 2466678315,
+    "StatTypes": [
+      "BleedingApplicationRateModifierHelper",
+      "ChemicalDamageModifierHelper",
+      "CritChanceBonusModifierHelper",
+      "CritDamageBonusModifierHelper",
+      "PhysicalDamageModifierHelper",
+      "PoisonedApplicationRateModifierHelper"
+    ]
+  },
+  {
+    "Name": "CyberwareModifierBoosts",
+    "CRC": 2037800759,
+    "StatTypes": [
+      "ADSSpeedPercentBonusModifierHelper",
+      "BonusCritChanceVsElectrocutedEnemiesModifierHelper",
+      "BonusPercentDamageToEnemiesAtFullHealthModifierHelper",
+      "BonusPercentDamageToEnemiesBelowHalfHealthModifierHelper",
+      "BonusPercentDamageVsBurningEnemiesModifierHelper",
+      "BonusQuickHackDamageModifierHelper",
+      "BonusRicochetDamageModifierHelper",
+      "CarryCapacityModifierHelper",
+      "ChemicalDamagePercentBonusModifierHelper",
+      "CritChanceBonusModifierHelper",
+      "CritDamageBonusModifierHelper",
+      "DamageOverTimePercentBonusModifierHelper",
+      "DamageOverTimeResistanceModifierHelper",
+      "DodgeStaminaCostReductionModifierHelper",
+      "ElectricDamagePercentBonusModifierHelper",
+      "ExplosionDamagePercentBonusModifierHelper",
+      "ExplosionResistanceModifierHelper",
+      "GrenadesChargesRegenMultModifierHelper",
+      "HeadshotDamageMultiplierModifierHelper",
+      "HealingItemsChargesRegenMultModifierHelper",
+      "HealingItemsEffectPercentBonusModifierHelper",
+      "HealOnKillingBleedingTargetModifierHelper",
+      "HealthGeneralRegenRateMultModifierHelper",
+      "HealthModifierHelper",
+      "ItemArmorModifierHelper",
+      "MeleeDamagePercentBonusModifierHelper",
+      "MeleeResistanceModifierHelper",
+      "MitigationChanceModifierHelper",
+      "MitigationStrengthModifierHelper",
+      "PercentDamageReductionFromPoisonedEnemiesModifierHelper",
+      "RamOnKillModifierHelper",
+      "RecoilPercentBonusModifierHelper",
+      "ReloadSpeedPercentBonusModifierHelper",
+      "StealthHitDamageBonusModifierHelper",
+      "ThermalDamagePercentBonusModifierHelper",
+      "VisibilityReductionModifierHelper"
+    ]
+  },
+  {
+    "Name": "GenericCyberwareVariantModifiers",
+    "CRC": 3270199582,
+    "StatTypes": [
+      "BleedingApplicationRate",
+      "BonusDamageAgainstBosses",
+      "BurningApplicationRate",
+      "CarryCapacityModifierHelper",
+      "ChemicalDamage",
+      "CritChance",
+      "CritDamage",
+      "DamageReductionExplosion",
+      "DamageReductionMelee",
+      "ElectricDamage",
+      "ElectrocutedApplicationRate",
+      "HeadshotDamageMultiplier",
+      "HealthModifierHelper",
+      "ItemArmorModifierHelper",
+      "MaxSpeed",
+      "MitigationChance",
+      "PhysicalDamage",
+      "PoisonedApplicationRate",
+      "QuickhacksCooldownReduction",
+      "ThermalDamage"
+    ]
+  },
+  {
+    "Name": "IntelligenceCyberwareAdvanced",
+    "CRC": 2350153510,
+    "StatTypes": [
+      "DurationBonusQuickhackModifierHelper",
+      "MechResistanceModifierHelper",
+      "QuickhackResistanceModifierHelper",
+      "QuickhacksCooldownReductionModifierHelper"
+    ]
+  },
+  {
+    "Name": "IntelligenceCyberwareAdvancedDriverUpdate",
+    "CRC": 3119562979,
+    "StatTypes": [
+      "DurationBonusQuickhackModifierHelper",
+      "MechResistanceModifierHelper",
+      "QuickhackResistanceModifierHelper",
+      "QuickhacksCooldownReductionModifierHelper"
+    ]
+  },
+  {
+    "Name": "IntelligenceCyberwareSimple",
+    "CRC": 1186551102,
+    "StatTypes": [
+      "BonusDamageAgainstBossesModifierHelper",
+      "BonusQuickHackDamageModifierHelper"
+    ]
+  },
+  {
+    "Name": "IntelligenceCyberwareSpecialized",
+    "CRC": 40732117,
+    "StatTypes": [
+      "BurningApplicationRateModifierHelper",
+      "CritChanceBonusModifierHelper",
+      "CritDamageBonusModifierHelper",
+      "ElectricDamageModifierHelper",
+      "ElectrocutedApplicationRateModifierHelper",
+      "ThermalDamageModifierHelper"
+    ]
+  },
+  {
+    "Name": "ModifierPowerSetup",
+    "CRC": 3167040621,
+    "StatTypes": [
+      "ModifierPower",
+      "ModifierPowerBase"
+    ]
+  },
+  {
+    "Name": "ReflexesCyberwareAdvanced",
+    "CRC": 2552055883,
+    "StatTypes": [
+      "ElectricResistanceModifierHelper",
+      "HeadshotDamageMultiplierModifierHelper",
+      "MitigationChanceModifierHelper"
+    ]
+  },
+  {
+    "Name": "ReflexesCyberwareAdvancedDriverUpdate",
+    "CRC": 57002797,
+    "StatTypes": [
+      "ElectricResistanceModifierHelper",
+      "HeadshotDamageMultiplierModifierHelper",
+      "MitigationChanceModifierHelper"
+    ]
+  },
+  {
+    "Name": "ReflexesCyberwareSimple",
+    "CRC": 1084646515,
+    "StatTypes": [
+      "BonusDamageAgainstBossesModifierHelper",
+      "MaxSpeedModifierHelper",
+      "MeleeResistanceModifierHelper",
+      "StealthHitDamageBonusModifierHelper"
+    ]
+  },
+  {
+    "Name": "ReflexesCyberwareSpecialized",
+    "CRC": 2881078562,
+    "StatTypes": [
+      "BleedingApplicationRateModifierHelper",
+      "ElectricDamageModifierHelper",
+      "ElectrocutedApplicationRateModifierHelper",
+      "PhysicalDamageModifierHelper"
+    ]
+  },
+  {
+    "Name": "SimpleCyberwareModifiers",
+    "CRC": 1184438707,
+    "StatTypes": [
+      "CarryCapacityModifierHelper",
+      "ExplosionDamagePercentBonusModifierHelper",
+      "HealingItemsEffectPercentBonusModifierHelper",
+      "HealthGeneralRegenRateMultModifierHelper",
+      "HealthModifierHelper",
+      "ItemArmorModifierHelper",
+      "MeleeDamagePercentBonusModifierHelper",
+      "MeleeResistanceModifierHelper",
+      "ReloadSpeedPercentBonusModifierHelper",
+      "StealthHitDamageBonusModifierHelper"
+    ]
+  },
+  {
+    "Name": "SimpleCyberwareVariantModifiers",
+    "CRC": 3500860056,
+    "StatTypes": [
+      "BleedingApplicationRate",
+      "BurningApplicationRate",
+      "CarryCapacityModifierHelper",
+      "ChemicalDamage",
+      "DamageReductionMelee",
+      "ElectricDamage",
+      "ElectrocutedApplicationRate",
+      "HeadshotDamageMultiplier",
+      "HealthModifierHelper",
+      "ItemArmorModifierHelper",
+      "MaxSpeed",
+      "PhysicalDamage",
+      "PoisonedApplicationRate",
+      "ThermalDamage"
+    ]
+  },
+  {
+    "Name": "SpecializedCyberwareModifiers",
+    "CRC": 3475521134,
+    "StatTypes": [
+      "ADSSpeedPercentBonusModifierHelper",
+      "BonusCritChanceVsElectrocutedEnemiesModifierHelper",
+      "BonusPercentDamageToEnemiesAtFullHealthModifierHelper",
+      "BonusPercentDamageToEnemiesBelowHalfHealthModifierHelper",
+      "BonusPercentDamageVsBurningEnemiesModifierHelper",
+      "BonusQuickHackDamageModifierHelper",
+      "BonusRicochetDamageModifierHelper",
+      "CarryCapacityModifierHelper",
+      "ChemicalDamagePercentBonusModifierHelper",
+      "CritChanceBonusModifierHelper",
+      "CritDamageBonusModifierHelper",
+      "DamageOverTimePercentBonusModifierHelper",
+      "DamageOverTimeResistanceModifierHelper",
+      "DodgeStaminaCostReductionModifierHelper",
+      "ElectricDamagePercentBonusModifierHelper",
+      "ExplosionDamagePercentBonusModifierHelper",
+      "ExplosionResistanceModifierHelper",
+      "GrenadesChargesRegenMultModifierHelper",
+      "HeadshotDamageMultiplierModifierHelper",
+      "HealingItemsChargesRegenMultModifierHelper",
+      "HealingItemsEffectPercentBonusModifierHelper",
+      "HealOnKillingBleedingTargetModifierHelper",
+      "HealthGeneralRegenRateMultModifierHelper",
+      "HealthModifierHelper",
+      "ItemArmorModifierHelper",
+      "MeleeDamagePercentBonusModifierHelper",
+      "MeleeResistanceModifierHelper",
+      "MitigationChanceModifierHelper",
+      "MitigationStrengthModifierHelper",
+      "PercentDamageReductionFromPoisonedEnemiesModifierHelper",
+      "RamOnKillModifierHelper",
+      "RecoilPercentBonusModifierHelper",
+      "ReloadSpeedPercentBonusModifierHelper",
+      "StealthHitDamageBonusModifierHelper",
+      "ThermalDamagePercentBonusModifierHelper",
+      "VisibilityReductionModifierHelper"
+    ]
+  },
+  {
+    "Name": "TechnicalAbilityCyberwareAdvanced",
+    "CRC": 218059473,
+    "StatTypes": [
+      "BonusRicochetDamageModifierHelper",
+      "ChemicalResistanceModifierHelper",
+      "ElectricResistanceModifierHelper",
+      "MechResistanceModifierHelper",
+      "ThermalResistanceModifierHelper"
+    ]
+  },
+  {
+    "Name": "TechnicalAbilityCyberwareAdvancedDriverUpdate",
+    "CRC": 1840968545,
+    "StatTypes": [
+      "BonusRicochetDamageModifierHelper",
+      "ChemicalResistanceModifierHelper",
+      "ElectricResistanceModifierHelper",
+      "MechResistanceModifierHelper",
+      "ThermalResistanceModifierHelper"
+    ]
+  },
+  {
+    "Name": "TechnicalAbilityCyberwareSimple",
+    "CRC": 2993306019,
+    "StatTypes": [
+      "CarryCapacityModifierHelper",
+      "ExplosionResistanceModifierHelper",
+      "ItemArmorModifierHelper"
+    ]
+  },
+  {
+    "Name": "TechnicalAbilityCyberwareSpecialized",
+    "CRC": 2769584415,
+    "StatTypes": [
+      "BurningApplicationRateModifierHelper",
+      "ElectricDamageModifierHelper",
+      "ElectrocutedApplicationRateModifierHelper",
+      "MitigationStrengthModifierHelper",
+      "ThermalDamageModifierHelper"
+    ]
+  },
+  {
+    "Name": "TransferCyberwareModifiersToItem",
+    "CRC": 3216774101,
+    "StatTypes": [
+      "ADSSpeedPercentBonus",
+      "BonusCritChanceVsElectrocutedEnemies",
+      "BonusPercentDamageToEnemiesAtFullHealth",
+      "BonusPercentDamageToEnemiesBelowHalfHealth",
+      "BonusPercentDamageVsBurningEnemies",
+      "BonusQuickHackDamage",
+      "BonusRicochetDamage",
+      "CarryCapacity",
+      "ChemicalDamagePercentBonus",
+      "CritChanceBonus",
+      "CritDamageBonus",
+      "DamageOverTimePercentBonus",
+      "DamageOverTimeResistance",
+      "DodgeStaminaCostReduction",
+      "ElectricDamagePercentBonus",
+      "ExplosionDamagePercentBonus",
+      "ExplosionResistance",
+      "GrenadesChargesRegenMult",
+      "HeadshotDamageMultiplier",
+      "HealingItemsChargesRegenMult",
+      "HealingItemsEffectPercentBonus",
+      "HealOnKillingBleedingTarget",
+      "Health",
+      "HealthGeneralRegenRateMult",
+      "ItemArmor",
+      "MeleeDamagePercentBonus",
+      "MeleeResistance",
+      "MitigationChance",
+      "MitigationStrength",
+      "PercentDamageReductionFromPoisonedEnemies",
+      "RamOnKill",
+      "RecoilPercentBonus",
+      "ReloadSpeedPercentBonus",
+      "StealthHitDamageBonus",
+      "ThermalDamagePercentBonus",
+      "VisibilityReduction"
+    ]
+  }
+]

@@ -36,7 +36,7 @@
             statsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             statsControl1.Location = new System.Drawing.Point(0, 0);
             statsControl1.Name = "statsControl1";
-            statsControl1.Size = new System.Drawing.Size(456, 603);
+            statsControl1.Size = new System.Drawing.Size(552, 603);
             statsControl1.TabIndex = 0;
             // 
             // StatsForm
@@ -44,9 +44,9 @@
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.Color.White;
-            ClientSize = new System.Drawing.Size(456, 603);
+            ClientSize = new System.Drawing.Size(552, 603);
             Controls.Add(statsControl1);
-            Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            Font = new System.Drawing.Font("Segoe UI", 8.25F);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             Name = "StatsForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

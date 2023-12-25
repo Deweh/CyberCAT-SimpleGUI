@@ -70,6 +70,18 @@
             cmb_StatType = new System.Windows.Forms.ComboBox();
             btn_InactiveStatsDelete = new ModernButton();
             btn_InactiveStatsAdd = new ModernButton();
+            tab_ModifierGroup = new System.Windows.Forms.TabPage();
+            pnl_ModifierGroupHide = new System.Windows.Forms.Panel();
+            label7 = new System.Windows.Forms.Label();
+            btn_ModifierGroupCreate = new ModernButton();
+            label8 = new System.Windows.Forms.Label();
+            tv_ModifierGroups = new System.Windows.Forms.TreeView();
+            pnl_ModifierGroupMenu = new System.Windows.Forms.Panel();
+            btn_ModifierGroupDelete = new ModernButton();
+            btn_ModifierGroupAddNode = new ModernButton();
+            btn_ModifierGroupAddStat = new ModernButton();
+            cmb_ModifierGroupNodeType = new System.Windows.Forms.ComboBox();
+            cmb_ModifierGroupStatType = new System.Windows.Forms.ComboBox();
             tabControl1.SuspendLayout();
             tab_ModifiersBuffer.SuspendLayout();
             pnl_ModifiersHide.SuspendLayout();
@@ -80,6 +92,9 @@
             tab_InactiveStats.SuspendLayout();
             pnl_InactiveStatsHide.SuspendLayout();
             pnl_InactiveStatsMenu.SuspendLayout();
+            tab_ModifierGroup.SuspendLayout();
+            pnl_ModifierGroupHide.SuspendLayout();
+            pnl_ModifierGroupMenu.SuspendLayout();
             SuspendLayout();
             // 
             // lv_Modifiers
@@ -128,6 +143,7 @@
             tabControl1.Controls.Add(tab_ModifiersBuffer);
             tabControl1.Controls.Add(tab_ForcedModifiersBuffer);
             tabControl1.Controls.Add(tab_InactiveStats);
+            tabControl1.Controls.Add(tab_ModifierGroup);
             tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             tabControl1.Location = new System.Drawing.Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -183,7 +199,7 @@
             btn_ModifiersCreate.TabIndex = 9;
             btn_ModifiersCreate.Text = "Create Modifiers";
             btn_ModifiersCreate.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ModifiersCreate.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ModifiersCreate.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ModifiersCreate.Click += btn_ModifiersCreate_Click;
             // 
             // label5
@@ -222,7 +238,7 @@
             btn_ModifierDelete.TabIndex = 8;
             btn_ModifierDelete.Text = "- Delete";
             btn_ModifierDelete.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ModifierDelete.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ModifierDelete.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ModifierDelete.Click += btn_ModifierDelete_Click;
             // 
             // btn_ModifierAddCurve
@@ -238,7 +254,7 @@
             btn_ModifierAddCurve.TabIndex = 9;
             btn_ModifierAddCurve.Text = "+ New Curve";
             btn_ModifierAddCurve.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ModifierAddCurve.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ModifierAddCurve.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ModifierAddCurve.Click += btn_ModifierAddCurve_Click;
             // 
             // btn_ModifierAddConstant
@@ -254,7 +270,7 @@
             btn_ModifierAddConstant.TabIndex = 6;
             btn_ModifierAddConstant.Text = "+ New Constant";
             btn_ModifierAddConstant.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ModifierAddConstant.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ModifierAddConstant.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ModifierAddConstant.Click += btn_ModifierAddConstant_Click;
             // 
             // btn_ModifierAddCombined
@@ -270,7 +286,7 @@
             btn_ModifierAddCombined.TabIndex = 7;
             btn_ModifierAddCombined.Text = "+ New Combined";
             btn_ModifierAddCombined.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ModifierAddCombined.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ModifierAddCombined.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ModifierAddCombined.Click += btn_ModifierAddCombined_Click;
             // 
             // tab_ForcedModifiersBuffer
@@ -321,7 +337,7 @@
             btn_ForcedModifiersCreate.TabIndex = 6;
             btn_ForcedModifiersCreate.Text = "Create Forced Modifiers";
             btn_ForcedModifiersCreate.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ForcedModifiersCreate.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ForcedModifiersCreate.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ForcedModifiersCreate.Click += btn_ForcedModifiersCreate_Click;
             // 
             // label1
@@ -399,7 +415,7 @@
             btn_ForcedModifierDelete.TabIndex = 8;
             btn_ForcedModifierDelete.Text = "- Delete";
             btn_ForcedModifierDelete.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ForcedModifierDelete.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ForcedModifierDelete.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ForcedModifierDelete.Click += btn_ForcedModifierDelete_Click;
             // 
             // btn_ForcedModifierAddCurve
@@ -415,7 +431,7 @@
             btn_ForcedModifierAddCurve.TabIndex = 9;
             btn_ForcedModifierAddCurve.Text = "+ New Curve";
             btn_ForcedModifierAddCurve.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ForcedModifierAddCurve.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ForcedModifierAddCurve.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ForcedModifierAddCurve.Click += btn_ForcedModifierAddCurve_Click;
             // 
             // btn_ForcedModifierAddConstant
@@ -431,7 +447,7 @@
             btn_ForcedModifierAddConstant.TabIndex = 6;
             btn_ForcedModifierAddConstant.Text = "+ New Constant";
             btn_ForcedModifierAddConstant.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ForcedModifierAddConstant.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ForcedModifierAddConstant.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ForcedModifierAddConstant.Click += btn_ForcedModifierAddConstant_Click;
             // 
             // btn_ForcedModifierAddCombined
@@ -447,7 +463,7 @@
             btn_ForcedModifierAddCombined.TabIndex = 7;
             btn_ForcedModifierAddCombined.Text = "+ New Combined";
             btn_ForcedModifierAddCombined.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_ForcedModifierAddCombined.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_ForcedModifierAddCombined.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_ForcedModifierAddCombined.Click += btn_ForcedModifierAddCombined_Click;
             // 
             // tab_InactiveStats
@@ -479,7 +495,7 @@
             label3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             label3.Location = new System.Drawing.Point(3, 85);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(526, 15);
+            label3.Size = new System.Drawing.Size(532, 15);
             label3.TabIndex = 4;
             label3.Text = "This item has no inactive stats, but a new entry can be created for it.";
             label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -494,11 +510,11 @@
             btn_InactiveStatsCreate.HoverColor = System.Drawing.Color.LightGray;
             btn_InactiveStatsCreate.Location = new System.Drawing.Point(169, 122);
             btn_InactiveStatsCreate.Name = "btn_InactiveStatsCreate";
-            btn_InactiveStatsCreate.Size = new System.Drawing.Size(194, 32);
+            btn_InactiveStatsCreate.Size = new System.Drawing.Size(200, 32);
             btn_InactiveStatsCreate.TabIndex = 3;
             btn_InactiveStatsCreate.Text = "Create Inactive Stats";
             btn_InactiveStatsCreate.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_InactiveStatsCreate.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_InactiveStatsCreate.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_InactiveStatsCreate.Click += btn_InactiveStatsCreate_Click;
             // 
             // label4
@@ -506,7 +522,7 @@
             label4.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             label4.Location = new System.Drawing.Point(3, 172);
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(526, 15);
+            label4.Size = new System.Drawing.Size(532, 15);
             label4.TabIndex = 5;
             label4.Text = "Note: This feature is in beta. Using it may cause corruption.";
             label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -547,7 +563,7 @@
             cmb_StatType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             cmb_StatType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             cmb_StatType.FormattingEnabled = true;
-            cmb_StatType.Location = new System.Drawing.Point(162, 2);
+            cmb_StatType.Location = new System.Drawing.Point(304, 2);
             cmb_StatType.Name = "cmb_StatType";
             cmb_StatType.Size = new System.Drawing.Size(231, 23);
             cmb_StatType.TabIndex = 19;
@@ -565,7 +581,7 @@
             btn_InactiveStatsDelete.TabIndex = 8;
             btn_InactiveStatsDelete.Text = "- Delete";
             btn_InactiveStatsDelete.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_InactiveStatsDelete.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_InactiveStatsDelete.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_InactiveStatsDelete.Click += btn_InactiveStatsDelete_Click;
             // 
             // btn_InactiveStatsAdd
@@ -575,14 +591,166 @@
             btn_InactiveStatsAdd.ClickEffectEnabled = true;
             btn_InactiveStatsAdd.DefaultColor = System.Drawing.Color.White;
             btn_InactiveStatsAdd.HoverColor = System.Drawing.Color.LightGray;
-            btn_InactiveStatsAdd.Location = new System.Drawing.Point(75, 3);
+            btn_InactiveStatsAdd.Location = new System.Drawing.Point(217, 3);
             btn_InactiveStatsAdd.Name = "btn_InactiveStatsAdd";
             btn_InactiveStatsAdd.Size = new System.Drawing.Size(81, 20);
             btn_InactiveStatsAdd.TabIndex = 9;
-            btn_InactiveStatsAdd.Text = "+ Add Stat";
+            btn_InactiveStatsAdd.Text = "+ New Stat";
             btn_InactiveStatsAdd.TextColor = System.Drawing.SystemColors.ControlText;
-            btn_InactiveStatsAdd.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_InactiveStatsAdd.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
             btn_InactiveStatsAdd.Click += btn_InactiveStatsAdd_Click;
+            // 
+            // tab_ModifierGroup
+            // 
+            tab_ModifierGroup.Controls.Add(pnl_ModifierGroupHide);
+            tab_ModifierGroup.Controls.Add(tv_ModifierGroups);
+            tab_ModifierGroup.Controls.Add(pnl_ModifierGroupMenu);
+            tab_ModifierGroup.Location = new System.Drawing.Point(4, 24);
+            tab_ModifierGroup.Name = "tab_ModifierGroup";
+            tab_ModifierGroup.Padding = new System.Windows.Forms.Padding(3);
+            tab_ModifierGroup.Size = new System.Drawing.Size(544, 374);
+            tab_ModifierGroup.TabIndex = 3;
+            tab_ModifierGroup.Text = "Modifier Groups";
+            tab_ModifierGroup.UseVisualStyleBackColor = true;
+            // 
+            // pnl_ModifierGroupHide
+            // 
+            pnl_ModifierGroupHide.Controls.Add(label7);
+            pnl_ModifierGroupHide.Controls.Add(btn_ModifierGroupCreate);
+            pnl_ModifierGroupHide.Controls.Add(label8);
+            pnl_ModifierGroupHide.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnl_ModifierGroupHide.Location = new System.Drawing.Point(3, 59);
+            pnl_ModifierGroupHide.Name = "pnl_ModifierGroupHide";
+            pnl_ModifierGroupHide.Size = new System.Drawing.Size(538, 312);
+            pnl_ModifierGroupHide.TabIndex = 15;
+            // 
+            // label7
+            // 
+            label7.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            label7.Location = new System.Drawing.Point(3, 85);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(532, 15);
+            label7.TabIndex = 4;
+            label7.Text = "This item has no modifier groups, but a new entry can be created for it.";
+            label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btn_ModifierGroupCreate
+            // 
+            btn_ModifierGroupCreate.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btn_ModifierGroupCreate.BackColor = System.Drawing.Color.White;
+            btn_ModifierGroupCreate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_ModifierGroupCreate.ClickEffectEnabled = true;
+            btn_ModifierGroupCreate.DefaultColor = System.Drawing.Color.White;
+            btn_ModifierGroupCreate.HoverColor = System.Drawing.Color.LightGray;
+            btn_ModifierGroupCreate.Location = new System.Drawing.Point(169, 122);
+            btn_ModifierGroupCreate.Name = "btn_ModifierGroupCreate";
+            btn_ModifierGroupCreate.Size = new System.Drawing.Size(200, 32);
+            btn_ModifierGroupCreate.TabIndex = 3;
+            btn_ModifierGroupCreate.Text = "Create Modifier Group";
+            btn_ModifierGroupCreate.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_ModifierGroupCreate.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
+            btn_ModifierGroupCreate.Click += btn_ModifierGroupCreate_Click;
+            // 
+            // label8
+            // 
+            label8.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            label8.Location = new System.Drawing.Point(3, 172);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(532, 15);
+            label8.TabIndex = 5;
+            label8.Text = "Note: This feature is in beta. Using it may cause corruption.";
+            label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tv_ModifierGroups
+            // 
+            tv_ModifierGroups.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            tv_ModifierGroups.Dock = System.Windows.Forms.DockStyle.Fill;
+            tv_ModifierGroups.Location = new System.Drawing.Point(3, 59);
+            tv_ModifierGroups.Name = "tv_ModifierGroups";
+            tv_ModifierGroups.Size = new System.Drawing.Size(538, 312);
+            tv_ModifierGroups.TabIndex = 1;
+            // 
+            // pnl_ModifierGroupMenu
+            // 
+            pnl_ModifierGroupMenu.Controls.Add(btn_ModifierGroupDelete);
+            pnl_ModifierGroupMenu.Controls.Add(btn_ModifierGroupAddNode);
+            pnl_ModifierGroupMenu.Controls.Add(cmb_ModifierGroupNodeType);
+            pnl_ModifierGroupMenu.Controls.Add(btn_ModifierGroupAddStat);
+            pnl_ModifierGroupMenu.Controls.Add(cmb_ModifierGroupStatType);
+            pnl_ModifierGroupMenu.Dock = System.Windows.Forms.DockStyle.Top;
+            pnl_ModifierGroupMenu.Enabled = false;
+            pnl_ModifierGroupMenu.Location = new System.Drawing.Point(3, 3);
+            pnl_ModifierGroupMenu.Name = "pnl_ModifierGroupMenu";
+            pnl_ModifierGroupMenu.Size = new System.Drawing.Size(538, 56);
+            pnl_ModifierGroupMenu.TabIndex = 14;
+            // 
+            // btn_ModifierGroupDelete
+            // 
+            btn_ModifierGroupDelete.BackColor = System.Drawing.Color.White;
+            btn_ModifierGroupDelete.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_ModifierGroupDelete.ClickEffectEnabled = true;
+            btn_ModifierGroupDelete.DefaultColor = System.Drawing.Color.White;
+            btn_ModifierGroupDelete.HoverColor = System.Drawing.Color.LightGray;
+            btn_ModifierGroupDelete.Location = new System.Drawing.Point(3, 3);
+            btn_ModifierGroupDelete.Name = "btn_ModifierGroupDelete";
+            btn_ModifierGroupDelete.Size = new System.Drawing.Size(93, 20);
+            btn_ModifierGroupDelete.TabIndex = 8;
+            btn_ModifierGroupDelete.Text = "- Delete Node";
+            btn_ModifierGroupDelete.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_ModifierGroupDelete.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
+            btn_ModifierGroupDelete.Click += btn_ModifierGroupDelete_Click;
+            // 
+            // btn_ModifierGroupAddNode
+            // 
+            btn_ModifierGroupAddNode.BackColor = System.Drawing.Color.White;
+            btn_ModifierGroupAddNode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_ModifierGroupAddNode.ClickEffectEnabled = true;
+            btn_ModifierGroupAddNode.DefaultColor = System.Drawing.Color.White;
+            btn_ModifierGroupAddNode.HoverColor = System.Drawing.Color.LightGray;
+            btn_ModifierGroupAddNode.Location = new System.Drawing.Point(206, 3);
+            btn_ModifierGroupAddNode.Name = "btn_ModifierGroupAddNode";
+            btn_ModifierGroupAddNode.Size = new System.Drawing.Size(92, 20);
+            btn_ModifierGroupAddNode.TabIndex = 9;
+            btn_ModifierGroupAddNode.Text = "+ New Node";
+            btn_ModifierGroupAddNode.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_ModifierGroupAddNode.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
+            btn_ModifierGroupAddNode.Click += btn_ModifierGroupAddNode_Click;
+            // 
+            // btn_ModifierGroupAddStat
+            // 
+            btn_ModifierGroupAddStat.BackColor = System.Drawing.Color.White;
+            btn_ModifierGroupAddStat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_ModifierGroupAddStat.ClickEffectEnabled = true;
+            btn_ModifierGroupAddStat.DefaultColor = System.Drawing.Color.White;
+            btn_ModifierGroupAddStat.HoverColor = System.Drawing.Color.LightGray;
+            btn_ModifierGroupAddStat.Location = new System.Drawing.Point(206, 30);
+            btn_ModifierGroupAddStat.Name = "btn_ModifierGroupAddStat";
+            btn_ModifierGroupAddStat.Size = new System.Drawing.Size(92, 20);
+            btn_ModifierGroupAddStat.TabIndex = 10;
+            btn_ModifierGroupAddStat.Text = "+ New Stat";
+            btn_ModifierGroupAddStat.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_ModifierGroupAddStat.TextFont = new System.Drawing.Font("Segoe UI", 8.25F);
+            btn_ModifierGroupAddStat.Click += btn_ModifierGroupAddStat_Click;
+            // 
+            // cmb_ModifierGroupNodeType
+            // 
+            cmb_ModifierGroupNodeType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            cmb_ModifierGroupNodeType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            cmb_ModifierGroupNodeType.FormattingEnabled = true;
+            cmb_ModifierGroupNodeType.Location = new System.Drawing.Point(304, 2);
+            cmb_ModifierGroupNodeType.Name = "cmb_ModifierGroupNodeType";
+            cmb_ModifierGroupNodeType.Size = new System.Drawing.Size(231, 23);
+            cmb_ModifierGroupNodeType.TabIndex = 21;
+            // 
+            // cmb_ModifierGroupStatType
+            // 
+            cmb_ModifierGroupStatType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            cmb_ModifierGroupStatType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            cmb_ModifierGroupStatType.FormattingEnabled = true;
+            cmb_ModifierGroupStatType.Location = new System.Drawing.Point(304, 29);
+            cmb_ModifierGroupStatType.Name = "cmb_ModifierGroupStatType";
+            cmb_ModifierGroupStatType.Size = new System.Drawing.Size(231, 23);
+            cmb_ModifierGroupStatType.TabIndex = 22;
             // 
             // StatsControl
             // 
@@ -601,6 +769,9 @@
             tab_InactiveStats.ResumeLayout(false);
             pnl_InactiveStatsHide.ResumeLayout(false);
             pnl_InactiveStatsMenu.ResumeLayout(false);
+            tab_ModifierGroup.ResumeLayout(false);
+            pnl_ModifierGroupHide.ResumeLayout(false);
+            pnl_ModifierGroupMenu.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -647,5 +818,19 @@
         private System.Windows.Forms.Label label6;
         private ModernButton btn_ModifiersCreate;
         private System.Windows.Forms.ComboBox cmb_StatType;
+        private System.Windows.Forms.TabPage tab_ModifierGroup;
+        private System.Windows.Forms.TreeView tv_ModifierGroups;
+        private System.Windows.Forms.Panel pnl_ModifierGroupMenu;
+        private ModernButton btn_ModifierGroupAddNode;
+        private ModernButton btn_ModifierGroupDelete;
+        private ModernButton btn_ModifierGroupAddStat;
+        private System.Windows.Forms.Panel pnl_ModifierGroupHide;
+        private System.Windows.Forms.Label label7;
+        private ModernButton btn_ModifierGroupCreate;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cmb_ModifierGroupNodeType;
+        private System.Windows.Forms.ComboBox cmb_ModifierGroupStatType;
     }
 }
