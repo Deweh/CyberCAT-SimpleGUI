@@ -211,13 +211,23 @@ namespace CP2077SaveEditor.Views
             {
                 try
                 {
-                    await File.WriteAllTextAsync("error.txt", e.Message + Environment.NewLine + e.StackTrace);
-                    MessageBox.Show("Failed to parse save file: " + e.Message +
+                    var message = e.Message;
+                    if (message == "CEnum \"gamedataStatType.ItemTierQuality\" could not be found!")
+                    {
+                        message += Environment.NewLine + "Loading of modded saves with this data is currently not supported! See \"Known Issues\" on Nexus mods";
+                    }
+
+                    await File.WriteAllTextAsync("error.txt", message + Environment.NewLine + e.StackTrace);
+                    MessageBox.Show("Failed to parse save file:" + Environment.NewLine + 
+                                    message + Environment.NewLine +
                                     " An error.txt file has been generated with additional information.");
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Failed to parse save file: " + e.Message + " \n\n Stack Trace: \n" + e.StackTrace);
+                    MessageBox.Show("Failed to parse save file: " + Environment.NewLine + 
+                                    e.Message + Environment.NewLine + Environment.NewLine +
+                                    "Stack Trace:" + Environment.NewLine + 
+                                    e.StackTrace);
                 }
             }
 
