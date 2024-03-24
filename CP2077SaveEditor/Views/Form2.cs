@@ -196,7 +196,7 @@ namespace CP2077SaveEditor.Views
                             reader.ReadFileInfo(out var info);
 
                             MessageBox.Show(
-                                $"Failed to parse save file: Game version {info.Value.gameVersion} is not supported!");
+                                $"Failed to parse save file: Game version {info.Value.GameVersion} is not supported!");
                             return;
                         default:
                             throw new ArgumentOutOfRangeException();

@@ -3,6 +3,7 @@ using CP2077SaveEditor.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using WolvenKit.RED4.Archive.Buffer;
 using WolvenKit.RED4.Types;
@@ -15,6 +16,7 @@ namespace CP2077SaveEditor.Views.Controls
         private readonly Form2 _parentForm;
 
         private readonly Dictionary<Enum, NumericUpDown> _attributeFields, _proficiencyFields, _devPointFields;
+        private readonly Dictionary<gamedataProficiencyType, gamedataStatType> _proficiencyToStatMap;
 
         public PlayerStatsControl(Form2 parentForm)
         {
@@ -42,6 +44,17 @@ namespace CP2077SaveEditor.Views.Controls
                 {gamedataProficiencyType.ReflexesSkill, shinobiUpDown},
                 {gamedataProficiencyType.StrengthSkill, soloUpDown},
                 {gamedataProficiencyType.TechnicalAbilitySkill, techieUpDown}
+            };
+
+            _proficiencyToStatMap = new Dictionary<gamedataProficiencyType, gamedataStatType>
+            {
+                {gamedataProficiencyType.Level, gamedataStatType.Level},
+                {gamedataProficiencyType.StreetCred, gamedataStatType.StreetCred},
+                {gamedataProficiencyType.CoolSkill, gamedataStatType.CoolSkill},
+                {gamedataProficiencyType.IntelligenceSkill, gamedataStatType.IntelligenceSkill},
+                {gamedataProficiencyType.ReflexesSkill, gamedataStatType.ReflexesSkill},
+                {gamedataProficiencyType.StrengthSkill, gamedataStatType.StrengthSkill},
+                {gamedataProficiencyType.TechnicalAbilitySkill, gamedataStatType.TechnicalAbilitySkill},
             };
 
             _devPointFields = new Dictionary<Enum, NumericUpDown>
@@ -135,6 +148,17 @@ namespace CP2077SaveEditor.Views.Controls
             }
 
             var playerData = _parentForm.ActiveSaveFile.GetPlayerDevelopmentData();
+            var statsMap = GetPlayerStats();
+            if (statsMap == null)
+            {
+                return;
+            }
+
+            if (statsMap.ForcedModifiersBuffer?.Data is not ModifiersBuffer modifiersBuffer)
+            {
+                modifiersBuffer = new ModifiersBuffer();
+                statsMap.ForcedModifiersBuffer = new DataBuffer { Data = modifiersBuffer };
+            }
 
             foreach (var proficiency in playerData.Proficiencies)
             {
@@ -145,6 +169,21 @@ namespace CP2077SaveEditor.Views.Controls
                     {
                         proficiency.CurrentExp = 0;
                     }
+
+                    var statType = _proficiencyToStatMap[proficiency.Type];
+                    var stat = modifiersBuffer.Entries.FirstOrDefault(x => x.StatType == statType);
+                    if (stat is not gameConstantStatModifierData_Deprecated constantStat)
+                    {
+                        constantStat = new gameConstantStatModifierData_Deprecated
+                        {
+                            StatType = statType,
+                            ModifierType = gameStatModifierType.Additive,
+                            Value = 1
+                        };
+                        modifiersBuffer.Entries.Add(constantStat);
+                    }
+
+                    constantStat.Value = (CFloat)(float)numUpDown.Value;
                 }
             }
 
@@ -153,6 +192,20 @@ namespace CP2077SaveEditor.Views.Controls
                 if (_attributeFields.TryGetValue(attribute.AttributeName, out var numUpDown))
                 {
                     attribute.Value = (CInt32)numUpDown.Value;
+
+                    var stat = modifiersBuffer.Entries.FirstOrDefault(x => x.StatType == (gamedataStatType)attribute.AttributeName);
+                    if (stat is not gameConstantStatModifierData_Deprecated constantStat)
+                    {
+                        constantStat = new gameConstantStatModifierData_Deprecated
+                        {
+                            StatType = attribute.AttributeName,
+                            ModifierType = gameStatModifierType.Additive,
+                            Value = 1
+                        };
+                        modifiersBuffer.Entries.Add(constantStat);
+                    }
+
+                    constantStat.Value = (CFloat)(float)numUpDown.Value;
                 }
             }
 
@@ -165,12 +218,12 @@ namespace CP2077SaveEditor.Views.Controls
             }
         }
 
-        private void additionalPlayerStatsButton_Click(object sender, EventArgs e)
+        private gameSavedStatsData GetPlayerStats()
         {
             if (!Global.StatsSystemEnabled)
             {
                 MessageBox.Show("Stats system disabled.");
-                return;
+                return null;
             }
 
             var statsMap = _parentForm.ActiveSaveFile.GetStatsFromEntityId(1);
@@ -178,25 +231,67 @@ namespace CP2077SaveEditor.Views.Controls
             {
                 if (MessageBox.Show("Player stats not found. Creating it can cause issues. Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 {
-                    return;
+                    return null;
                 }
 
                 statsMap = _parentForm.ActiveSaveFile.CreateStatDataFromEntityId(1);
                 statsMap.InactiveStats.Add(gamedataStatType.Level);
-                statsMap.InactiveStats.Add(gamedataStatType.QuickHackUpload);
 
-                var modifierBuffer = new ModifiersBuffer();
-                modifierBuffer.Entries.Add(new gameConstantStatModifierData_Deprecated
+                var defaultForcedModifiers = new[]
                 {
-                    StatType = gamedataStatType.Humanity,
-                    ModifierType = gameStatModifierType.Additive,
-                    Value = 2
-                });
-
-                statsMap.ModifiersBuffer = new DataBuffer()
-                {
-                    Data = modifierBuffer
+                    gamedataStatType.Assault,
+                    gamedataStatType.Athletics,
+                    gamedataStatType.Brawling,
+                    gamedataStatType.ColdBlood,
+                    gamedataStatType.CombatHacking,
+                    gamedataStatType.CoolSkill,
+                    gamedataStatType.Crafting,
+                    gamedataStatType.Demolition,
+                    gamedataStatType.Engineering,
+                    gamedataStatType.Espionage,
+                    gamedataStatType.Gunslinger,
+                    gamedataStatType.Hacking,
+                    gamedataStatType.IntelligenceSkill,
+                    gamedataStatType.Kenjutsu,
+                    gamedataStatType.ReflexesSkill,
+                    gamedataStatType.Stealth,
+                    gamedataStatType.StreetCred,
+                    gamedataStatType.StrengthSkill,
+                    gamedataStatType.TechnicalAbilitySkill,
+                    gamedataStatType.Cool,
+                    gamedataStatType.Intelligence,
+                    gamedataStatType.Reflexes,
+                    gamedataStatType.Strength,
+                    gamedataStatType.TechnicalAbility,
+                    gamedataStatType.Level
                 };
+
+                var forcedModifierBuffer = new ModifiersBuffer();
+                foreach (var forcedModifier in defaultForcedModifiers)
+                {
+                    forcedModifierBuffer.Entries.Add(new gameConstantStatModifierData_Deprecated
+                    {
+                        StatType = forcedModifier,
+                        ModifierType = gameStatModifierType.Additive,
+                        Value = 1
+                    });
+                }
+
+                statsMap.ForcedModifiersBuffer = new DataBuffer()
+                {
+                    Data = forcedModifierBuffer
+                };
+            }
+            
+            return statsMap;
+        }
+
+        private void additionalPlayerStatsButton_Click(object sender, EventArgs e)
+        {
+            var statsMap = GetPlayerStats();
+            if (statsMap == null)
+            {
+                return;
             }
 
             new StatsForm().Init("Player", statsMap);
