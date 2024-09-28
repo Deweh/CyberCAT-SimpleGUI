@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
@@ -75,6 +76,8 @@ namespace CP2077SaveEditor.Views
             openSaveButton.Enabled = true;
 
             SetStatus("Idle");
+
+            await AutoLoadMostRecentSave();
         }
 
         internal SaveFileHelper ActiveSaveFile
@@ -134,21 +137,31 @@ namespace CP2077SaveEditor.Views
 
         private async Task Init()
         {
-            if (TweakDbStringHelper == null)
+            var tweakDbStringTask = Task.Run(() =>
             {
-                var tweakDbStrStream = typeof(TweakDBService).Assembly.GetManifestResourceStream("WolvenKit.Common.Resources.tweakdbstr.kark");
+                if (TweakDbStringHelper == null)
+                {
+                    var tweakDbStrStream = typeof(TweakDBService).Assembly.GetManifestResourceStream("WolvenKit.Common.Resources.tweakdbstr.kark");
 
-                TweakDbStringHelper = new TweakDBStringHelper();
-                TweakDbStringHelper.LoadFromStream(tweakDbStrStream);
+                    TweakDbStringHelper = new TweakDBStringHelper();
+                    TweakDbStringHelper.LoadFromStream(tweakDbStrStream);
 
-                TweakDBIDPool.ResolveHashHandler += TweakDbStringHelper.GetString;
-            }
+                    TweakDBIDPool.ResolveHashHandler += TweakDbStringHelper.GetString;
+                }
+            });
 
-            if (HashService == null)
+            var hashServiceTask = Task.Run(() =>
             {
-                await Task.Run(() => HashService = new HashService());
-            }
+                if (HashService == null)
+                {
+                    HashService = new HashService();
+                }
+            });
+
+            // hashservice and tweaktask now running in parallel.
+            await Task.WhenAll(tweakDbStringTask, hashServiceTask);
         }
+
 
         private async void LoadSave(string savePath)
         {
@@ -240,6 +253,123 @@ namespace CP2077SaveEditor.Views
                 pnl_Content.Enabled = true;
                 IsLoaded = true;
             }
+        }
+
+        private async Task AutoLoadMostRecentSave()
+        {
+            IsLoaded = false;
+            pnl_Content.Enabled = false;
+            openSaveButton.Enabled = false;
+            saveChangesButton.Enabled = false;
+
+            SetStatus("Loading most recent save...");
+
+            var status = EFileReadErrorCodes.NoCSav;
+            string savePath = null;
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    var savesFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Saved Games", "CD Projekt Red", "Cyberpunk 2077");
+                    if (Directory.Exists(savesFolder))
+                    {
+                        var recentSaveFolder = new DirectoryInfo(savesFolder).GetDirectories()
+                            .OrderByDescending(d => d.LastWriteTime)
+                            .FirstOrDefault();
+
+                        if (recentSaveFolder != null)
+                        {
+                            savePath = Path.Combine(recentSaveFolder.FullName, "sav.dat");
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(savePath) || !File.Exists(savePath))
+                    {
+                        throw new FileNotFoundException("No recent save file found.");
+                    }
+
+                    using var fs = File.Open(savePath, FileMode.Open);
+                    using var reader = new CyberpunkSaveReader(fs);
+
+                    status = reader.ReadFile(out var save);
+                    if (status == EFileReadErrorCodes.NoError)
+                    {
+                        ActiveSaveFile = new SaveFileHelper { SaveFile = save };
+                    }
+                });
+
+                if (status == EFileReadErrorCodes.NoError)
+                {
+                    var metadataPath = Path.Combine(Path.GetDirectoryName(savePath), "metadata.9.json");
+                    var screenshotPath = Path.Combine(Path.GetDirectoryName(savePath), "screenshot.png");
+
+                    await Task.WhenAll(
+                        LoadFileAsync(metadataPath, data => ActiveSaveFile.Metadata = data),
+                        LoadFileAsync(screenshotPath, data => ActiveSaveFile.ImageData = data)
+                    );
+
+                    this.InvokeIfRequired(() => { saveChangesButton.Enabled = true; });
+                }
+                else
+                {
+                    string message = status switch
+                    {
+                        EFileReadErrorCodes.NoCSav => "Failed to parse save file: File contains invalid data",
+                        EFileReadErrorCodes.UnsupportedVersion => "Failed to parse save file: Unsupported version",
+                        _ => "Unknown error occurred."
+                    };
+                    MessageBox.Show(message);
+                    return;
+                }
+
+                filePathLabel.Text = Path.GetFileName(Path.GetDirectoryName(savePath));
+                GC.Collect();
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    var message = e.Message;
+                    if (message == "CEnum \"gamedataStatType.ItemTierQuality\" could not be found!")
+                    {
+                        message += Environment.NewLine + "Loading of modded saves with this data is currently not supported! See \"Known Issues\" on Nexus mods";
+                    }
+
+                    await File.WriteAllTextAsync("error.txt", message + Environment.NewLine + e.StackTrace);
+                    MessageBox.Show("Failed to parse save file:" + Environment.NewLine +
+                                    message + Environment.NewLine +
+                                    " An error.txt file has been generated with additional information.");
+                }
+                catch (Exception innerException)
+                {
+                    MessageBox.Show("Failed to parse save file: " + Environment.NewLine +
+                                    innerException.Message + Environment.NewLine + Environment.NewLine +
+                                    "Stack Trace:" + Environment.NewLine +
+                                    innerException.StackTrace);
+                }
+            }
+
+            SetStatus("Idle");
+            openSaveButton.Enabled = true;
+
+            if (status == EFileReadErrorCodes.NoError)
+            {
+                pnl_Content.Enabled = true;
+                IsLoaded = true;
+            }
+        }
+
+        // helper function, should speed up loading a smidge.
+        private async Task<byte[]> LoadFileAsync(string filePath, Action<byte[]> onSuccess)
+        {
+            if (File.Exists(filePath))
+            {
+                var data = await File.ReadAllBytesAsync(filePath);
+                onSuccess(data);
+                return data;
+            }
+            return null;
         }
 
         internal void SetStatus(string message)
