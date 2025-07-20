@@ -14,7 +14,7 @@ using WolvenKit.Common.Services;
 using WolvenKit.Core.Compression;
 using WolvenKit.RED4.Save.IO;
 using WolvenKit.RED4.TweakDB.Helper;
-using WolvenKit.RED4.Types;
+using WolvenKit.RED4.Types.Pools;
 
 namespace CP2077SaveEditor.Views
 {
@@ -140,8 +140,6 @@ namespace CP2077SaveEditor.Views
 
                 TweakDbStringHelper = new TweakDBStringHelper();
                 TweakDbStringHelper.LoadFromStream(tweakDbStrStream);
-
-                TweakDBIDPool.ResolveHashHandler += TweakDbStringHelper.GetString;
             }
 
             if (HashService == null)
