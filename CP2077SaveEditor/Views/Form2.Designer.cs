@@ -31,11 +31,10 @@ namespace CP2077SaveEditor.Views
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
-            swapSaveType = new ModernButton();
             filePathLabel = new System.Windows.Forms.Label();
             openSaveButton = new ModernButton();
             saveChangesButton = new ModernButton();
-            sm_Menu = new Controls.ScrollMenuControl();
+            sm_Menu = new CP2077SaveEditor.Views.Controls.ScrollMenuControl();
             pnl_Content = new System.Windows.Forms.Panel();
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             tssl_Status = new System.Windows.Forms.ToolStripStatusLabel();
@@ -44,25 +43,9 @@ namespace CP2077SaveEditor.Views
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // swapSaveType
-            // 
-            swapSaveType.BackColor = System.Drawing.Color.WhiteSmoke;
-            swapSaveType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            swapSaveType.ClickEffectEnabled = true;
-            swapSaveType.DefaultColor = System.Drawing.Color.WhiteSmoke;
-            swapSaveType.HoverColor = System.Drawing.Color.LightGray;
-            swapSaveType.Location = new System.Drawing.Point(12, 66);
-            swapSaveType.Name = "swapSaveType";
-            swapSaveType.Size = new System.Drawing.Size(143, 15);
-            swapSaveType.TabIndex = 4;
-            swapSaveType.Text = "Save Type: PC";
-            swapSaveType.TextColor = System.Drawing.SystemColors.ControlText;
-            swapSaveType.TextFont = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            swapSaveType.Click += swapSaveType_Click;
-            // 
             // filePathLabel
             // 
-            filePathLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            filePathLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
             filePathLabel.Location = new System.Drawing.Point(12, 85);
             filePathLabel.Name = "filePathLabel";
             filePathLabel.Size = new System.Drawing.Size(143, 15);
@@ -84,7 +67,7 @@ namespace CP2077SaveEditor.Views
             openSaveButton.TabIndex = 3;
             openSaveButton.Text = "Load Save";
             openSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
-            openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F);
             openSaveButton.Click += openSaveButton_Click;
             // 
             // saveChangesButton
@@ -102,7 +85,7 @@ namespace CP2077SaveEditor.Views
             saveChangesButton.TabIndex = 7;
             saveChangesButton.Text = "Save Changes";
             saveChangesButton.TextColor = System.Drawing.SystemColors.ControlText;
-            saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F);
             saveChangesButton.Click += saveChangesButton_Click;
             // 
             // sm_Menu
@@ -141,14 +124,14 @@ namespace CP2077SaveEditor.Views
             // tssl_Empty
             // 
             tssl_Empty.Name = "tssl_Empty";
-            tssl_Empty.Size = new System.Drawing.Size(662, 17);
+            tssl_Empty.Size = new System.Drawing.Size(911, 17);
             tssl_Empty.Spring = true;
             // 
             // tssl_Info
             // 
             tssl_Info.Name = "tssl_Info";
-            tssl_Info.Size = new System.Drawing.Size(321, 17);
-            tssl_Info.Text = "v0.28a";
+            tssl_Info.Size = new System.Drawing.Size(41, 17);
+            tssl_Info.Text = "v0.28c";
             // 
             // Form2
             // 
@@ -159,7 +142,6 @@ namespace CP2077SaveEditor.Views
             Controls.Add(pnl_Content);
             Controls.Add(sm_Menu);
             Controls.Add(saveChangesButton);
-            Controls.Add(swapSaveType);
             Controls.Add(filePathLabel);
             Controls.Add(openSaveButton);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
@@ -174,8 +156,6 @@ namespace CP2077SaveEditor.Views
         }
 
         #endregion
-
-        private ModernButton swapSaveType;
         private System.Windows.Forms.Label filePathLabel;
         private ModernButton openSaveButton;
         private ModernButton saveChangesButton;

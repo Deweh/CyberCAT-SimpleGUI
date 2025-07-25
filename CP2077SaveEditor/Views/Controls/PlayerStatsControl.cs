@@ -97,14 +97,29 @@ namespace CP2077SaveEditor.Views.Controls
         {
             var playerData = _parentForm.ActiveSaveFile.GetPlayerDevelopmentData();
 
-            lifePathBox.SelectedIndex = (gamedataLifePath)playerData.LifePath switch
-            {
-                gamedataLifePath.Corporate => 2,
-                gamedataLifePath.Nomad => 0,
-                gamedataLifePath.StreetKid => 1,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+            var lifePathVal = (int)(gamedataLifePath)playerData.LifePath;
 
+            lifePathBox.Items.Clear();
+            lifePathBox.Items.Add("Corporate");
+            lifePathBox.Items.Add("Nomad");
+            lifePathBox.Items.Add("StreetKid");
+
+            if (lifePathVal == 3)
+            {
+                lifePathBox.Items.Add("Modded");
+                lifePathBox.SelectedIndex = 3;
+            }
+            else
+            {
+                lifePathBox.SelectedIndex = (gamedataLifePath)playerData.LifePath switch
+                {
+                    gamedataLifePath.Corporate => 0,
+                    gamedataLifePath.Nomad => 1,
+                    gamedataLifePath.StreetKid => 2,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+            }
+            
             foreach (var proficiency in playerData.Proficiencies)
             {
                 if (_proficiencyFields.TryGetValue(proficiency.Type, out var numUpDown))
@@ -299,20 +314,24 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void lifePathBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lifePathBox.SelectedIndex == 0)
+            switch (lifePathBox.SelectedIndex)
             {
-                lifePathPictureBox.Image = Properties.Resources.nomad;
-                _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Nomad;
-            }
-            else if (lifePathBox.SelectedIndex == 1)
-            {
-                lifePathPictureBox.Image = Properties.Resources.streetkid;
-                _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.StreetKid;
-            }
-            else if (lifePathBox.SelectedIndex == 2)
-            {
-                lifePathPictureBox.Image = Properties.Resources.corpo;
-                _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Corporate;
+                case 0:
+                    lifePathPictureBox.Image = Properties.Resources.corpo;
+                    _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Corporate;
+                    break;
+                case 1:
+                    lifePathPictureBox.Image = Properties.Resources.nomad;
+                    _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Nomad;
+                    break;
+                case 2:
+                    lifePathPictureBox.Image = Properties.Resources.streetkid;
+                    _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.StreetKid;
+                    break;
+                case 3:
+                    lifePathPictureBox.Image = null;
+                    _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Count;
+                    break;
             }
         }
     }

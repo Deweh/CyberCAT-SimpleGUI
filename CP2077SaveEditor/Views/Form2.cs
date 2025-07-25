@@ -26,7 +26,6 @@ namespace CP2077SaveEditor.Views
         internal bool IsLoaded;
 
         private SaveFileHelper _activeSaveFile;
-        private SaveType _saveType = SaveType.PC;
 
         private bool _isSaving = false;
 
@@ -281,7 +280,6 @@ namespace CP2077SaveEditor.Views
 
             pnl_Content.Enabled = false;
             openSaveButton.Enabled = false;
-            swapSaveType.Enabled = false;
             saveChangesButton.Enabled = false;
 
             var fileName = Path.Combine(fileDirectory, "sav.dat");
@@ -301,7 +299,7 @@ namespace CP2077SaveEditor.Views
                 await Task.Run(() =>
                 {
                     using var writer = new CyberpunkSaveWriter(ms, Encoding.UTF8, true);
-                    writer.WriteFile(ActiveSaveFile.SaveFile, _saveType == SaveType.PC);
+                    writer.WriteFile(ActiveSaveFile.SaveFile, true);
                 });
 
                 await using (var fs = File.Open(fileName, FileMode.Create))
@@ -310,32 +308,29 @@ namespace CP2077SaveEditor.Views
                     await ms.CopyToAsync(fs);
                 }
 
-                if (_saveType == SaveType.PC)
+                var metadataPath = Path.Combine(fileDirectory, "metadata.9.json");
+                if (!File.Exists(metadataPath))
                 {
-                    var metadataPath = Path.Combine(fileDirectory, "metadata.9.json");
-                    if (!File.Exists(metadataPath))
+                    if (ActiveSaveFile.Metadata != null)
                     {
-                        if (ActiveSaveFile.Metadata != null)
-                        {
-                            await File.WriteAllBytesAsync(metadataPath, ActiveSaveFile.Metadata);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Error while saving file: metadata.9.json could not be found.");
-                        }
+                        await File.WriteAllBytesAsync(metadataPath, ActiveSaveFile.Metadata);
                     }
-
-                    var screenshotPath = Path.Combine(fileDirectory, "screenshot.png");
-                    if (!File.Exists(screenshotPath))
+                    else
                     {
-                        if (ActiveSaveFile.ImageData != null)
-                        {
-                            await File.WriteAllBytesAsync(screenshotPath, ActiveSaveFile.ImageData);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Error while saving file: screenshot.png could not be found.");
-                        }
+                        MessageBox.Show("Error while saving file: metadata.9.json could not be found.");
+                    }
+                }
+
+                var screenshotPath = Path.Combine(fileDirectory, "screenshot.png");
+                if (!File.Exists(screenshotPath))
+                {
+                    if (ActiveSaveFile.ImageData != null)
+                    {
+                        await File.WriteAllBytesAsync(screenshotPath, ActiveSaveFile.ImageData);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error while saving file: screenshot.png could not be found.");
                     }
                 }
             }
@@ -354,27 +349,12 @@ namespace CP2077SaveEditor.Views
 
             pnl_Content.Enabled = true;
             openSaveButton.Enabled = true;
-            swapSaveType.Enabled = true;
             saveChangesButton.Enabled = true;
 
             _isSaving = false;
             SetStatus("File saved.");
 
             GC.Collect();
-        }
-
-        private void swapSaveType_Click(object sender, EventArgs e)
-        {
-            if (_saveType == SaveType.PC)
-            {
-                _saveType = SaveType.PS4;
-                swapSaveType.Text = "Save Type: PS4";
-            }
-            else
-            {
-                _saveType = SaveType.PC;
-                swapSaveType.Text = "Save Type: PC";
-            }
         }
 
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)

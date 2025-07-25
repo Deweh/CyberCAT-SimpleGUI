@@ -154,7 +154,6 @@
             lifePathBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             lifePathBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             lifePathBox.FormattingEnabled = true;
-            lifePathBox.Items.AddRange(new object[] { "Nomad", "Street Kid", "Corpo" });
             lifePathBox.Location = new System.Drawing.Point(366, 191);
             lifePathBox.Name = "lifePathBox";
             lifePathBox.Size = new System.Drawing.Size(124, 21);
