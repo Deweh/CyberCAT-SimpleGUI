@@ -85,6 +85,213 @@ namespace CP2077SaveEditor.Views.Controls
             MessageBox.Show("All item flags cleared.");
         }
 
+        /// <summary>
+        /// Checks if an item is safe to consider for duplicate removal
+        /// </summary>
+        private bool IsSafeToRemoveDuplicates(ItemData item)
+        {
+            var itemId = item.ItemInfo.ItemId.Id.ResolvedText;
+
+            if (string.IsNullOrEmpty(itemId))
+                return false;
+
+            // Currently only clothing items are considered safe (for wardrobe cleanup)
+            return itemId.StartsWith("Items.Formal") ||
+                   itemId.StartsWith("Items.Casual") ||
+                   itemId.StartsWith("Items.Boots") ||
+                   itemId.StartsWith("Items.Jacket") ||
+                   itemId.StartsWith("Items.Pants") ||
+                   itemId.StartsWith("Items.Shirt") ||
+                   itemId.StartsWith("Items.Shoes") ||
+                   itemId.StartsWith("Items.Skirt") ||
+                   itemId.StartsWith("Items.Dress") ||
+                   itemId.StartsWith("Items.Hat") ||
+                   itemId.StartsWith("Items.Glasses") ||
+                   itemId.StartsWith("Items.Mask") ||
+                   itemId.StartsWith("Items.Vest") ||
+                   itemId.StartsWith("Items.Shorts") ||
+                   itemId.StartsWith("Items.Sweater") ||
+                   itemId.StartsWith("Items.Tank") ||
+                   itemId.StartsWith("Items.Top") ||
+                   itemId.StartsWith("Items.Underwear") ||
+                   itemId.StartsWith("Items.Bra") ||
+                   itemId.StartsWith("Items.Panties");
+        }
+
+        /// <summary>
+        /// Items are considered duplicates if they have the same base item, quality level, and mods.
+        /// </summary>
+        private string GetItemUniqueKey(ItemData item)
+        {
+            var key = item.ItemInfo.ItemId.Id.ResolvedText;
+
+            // Add quality information if available (this is what determines legendary vs common)
+            if (item.ItemAdditionalInfo != null)
+            {
+                key += $"|LootPool:{item.ItemAdditionalInfo.LootItemPoolId}";
+                key += $"|Level:{item.ItemAdditionalInfo.RequiredLevel}";
+            }
+
+            // Add item structure information (affects how item behaves)
+            key += $"|Structure:{item.ItemInfo.ItemStructure}";
+
+            // Add flags (quest items, etc. - these matter for functionality)
+            key += $"|Flags:{item.Flags}";
+
+            // Add quantity for stackable items (different quantities are different items)
+            key += $"|Qty:{item.Quantity}";
+
+            return key;
+        }
+
+        /// <summary>
+        /// Keeps the first occurrence of each unique item and removes all subsequent duplicates.
+        /// </summary>
+        private void RemoveDuplicates(object sender, EventArgs e)
+        {
+            // Get the currently selected inventory
+            var currentContainerId = containersListBox.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(currentContainerId))
+            {
+                MessageBox.Show("Please select an inventory first.", "No Inventory Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Convert display name back to ID if needed
+            if (_inventoryNames.Values.Contains(currentContainerId))
+            {
+                currentContainerId = _inventoryNames.FirstOrDefault(x => x.Value == currentContainerId).Key.ToString();
+            }
+
+            // Get the current inventory name for display
+            var currentInventoryName = _inventoryNames.ContainsKey(ulong.Parse(currentContainerId))
+                ? _inventoryNames[ulong.Parse(currentContainerId)]
+                : $"Inventory {currentContainerId}";
+
+            // Display warning message including current limitations
+            var dialogMessage = $@"Choose duplicate removal scope:
+
+            Yes - Remove duplicates from ALL inventories
+            No - Remove duplicates from {currentInventoryName} only
+            Cancel - Abort
+
+            WARNING: This is a dangerous operation! For safety, this currently
+            only removes clothing duplicates (for wardrobe cleanup).";
+
+            var result = MessageBox.Show(dialogMessage, "Remove Duplicates", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            var removeFromAll = result == DialogResult.Yes;
+            var totalRemoved = 0;
+            var duplicatesFound = new Dictionary<string, int>();
+            var inventoriesProcessed = new List<string>();
+
+            var inventoriesToProcess = removeFromAll
+                ? _parentForm.ActiveSaveFile.GetInventoriesContainer().SubInventories
+                : new List<SubInventory> {
+                    _parentForm.ActiveSaveFile.GetInventory(ulong.Parse(currentContainerId))
+                  }.Where(x => x != null);
+
+            foreach (SubInventory inventory in inventoriesToProcess)
+            {
+                if (inventory == null) continue;
+
+                var inventoryName = _inventoryNames.ContainsKey(inventory.InventoryId)
+                    ? _inventoryNames[inventory.InventoryId]
+                    : $"Inventory {inventory.InventoryId:X}";
+
+                var itemsToRemove = new List<ItemData>();
+                var seenItems = new HashSet<string>();
+
+                foreach (ItemData item in inventory.Items)
+                {
+                    var itemId = item.ItemInfo.ItemId.Id.ResolvedText;
+
+                    // Only process items that are safe to remove duplicates from
+                    if (!IsSafeToRemoveDuplicates(item))
+                    {
+                        continue;
+                    }
+
+                    var itemUniqueKey = GetItemUniqueKey(item);
+
+                    if (seenItems.Contains(itemUniqueKey))
+                    {
+                        // This is a duplicate, mark for removal
+                        itemsToRemove.Add(item);
+                        totalRemoved++;
+
+                        if (duplicatesFound.ContainsKey(itemId))
+                        {
+                            duplicatesFound[itemId]++;
+                        }
+                        else
+                        {
+                            duplicatesFound[itemId] = 2; // First duplicate found
+                        }
+                    }
+                    else
+                    {
+                        seenItems.Add(itemUniqueKey);
+                    }
+                }
+
+                // Remove the duplicate items
+                foreach (var itemToRemove in itemsToRemove)
+                {
+                    inventory.Items.Remove(itemToRemove);
+                }
+
+                if (itemsToRemove.Count > 0)
+                {
+                    inventoriesProcessed.Add($"{inventoryName}: {itemsToRemove.Count} duplicates removed");
+                }
+            }
+
+            // Show results
+            var scope = removeFromAll ? "all inventories" : $"{currentInventoryName.ToLower()} only";
+            var message = $"Duplicate removal complete!\n\nScope: {scope}\nTotal duplicates removed: {totalRemoved}";
+
+            if (duplicatesFound.Count > 0)
+            {
+                message += $"\n\nItems with duplicates found: {duplicatesFound.Count}";
+                if (duplicatesFound.Count <= 15) // Show details for reasonable numbers
+                {
+                    message += "\n\nDuplicate items:";
+                    foreach (var kvp in duplicatesFound.OrderByDescending(x => x.Value))
+                    {
+                        message += $"\n• {kvp.Key} ({kvp.Value} copies)";
+                    }
+                }
+                else
+                {
+                    message += $"\n\nTop 10 most duplicated items:";
+                    foreach (var kvp in duplicatesFound.OrderByDescending(x => x.Value).Take(10))
+                    {
+                        message += $"\n• {kvp.Key} ({kvp.Value} copies)";
+                    }
+                }
+            }
+
+            if (inventoriesProcessed.Count > 0)
+            {
+                message += "\n\nInventories processed:";
+                foreach (var inv in inventoriesProcessed)
+                {
+                    message += $"\n• {inv}";
+                }
+            }
+
+            MessageBox.Show(message, "Duplicate Removal Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Refresh the inventory display
+            RefreshInventory();
+        }
+
         private void debloatButton_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("This process will remove redundant data from your save. Just in case, it's recommended that you back up your save before continuing. Continue?", "Notice", MessageBoxButtons.YesNo) != DialogResult.Yes)
@@ -419,6 +626,9 @@ namespace CP2077SaveEditor.Views.Controls
                 {
                     contextMenu.Items.Add("Delete", null, DeleteInventoryItem).Tag = hitTest.Item;
                 }
+
+                var removeDuplicatesItem = contextMenu.Items.Add("Remove Duplicates");
+                removeDuplicatesItem.Click += RemoveDuplicates;
 
                 contextMenu.Show(Cursor.Position);
             }
