@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CP2077SaveEditor.Cloud;
 using CP2077SaveEditor.ModSupport;
 using CP2077SaveEditor.Utils;
 using CP2077SaveEditor.Views.Controls;
@@ -28,6 +29,9 @@ namespace CP2077SaveEditor.Views
         internal HashService HashService;
 
         internal bool IsLoaded;
+
+        // Lives as long as the editor, so the cloud sign-in survives closing the cloud window
+        private readonly CdprCloudClient _cloudClient = new();
 
         private SaveFileHelper _activeSaveFile;
 
@@ -87,11 +91,14 @@ namespace CP2077SaveEditor.Views
             RegisterControl(new ExtrasControl(this));
 
             openSaveButton.IsAccent = true;
+            Layout += (_, _) => LayoutSidebar();
+            FormClosed += (_, _) => _cloudClient.Dispose();
             quickSaveButton.IsAccent = true;
 
             var toolTip = new ToolTip();
             Theme.SetToolTip(toolTip, openSaveButton, "Open a Cyberpunk 2077 save file (sav.dat) from disk.");
-            Theme.SetToolTip(toolTip, quickSaveButton, "Overwrite the current save file (Ctrl+S). A timestamped .bak backup is kept.");
+            Theme.SetToolTip(toolTip, cloudButton, "Download a save from, or upload the open save to, the CD PROJEKT RED cross-save cloud (PS5/Xbox/PC).");
+            Theme.SetToolTip(toolTip, quickSaveButton,"Overwrite the current save file (Ctrl+S). A timestamped .bak backup is kept.");
             Theme.SetToolTip(toolTip, saveChangesButton, "Save changes into a chosen save folder.");
 
             Theme.Apply(this);
@@ -104,6 +111,7 @@ namespace CP2077SaveEditor.Views
             await Init();
 
             openSaveButton.Enabled = true;
+            cloudButton.Enabled = true;
 
             SetStatus("Idle");
 
@@ -224,6 +232,44 @@ namespace CP2077SaveEditor.Views
             }
         }
 
+        /// <summary>
+        /// Fits the menu between the file label and the bottom buttons, so it follows the display scaling and the window size.
+        /// </summary>
+        private void LayoutSidebar()
+        {
+            if (sm_Menu == null || cloudButton == null)
+            {
+                return;
+            }
+
+            var gap = (int)(6 * DeviceDpi / 96f);
+            var top = filePathLabel.Bottom + gap;
+            sm_Menu.SetBounds(openSaveButton.Left, top, openSaveButton.Width, Math.Max(0, cloudButton.Top - gap - top));
+        }
+
+        private async void cloudButton_Click(object sender, EventArgs e)
+        {
+            // Upload is only offered while an editable save is open; it saves the open save first and then uploads that file
+            Func<Task<(byte[] Save, byte[] Metadata)>> currentSave = null;
+            if (IsLoaded && ActiveSaveFile != null && !_isReadOnly)
+            {
+                currentSave = async () =>
+                {
+                    // Save to disk first (with the usual backup and verification), then upload exactly that file
+                    if (_activeSavePath == null || !await SaveToDirectory(Path.GetDirectoryName(_activeSavePath)))
+                    {
+                        throw new InvalidOperationException("The open save could not be saved first, nothing was uploaded.");
+                    }
+
+                    return (await File.ReadAllBytesAsync(_activeSavePath), ActiveSaveFile.Metadata);
+                };
+            }
+
+            using var dialog = new CloudSaveDialog(_cloudClient, currentSave, OpenSave);
+            dialog.Icon = Icon;
+            dialog.ShowDialog(this);
+        }
+
         private async Task Init()
         {
             if (TweakDbStringHelper == null)
@@ -245,6 +291,7 @@ namespace CP2077SaveEditor.Views
             IsLoaded = false;
             pnl_Content.Enabled = false;
             openSaveButton.Enabled = false;
+            cloudButton.Enabled = false;
             saveChangesButton.Enabled = false;
             quickSaveButton.Enabled = false;
 
@@ -354,6 +401,7 @@ namespace CP2077SaveEditor.Views
             tspb_Busy.Visible = false;
 
             openSaveButton.Enabled = true;
+            cloudButton.Enabled = true;
 
             if (status == EFileReadErrorCodes.NoError)
             {
@@ -755,6 +803,7 @@ namespace CP2077SaveEditor.Views
 
             pnl_Content.Enabled = enabled;
             openSaveButton.Enabled = enabled;
+            cloudButton.Enabled = enabled;
             saveChangesButton.Enabled = enabled && !_isReadOnly;
             quickSaveButton.Enabled = enabled && !_isReadOnly && _activeSavePath != null;
         }
