@@ -36,6 +36,8 @@ namespace CP2077SaveEditor.Utils
         public void SetExtraCapacity(int value)
         {
             var playerStats = _saveFile.GetStatsFromEntityId(1) ?? throw new InvalidOperationException("The save has no stats for V");
+            // Some patch 2.0 saves have no modifiers buffer for V yet
+            playerStats.ModifiersBuffer ??= new DataBuffer();
             playerStats.ModifiersBuffer.Data ??= new ModifiersBuffer();
             var modifiers = (ModifiersBuffer)playerStats.ModifiersBuffer.Data;
 
@@ -91,7 +93,7 @@ namespace CP2077SaveEditor.Utils
             a != null && b != null && a.Id == b.Id && a.RngSeed == b.RngSeed && a.UniqueCounter == b.UniqueCounter;
 
         private ModifiersBuffer GetPlayerModifiers() =>
-            _saveFile.GetStatsFromEntityId(1)?.ModifiersBuffer.Data as ModifiersBuffer;
+            _saveFile.GetStatsFromEntityId(1)?.ModifiersBuffer?.Data as ModifiersBuffer;
 
         private static IEnumerable<gameConstantStatModifierData_Deprecated> GetCapacityModifiers(ModifiersBuffer modifiers) =>
             modifiers.Entries

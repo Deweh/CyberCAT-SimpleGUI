@@ -1,4 +1,4 @@
-using CP2077SaveEditor.Extensions;
+﻿using CP2077SaveEditor.Extensions;
 using CP2077SaveEditor.Utils;
 using System;
 using System.Collections.Generic;
@@ -24,6 +24,7 @@ namespace CP2077SaveEditor.Views.Controls
         private bool _isLoading;
         private System.Drawing.Bitmap _activeLifepathSource;
         private System.Drawing.Bitmap _scaledLifepathCache;
+        private CEnum<gamedataLifePath>? _originalLifePath;
 
         public PlayerStatsControl(MainForm parentForm)
         {
@@ -112,27 +113,31 @@ namespace CP2077SaveEditor.Views.Controls
             {
                 var playerData = _parentForm.ActiveSaveFile.GetPlayerDevelopmentData();
 
-                var lifePathVal = (int)(gamedataLifePath)playerData.LifePath;
+                // Lifepath mods (like Fresh Start) store values besides the three vanilla ones. Those show as
+                // "Modded" and are written back unchanged, instead of throwing or being replaced.
+                _originalLifePath = playerData.LifePath;
 
                 lifePathBox.Items.Clear();
                 lifePathBox.Items.Add("Corporate");
                 lifePathBox.Items.Add("Nomad");
                 lifePathBox.Items.Add("StreetKid");
 
-                if (lifePathVal == 3)
+                var vanillaIndex = (gamedataLifePath)playerData.LifePath switch
                 {
-                    lifePathBox.Items.Add("Modded");
-                    lifePathBox.SelectedIndex = 3;
+                    gamedataLifePath.Corporate => 0,
+                    gamedataLifePath.Nomad => 1,
+                    gamedataLifePath.StreetKid => 2,
+                    _ => -1
+                };
+
+                if (vanillaIndex >= 0)
+                {
+                    lifePathBox.SelectedIndex = vanillaIndex;
                 }
                 else
                 {
-                    lifePathBox.SelectedIndex = (gamedataLifePath)playerData.LifePath switch
-                    {
-                        gamedataLifePath.Corporate => 0,
-                        gamedataLifePath.Nomad => 1,
-                        gamedataLifePath.StreetKid => 2,
-                        _ => throw new ArgumentOutOfRangeException()
-                    };
+                    lifePathBox.Items.Add("Modded");
+                    lifePathBox.SelectedIndex = 3;
                 }
                 
                 foreach (var proficiency in playerData.Proficiencies)
@@ -360,7 +365,7 @@ namespace CP2077SaveEditor.Views.Controls
                     break;
                 case 3:
                     _activeLifepathSource = null;
-                    if (!_isLoading) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Count;
+                    if (!_isLoading && _originalLifePath is { } originalLifePath) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = originalLifePath;
                     break;
             }
             lifePathPictureBox.Invalidate();

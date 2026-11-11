@@ -28,70 +28,41 @@ public class AppearanceHelper2
         get => PresetWrapper.Preset.IsMale ? AppearanceGender.Male : AppearanceGender.Female;
         set
         {
+            // The prompt is only suppressed for this one change
+            var suppressPrompt = SuppressBodyGenderPrompt;
+            SuppressBodyGenderPrompt = false;
+
             if (value == BodyGender)
             {
                 return;
             }
 
-            if (!SuppressBodyGenderPrompt)
-            {
-                if (MessageBox.Show("Changing body gender will reset all appearance options to default. Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
-                {
-                    return;
-                }
-
-                SuppressBodyGenderPrompt = false;
-            }
-
-            PresetWrapper.Preset.IsMale = value == AppearanceGender.Male;
-
-            var hs = new HashSet<string>();
-            foreach (var entry in _saveFileHelper.GetPSDataContainer().Entries)
-            {
-                if (entry.Data == null)
-                {
-                    continue;
-                }
-
-                var typeName = entry.Data.GetType().ToString();
-
-                if (typeName.Contains("Player"))
-                {
-
-                }
-
-                if (typeName.Contains("Puppet"))
-                {
-
-                }
-
-                if (entry.Data is UnknownRedClass cls && cls.Hash != 16027069064518938876 && cls.Hash != 3328049462273361822)
-                {
-
-                }
-
-                hs.Add(typeName);
-            }
-
+            // Everything is checked before the save is changed, so a failed change leaves it as it was
             var playerPuppet = (PlayerPuppetPS?)_saveFileHelper.GetPSDataContainer()?.Entries.FirstOrDefault(x => x.Data is PlayerPuppetPS)?.Data;
             if (playerPuppet == null)
             {
-                MessageBox.Show("Player data not found. Aborting.", "Notice");
+                MessageBox.Show("Player data not found. Body Gender cannot be changed.", "Notice");
                 return;
             }
 
-            var oldTone = PresetWrapper.IsBrainGenderMale;
-            if (value == AppearanceGender.Female)
+            // Default presets are taken from patch 2.5 saves, older presets lack groups the game needs
+            var defaultPreset = value == AppearanceGender.Female ? Properties.Resources.FemaleDefaultPreset : Properties.Resources.MaleDefaultPreset;
+            var newPreset = RedJsonSerializer.Deserialize<PresetDto>(defaultPreset, new RedJsonSerializerOptions { JsonVersion = WolvenKit.Common.Constants.RedJsonVersion })?.Data;
+            if (newPreset?.Preset == null)
             {
-                playerPuppet.Gender = "Female";
-                _saveFileHelper.SetAppearanceContainer(RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(Properties.Resources.FemaleDefaultPreset, new RedJsonSerializerOptions { JsonVersion = "0.0.6" }));
+                MessageBox.Show("The default appearance could not be loaded. Body Gender cannot be changed.", "Error");
+                return;
             }
-            else
+
+            if (!suppressPrompt && MessageBox.Show("Changing body gender will reset all appearance options to default. Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
             {
-                playerPuppet.Gender = "Male";
-                _saveFileHelper.SetAppearanceContainer(RedJsonSerializer.Deserialize<gameuiCharacterCustomizationPresetWrapper>(Properties.Resources.MaleDefaultPreset, new RedJsonSerializerOptions { JsonVersion = "0.0.6" }));
+                return;
             }
-            PresetWrapper.IsBrainGenderMale = oldTone;
+
+            newPreset.IsBrainGenderMale = PresetWrapper.IsBrainGenderMale;
+
+            playerPuppet.Gender = value == AppearanceGender.Female ? "Female" : "Male";
+            _saveFileHelper.SetAppearanceContainer(newPreset);
         }
     }
 

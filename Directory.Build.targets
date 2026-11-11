@@ -1,0 +1,35 @@
+<Project>
+  <!--
+    The WolvenKit submodule points at upstream WolvenKit. This repository's changes to it are kept in
+    patches/WolvenKit.patch and applied here, before WolvenKit.Core builds. Every other WolvenKit project
+    depends on WolvenKit.Core, so the patch is in place before any patched file is compiled.
+    See "Changes to WolvenKit" in README.md.
+  -->
+  <PropertyGroup>
+    <WolvenKitPatch>$(MSBuildThisFileDirectory)patches\WolvenKit.patch</WolvenKitPatch>
+    <WolvenKitDir>$(MSBuildThisFileDirectory)WolvenKit</WolvenKitDir>
+  </PropertyGroup>
+
+  <Target Name="ApplyWolvenKitPatch" BeforeTargets="BeforeBuild" Condition="'$(MSBuildProjectName)' == 'WolvenKit.Core' And Exists('$(WolvenKitPatch)')">
+    <Exec Command="git apply --reverse --check --whitespace=nowarn &quot;$(WolvenKitPatch)&quot;" WorkingDirectory="$(WolvenKitDir)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" EchoOff="true" StandardOutputImportance="low" StandardErrorImportance="low">
+      <Output TaskParameter="ExitCode" PropertyName="_WolvenKitPatchReverseCheck" />
+    </Exec>
+
+    <Exec Condition="'$(_WolvenKitPatchReverseCheck)' != '0'" Command="git apply --whitespace=nowarn &quot;$(WolvenKitPatch)&quot;" WorkingDirectory="$(WolvenKitDir)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true">
+      <Output TaskParameter="ExitCode" PropertyName="_WolvenKitPatchApply" />
+    </Exec>
+
+    <Error Condition="'$(_WolvenKitPatchReverseCheck)' != '0' And '$(_WolvenKitPatchApply)' != '0'" Text="patches\WolvenKit.patch could not be applied to the WolvenKit submodule. If WolvenKit was updated or changed on purpose, see &quot;Changes to WolvenKit&quot; in README.md. Otherwise reset it with: git submodule update --init --force" />
+    <Message Condition="'$(_WolvenKitPatchReverseCheck)' != '0' And '$(_WolvenKitPatchApply)' == '0'" Importance="high" Text="Applied patches\WolvenKit.patch to the WolvenKit submodule" />
+  </Target>
+
+  <!--
+    WolvenKit.RED4's file list is evaluated before the patch is applied, so files added by the patch would be
+    missing from the first build. Its references (WolvenKit.Core) are built at this point, so they exist now.
+  -->
+  <Target Name="IncludeFilesAddedByWolvenKitPatch" AfterTargets="ResolveProjectReferences" Condition="'$(MSBuildProjectName)' == 'WolvenKit.RED4'">
+    <ItemGroup>
+      <Compile Include="**\*.cs" Exclude="@(Compile);$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+    </ItemGroup>
+  </Target>
+</Project>

@@ -170,7 +170,9 @@ namespace CP2077SaveEditor.Views.Controls
             _parentForm.ActiveSaveFile.SetFactByName("kerry_romanceable", 1);
             ChangeTracker.MarkChanged();
             RefreshFacts();
-            MessageBox.Show("All characters are now romanceable.");
+            MessageBox.Show("Romance flags set for Judy, River, Panam and Kerry." + Environment.NewLine + Environment.NewLine +
+                            "The game still checks V's body and voice in some romance scenes, so a romance outside the vanilla " +
+                            "rules (for example Panam with a female V) also needs a romance mod.");
         }
     }
 }

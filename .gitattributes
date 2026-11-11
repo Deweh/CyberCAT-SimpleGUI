@@ -61,3 +61,6 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# Applied with git apply to the WolvenKit submodule, so it must keep its exact line endings
+patches/*.patch -text

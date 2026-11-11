@@ -1,3 +1,12 @@
+# Builds and tests every push. Version tags (v*) also create the GitHub release, and optionally:
+#
+# - Scan the zip with VirusTotal: set the secret VIRUSTOTAL_API_KEY (a free key from virustotal.com works). Results are in
+#   the run summary. The variable VIRUSTOTAL_MAX_DETECTIONS holds the Nexus Mods upload, and fails the run, when more
+#   engines than that flag the zip. Nexus Mods quarantines uploads with too many detections.
+# - Upload to Nexus Mods: set the variables NEXUS_MOD_ID and NEXUS_FILE_ID and the secret NEXUS_API_KEY
+#   (https://www.nexusmods.com/settings/api-keys). The zip becomes a new version of that file. NEXUS_FILE_NAME overrides
+#   the file's display name. When CHANGELOG.md has a "## <version>" section, it's used as the Nexus changelog.
+#   Both IDs are shown on the mod page's Files tab with "Advanced" checked.
 name: Build
 
 on:
@@ -67,3 +76,110 @@ jobs:
             CyberCAT-Reloaded.zip
             CyberCAT-Reloaded-Standalone.zip
           generate_release_notes: true
+
+      # Scans the release zip before Nexus Mods does. Errors here never block the release.
+      - name: Scan with VirusTotal
+        id: virustotal
+        if: startsWith(github.ref, 'refs/tags/v')
+        continue-on-error: true
+        shell: pwsh
+        env:
+          VT_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+          VT_MAX_DETECTIONS: ${{ vars.VIRUSTOTAL_MAX_DETECTIONS }}
+          ZIP: CyberCAT-Reloaded.zip
+        run: |
+          if (-not $env:VT_API_KEY) {
+            Write-Host 'VIRUSTOTAL_API_KEY is not set, skipping the scan'
+            exit 0
+          }
+
+          $headers = @{ 'x-apikey' = $env:VT_API_KEY }
+          $sha256 = (Get-FileHash $env:ZIP -Algorithm SHA256).Hash.ToLower()
+
+          # Files over 32 MB need a separate upload URL
+          $uploadUrl = (Invoke-RestMethod -Uri 'https://www.virustotal.com/api/v3/files/upload_url' -Headers $headers).data
+          $analysisId = (Invoke-RestMethod -Uri $uploadUrl -Method Post -Headers $headers -Form @{ file = Get-Item $env:ZIP }).data.id
+
+          # The free API allows 4 requests a minute
+          $deadline = (Get-Date).AddMinutes(20)
+          do {
+            Start-Sleep -Seconds 30
+            $analysis = Invoke-RestMethod -Uri "https://www.virustotal.com/api/v3/analyses/$analysisId" -Headers $headers
+            Write-Host "VirusTotal: $($analysis.data.attributes.status)"
+          } while ($analysis.data.attributes.status -ne 'completed' -and (Get-Date) -lt $deadline)
+
+          if ($analysis.data.attributes.status -ne 'completed') { throw 'The VirusTotal scan did not finish in 20 minutes' }
+
+          $stats = $analysis.data.attributes.stats
+          $detections = [int]$stats.malicious + [int]$stats.suspicious
+          $flagged = $analysis.data.attributes.results.PSObject.Properties |
+            Where-Object { $_.Value.category -in 'malicious', 'suspicious' } |
+            ForEach-Object { "| $($_.Name) | $($_.Value.category) | $($_.Value.result) |" }
+          $link = "https://www.virustotal.com/gui/file/$sha256"
+
+          $summary = @(
+            "### VirusTotal: $detections detections",
+            "",
+            "$($stats.malicious) malicious, $($stats.suspicious) suspicious, $($stats.undetected) undetected. [Full report]($link)",
+            ""
+          )
+          if ($flagged) { $summary += @('| Engine | Category | Result |', '| --- | --- | --- |') + $flagged }
+          $summary -join "`n" >> $env:GITHUB_STEP_SUMMARY
+
+          "detections=$detections" >> $env:GITHUB_OUTPUT
+          "link=$link" >> $env:GITHUB_OUTPUT
+
+          if ($detections -gt 0) {
+            Write-Host "::warning::VirusTotal: $detections engines flag $env:ZIP. $link"
+          }
+
+          $max = 0
+          if ([int]::TryParse($env:VT_MAX_DETECTIONS, [ref]$max) -and $detections -gt $max) {
+            Write-Host "::error::$detections VirusTotal detections, more than VIRUSTOTAL_MAX_DETECTIONS ($max). The Nexus Mods upload is held. $link"
+            'hold_nexus=true' >> $env:GITHUB_OUTPUT
+          }
+
+      # Nexus changelogs are plain text, so the markdown is simplified
+      - name: Prepare Nexus Mods upload
+        id: nexus
+        if: startsWith(github.ref, 'refs/tags/v') && vars.NEXUS_FILE_ID != ''
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}'.TrimStart('v')
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+          if (Test-Path CHANGELOG.md) {
+            $pattern = '(?ms)^## v?' + [regex]::Escape($version) + '\b[^\n]*$(.*?)(?=^## |\z)'
+            $match = [regex]::Match((Get-Content CHANGELOG.md -Raw), $pattern)
+            if ($match.Success) {
+              $changelog = $match.Groups[1].Value.Trim()
+              $changelog = [regex]::Replace($changelog, '\[([^\]]+)\]\([^)]+\)', '$1')
+              $changelog = $changelog -replace '\*\*', '' -replace '`', ''
+              $delimiter = "EOF_$([guid]::NewGuid().ToString('N'))"
+              "changelog<<$delimiter`n$changelog`n$delimiter" >> $env:GITHUB_OUTPUT
+            }
+          }
+
+      # v1.0.0-beta.11, pinned to its commit
+      - name: Upload to Nexus Mods
+        if: steps.nexus.outcome == 'success' && steps.virustotal.outputs.hold_nexus != 'true'
+        uses: Nexus-Mods/upload-action@98532f7670c27cbecc78fae03fa3e278147827e2
+        with:
+          api_key: ${{ secrets.NEXUS_API_KEY }}
+          mod_id: ${{ vars.NEXUS_MOD_ID }}
+          file_id: ${{ vars.NEXUS_FILE_ID }}
+          filename: CyberCAT-Reloaded.zip
+          version: ${{ steps.nexus.outputs.version }}
+          display_name: ${{ vars.NEXUS_FILE_NAME || 'CyberCAT Reloaded' }}
+          description: Save editor for Cyberpunk 2077, including patch 2.5. Back up your saves before editing.
+          changelog: ${{ steps.nexus.outputs.changelog }}
+          archive_existing_version: true
+          update_mod_version: true
+
+      # Turns the run red, so GitHub sends a notification
+      - name: Report held Nexus Mods upload
+        if: steps.virustotal.outputs.hold_nexus == 'true'
+        shell: pwsh
+        run: |
+          Write-Host "::error::Not uploaded to Nexus Mods: ${{ steps.virustotal.outputs.detections }} VirusTotal detections. ${{ steps.virustotal.outputs.link }}"
+          exit 1

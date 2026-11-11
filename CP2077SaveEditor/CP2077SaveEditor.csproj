@@ -7,7 +7,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <Platforms>x64</Platforms>
     <!-- Shown in the status bar and compared with the latest GitHub release -->
-    <Version>0.33.0</Version>
+    <Version>0.34.0</Version>
     <!-- Shown in the exe's file properties -->
     <Product>CyberCAT Reloaded</Product>
     <AssemblyTitle>CyberCAT Reloaded - Cyberpunk 2077 save editor</AssemblyTitle>
@@ -20,6 +20,12 @@
 
   <ItemGroup>
     <Resource Include="Resources\*" />
+  </ItemGroup>
+
+  <!-- The release includes WolvenKit and kraken (GPL-3.0), so it carries the license texts and notices, see THIRD-PARTY-NOTICES.md -->
+  <ItemGroup>
+    <None Include="..\LICENSE;..\THIRD-PARTY-NOTICES.md;..\README.md;..\CHANGELOG.md" CopyToPublishDirectory="PreserveNewest" Visible="false" />
+    <None Include="..\licenses\**" LinkBase="licenses" CopyToPublishDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,5 +48,24 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <!--
+    WolvenKit.Core ships native libraries the editor never loads: wwtools (Wwise audio conversion) and the Linux/macOS
+    builds. Unsigned native binaries draw antivirus false positives, so they are left out of the release. kraken.dll
+    stays, saves and WolvenKit's hash list are compressed with it. DirectXTex: see UnusedDependencies.targets.
+  -->
+  <Target Name="RemoveUnusedNativeLibraries" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'wwtools.dll' Or '%(Extension)' == '.so' Or '%(Extension)' == '.dylib'" />
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'DirectXTexNet.dll' Or '%(Filename)%(Extension)' == 'texconv.dll' Or '%(Filename)%(Extension)' == 'texconv.pdb' Or '%(Filename)%(Extension)' == 'DirectXTexNetImpl.dll' Or '%(Filename)%(Extension)' == 'Ijwhost.dll' Or ('%(Filename)%(Extension)' == 'COPYING' And $([System.String]::Copy('%(RelativePath)').StartsWith('lib')))" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Resources.resx links the files in Resources\, incremental builds didn't embed them again after they changed -->
+  <Target Name="RebuildChangedLinkedResources" BeforeTargets="CoreResGen" Inputs="@(Resource)" Outputs="$(IntermediateOutputPath)$(RootNamespace).Properties.Resources.resources">
+    <Delete Files="$(IntermediateOutputPath)$(RootNamespace).Properties.Resources.resources" />
+  </Target>
+
+  <Import Project="UnusedDependencies.targets" />
 
 </Project>

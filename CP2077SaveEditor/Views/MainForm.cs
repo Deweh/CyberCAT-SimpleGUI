@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -426,6 +426,13 @@ namespace CP2077SaveEditor.Views
             {
                 return $"{Environment.NewLine}{Environment.NewLine}This save is from game version {FormatGameVersion(gameVersion.Value)}, which is newer than this editor supports ({FormatGameVersion(MaxSupportedGameVersion)}). " +
                        "Check for an updated version of the editor.";
+            }
+
+            // kraken.dll decompresses saves. When it's missing, it was usually not extracted or was quarantined by antivirus.
+            if (e is DllNotFoundException)
+            {
+                return $"{Environment.NewLine}{Environment.NewLine}A library the editor needs (kraken.dll) could not be loaded. Extract the whole zip into a folder, " +
+                       "check that kraken.dll is next to CP2077SaveEditor.exe, and check whether your antivirus quarantined it.";
             }
 
             // WolvenKit reports unknown enums/classes like: CEnum "gamedataStatType.ItemTierQuality" could not be found!
