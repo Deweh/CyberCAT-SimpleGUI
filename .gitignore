@@ -167,6 +167,9 @@ DocProject/Help/html
 # Click-Once directory
 publish/
 
+# CP2077SaveExporter: self-contained publish output (see CP2077SaveExporter/publish.sh, publish.ps1)
+CP2077SaveExporter/publish/
+
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
