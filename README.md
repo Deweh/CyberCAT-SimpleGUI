@@ -2,7 +2,7 @@
 
 A Cyberpunk 2077 save editor with support for patch 2.5 and Phantom Liberty. CyberCAT Reloaded continues [CyberCAT-SimpleGUI by Deweh](https://github.com/Deweh/CyberCAT-SimpleGUI), itself a simplified offshoot of SirBitesalot's CyberCAT.
 
-**Download:** [latest GitHub release](https://github.com/bernardomcma/CyberCAT-SimpleGUI/releases/latest). Extract the whole zip into a folder before running the editor.
+**Download:** [Nexus Mods](https://www.nexusmods.com/cyberpunk2077/mods/36532) or the [latest GitHub release](https://github.com/bernardomcma/CyberCAT-SimpleGUI/releases/latest). Extract the whole zip into a folder before running the editor.
 
 **What's new:** see [CHANGELOG.md](CHANGELOG.md).
 
