@@ -397,6 +397,7 @@ namespace CP2077SaveEditor.Utils
             btn.MouseLeave += (_, _) => { isHovered = false; isPressed = false; btn.Invalidate(); };
             btn.MouseDown += (_, _) => { isPressed = true; btn.Invalidate(); };
             btn.MouseUp += (_, _) => { isPressed = false; btn.Invalidate(); };
+            btn.EnabledChanged += (_, _) => { isHovered = false; isPressed = false; btn.Invalidate(); };
 
             btn.Paint += (_, e) =>
             {
@@ -654,8 +655,11 @@ namespace CP2077SaveEditor.Utils
                 g.DrawLine(cyanPen, 196 * s, 1, 340 * s, 1);
 
                 // Vertical HUD divider line between sidebar and content
-                using var dividerPen = new Pen(Color.FromArgb(90, 255, 0, 60), 1f);
-                g.DrawLine(dividerPen, 192 * s, 8 * s, 192 * s, form.ClientSize.Height - 26 * s);
+                if (form is Views.MainForm)
+                {
+                    using var dividerPen = new Pen(Color.FromArgb(90, 255, 0, 60), 1f);
+                    g.DrawLine(dividerPen, 192 * s, 8 * s, 192 * s, form.ClientSize.Height - 26 * s);
+                }
             };
         }
 

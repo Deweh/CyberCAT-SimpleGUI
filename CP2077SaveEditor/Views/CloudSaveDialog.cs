@@ -34,6 +34,7 @@ namespace CP2077SaveEditor.Views
         private readonly Label _note = new()
         {
             AutoSize = true, MaximumSize = new Size(700, 0), Margin = new Padding(0, 10, 0, 0),
+            ForeColor = SystemColors.GrayText,
             Text = "Uses the unofficial CD PROJEKT RED cross-save API, which may change without notice. " +
                    "Uploading overwrites the cloud slot; the previous version is backed up locally first.",
         };
@@ -59,33 +60,6 @@ namespace CP2077SaveEditor.Views
             _slots.Columns.Add("Last modified", 220);
             _info.Text = "Not signed in.";
 
-            if (Utils.Theme.IsDark)
-            {
-                // Draw the list ourselves, so the header text keeps a sane size on every display
-                _slots.OwnerDraw = true;
-                _slots.BackColor = Utils.Theme.DarkSurface;
-                _slots.ForeColor = Utils.Theme.DarkText;
-                _slots.BorderStyle = BorderStyle.FixedSingle;
-                _slots.DrawColumnHeader += (_, e) =>
-                {
-                    using var back = new SolidBrush(Utils.Theme.DarkRaised);
-                    using var rule = new Pen(Utils.Theme.NeonRed, 2f);
-                    using var font = new Font(_slots.Font, FontStyle.Bold);
-                    e.Graphics.FillRectangle(back, e.Bounds);
-                    e.Graphics.DrawLine(rule, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);
-                    TextRenderer.DrawText(e.Graphics, e.Header.Text.ToUpperInvariant(), font, Rectangle.Inflate(e.Bounds, -8, 0), Utils.Theme.Cyan,
-                        TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
-                };
-                _slots.DrawSubItem += (_, e) =>
-                {
-                    using var back = new SolidBrush(e.Item.Selected ? Utils.Theme.DarkHover : Utils.Theme.DarkSurface);
-                    e.Graphics.FillRectangle(back, e.Bounds);
-                    TextRenderer.DrawText(e.Graphics, e.SubItem.Text, _slots.Font, Rectangle.Inflate(e.Bounds, -8, 0),
-                        e.Item.Selected ? Utils.Theme.Cyan : Utils.Theme.DarkText,
-                        TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
-                };
-            }
-
             // Docked layout so nothing is clipped, whatever the display scaling is
             var top = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, WrapContents = false, Padding = new Padding(0, 0, 0, 10) };
             top.Controls.AddRange(new Control[] { _signIn, _refresh, _info });
@@ -97,6 +71,8 @@ namespace CP2077SaveEditor.Views
             Controls.Add(bottom);
             Controls.Add(top);
 
+            Utils.Theme.Apply(this);
+
             _signIn.Click += async (_, _) => await SignInAsync();
             _refresh.Click += async (_, _) => await RefreshAsync();
             _download.Click += async (_, _) => await DownloadAsync();
@@ -104,7 +80,11 @@ namespace CP2077SaveEditor.Views
             _slots.SelectedIndexChanged += (_, _) => UpdateButtons();
             _slots.Resize += (_, _) => FitLastColumn();
             Shown += (_, _) => FitLastColumn();
-            FormClosed += (_, _) => _cts.Cancel(); // the client belongs to the main window and keeps the sign-in
+            FormClosed += (_, _) =>
+            {
+                _cts.Cancel(); // the client belongs to the main window and keeps the sign-in
+                _cts.Dispose();
+            };
             Shown += async (_, _) =>
             {
                 if (_client.IsSignedIn)
@@ -188,10 +168,20 @@ namespace CP2077SaveEditor.Views
             }
         }
 
+        private static string GetSafeSlotFolderName(string slot)
+        {
+            var safe = Path.GetFileName(slot ?? string.Empty);
+            foreach (var invalid in Path.GetInvalidFileNameChars())
+            {
+                safe = safe.Replace(invalid, '_');
+            }
+            return string.IsNullOrWhiteSpace(safe) ? "slot" : safe;
+        }
+
         private async Task DownloadAsync()
         {
             var slot = SelectedSlot;
-            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CyberCAT", "cloud-downloads", slot);
+            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CyberCAT", "cloud-downloads", GetSafeSlotFolderName(slot));
             SetBusy(true, $"Downloading {slot}...");
             try
             {
@@ -219,7 +209,7 @@ namespace CP2077SaveEditor.Views
             }
 
             var backup = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "CyberCAT", "cloud-backups", slot, DateTime.Now.ToString("yyyyMMdd-HHmmss"));
+                "CyberCAT", "cloud-backups", GetSafeSlotFolderName(slot), DateTime.Now.ToString("yyyyMMdd-HHmmss"));
             SetBusy(true, "Preparing save...");
             try
             {
