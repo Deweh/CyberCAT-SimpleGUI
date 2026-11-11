@@ -26,8 +26,10 @@ namespace CP2077SaveEditor.Utils
         private const uint SizeMask = 0x3FFFFFFF;
         private const int KindShift = 30;
 
-        private const uint ItemModifiersKind = 0;
-        private const uint EntityModifiersKind = 1;
+        // What a slice contains. Kind 1 holds what older saves stored as forced modifiers: for V these are the
+        // attribute and skill values (Strength, ..., Level), matching the forced modifiers of patch 2.x saves.
+        private const uint ModifiersKind = 0;
+        private const uint ForcedModifiersKind = 1;
         private const uint ModifierGroupsKind = 2;
 
         // Lets the UI know which stats came from here, without passing the save around
@@ -36,7 +38,8 @@ namespace CP2077SaveEditor.Utils
         private readonly gameStatsStateMapStructure _map;
 
         private readonly Dictionary<gameSavedStatsDataOptimized, gameSavedStatsData> _materialized = new(ReferenceEqualityComparer.Instance);
-        private readonly HashSet<gameSavedStatsDataOptimized> _unparsed = new(ReferenceEqualityComparer.Instance);
+        // Slice kinds per entry that couldn't be fully read. Those slices are kept as they are.
+        private readonly Dictionary<gameSavedStatsDataOptimized, HashSet<uint>> _unparsed = new(ReferenceEqualityComparer.Instance);
         private Dictionary<(gameStatIDType, ulong), gameSavedStatsDataOptimized> _index;
 
         public OptimizedStatsHelper(gameStatsStateMapStructure map)
@@ -47,7 +50,7 @@ namespace CP2077SaveEditor.Utils
         public static bool IsOptimized(gameStatsStateMapStructure map) => map.ValuesOptimized.Count > 0;
 
         /// <summary>
-        /// True for stats backed by the optimized format, which has no forced modifiers.
+        /// True for stats backed by the optimized format.
         /// </summary>
         public static bool IsOptimizedData(gameSavedStatsData data) => data != null && s_handedOut.TryGetValue(data, out _);
 
@@ -97,6 +100,7 @@ namespace CP2077SaveEditor.Utils
         private gameSavedStatsData Materialize(gameSavedStatsDataOptimized optimized)
         {
             var modifiers = new ModifiersBuffer();
+            var forcedModifiers = new ModifiersBuffer();
             var groups = new SavedModifierGroupStatTypesBuffer();
 
             var data = new gameSavedStatsData
@@ -106,6 +110,7 @@ namespace CP2077SaveEditor.Utils
                 // Same instance, so edits to it need no write back
                 StatModifiers = optimized.StatModifiers,
                 ModifiersBuffer = new DataBuffer { Data = modifiers },
+                ForcedModifiersBuffer = new DataBuffer { Data = forcedModifiers },
                 SavedModifierGroupStatTypesBuffer = new DataBuffer { Data = groups }
             };
 
@@ -118,6 +123,7 @@ namespace CP2077SaveEditor.Utils
             {
                 var (kind, bytes) = GetSlice((ushort)index);
                 var buffer = RedBuffer.CreateBuffer(0, bytes);
+                bool parsedOk;
 
                 if (kind == ModifierGroupsKind)
                 {
@@ -126,10 +132,7 @@ namespace CP2077SaveEditor.Utils
 
                     var parsed = (SavedModifierGroupStatTypesBuffer)buffer.Data!;
                     groups.Entries.AddRange(parsed.Entries);
-                    if (!parsed.IsParsed)
-                    {
-                        _unparsed.Add(optimized);
-                    }
+                    parsedOk = parsed.IsParsed;
                 }
                 else
                 {
@@ -137,11 +140,22 @@ namespace CP2077SaveEditor.Utils
                     reader.ReadBuffer(buffer);
 
                     var parsed = (ModifiersBuffer)buffer.Data!;
-                    modifiers.Entries.AddRange(parsed.Entries);
-                    if (!parsed.IsParsed)
+                    if (kind == ModifiersKind || kind == ForcedModifiersKind)
                     {
-                        _unparsed.Add(optimized);
+                        (kind == ForcedModifiersKind ? forcedModifiers : modifiers).Entries.AddRange(parsed.Entries);
                     }
+
+                    // Slices of other kinds are kept as they are
+                    parsedOk = parsed.IsParsed && (kind == ModifiersKind || kind == ForcedModifiersKind);
+                }
+
+                if (!parsedOk)
+                {
+                    if (!_unparsed.TryGetValue(optimized, out var kinds))
+                    {
+                        _unparsed[optimized] = kinds = new HashSet<uint>();
+                    }
+                    kinds.Add(kind);
                 }
             }
 
@@ -163,12 +177,6 @@ namespace CP2077SaveEditor.Utils
 
             foreach (var (optimized, data) in _materialized)
             {
-                // Rewriting a slice we couldn't fully read would lose the parts we didn't understand
-                if (_unparsed.Contains(optimized))
-                {
-                    continue;
-                }
-
                 var recordIndex = GetOrAddIndex(_map.SharedRecordId, data.RecordID);
                 if (optimized.RecordIDIndex != recordIndex)
                 {
@@ -190,41 +198,70 @@ namespace CP2077SaveEditor.Utils
                     .ToList();
                 SetIfChanged(optimized.InactiveStatsIndices, inactiveIndices, x => optimized.InactiveStatsIndices = x);
 
-                var sliceIndices = new List<ushort>();
+                _unparsed.TryGetValue(optimized, out var unparsedKinds);
                 var currentSlices = optimized.BufferSliceIndices.Select(x => (ushort)x).ToList();
 
-                if (data.ModifiersBuffer?.Data is ModifiersBuffer { Entries.Count: > 0 } modifiers)
-                {
-                    var kind = currentSlices
-                        .Select(x => (uint)_map.SharedBufferSlices[x].Combined >> KindShift)
-                        .Where(x => x != ModifierGroupsKind)
-                        .DefaultIfEmpty(optimized.IdType == gameStatIDType.EntityID ? EntityModifiersKind : ItemModifiersKind)
-                        .First();
+                // Each kind is written back to its own slices, in the order the entry had them. Content that didn't
+                // change keeps its slices, so unchanged entries stay byte for byte the same.
+                var kinds = currentSlices.Select(SliceKind)
+                    .Concat(new[] { ModifiersKind, ForcedModifiersKind, ModifierGroupsKind })
+                    .Distinct()
+                    .ToList();
 
-                    using var ms = new MemoryStream();
-                    using (var modifiersWriter = new ModifiersBufferWriter(ms))
+                var sliceIndices = new List<ushort>();
+                foreach (var kind in kinds)
+                {
+                    var existing = currentSlices.Where(x => SliceKind(x) == kind).ToList();
+
+                    // Rewriting a slice we couldn't fully read would lose the parts we didn't understand
+                    if (unparsedKinds != null && unparsedKinds.Contains(kind))
                     {
-                        modifiersWriter.WriteBuffer(modifiers);
+                        sliceIndices.AddRange(existing);
+                        continue;
                     }
 
-                    sliceIndices.Add(writer.GetSlice(kind, ms.ToArray(), currentSlices));
-                }
-
-                if (data.SavedModifierGroupStatTypesBuffer?.Data is SavedModifierGroupStatTypesBuffer { Entries.Count: > 0 } groups)
-                {
-                    using var ms = new MemoryStream();
-                    using (var groupsWriter = new SavedModifierGroupStatTypesBufferWriter(ms))
+                    var bytes = Encode(kind, data);
+                    if (bytes.AsSpan().SequenceEqual(existing.SelectMany(x => GetSlice(x).Bytes).ToArray()))
                     {
-                        groupsWriter.WriteBuffer(groups);
+                        sliceIndices.AddRange(existing);
                     }
-
-                    sliceIndices.Add(writer.GetSlice(ModifierGroupsKind, ms.ToArray(), currentSlices));
+                    else if (bytes.Length > 0)
+                    {
+                        sliceIndices.Add(writer.GetSlice(kind, bytes, currentSlices));
+                    }
                 }
 
                 SetIfChanged(optimized.BufferSliceIndices, sliceIndices, x => optimized.BufferSliceIndices = x);
             }
 
             writer.Commit();
+        }
+
+        private uint SliceKind(ushort index) => (uint)_map.SharedBufferSlices[index].Combined >> KindShift;
+
+        private static byte[] Encode(uint kind, gameSavedStatsData data)
+        {
+            using var ms = new MemoryStream();
+
+            if (kind == ModifierGroupsKind)
+            {
+                if (data.SavedModifierGroupStatTypesBuffer?.Data is SavedModifierGroupStatTypesBuffer { Entries.Count: > 0 } groups)
+                {
+                    using var groupsWriter = new SavedModifierGroupStatTypesBufferWriter(ms);
+                    groupsWriter.WriteBuffer(groups);
+                }
+            }
+            else
+            {
+                var buffer = kind == ForcedModifiersKind ? data.ForcedModifiersBuffer : data.ModifiersBuffer;
+                if (buffer?.Data is ModifiersBuffer { Entries.Count: > 0 } modifiers)
+                {
+                    using var modifiersWriter = new ModifiersBufferWriter(ms);
+                    modifiersWriter.WriteBuffer(modifiers);
+                }
+            }
+
+            return ms.ToArray();
         }
 
         private (uint Kind, byte[] Bytes) GetSlice(ushort index)
