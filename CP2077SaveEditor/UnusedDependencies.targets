@@ -1,0 +1,46 @@
+<Project>
+  <!--
+    WolvenKit.Common carries libraries for WolvenKit's texture, mesh, PhysX and database tools. The save editor
+    never calls that code, so they are left out of the build and of the deps.json. Fewer unsigned binaries in the
+    release means fewer antivirus false positives (Nexus Mods quarantines uploads based on VirusTotal results).
+
+    If something that is used ever needs one of these, it fails with a FileNotFoundException naming the assembly.
+    Imported by CP2077SaveEditor.csproj, and by test projects that should see the same set of files.
+  -->
+
+  <!-- NuGet packages: keep compiling against them, but don't ship their runtime and native files -->
+  <ItemGroup>
+    <PackageReference Include="SharpDX" Version="4.2.0" ExcludeAssets="runtime;native" />
+    <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" ExcludeAssets="runtime;native" />
+    <PackageReference Include="SharpDX.DXGI" Version="4.2.0" ExcludeAssets="runtime;native" />
+    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" ExcludeAssets="runtime;native" />
+    <PackageReference Include="SharpGLTF.Core" Version="1.0.3" ExcludeAssets="runtime;native" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" ExcludeAssets="runtime;native" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.2" ExcludeAssets="runtime;native" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.2" ExcludeAssets="runtime;native" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.2" ExcludeAssets="runtime;native" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="9.0.2" ExcludeAssets="runtime;native" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.2" ExcludeAssets="runtime;native" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.10" ExcludeAssets="runtime;native" />
+    <PackageReference Include="SQLitePCLRaw.core" Version="2.1.10" ExcludeAssets="runtime;native" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12-pre20260709125052" ExcludeAssets="runtime;native" />
+    <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" Version="2.1.10" ExcludeAssets="runtime;native" />
+  </ItemGroup>
+
+  <!-- DirectXTex, which WolvenKit.Common references and copies from its lib folder (texconv.dll is native) -->
+  <Target Name="RemoveDirectXTex" AfterTargets="ResolveAssemblyReferences;_CopyFilesMarkedCopyLocal" BeforeTargets="GenerateBuildDependencyFile;GeneratePublishDependencyFile">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'%(Filename)' == 'DirectXTexNet'" />
+      <ReferenceDependencyPaths Remove="@(ReferenceDependencyPaths)" Condition="'%(Filename)' == 'DirectXTexNet'" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="RemoveDirectXTexContent" AfterTargets="GetCopyToOutputDirectoryItems;GetCopyToPublishDirectoryItems">
+    <ItemGroup>
+      <_DirectXTexContent Include="@(AllItemsFullPathWithTargetPath)" Condition="$([System.String]::Copy('%(TargetPath)').Replace('\', '/').StartsWith('lib/')) And ('%(Filename)%(Extension)' == 'texconv.dll' Or '%(Filename)%(Extension)' == 'DirectXTexNetImpl.dll' Or '%(Filename)%(Extension)' == 'Ijwhost.dll' Or '%(Filename)%(Extension)' == 'COPYING' Or '%(Filename)%(Extension)' == 'texconv.pdb')" />
+      <AllItemsFullPathWithTargetPath Remove="@(_DirectXTexContent)" />
+      <_SourceItemsToCopyToOutputDirectory Remove="@(_DirectXTexContent)" />
+      <_SourceItemsToCopyToOutputDirectoryAlways Remove="@(_DirectXTexContent)" />
+    </ItemGroup>
+  </Target>
+</Project>

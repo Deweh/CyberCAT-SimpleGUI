@@ -1,0 +1,668 @@
+diff --git a/WolvenKit.RED4/Archive/IO/RedPackageReader.cs b/WolvenKit.RED4/Archive/IO/RedPackageReader.cs
+index b1f99738a..675c304f3 100644
+--- a/WolvenKit.RED4/Archive/IO/RedPackageReader.cs
++++ b/WolvenKit.RED4/Archive/IO/RedPackageReader.cs
+@@ -1,3 +1,4 @@
++// Modified 2026-10 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): unknown package fields keep their original RED type name.
+ using System.Reflection;
+ using System.Text;
+ using WolvenKit.Core.Extensions;
+@@ -98,7 +99,7 @@ public partial class RedPackageReader : Red4Reader
+             }
+ 
+             var (fieldType, _) = RedReflection.GetCSTypeFromRedType(redTypeName!);
+-            cls.AddDynamicProperty(varName, fieldType);
++            cls.AddDynamicProperty(varName, fieldType, redTypeName.GetResolvedText());
+ 
+             if (compiledPropertyData != null && compiledPropertyData.IsCustomReadNeeded(header))
+             {
+diff --git a/WolvenKit.RED4/Save/Helper/Compression.cs b/WolvenKit.RED4/Save/Helper/Compression.cs
+index 988e8fbcc..6b945472b 100644
+--- a/WolvenKit.RED4/Save/Helper/Compression.cs
++++ b/WolvenKit.RED4/Save/Helper/Compression.cs
+@@ -1,3 +1,4 @@
++// Modified 2026-11 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): saves with other chunk table sizes load, and saves that outgrow their table can be written.
+ using K4os.Compression.LZ4;
+ using System.Diagnostics;
+ using System.Text;
+@@ -21,6 +22,29 @@ public class Compression
+         writer.Write(new byte[(compressionSettings.TableEntriesCount - chunkInfos.Count) * 12]);
+     }
+ 
++    /// <summary>
++    /// Returns settings whose chunk table can hold <paramref name="dataLength"/> bytes. A save that grew past its
++    /// table gets a larger one, like the game does (0x100, 0x200, ...). Previously that failed with an overflow.
++    /// </summary>
++    public static Settings FitSettings(Settings compressionSettings, int dataLength)
++    {
++        // Write always adds a final chunk, even an empty one
++        var chunkCount = dataLength / compressionSettings.ChunkSize + 1;
++
++        var tableEntriesCount = compressionSettings.TableEntriesCount;
++        while (chunkCount > tableEntriesCount)
++        {
++            tableEntriesCount *= 2;
++        }
++
++        if (tableEntriesCount == compressionSettings.TableEntriesCount)
++        {
++            return compressionSettings;
++        }
++
++        return new Settings { TableEntriesCount = tableEntriesCount, ChunkSize = compressionSettings.ChunkSize };
++    }
++
+     public static void Write(BinaryWriter writer, byte[] data, Settings compressionSettings, bool compress)
+     {
+         if (compress)
+@@ -93,6 +117,12 @@ public class Compression
+             processedData = ms.ToArray();
+         }
+ 
++        // Callers size the table with FitSettings first, the node offsets depend on it
++        if (chunks.Count > compressionSettings.TableEntriesCount)
++        {
++            throw new InvalidOperationException($"The save needs {chunks.Count} chunks, but its chunk table only has room for {compressionSettings.TableEntriesCount}.");
++        }
++
+         var dataOffset = startPos + 8 + (compressionSettings.TableEntriesCount * 12);
+         foreach (var chunk in chunks)
+         {
+@@ -155,7 +185,7 @@ public class Compression
+         
+         var magicInt = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("FZLC"), 0);
+         if (reader.ReadUInt32() != magicInt)
+-            throw new Exception();
++            throw new InvalidDataException("The save's compressed data is damaged (FZLC header not found where expected).");
+ 
+         var result = new CompressionHeader();
+ 
+@@ -250,7 +280,7 @@ public class Compression
+ 
+         var compressionTablePos = SeekMagicBytes(reader.BaseStream, "FZLC");
+         if (compressionTablePos == -1)
+-            throw new Exception();
++            throw new InvalidDataException("No compressed save data found. This isn't a Cyberpunk 2077 PC save, or the file is damaged or incomplete.");
+ 
+         reader.BaseStream.Position = 0;
+         result.Write(reader.ReadBytes((int)compressionTablePos));
+@@ -333,7 +363,21 @@ public class Compression
+                     return new Settings { TableEntriesCount = 0x400, ChunkSize = 0x00080000 };
+                 }
+ 
+-                throw new Exception();
++                // Other table sizes (for example very large modded saves): keep the layout the save already uses.
++                // All chunks but the last have the full chunk size.
++                if (MaxEntries >= DataChunkInfos.Count && DataChunkInfos.Count > 0)
++                {
++                    var chunkSize = DataChunkInfos.Count > 1
++                        ? DataChunkInfos.Take(DataChunkInfos.Count - 1).Max(x => x.DecompressedSize)
++                        : 0x00040000;
++
++                    if (chunkSize > 0)
++                    {
++                        return new Settings { TableEntriesCount = MaxEntries, ChunkSize = chunkSize };
++                    }
++                }
++
++                throw new InvalidDataException($"Unsupported save compression layout ({DataChunkInfos.Count} chunks, table size {MaxEntries}).");
+             }
+         }
+     }
+diff --git a/WolvenKit.RED4/Save/Helper/SaveHashHelper.cs b/WolvenKit.RED4/Save/Helper/SaveHashHelper.cs
+index 9af75b83c..18617b58f 100644
+--- a/WolvenKit.RED4/Save/Helper/SaveHashHelper.cs
++++ b/WolvenKit.RED4/Save/Helper/SaveHashHelper.cs
+@@ -1,3 +1,4 @@
++// Modified 2026-11 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): stat types unknown to the generated enum are kept, so their buffers stay readable and are written back unchanged.
+ using WolvenKit.Common.FNV1A;
+ using WolvenKit.RED4.Types;
+ 
+@@ -69,35 +70,84 @@ public class SaveHashHelper
+     public static ulong GetRedTypeHash(ExtendedPropertyInfo propertyInfo) =>
+         FNV1A64HashAlgorithm.HashString(RedReflection.GetRedTypeFromCSType(propertyInfo.Type, propertyInfo.Flags));
+ 
++    private static void EnsureStatTypeHashes()
++    {
++        if (s_gamedataStatTypeHashes.Count != 0)
++        {
++            return;
++        }
++
++        foreach (var option in Enum.GetValues<Enums.gamedataStatType>())
++        {
++            var tmpHash = FNV1A64HashAlgorithm.HashString(option.ToString());
++
++            s_gamedataStatTypeHashes.Add(tmpHash, option);
++            s_gamedataStatTypeHashesReverse.Add(option, tmpHash);
++        }
++    }
++
++    /// <summary>
++    /// Stat types unknown to the generated enum (added by a newer game version or a mod) get an unused enum value,
++    /// and their hash is remembered, so they are written back unchanged instead of making the whole buffer unreadable.
++    /// </summary>
+     public static Enums.gamedataStatType GetStatType(ulong hash)
+     {
+-        if (s_gamedataStatTypeHashes.Count == 0)
++        lock (s_gamedataStatTypeHashes)
+         {
+-            foreach (var option in Enum.GetValues<Enums.gamedataStatType>())
++            EnsureStatTypeHashes();
++
++            if (s_gamedataStatTypeHashes.TryGetValue(hash, out var result))
+             {
+-                var tmpHash = FNV1A64HashAlgorithm.HashString(option.ToString());
++                return result;
++            }
++
++            var enumInfo = RedReflection.GetEnumTypeInfo(typeof(Enums.gamedataStatType));
+ 
+-                s_gamedataStatTypeHashes.Add(tmpHash, option);
+-                s_gamedataStatTypeHashesReverse.Add(option, tmpHash);
++            // A stat type the save named elsewhere (see Red4Reader.ReadCEnum), matched by the hash of its name
++            string? redName;
++            lock (enumInfo.RedNames)
++            {
++                redName = enumInfo.RedNames.Keys.FirstOrDefault(x => FNV1A64HashAlgorithm.HashString(x) == hash);
+             }
+-        }
+ 
+-        return s_gamedataStatTypeHashes.TryGetValue(hash, out var result) ? result : throw new ArgumentOutOfRangeException();
++            var csName = enumInfo.AddDynamicValue(redName ?? $"<stat hash {hash:x16}>") ?? throw new ArgumentOutOfRangeException(nameof(hash));
++            result = Enum.Parse<Enums.gamedataStatType>(csName);
++
++            s_gamedataStatTypeHashes[hash] = result;
++            s_gamedataStatTypeHashesReverse[result] = hash;
++
++            return result;
++        }
+     }
+ 
+     public static ulong GetStatHash(Enums.gamedataStatType value)
+     {
+-        if (s_gamedataStatTypeHashes.Count == 0)
++        lock (s_gamedataStatTypeHashes)
+         {
+-            foreach (var option in Enum.GetValues<Enums.gamedataStatType>())
++            EnsureStatTypeHashes();
++
++            if (s_gamedataStatTypeHashesReverse.TryGetValue(value, out var result))
+             {
+-                var tmpHash = FNV1A64HashAlgorithm.HashString(option.ToString());
++                return result;
++            }
+ 
+-                s_gamedataStatTypeHashes.Add(tmpHash, option);
+-                s_gamedataStatTypeHashesReverse.Add(option, tmpHash);
++            // A stat type first seen by name in the save, hashed like the generated ones
++            var enumInfo = RedReflection.GetEnumTypeInfo(typeof(Enums.gamedataStatType));
++            string? redName;
++            lock (enumInfo.RedNames)
++            {
++                redName = enumInfo.RedNames.FirstOrDefault(x => x.Value == value.ToString()).Key;
+             }
+-        }
++            if (redName == null || redName.StartsWith("<stat hash "))
++            {
++                throw new ArgumentOutOfRangeException(nameof(value));
++            }
++
++            result = FNV1A64HashAlgorithm.HashString(redName);
++            s_gamedataStatTypeHashes[result] = value;
++            s_gamedataStatTypeHashesReverse[value] = result;
+ 
+-        return s_gamedataStatTypeHashesReverse.TryGetValue(value, out var result) ? result : throw new ArgumentOutOfRangeException();
++            return result;
++        }
+     }
+ }
+\ No newline at end of file
+diff --git a/WolvenKit.RED4/Save/IO/CyberpunkSaveWriter.cs b/WolvenKit.RED4/Save/IO/CyberpunkSaveWriter.cs
+index 5887dfa9a..83c0a9ebf 100644
+--- a/WolvenKit.RED4/Save/IO/CyberpunkSaveWriter.cs
++++ b/WolvenKit.RED4/Save/IO/CyberpunkSaveWriter.cs
+@@ -1,3 +1,4 @@
++// Modified 2026-11 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): the chunk table grows when a save outgrows it.
+ using System.Text;
+ using WolvenKit.Core.Extensions;
+ 
+@@ -37,6 +38,9 @@ public class CyberpunkSaveWriter : IDisposable
+         var uncompressedData = GetNodeData(out var nodeInfos);
+         NodeInfos = nodeInfos;
+ 
++        // Before the offsets are computed, they depend on the table size
++        _file.CompressionSettings = Compression.FitSettings(_file.CompressionSettings, uncompressedData.Length);
++
+         var dataOffset = (int)(_writer.BaseStream.Position + 8 + (_file.CompressionSettings.TableEntriesCount * 12));
+         foreach (var nodeInfo in nodeInfos)
+         {
+diff --git a/WolvenKit.RED4/Save/Parser/PersistencySystem2Parser.cs b/WolvenKit.RED4/Save/Parser/PersistencySystem2Parser.cs
+index 697a00765..eea1df7e2 100644
+--- a/WolvenKit.RED4/Save/Parser/PersistencySystem2Parser.cs
++++ b/WolvenKit.RED4/Save/Parser/PersistencySystem2Parser.cs
+@@ -1,4 +1,7 @@
++// Modified 2026-10 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): unchanged entries are written back byte-for-byte.
++// Modified 2026-11 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): properties added by script mods are kept instead of the whole entry being left unparsed.
+ using System.Reflection;
++using System.Runtime.CompilerServices;
+ using System.Text;
+ using WolvenKit.Common.FNV1A;
+ using WolvenKit.RED4.IO;
+@@ -12,6 +15,11 @@ public class PS2Entry
+ {
+     public ulong Id { get; set; }
+     public RedBaseClass Data { get; set; }
++
++    // The game writes default values and terminators that the writer omits, so unmodified
++    // entries are written back with their original bytes
++    internal byte[]? OriginalBuffer { get; set; }
++    internal byte[]? OriginalSerialized { get; set; }
+ }
+ 
+ public class PersistencySystem2 : INodeData
+@@ -27,6 +35,47 @@ public class UnknownRedClass : RedBaseClass
+     public byte[] Buffer { get; set; } = Array.Empty<byte>();
+ }
+ 
++// A property the class doesn't define, usually a persistent field added by a script mod (redscript @addField).
++// After is the property it followed, so it's written back in the same place.
++public record RawProperty(ulong NameHash, ulong TypeHash, byte[] Value, string? After);
++
++public static class RawProperties
++{
++    private static readonly ConditionalWeakTable<RedBaseClass, List<RawProperty>> s_properties = new();
++    private static Dictionary<ulong, string>? s_redTypeNames;
++
++    public static IReadOnlyList<RawProperty> Get(RedBaseClass instance) =>
++        s_properties.TryGetValue(instance, out var list) ? list : Array.Empty<RawProperty>();
++
++    internal static void Add(RedBaseClass instance, RawProperty property) =>
++        s_properties.GetOrCreateValue(instance).Add(property);
++
++    // Red type names by hash, for the types of unknown properties
++    internal static string? GetRedTypeName(ulong hash)
++    {
++        if (s_redTypeNames == null)
++        {
++            var names = new Dictionary<ulong, string>();
++            void AddName(string name) => names.TryAdd(FNV1A64HashAlgorithm.HashString(name), name);
++
++            // Includes primitives. Rarer types (static arrays, arrays of arrays) are missing and read like mod-defined types.
++            foreach (var redName in RedReflection.GetTypes().Keys)
++            {
++                AddName(redName);
++                AddName("handle:" + redName);
++                AddName("whandle:" + redName);
++                AddName("array:" + redName);
++                AddName("array:handle:" + redName);
++                AddName("array:whandle:" + redName);
++            }
++
++            s_redTypeNames = names;
++        }
++
++        return s_redTypeNames.TryGetValue(hash, out var result) ? result : null;
++    }
++}
++
+ public class PersistencySystem2Reader : Red4Reader
+ {
+     public PersistencySystem2Reader(Stream input) : base(input)
+@@ -49,6 +98,7 @@ public class PersistencySystem2Reader : Red4Reader
+ 
+     public override void ReadClass(RedBaseClass instance, uint size)
+     {
++        string? lastPropertyName = null;
+         while (Remaining != 0)
+         {
+             var propNameHash = BaseReader.ReadUInt64();
+@@ -58,7 +108,17 @@ public class PersistencySystem2Reader : Red4Reader
+             }
+ 
+             var propertyInfo = SaveHashHelper.GetPropertyInfo(instance.GetType(), propNameHash);
+-            ArgumentNullException.ThrowIfNull(propertyInfo?.RedName);
++            if (propertyInfo?.RedName == null)
++            {
++                var unknownTypeHash = BaseReader.ReadUInt64();
++                var start = BaseStream.Position;
++                SkipValue(unknownTypeHash);
++
++                var length = (int)(BaseStream.Position - start);
++                BaseStream.Position = start;
++                RawProperties.Add(instance, new RawProperty(propNameHash, unknownTypeHash, BaseReader.ReadBytes(length), lastPropertyName));
++                continue;
++            }
+ 
+             var redTypeHash = SaveHashHelper.GetRedTypeHash(propertyInfo);
+             var propTypeHash = BaseReader.ReadUInt64();
+@@ -72,9 +132,75 @@ public class PersistencySystem2Reader : Red4Reader
+ 
+             var value = Read(redTypeInfos, (uint)Remaining);
+             instance.SetProperty(propertyInfo.RedName, value);
++            lastPropertyName = propertyInfo.RedName;
++        }
++    }
++
++    // Moves past a value without creating it, handles can point to classes defined by script mods.
++    // Unreadable data throws, and the whole entry is then kept as an UnknownRedClass.
++    private void SkipValue(ulong typeHash)
++    {
++        var redTypeName = RawProperties.GetRedTypeName(typeHash);
++        if (redTypeName != null)
++        {
++            SkipValue(redTypeName);
++            return;
++        }
++
++        // A type defined by a script mod, so a handle or an array of handles. Arrays start with their element count,
++        // handles with a class hash, which is never that small.
++        var count = BaseReader.ReadUInt32();
++        if (count > Remaining / 16)
++        {
++            BaseStream.Position -= 4;
++            SkipHandle();
++            return;
++        }
++
++        for (var i = 0; i < count; i++)
++        {
++            SkipHandle();
+         }
+     }
+ 
++    private void SkipValue(string redTypeName)
++    {
++        if (redTypeName.StartsWith("handle:") || redTypeName.StartsWith("whandle:"))
++        {
++            SkipHandle();
++            return;
++        }
++
++        if (redTypeName.StartsWith("array:"))
++        {
++            var count = BaseReader.ReadUInt32();
++            for (var i = 0; i < count; i++)
++            {
++                SkipValue(redTypeName["array:".Length..]);
++            }
++            return;
++        }
++
++        Read(RedReflection.GetRedTypeInfos(redTypeName), (uint)Remaining);
++    }
++
++    private void SkipHandle()
++    {
++        // Class hash, then the properties
++        BaseReader.ReadUInt64();
++        while (Remaining != 0)
++        {
++            if (BaseReader.ReadUInt64() == 0)
++            {
++                return;
++            }
++
++            SkipValue(BaseReader.ReadUInt64());
++        }
++
++        throw new EndOfStreamException();
++    }
++
+     public override RedBaseClass ReadClass(Type type, uint size)
+     {
+         var instance = RedTypeManager.Create(type);
+@@ -152,25 +278,56 @@ public class PersistencySystem2Writer : Red4Writer
+     public override void WriteClass(RedBaseClass instance)
+     {
+         var typeInfo = RedReflection.GetTypeInfo(instance.GetType());
++        var rawProperties = RawProperties.Get(instance);
++
++        WriteRawProperties(rawProperties, null);
+         foreach (var propertyInfo in typeInfo.GetWritableProperties())
+         {
+             ArgumentNullException.ThrowIfNull(propertyInfo.RedName);
+ 
+             var value = instance.GetProperty(propertyInfo.RedName);
+-            if (!typeInfo.SerializeDefault && !propertyInfo.SerializeDefault && propertyInfo.IsDefault(value))
++            if (typeInfo.SerializeDefault || propertyInfo.SerializeDefault || !propertyInfo.IsDefault(value))
+             {
+-                continue;
++                BaseWriter.Write(FNV1A64HashAlgorithm.HashString(propertyInfo.RedName));
++                BaseWriter.Write(SaveHashHelper.GetRedTypeHash(propertyInfo));
++
++                Write(value);
+             }
+ 
+-            BaseWriter.Write(FNV1A64HashAlgorithm.HashString(propertyInfo.RedName));
+-            BaseWriter.Write(SaveHashHelper.GetRedTypeHash(propertyInfo));
++            WriteRawProperties(rawProperties, propertyInfo.RedName);
++        }
+ 
+-            Write(value);
++        // Fields that followed a property this class doesn't write
++        if (rawProperties.Count > 0)
++        {
++            var propertyNames = typeInfo.GetWritableProperties().Select(x => x.RedName).ToHashSet();
++            foreach (var property in rawProperties.Where(x => x.After != null && !propertyNames.Contains(x.After)))
++            {
++                WriteRawProperty(property);
++            }
+         }
+ 
+         BaseWriter.Write((ulong)0);
+     }
+ 
++    private void WriteRawProperties(IReadOnlyList<RawProperty> rawProperties, string? after)
++    {
++        foreach (var property in rawProperties)
++        {
++            if (property.After == after)
++            {
++                WriteRawProperty(property);
++            }
++        }
++    }
++
++    private void WriteRawProperty(RawProperty property)
++    {
++        BaseWriter.Write(property.NameHash);
++        BaseWriter.Write(property.TypeHash);
++        BaseWriter.Write(property.Value);
++    }
++
+     public override void Write(CName val) => BaseWriter.Write((ulong)val);
+     public override void Write(NodeRef val) => BaseWriter.Write((ulong)val);
+     public override void Write(IRedEnum instance)
+@@ -261,10 +418,14 @@ public class PersistencySystem2Parser : INodeParser
+                         var instance1 = RedTypeManager.Create(type);
+                         if (size != 0)
+                         {
+-                            using var subMemory = new MemoryStream(reader.ReadBytes((int)size));
++                            var buffer = reader.ReadBytes((int)size);
++                            using var subMemory = new MemoryStream(buffer);
+                             using var subReader = new PersistencySystem2Reader(subMemory);
+ 
+                             subReader.ReadClass(instance1, size);
++
++                            entry.OriginalBuffer = buffer;
++                            entry.OriginalSerialized = SerializeEntryData(instance1);
+                         }
+                         entry.Data = instance1;
+ 
+@@ -321,16 +482,26 @@ public class PersistencySystem2Parser : INodeParser
+                 {
+                     writer.Write(SaveHashHelper.GetHashFromType(entry.Data.GetType()));
+ 
+-                    using var subMemory = new MemoryStream();
+-                    using var subWriter = new PersistencySystem2Writer(subMemory);
+-
+-                    subWriter.WriteClass(entry.Data);
++                    var bytes = SerializeEntryData(entry.Data);
++                    if (entry.OriginalBuffer != null && entry.OriginalSerialized != null && bytes.AsSpan().SequenceEqual(entry.OriginalSerialized))
++                    {
++                        bytes = entry.OriginalBuffer;
++                    }
+ 
+-                    var bytes = subMemory.ToArray()[..^8];
+                     writer.Write(bytes.Length);
+                     writer.Write(bytes);
+                 }
+             }
+         }
+     }
++
++    private static byte[] SerializeEntryData(RedBaseClass data)
++    {
++        using var subMemory = new MemoryStream();
++        using var subWriter = new PersistencySystem2Writer(subMemory);
++
++        subWriter.WriteClass(data);
++
++        return subMemory.ToArray()[..^8];
++    }
+ }
+diff --git a/WolvenKit.RED4/Types/IO/Red4Reader.cs b/WolvenKit.RED4/Types/IO/Red4Reader.cs
+index b12e82a40..5e50f790e 100644
+--- a/WolvenKit.RED4/Types/IO/Red4Reader.cs
++++ b/WolvenKit.RED4/Types/IO/Red4Reader.cs
+@@ -1,3 +1,4 @@
++// Modified 2026-10 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): enum values unknown to the generated enums are kept instead of dropped.
+ using System.Reflection;
+ using System.Runtime.CompilerServices;
+ using System.Text;
+@@ -332,7 +333,14 @@ public partial class Red4Reader : IErrorHandler, IDataCollector, IDisposable
+         if (enumString == null)
+         {
+             var args = new InvalidEnumValueEventArgs(redTypeInfos[0].RedObjectType, value!);
+-            if (!HandleParsingError(args))
++
++            // Keep values unknown to the generated enums (newer game versions, mods), so they are written back unchanged
++            if (value.GetResolvedText() is { } unknownValue && enumInfo.AddDynamicValue(unknownValue) is { } dynamicName)
++            {
++                args.Value = (Enum)Enum.Parse(redTypeInfos[0].RedObjectType, dynamicName);
++            }
++
++            if (!HandleParsingError(args) && args.Value == null)
+             {
+                 throw new Exception($"CEnum \"{redTypeInfos[0].RedObjectType.Name}.{value}\" could not be found!");
+             }
+diff --git a/WolvenKit.RED4/Types/RedBaseClass.cs b/WolvenKit.RED4/Types/RedBaseClass.cs
+index 4458c9814..be2551cf9 100644
+--- a/WolvenKit.RED4/Types/RedBaseClass.cs
++++ b/WolvenKit.RED4/Types/RedBaseClass.cs
+@@ -1,3 +1,4 @@
++// Modified 2026-10 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): dynamic properties can carry their RED type name.
+ using System.Runtime.CompilerServices;
+ using WolvenKit.Core.Extensions;
+ using WolvenKit.RED4.Types.Exceptions;
+@@ -213,14 +214,14 @@ public partial class RedBaseClass : IRedClass, IRedCloneable, IEquatable<RedBase
+ 
+     private readonly Dictionary<string, ExtendedPropertyInfo> _dynamicProperties = new();
+ 
+-    public ExtendedPropertyInfo AddDynamicProperty(string redName, Type type)
++    public ExtendedPropertyInfo AddDynamicProperty(string redName, Type type, string? redType = null)
+     {
+         if (_dynamicProperties.ContainsKey(redName))
+         {
+             throw new TodoException("Property already defined");
+         }
+ 
+-        var property = new ExtendedPropertyInfo(RedReflection.GetTypeInfo(GetType()), redName, type);
++        var property = new ExtendedPropertyInfo(RedReflection.GetTypeInfo(GetType()), redName, type, redType);
+ 
+         _dynamicProperties.Add(redName, property);
+ 
+@@ -236,7 +237,7 @@ public partial class RedBaseClass : IRedClass, IRedCloneable, IEquatable<RedBase
+ 
+         var property = _dynamicProperties[oldName];
+         var value = GetProperty(oldName);
+-        var newProperty = new ExtendedPropertyInfo(RedReflection.GetTypeInfo(GetType()), newName, property.Type);
++        var newProperty = new ExtendedPropertyInfo(RedReflection.GetTypeInfo(GetType()), newName, property.Type, property.RedType);
+ 
+         _dynamicProperties.Add(newName, newProperty);       
+         _dynamicProperties.Remove(oldName);
+diff --git a/WolvenKit.RED4/Types/Reflection/ExtendedEnumInfo.cs b/WolvenKit.RED4/Types/Reflection/ExtendedEnumInfo.cs
+index 650211f1f..b2b808bd1 100644
+--- a/WolvenKit.RED4/Types/Reflection/ExtendedEnumInfo.cs
++++ b/WolvenKit.RED4/Types/Reflection/ExtendedEnumInfo.cs
+@@ -1,4 +1,5 @@
+-﻿using System.Reflection;
++﻿// Modified 2026-10 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): added AddDynamicValue for enum values unknown to the generated enums.
++using System.Reflection;
+ 
+ namespace WolvenKit.RED4.Types;
+ 
+@@ -74,6 +75,42 @@ public class ExtendedEnumInfo
+         return null;
+     }
+ 
++    /// <summary>
++    /// Registers an enum value that is unknown to the generated enums (e.g. added by a newer game version or a mod).
++    /// It gets mapped to an unused numeric value, so it can be stored in the enum and written back with its original name.
++    /// </summary>
++    public string? AddDynamicValue(string redName)
++    {
++        if (IsBitfield)
++        {
++            return null;
++        }
++
++        lock (RedNames)
++        {
++            var existing = GetCSNameFromRedName(redName);
++            if (existing != null)
++            {
++                return existing;
++            }
++
++            var underlyingType = Enum.GetUnderlyingType(Type);
++            var maxValue = Convert.ToDecimal(underlyingType.GetField("MaxValue")!.GetValue(null));
++
++            var nextValue = Enum.GetValues(Type).Cast<object>().Select(Convert.ToDecimal).DefaultIfEmpty(0).Max() + 1;
++            nextValue = Math.Max(nextValue, RedNames.Values.Select(x => decimal.TryParse(x, out var d) ? d + 1 : 0).DefaultIfEmpty(0).Max());
++            if (nextValue > maxValue)
++            {
++                return null;
++            }
++
++            var csName = Enum.ToObject(Type, Convert.ChangeType(nextValue, underlyingType)).ToString();
++            RedNames.Add(redName, csName);
++
++            return csName;
++        }
++    }
++
+     public string GetRedNameFromCSName(string valueName)
+     {
+         if (RedNames.ContainsValue(valueName))
+diff --git a/WolvenKit.RED4/Types/Reflection/ExtendedPropertyInfo.cs b/WolvenKit.RED4/Types/Reflection/ExtendedPropertyInfo.cs
+index 4b2eeb3a6..a29c3ea42 100644
+--- a/WolvenKit.RED4/Types/Reflection/ExtendedPropertyInfo.cs
++++ b/WolvenKit.RED4/Types/Reflection/ExtendedPropertyInfo.cs
+@@ -1,4 +1,5 @@
+-﻿using System.Reflection;
++﻿// Modified 2026-10 for CyberCAT-SimpleGUI (https://github.com/Deweh/CyberCAT-SimpleGUI): dynamic properties can carry their RED type name.
++using System.Reflection;
+ 
+ namespace WolvenKit.RED4.Types;
+ 
+@@ -17,7 +18,7 @@ public class ExtendedPropertyInfo
+         RedType = type;
+     }
+ 
+-    public ExtendedPropertyInfo(ExtendedTypeInfo containingType, string name, Type type)
++    public ExtendedPropertyInfo(ExtendedTypeInfo containingType, string name, Type type, string? redType = null)
+     {
+         IsDynamic = true;
+ 
+@@ -27,7 +28,8 @@ public class ExtendedPropertyInfo
+         Type = type;
+ 
+         RedName = Name;
+-        RedType = RedReflection.GetRedTypeFromCSType(Type);
++        // Keep the original RED type name if known, otherwise unknown classes would be written as "DynamicBaseClass"
++        RedType = redType ?? RedReflection.GetRedTypeFromCSType(Type);
+     }
+ 
+     public ExtendedPropertyInfo(ExtendedTypeInfo containingType, PropertyInfo propertyInfo)
