@@ -33,6 +33,7 @@ namespace CP2077SaveEditor.Views
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             filePathLabel = new System.Windows.Forms.Label();
             openSaveButton = new ModernButton();
+            cloudButton = new ModernButton();
             saveChangesButton = new ModernButton();
             quickSaveButton = new ModernButton();
             sm_Menu = new CP2077SaveEditor.Views.Controls.ScrollMenuControl();
@@ -71,7 +72,25 @@ namespace CP2077SaveEditor.Views
             openSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
             openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 13.5F);
             openSaveButton.Click += openSaveButton_Click;
-            // 
+            //
+            // cloudButton
+            //
+            cloudButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            cloudButton.BackColor = System.Drawing.Color.WhiteSmoke;
+            cloudButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            cloudButton.ClickEffectEnabled = true;
+            cloudButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
+            cloudButton.Enabled = false;
+            cloudButton.HoverColor = System.Drawing.Color.LightGray;
+            cloudButton.Location = new System.Drawing.Point(12, 434);
+            cloudButton.Name = "cloudButton";
+            cloudButton.Size = new System.Drawing.Size(176, 36);
+            cloudButton.TabIndex = 4;
+            cloudButton.Text = "Cloud...";
+            cloudButton.TextColor = System.Drawing.SystemColors.ControlText;
+            cloudButton.TextFont = new System.Drawing.Font("Segoe UI", 11F);
+            cloudButton.Click += cloudButton_Click;
+            //
             // saveChangesButton
             // 
             saveChangesButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
@@ -113,7 +132,7 @@ namespace CP2077SaveEditor.Views
             sm_Menu.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             sm_Menu.Location = new System.Drawing.Point(12, 98);
             sm_Menu.Name = "sm_Menu";
-            sm_Menu.Size = new System.Drawing.Size(176, 368);
+            sm_Menu.Size = new System.Drawing.Size(176, 332);
             sm_Menu.TabIndex = 8;
             // 
             // pnl_Content
@@ -174,6 +193,7 @@ namespace CP2077SaveEditor.Views
             Controls.Add(saveChangesButton);
             Controls.Add(filePathLabel);
             Controls.Add(openSaveButton);
+            Controls.Add(cloudButton);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "MainForm";
@@ -190,6 +210,7 @@ namespace CP2077SaveEditor.Views
         #endregion
         private System.Windows.Forms.Label filePathLabel;
         private ModernButton openSaveButton;
+        private ModernButton cloudButton;
         private ModernButton saveChangesButton;
         private ModernButton quickSaveButton;
         private Controls.ScrollMenuControl sm_Menu;

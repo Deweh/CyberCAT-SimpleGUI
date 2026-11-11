@@ -298,7 +298,8 @@ namespace CP2077SaveEditor
             var hasIcon = _iconGlyph != null && s_iconFont.Value != null;
             if (hasIcon)
             {
-                var iconBounds = new Rectangle(11, 0, IconWidth, h);
+                var dpi = DeviceDpi / 96f;
+                var iconBounds = new Rectangle((int)(11 * dpi), 0, (int)(IconWidth * dpi), h);
                 TextRenderer.DrawText(g, _iconGlyph, s_iconFont.Value, iconBounds, iconColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
@@ -310,7 +311,9 @@ namespace CP2077SaveEditor
 
             if (hasIcon)
             {
-                var textBounds = new Rectangle(IconWidth + 15, 0, w - IconWidth - 22, h);
+                var dpiScale = DeviceDpi / 96f;
+                var textLeft = (int)((IconWidth + 15) * dpiScale);
+                var textBounds = new Rectangle(textLeft, 0, w - textLeft - (int)(7 * dpiScale), h);
                 TextRenderer.DrawText(g, displayText, drawFont, textBounds, fgColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
 

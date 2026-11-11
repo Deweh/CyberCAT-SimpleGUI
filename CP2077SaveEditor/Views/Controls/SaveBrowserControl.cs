@@ -61,11 +61,22 @@ namespace CP2077SaveEditor.Views.Controls
                 {
                     using var hudFont = new Font(Theme.MonoFontFamily, 8f, FontStyle.Bold);
                     TextRenderer.DrawText(e.Graphics, "// NIGHT CITY DATABANK :: DOUBLE-CLICK TO JACK IN", hudFont,
-                        new Rectangle(495, 0, top.Width - 505, top.Height - 2), Theme.Cyan,
+                        new Rectangle(refreshButton.Right + 12, 0, top.Width - refreshButton.Right - 22, top.Height - 2), Theme.Cyan,
                         TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
                 }
             };
             top.Resize += (_, _) => top.Invalidate();
+
+            // Position the row from the real control sizes, fixed pixel positions overlap on scaled displays
+            top.Layout += (_, _) =>
+            {
+                var s = top.DeviceDpi / 96f;
+                var gap = (int)(12 * s);
+                _search.Location = new Point((int)(10 * s), (top.Height - _search.Height) / 2);
+                _showAutoSaves.Location = new Point(_search.Right + gap, (top.Height - _showAutoSaves.Height) / 2);
+                refreshButton.Size = new Size((int)(92 * s), (int)(26 * s));
+                refreshButton.Location = new Point(_showAutoSaves.Right + gap, (top.Height - refreshButton.Height) / 2);
+            };
             top.Controls.AddRange(new Control[] { _search, _showAutoSaves, refreshButton });
 
             _thumbnails = new ImageList { ImageSize = s_thumbnailSize, ColorDepth = ColorDepth.Depth32Bit };

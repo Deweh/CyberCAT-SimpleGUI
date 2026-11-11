@@ -15,6 +15,7 @@ A Cyberpunk 2077 save editor with support for patch 2.5 and Phantom Liberty. Cyb
 - **Perks:** the 2.0 skill trees and Relic perks, with or without spending points.
 - **Cyberware:** equip any cyberware in any slot of its body area and raise the cyberware capacity.
 - **Vehicles:** unlock or lock any player vehicle.
+- **Cloud saves:** download a save from the CD PROJEKT RED cross-save cloud, edit it and upload it back, without the game installed on the PC (see [Cloud saves](#cloud-saves)).
 - **Quest facts, fast travel, appearance presets** and support for several mods' saved data.
 
 Saves from game versions newer than the editor supports open read-only, so they can't be damaged.
@@ -47,6 +48,21 @@ The editor uses a dark, Cyberpunk-styled theme by default. For the classic light
 Other `config.json` options: `"UndoSteps"` (default 10, `0` turns undo off; each step keeps ~4 MB in memory) and `"CheckForUpdates": 0` to skip the update check on startup.
 
 Planned work is tracked in [TODO.md](TODO.md).
+
+## Cloud saves
+
+The **Cloud...** button works directly with the CD PROJEKT RED cross-save cloud, the same one the game uses. You don't need Cyberpunk 2077 installed on the PC, which is useful for saves from consoles such as the PS5 (the feature was developed and tested with a PS5 save) that would otherwise be hard to reach.
+
+1. Turn on cross-save in the game with your CD PROJEKT RED account, and make sure the save you want is synced to the cloud.
+2. Click **Cloud...** and **Sign in**. Your browser opens the CD PROJEKT RED sign-in page; the password is only ever typed there. The editor stays signed in until you close it and never writes the access token to disk.
+3. Select a slot and click **Download and open** to edit it like any other save.
+4. To send it back, open the save, click **Cloud...**, select the slot and click **Upload open save to slot**. The editor saves the open save first (with the usual backup and verification), keeps a copy of the previous cloud version in `%LOCALAPPDATA%\CyberCAT\cloud-backups`, uploads and reads the result back to check it.
+
+Notes:
+
+- Make your own backup of your cloud saves first. Uploading overwrites the slot.
+- This uses the cross-save API the game itself talks to. It is not publicly documented, so CD PROJEKT RED can change it at any time and the feature may stop working.
+- Downloaded saves are kept in `%LOCALAPPDATA%\CyberCAT\cloud-downloads`.
 
 ## Credits
 

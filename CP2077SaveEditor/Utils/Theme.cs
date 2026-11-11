@@ -360,6 +360,8 @@ namespace CP2077SaveEditor.Utils
             {
                 listBox.DrawMode = DrawMode.OwnerDrawFixed;
                 listBox.DrawItem += DrawDarkListBoxItem;
+                // The fixed item height is designed at 96 DPI, make it fit the text
+                listBox.ItemHeight = Math.Max(listBox.ItemHeight, TextRenderer.MeasureText("Ag", listBox.Font).Height + 4);
                 listBox.GotFocus += (_, _) => listBox.Invalidate();
                 listBox.LostFocus += (_, _) => listBox.Invalidate();
             }
@@ -644,13 +646,16 @@ namespace CP2077SaveEditor.Utils
                 using var yellowPen = new Pen(Accent, 2f);
                 using var cyanPen = new Pen(Cyan, 1f);
 
+                // The layout is designed at 96 DPI, scale the hard-coded positions with the display
+                var s = form.DeviceDpi / 96f;
+
                 g.DrawLine(redPen, 0, 1, form.ClientSize.Width, 1);
-                g.DrawLine(yellowPen, 12, 1, 188, 1);
-                g.DrawLine(cyanPen, 196, 1, 340, 1);
+                g.DrawLine(yellowPen, 12 * s, 1, 188 * s, 1);
+                g.DrawLine(cyanPen, 196 * s, 1, 340 * s, 1);
 
                 // Vertical HUD divider line between sidebar and content
                 using var dividerPen = new Pen(Color.FromArgb(90, 255, 0, 60), 1f);
-                g.DrawLine(dividerPen, 192, 8, 192, form.ClientSize.Height - 26);
+                g.DrawLine(dividerPen, 192 * s, 8 * s, 192 * s, form.ClientSize.Height - 26 * s);
             };
         }
 
@@ -711,8 +716,17 @@ namespace CP2077SaveEditor.Utils
             e.Graphics.DrawLine(bottomRule, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);
 
             var textBounds = Rectangle.Inflate(e.Bounds, -7, 0);
-            using var headerFont = new Font(UiFontFamily, e.Font?.Size ?? 9f, FontStyle.Bold);
             var headerText = (e.Header?.Text ?? string.Empty).ToUpperInvariant();
+            // Shrink the font until it fits the header row, so it stays readable on any display scaling
+            var headerSize = e.Font?.Size ?? 9f;
+            var headerFont = new Font(UiFontFamily, headerSize, FontStyle.Bold);
+            while (headerSize > 6f && TextRenderer.MeasureText(e.Graphics, "Ag", headerFont).Height > e.Bounds.Height - 4)
+            {
+                headerSize -= 0.5f;
+                headerFont.Dispose();
+                headerFont = new Font(UiFontFamily, headerSize, FontStyle.Bold);
+            }
+            using var fittedFont = headerFont;
             TextRenderer.DrawText(e.Graphics, headerText, headerFont, textBounds, Cyan,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
 
