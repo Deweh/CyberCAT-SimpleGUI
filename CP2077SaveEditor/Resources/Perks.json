@@ -1,0 +1,1932 @@
+[
+  {
+    "Type": "Body_Central_Milestone_1",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Painkiller",
+      "pt-br": "Analgésico"
+    }
+  },
+  {
+    "Type": "Body_Central_Milestone_3",
+    "Attribute": "Body",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Adrenaline Rush",
+      "pt-br": "Descarga de adrenalina"
+    }
+  },
+  {
+    "Type": "Body_Central_Perk_1_1",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Speed Junkie",
+      "pt-br": "Vício em velocidade"
+    }
+  },
+  {
+    "Type": "Body_Central_Perk_1_2",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Comeback Kid",
+      "pt-br": "Duro na queda"
+    }
+  },
+  {
+    "Type": "Body_Central_Perk_1_3",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Army of One",
+      "pt-br": "Exército de uma pessoa só"
+    }
+  },
+  {
+    "Type": "Body_Central_Perk_1_4",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Dorph-head",
+      "pt-br": "Vício em endorfina"
+    }
+  },
+  {
+    "Type": "Body_Central_Perk_3_1",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Calm Mind",
+      "pt-br": "Mente calma"
+    }
+  },
+  {
+    "Type": "Body_Central_Perk_3_2",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Juggernaut",
+      "pt-br": "Jamanta"
+    }
+  },
+  {
+    "Type": "Body_Central_Perk_3_4",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Unstoppable Force",
+      "pt-br": "Força irrefreável"
+    }
+  },
+  {
+    "Type": "Body_Inbetween_Left_3",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Bloodlust",
+      "pt-br": "Sede de sangue"
+    }
+  },
+  {
+    "Type": "Body_Inbetween_Right_3",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Ripple Effect",
+      "pt-br": "Efeito cascata"
+    }
+  },
+  {
+    "Type": "Body_Left_Milestone_2",
+    "Attribute": "Body",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Die! Die! Die!",
+      "pt-br": "Morre! Morre! Morre!"
+    }
+  },
+  {
+    "Type": "Body_Left_Milestone_3",
+    "Attribute": "Body",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Spontaneous Obliteration",
+      "pt-br": "Obliteração espontânea"
+    }
+  },
+  {
+    "Type": "Body_Left_Perk_2_1",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Bullet Ballet",
+      "pt-br": "Balé de balas"
+    }
+  },
+  {
+    "Type": "Body_Left_Perk_2_3",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Don't Stop Me Now",
+      "pt-br": "Não para, não para, não"
+    }
+  },
+  {
+    "Type": "Body_Left_Perk_2_4",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Like a Feather",
+      "pt-br": "Como uma pena"
+    }
+  },
+  {
+    "Type": "Body_Left_Perk_3_1",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Rush of Blood",
+      "pt-br": "Descarga de sangue"
+    }
+  },
+  {
+    "Type": "Body_Left_Perk_3_2",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Skullcracker",
+      "pt-br": "Rompe-crânio"
+    }
+  },
+  {
+    "Type": "Body_Left_Perk_3_3",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Dread",
+      "pt-br": "Sinistro"
+    }
+  },
+  {
+    "Type": "Body_Left_Perk_3_4",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Close-quarters Carnage",
+      "pt-br": "Carnificina cara a cara"
+    }
+  },
+  {
+    "Type": "Body_Master_Perk_1",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Rip and Tear",
+      "pt-br": "Lacerar e rasgar"
+    }
+  },
+  {
+    "Type": "Body_Master_Perk_2",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Onslaught",
+      "pt-br": "Massacre"
+    }
+  },
+  {
+    "Type": "Body_Master_Perk_3",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Pain to Gain",
+      "pt-br": "Sacrifício e ganho"
+    }
+  },
+  {
+    "Type": "Body_Master_Perk_5",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Finisher: Savage Sling",
+      "pt-br": "Finalizador: arremesso brutal"
+    }
+  },
+  {
+    "Type": "Body_Right_Milestone_1",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Fury Road",
+      "pt-br": "Estrada da fúria"
+    }
+  },
+  {
+    "Type": "Body_Right_Milestone_2",
+    "Attribute": "Body",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Wrecking Ball",
+      "pt-br": "Demolição"
+    }
+  },
+  {
+    "Type": "Body_Right_Milestone_3",
+    "Attribute": "Body",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Quake",
+      "pt-br": "Tremor"
+    }
+  },
+  {
+    "Type": "Body_Right_Perk_2_1",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Fly Swatter",
+      "pt-br": "Mata-moscas"
+    }
+  },
+  {
+    "Type": "Body_Right_Perk_2_2",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Kinetic Absorption",
+      "pt-br": "Absorção cinética"
+    }
+  },
+  {
+    "Type": "Body_Right_Perk_2_3",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Clapback",
+      "pt-br": "Bate-volta"
+    }
+  },
+  {
+    "Type": "Body_Right_Perk_2_4",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Breakthrough",
+      "pt-br": "Descoberta"
+    }
+  },
+  {
+    "Type": "Body_Right_Perk_3_1",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Epicenter",
+      "pt-br": "Epicentro"
+    }
+  },
+  {
+    "Type": "Body_Right_Perk_3_2",
+    "Attribute": "Body",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Aftershock",
+      "pt-br": "Pós-choque"
+    }
+  },
+  {
+    "Type": "Cool_Central_Milestone_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Feline Footwork",
+      "pt-br": "Perícia felina"
+    }
+  },
+  {
+    "Type": "Cool_Central_Milestone_2",
+    "Attribute": "Cool",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Double Trouble",
+      "pt-br": "Treta em dobro"
+    }
+  },
+  {
+    "Type": "Cool_Central_Milestone_3",
+    "Attribute": "Cool",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Ninjutsu",
+      "pt-br": "Ninjutsu"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_1_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Unexposed",
+      "pt-br": "Acobertado"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_1_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Small Target",
+      "pt-br": "Alvo pequeno"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_1_4",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Blind Spot",
+      "pt-br": "Ponto cego"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_2_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Two Right Hands",
+      "pt-br": "Duas mãos direitas"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_2_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Triple Tequila",
+      "pt-br": "Tequila tripla"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_2_3",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Splash of Love",
+      "pt-br": "Pitada de amor"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_2_4",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Keep 'Em Comin'",
+      "pt-br": "Desce dois, desce mais"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_3_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Serpentine",
+      "pt-br": "Serpentina"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_3_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Creeping Death",
+      "pt-br": "Morte rasteira"
+    }
+  },
+  {
+    "Type": "Cool_Central_Perk_3_4",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Shinobi Sprint",
+      "pt-br": "Avanço shinobi"
+    }
+  },
+  {
+    "Type": "Cool_Inbetween_Left_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Deep Breath",
+      "pt-br": "Respiração profunda"
+    }
+  },
+  {
+    "Type": "Cool_Inbetween_Left_3",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Vanishing Act",
+      "pt-br": "Sumiço"
+    }
+  },
+  {
+    "Type": "Cool_Inbetween_Right_3",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Pounce",
+      "pt-br": "Salto de predador"
+    }
+  },
+  {
+    "Type": "Cool_Left_Milestone_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Road Warrior",
+      "pt-br": "Guerreiro da estrada"
+    }
+  },
+  {
+    "Type": "Cool_Left_Milestone_2",
+    "Attribute": "Cool",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Focus",
+      "pt-br": "Foco"
+    }
+  },
+  {
+    "Type": "Cool_Left_Milestone_3",
+    "Attribute": "Cool",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Deadeye",
+      "pt-br": "Mira certeira"
+    }
+  },
+  {
+    "Type": "Cool_Left_Perk_2_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Head to Head",
+      "pt-br": "Mano a mano"
+    }
+  },
+  {
+    "Type": "Cool_Left_Perk_2_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Rinse and Reload",
+      "pt-br": "Recarregue e repita"
+    }
+  },
+  {
+    "Type": "Cool_Left_Perk_2_3",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Pull!",
+      "pt-br": "Rojão!"
+    }
+  },
+  {
+    "Type": "Cool_Left_Perk_2_4",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {}
+  },
+  {
+    "Type": "Cool_Left_Perk_3_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Quick Draw",
+      "pt-br": "Saque rápido"
+    }
+  },
+  {
+    "Type": "Cool_Left_Perk_3_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "High Noon",
+      "pt-br": "Matar ou morrer"
+    }
+  },
+  {
+    "Type": "Cool_Left_Perk_3_3",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Long Shot",
+      "pt-br": "Disparo longo"
+    }
+  },
+  {
+    "Type": "Cool_Left_Perk_3_4",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "California Reaper",
+      "pt-br": "Morte a distância"
+    }
+  },
+  {
+    "Type": "Cool_Master_Perk_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Nerves of Tungsten-Steel",
+      "pt-br": "Nervos de tungstênio"
+    }
+  },
+  {
+    "Type": "Cool_Master_Perk_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Run 'N' Gun",
+      "pt-br": "Correr e atirar"
+    }
+  },
+  {
+    "Type": "Cool_Master_Perk_4",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Style Over Substance",
+      "pt-br": "Estilo acima de substância"
+    }
+  },
+  {
+    "Type": "Cool_Right_Milestone_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {}
+  },
+  {
+    "Type": "Cool_Right_Milestone_2",
+    "Attribute": "Cool",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Scorpion Sting",
+      "pt-br": "Picada de escorpião"
+    }
+  },
+  {
+    "Type": "Cool_Right_Milestone_3",
+    "Attribute": "Cool",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Juggler",
+      "pt-br": "Malabarista"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_1_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Gag Order",
+      "pt-br": "Ordem de silêncio"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_1_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Quick Getaway",
+      "pt-br": "Fuga rápida"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_2_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Corrosion",
+      "pt-br": "Corrosão"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_2_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Neurotoxin",
+      "pt-br": "Neurotoxina"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_2_3",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Accelerated Toxin Absorption",
+      "pt-br": "Absorção de toxina acelerada"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_2_4",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Parasite",
+      "pt-br": "Parasita"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_3_1",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Pay It Forward",
+      "pt-br": "Passar adiante"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_3_2",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Finisher: Act of Mercy",
+      "pt-br": "Finalizador: misericórdia"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_3_3",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "!OBSOLETE"
+    }
+  },
+  {
+    "Type": "Cool_Right_Perk_3_4",
+    "Attribute": "Cool",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Sleight of Hand",
+      "pt-br": "Mão leve"
+    }
+  },
+  {
+    "Type": "Espionage_Central_Milestone_1",
+    "Attribute": "Espionage",
+    "MaxLevel": 1,
+    "Tier": "Espionage",
+    "Names": {
+      "en-us": "Jailbreak",
+      "pt-br": "Liberação"
+    }
+  },
+  {
+    "Type": "Espionage_Central_Perk_1_1",
+    "Attribute": "Espionage",
+    "MaxLevel": 1,
+    "Tier": "Espionage",
+    "Names": {
+      "en-us": "Launch Capacity Override",
+      "pt-br": "Adição de lançamentos"
+    }
+  },
+  {
+    "Type": "Espionage_Central_Perk_1_2",
+    "Attribute": "Espionage",
+    "MaxLevel": 1,
+    "Tier": "Espionage",
+    "Names": {}
+  },
+  {
+    "Type": "Espionage_Central_Perk_1_3",
+    "Attribute": "Espionage",
+    "MaxLevel": 1,
+    "Tier": "Espionage",
+    "Names": {
+      "en-us": "Data Tunneling",
+      "pt-br": "Túnel de dados"
+    }
+  },
+  {
+    "Type": "Espionage_Central_Perk_1_4",
+    "Attribute": "Espionage",
+    "MaxLevel": 1,
+    "Tier": "Espionage",
+    "Names": {
+      "en-us": "Spatial Mapping",
+      "pt-br": "Mapeamento espacial"
+    }
+  },
+  {
+    "Type": "Espionage_Left_Milestone_Perk",
+    "Attribute": "Espionage",
+    "MaxLevel": 1,
+    "Tier": "Espionage",
+    "Names": {
+      "en-us": "Emergency Cloaking",
+      "pt-br": "Furtividade emergencial"
+    }
+  },
+  {
+    "Type": "Espionage_Left_Perk_1_2",
+    "Attribute": "Espionage",
+    "MaxLevel": 1,
+    "Tier": "Espionage",
+    "Names": {
+      "en-us": "Sensory Protocol",
+      "pt-br": "Protocolo sensorial"
+    }
+  },
+  {
+    "Type": "Espionage_Right_Milestone_1",
+    "Attribute": "Espionage",
+    "MaxLevel": 1,
+    "Tier": "Espionage",
+    "Names": {
+      "en-us": "Vulnerability Analytics",
+      "pt-br": "Análise de vulnerabilidade"
+    }
+  },
+  {
+    "Type": "Espionage_Right_Perk_1_1",
+    "Attribute": "Espionage",
+    "MaxLevel": 1,
+    "Tier": "Espionage",
+    "Names": {
+      "en-us": "Machine Learning",
+      "pt-br": "Aprendizado de IA"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Milestone_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Optimization",
+      "pt-br": "Otimização"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Milestone_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Embedded Exploit",
+      "pt-br": "Exploração integrada"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Milestone_3",
+    "Attribute": "Intelligence",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Overclock",
+      "pt-br": "Turbinagem"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_1_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Encryption",
+      "pt-br": "Criptografia"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_1_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Proximate Propagation",
+      "pt-br": "Propagação de proximidade"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_1_3",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Subordination",
+      "pt-br": "Subordinação"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_2_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Speculation",
+      "pt-br": "Especulação"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_2_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "ICEpick",
+      "pt-br": "anti-CAI"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_2_3",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "System Overwhelm",
+      "pt-br": "Sobrecarga de sistema"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_2_4",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Shadowrunner",
+      "pt-br": "Trilha-oculto"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_3_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Race Against Mind",
+      "pt-br": "Corrida contra a mente"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_3_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Sublimation",
+      "pt-br": "Sublimação"
+    }
+  },
+  {
+    "Type": "Intelligence_Central_Perk_3_3",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Power Surge",
+      "pt-br": "Pico de energia"
+    }
+  },
+  {
+    "Type": "Intelligence_Inbetween_Left_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Siphon",
+      "pt-br": "Sifão"
+    }
+  },
+  {
+    "Type": "Intelligence_Inbetween_Left_3",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Blood Daemon",
+      "pt-br": "Daemon sangrento"
+    }
+  },
+  {
+    "Type": "Intelligence_Inbetween_Right_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Recirculation",
+      "pt-br": "Recirculação"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Milestone_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Eye in the Sky",
+      "pt-br": "De olho em tudo"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Milestone_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Hack Queue",
+      "pt-br": "Hack sequencial"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Milestone_3",
+    "Attribute": "Intelligence",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Queue Acceleration",
+      "pt-br": "Aceleração sequencial"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Perk_1_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Warning: Explosion Hazard",
+      "pt-br": "Aviso: perigo de explosão"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Perk_1_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "ForceKill Cypher",
+      "pt-br": "Cypher_AbateForçado"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Perk_2_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Counter-a-hack",
+      "pt-br": "Contra-hack"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Perk_2_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Data Recycler",
+      "pt-br": "Reciclagem de dados"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Perk_2_3",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Copy-Paste",
+      "pt-br": "Copiar e colar"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Perk_2_4",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Feedback Loop",
+      "pt-br": "Ciclo de resposta"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Perk_3_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Queue Hack_Root",
+      "pt-br": "Hack_raiz sequencial"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Perk_3_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Queue Prioritization",
+      "pt-br": "Prioridade sequencial"
+    }
+  },
+  {
+    "Type": "Intelligence_Left_Perk_3_4",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Finisher: Live Wire",
+      "pt-br": "Finalizador: eletrizante"
+    }
+  },
+  {
+    "Type": "Intelligence_Master_Perk_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Queue Mastery",
+      "pt-br": "Domínio sequencial"
+    }
+  },
+  {
+    "Type": "Intelligence_Master_Perk_3",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Spillover",
+      "pt-br": "Transbordamento"
+    }
+  },
+  {
+    "Type": "Intelligence_Master_Perk_4",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Smart Synergy",
+      "pt-br": "Sinergia inteligente"
+    }
+  },
+  {
+    "Type": "Intelligence_Right_Milestone_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Carhacker",
+      "pt-br": "Hack automobilístico"
+    }
+  },
+  {
+    "Type": "Intelligence_Right_Milestone_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Acquisition Specialist",
+      "pt-br": "Especialista em aquisição"
+    }
+  },
+  {
+    "Type": "Intelligence_Right_Milestone_3",
+    "Attribute": "Intelligence",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Target Lock Transfer",
+      "pt-br": "Transferência de mira"
+    }
+  },
+  {
+    "Type": "Intelligence_Right_Perk_2_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "No Escape",
+      "pt-br": "Sem escapatória"
+    }
+  },
+  {
+    "Type": "Intelligence_Right_Perk_2_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Precision Subroutines",
+      "pt-br": "Sub-rotinas de precisão"
+    }
+  },
+  {
+    "Type": "Intelligence_Right_Perk_3_1",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Targeting Prism",
+      "pt-br": "Prisma de alvos"
+    }
+  },
+  {
+    "Type": "Intelligence_Right_Perk_3_2",
+    "Attribute": "Intelligence",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Terminal Velocity",
+      "pt-br": "Velocidade terminal"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Milestone_1",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Slippery",
+      "pt-br": "Escorregadio"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Milestone_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Dash",
+      "pt-br": "Avanço"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Milestone_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Air Dash",
+      "pt-br": "Avanço aéreo"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_1_1",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Power Slide",
+      "pt-br": "Super deslizada"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_1_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Muscle Memory",
+      "pt-br": "Memória muscular"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_1_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Parkour!",
+      "pt-br": "Parkour!"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_1_4",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Multitasker",
+      "pt-br": "Multitarefa"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_2_1",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Mad Dash",
+      "pt-br": "Avanço doido"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_2_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Can't Touch This",
+      "pt-br": "Comigo ninguém pode"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_2_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Mean Streak",
+      "pt-br": "Sequência bruta"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_2_4",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Steady Grip",
+      "pt-br": "Pulso firme"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_3_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Aerial Acrobat",
+      "pt-br": "Acrobacia aérea"
+    }
+  },
+  {
+    "Type": "Reflexes_Central_Perk_3_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Aerodynamic",
+      "pt-br": "Aerodinâmica"
+    }
+  },
+  {
+    "Type": "Reflexes_Inbetween_Left_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Air Kerenzikov",
+      "pt-br": "Kerenzikov aéreo"
+    }
+  },
+  {
+    "Type": "Reflexes_Inbetween_Right_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Flash and Thunderclap",
+      "pt-br": "Flash e trovão"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Milestone_1",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Stuntjock",
+      "pt-br": "Deltajock"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Milestone_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Ready, Rested, Reloaded",
+      "pt-br": "Pronto, descansado, recarregado"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Milestone_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Sharpshooter",
+      "pt-br": "Atirador de elite"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Perk_2_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Spice of Life",
+      "pt-br": "Gosto por variedade"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Perk_2_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Mind Over Matter",
+      "pt-br": "Mente sobre matéria"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Perk_2_4",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Tunnel Vision",
+      "pt-br": "Visão concentrada"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Perk_3_1",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Gundancer",
+      "pt-br": "Pistoleiro"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Perk_3_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Spray and Pray",
+      "pt-br": "Tiro ao vento"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Perk_3_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Practice Makes Perfect",
+      "pt-br": "A prática leva à perfeição"
+    }
+  },
+  {
+    "Type": "Reflexes_Left_Perk_3_4",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Shoot to Chill",
+      "pt-br": "Atirar para relaxar"
+    }
+  },
+  {
+    "Type": "Reflexes_Master_Perk_1",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Salt in the Wound",
+      "pt-br": "Sal na ferida"
+    }
+  },
+  {
+    "Type": "Reflexes_Master_Perk_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Submachine Fun",
+      "pt-br": "Submetraca"
+    }
+  },
+  {
+    "Type": "Reflexes_Master_Perk_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Tailwind",
+      "pt-br": "Vento a favor"
+    }
+  },
+  {
+    "Type": "Reflexes_Master_Perk_5",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Slaughterhouse",
+      "pt-br": "Sanguinário"
+    }
+  },
+  {
+    "Type": "Reflexes_Right_Milestone_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Lead and Steel",
+      "pt-br": "Chumbo e aço"
+    }
+  },
+  {
+    "Type": "Reflexes_Right_Milestone_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Finisher: Bladerunner",
+      "pt-br": "Finalizador: espadachim"
+    }
+  },
+  {
+    "Type": "Reflexes_Right_Perk_2_1",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Bullet Deflect",
+      "pt-br": "Reflexão de balas"
+    }
+  },
+  {
+    "Type": "Reflexes_Right_Perk_2_2",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Seeing Double",
+      "pt-br": "Visão dobrada"
+    }
+  },
+  {
+    "Type": "Reflexes_Right_Perk_2_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Bullet Time",
+      "pt-br": "Balas lentas"
+    }
+  },
+  {
+    "Type": "Reflexes_Right_Perk_3_1",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Flash of Steel",
+      "pt-br": "Clarão de aço"
+    }
+  },
+  {
+    "Type": "Reflexes_Right_Perk_3_3",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Opportunist",
+      "pt-br": "Oportunista"
+    }
+  },
+  {
+    "Type": "Reflexes_Right_Perk_3_4",
+    "Attribute": "Reflexes",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Going the Distance",
+      "pt-br": "Essa vai longe"
+    }
+  },
+  {
+    "Type": "Tech_Central_Milestone_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "All Things Cyber",
+      "pt-br": "Tudo cibernético"
+    }
+  },
+  {
+    "Type": "Tech_Central_Milestone_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "License to Chrome",
+      "pt-br": "Licença cromática"
+    }
+  },
+  {
+    "Type": "Tech_Central_Perk_2_1",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Driver Update",
+      "pt-br": "Atualização de driver"
+    }
+  },
+  {
+    "Type": "Tech_Central_Perk_2_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Renaissance Punk",
+      "pt-br": "Punk revitalizado"
+    }
+  },
+  {
+    "Type": "Tech_Central_Perk_2_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Lucky Day",
+      "pt-br": "Dia de sorte"
+    }
+  },
+  {
+    "Type": "Tech_Central_Perk_2_4",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Chrome Constitution",
+      "pt-br": "Constituição do cromo"
+    }
+  },
+  {
+    "Type": "Tech_Central_Perk_3_1",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Extended Warranty",
+      "pt-br": "Garantia estendida"
+    }
+  },
+  {
+    "Type": "Tech_Central_Perk_3_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Ambidextrous",
+      "pt-br": "Ambidestria"
+    }
+  },
+  {
+    "Type": "Tech_Central_Perk_3_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Built Different",
+      "pt-br": "Eu sou diferente"
+    }
+  },
+  {
+    "Type": "Tech_Central_Perk_3_4",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Cyborg",
+      "pt-br": "Ciborgue"
+    }
+  },
+  {
+    "Type": "Tech_Inbetween_Left_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Doomlauncher",
+      "pt-br": "Lança-morte"
+    }
+  },
+  {
+    "Type": "Tech_Inbetween_Right_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Chipware Connoisseur",
+      "pt-br": "Perícia em chips"
+    }
+  },
+  {
+    "Type": "Tech_Left_Milestone_1",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Glutton for War",
+      "pt-br": "Sede de guerra"
+    }
+  },
+  {
+    "Type": "Tech_Left_Milestone_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 2,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Health Freak",
+      "pt-br": "Aberração da vida"
+    }
+  },
+  {
+    "Type": "Tech_Left_Milestone_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Pyromania",
+      "pt-br": "Piromania"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_1_1",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Transfusion",
+      "pt-br": "Transfusão"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_1_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "First Aid",
+      "pt-br": "Primeiros socorros"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_2_1",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Demolitions Surplus",
+      "pt-br": "Sobras de demolição"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_2_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Borrowed Time",
+      "pt-br": "Tempo emprestado"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_2_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Field Medic",
+      "pt-br": "Médico de campo"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_2_4",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Adept",
+    "Names": {
+      "en-us": "Coming in Hot",
+      "pt-br": "Vai com tudo"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_3_01",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Friendlier Fire",
+      "pt-br": "Fogo ainda mais amigo"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_3_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Burn This City",
+      "pt-br": "Cidade para queimar"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_3_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Flash Sale",
+      "pt-br": "Promoção-relâmpago"
+    }
+  },
+  {
+    "Type": "Tech_Left_Perk_3_4",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Heat Shield",
+      "pt-br": "Escudo de calor"
+    }
+  },
+  {
+    "Type": "Tech_Master_Perk_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Ticking Time Bomb",
+      "pt-br": "Bomba relógio"
+    }
+  },
+  {
+    "Type": "Tech_Master_Perk_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Edgerunner",
+      "pt-br": "Edgerunner"
+    }
+  },
+  {
+    "Type": "Tech_Master_Perk_5",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Master",
+    "Names": {
+      "en-us": "Chain Lightning",
+      "pt-br": "Reação em cadeia"
+    }
+  },
+  {
+    "Type": "Tech_Right_Milestone_1",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Novice",
+    "Names": {
+      "en-us": "Gearhead",
+      "pt-br": "Automaníaco"
+    }
+  },
+  {
+    "Type": "Tech_Right_Milestone_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 3,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Bolt",
+      "pt-br": "Raio"
+    }
+  },
+  {
+    "Type": "Tech_Right_Perk_3_1",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "In Charge",
+      "pt-br": "Em carga"
+    }
+  },
+  {
+    "Type": "Tech_Right_Perk_3_2",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Internal Clock",
+      "pt-br": "Relógio interno"
+    }
+  },
+  {
+    "Type": "Tech_Right_Perk_3_3",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Shock Value",
+      "pt-br": "Estado de choque"
+    }
+  },
+  {
+    "Type": "Tech_Right_Perk_3_4",
+    "Attribute": "TechnicalAbility",
+    "MaxLevel": 1,
+    "Tier": "Expert",
+    "Names": {
+      "en-us": "Lightning Storm",
+      "pt-br": "Tempestade de raios"
+    }
+  }
+]

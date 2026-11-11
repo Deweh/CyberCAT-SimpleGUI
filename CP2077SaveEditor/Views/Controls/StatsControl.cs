@@ -127,6 +127,9 @@ namespace CP2077SaveEditor.Views.Controls
             pnl_ForcedModifiersHide.Visible = true;
             pnl_ForcedModifiersMenu.Enabled = false;
 
+            // Saves from patch 2.5+ don't store forced modifiers anymore
+            btn_ForcedModifiersCreate.Enabled = !OptimizedStatsHelper.IsOptimizedData(_gameSavedStatsData);
+
             if (_gameSavedStatsData is { ForcedModifiersBuffer.Data: ModifiersBuffer forcedModifiers })
             {
                 pnl_ForcedModifiersHide.Visible = false;
@@ -246,6 +249,7 @@ namespace CP2077SaveEditor.Views.Controls
                 e.SuppressKeyPress = true;
 
                 ((ModifiersBuffer)_gameSavedStatsData.ModifiersBuffer.Data)!.Entries.Remove((gameStatModifierData_Deprecated)lv_Modifiers.SelectedItems[0].Tag);
+                ChangeTracker.MarkChanged();
                 lv_Modifiers.Items.Remove(lv_Modifiers.SelectedItems[0]);
             }
         }
@@ -255,6 +259,7 @@ namespace CP2077SaveEditor.Views.Controls
             if (lv_Modifiers.SelectedItems.Count > 0)
             {
                 ((ModifiersBuffer)_gameSavedStatsData.ModifiersBuffer.Data)!.Entries.Remove((gameStatModifierData_Deprecated)lv_Modifiers.SelectedItems[0].Tag);
+                ChangeTracker.MarkChanged();
                 lv_Modifiers.Items.Remove(lv_Modifiers.SelectedItems[0]);
             }
         }
@@ -267,6 +272,7 @@ namespace CP2077SaveEditor.Views.Controls
             statDialog.LoadStat(newStat, () =>
             {
                 ((ModifiersBuffer)_gameSavedStatsData.ModifiersBuffer.Data)!.Entries.Add(newStat);
+                ChangeTracker.MarkChanged();
                 ReloadData();
 
                 return true;
@@ -281,6 +287,7 @@ namespace CP2077SaveEditor.Views.Controls
             statDialog.LoadStat(newStat, () =>
             {
                 ((ModifiersBuffer)_gameSavedStatsData.ModifiersBuffer.Data)!.Entries.Add(newStat);
+                ChangeTracker.MarkChanged();
                 ReloadData();
 
                 return true;
@@ -295,6 +302,7 @@ namespace CP2077SaveEditor.Views.Controls
             statDialog.LoadStat(newStat, () =>
             {
                 ((ModifiersBuffer)_gameSavedStatsData.ModifiersBuffer.Data)!.Entries.Add(newStat);
+                ChangeTracker.MarkChanged();
                 ReloadData();
 
                 return true;
@@ -306,6 +314,7 @@ namespace CP2077SaveEditor.Views.Controls
             if (lv_ForcedModifiers.SelectedItems.Count > 0)
             {
                 ((ModifiersBuffer)_gameSavedStatsData.ForcedModifiersBuffer.Data)!.Entries.Remove((gameStatModifierData_Deprecated)lv_ForcedModifiers.SelectedItems[0].Tag);
+                ChangeTracker.MarkChanged();
                 lv_ForcedModifiers.Items.Remove(lv_ForcedModifiers.SelectedItems[0]);
             }
         }
@@ -318,6 +327,7 @@ namespace CP2077SaveEditor.Views.Controls
             statDialog.LoadStat(newStat, () =>
             {
                 ((ModifiersBuffer)_gameSavedStatsData.ForcedModifiersBuffer.Data)!.Entries.Add(newStat);
+                ChangeTracker.MarkChanged();
                 ReloadData();
 
                 return true;
@@ -332,6 +342,7 @@ namespace CP2077SaveEditor.Views.Controls
             statDialog.LoadStat(newStat, () =>
             {
                 ((ModifiersBuffer)_gameSavedStatsData.ForcedModifiersBuffer.Data)!.Entries.Add(newStat);
+                ChangeTracker.MarkChanged();
                 ReloadData();
 
                 return true;
@@ -346,6 +357,7 @@ namespace CP2077SaveEditor.Views.Controls
             statDialog.LoadStat(newStat, () =>
             {
                 ((ModifiersBuffer)_gameSavedStatsData.ForcedModifiersBuffer.Data)!.Entries.Add(newStat);
+                ChangeTracker.MarkChanged();
                 ReloadData();
 
                 return true;
@@ -355,11 +367,13 @@ namespace CP2077SaveEditor.Views.Controls
         private void btn_InactiveStatsCreate_Click(object sender, EventArgs e)
         {
             _gameSavedStatsData.InactiveStats = new CArray<CEnum<Enums.gamedataStatType>>();
+            ChangeTracker.MarkChanged();
             ReloadData();
         }
 
         private void btn_ForcedModifiersCreate_Click(object sender, EventArgs e)
         {
+            ChangeTracker.MarkChanged();
             _gameSavedStatsData.ForcedModifiersBuffer = new DataBuffer
             {
                 Buffer = new RedBuffer
@@ -372,6 +386,7 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void btn_ModifiersCreate_Click(object sender, EventArgs e)
         {
+            ChangeTracker.MarkChanged();
             _gameSavedStatsData.ModifiersBuffer = new DataBuffer
             {
                 Buffer = new RedBuffer
@@ -387,6 +402,7 @@ namespace CP2077SaveEditor.Views.Controls
             if (lv_InactiveStats.SelectedItems.Count > 0)
             {
                 _gameSavedStatsData.InactiveStats.Remove((CEnum<gamedataStatType>)lv_InactiveStats.SelectedItems[0].Tag);
+                ChangeTracker.MarkChanged();
                 lv_InactiveStats.Items.Remove(lv_InactiveStats.SelectedItems[0]);
             }
         }
@@ -396,12 +412,14 @@ namespace CP2077SaveEditor.Views.Controls
             if (Enum.TryParse<gamedataStatType>(cmb_StatType.Text, out var statType))
             {
                 _gameSavedStatsData.InactiveStats.Add(statType);
+                ChangeTracker.MarkChanged();
                 ReloadData();
             }
         }
 
         private void btn_ModifierGroupCreate_Click(object sender, EventArgs e)
         {
+            ChangeTracker.MarkChanged();
             _gameSavedStatsData.SavedModifierGroupStatTypesBuffer = new DataBuffer
             {
                 Buffer = new RedBuffer
@@ -419,11 +437,13 @@ namespace CP2077SaveEditor.Views.Controls
                 if (tv_ModifierGroups.SelectedNode.Tag is SavedModifierGroupStatTypesBuffer_Entry entry)
                 {
                     ((SavedModifierGroupStatTypesBuffer)_gameSavedStatsData.SavedModifierGroupStatTypesBuffer.Data)!.Entries.Remove(entry);
+                    ChangeTracker.MarkChanged();
                 }
 
                 if (tv_ModifierGroups.SelectedNode.Tag is gamedataStatType statType)
                 {
                     ((SavedModifierGroupStatTypesBuffer_Entry)tv_ModifierGroups.SelectedNode.Parent.Tag).StatTypes.Remove(statType);
+                    ChangeTracker.MarkChanged();
                 }
 
                 ReloadData();
@@ -434,6 +454,7 @@ namespace CP2077SaveEditor.Views.Controls
         {
             var crc = ResourceHelper.ModifierGroups.First(x => x.Name == cmb_ModifierGroupNodeType.SelectedText).CRC;
             ((SavedModifierGroupStatTypesBuffer)_gameSavedStatsData.SavedModifierGroupStatTypesBuffer.Data)!.Entries.Add(new SavedModifierGroupStatTypesBuffer_Entry { ModifierGroupHash = crc });
+            ChangeTracker.MarkChanged();
             ReloadData();
         }
 
@@ -444,6 +465,7 @@ namespace CP2077SaveEditor.Views.Controls
                 if (Enum.TryParse<gamedataStatType>(cmb_ModifierGroupStatType.Text, out var statType))
                 {
                     entry.StatTypes.Add(statType);
+                    ChangeTracker.MarkChanged();
                     ReloadData();
                 }
             }

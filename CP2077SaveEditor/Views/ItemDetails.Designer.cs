@@ -35,7 +35,6 @@ namespace CP2077SaveEditor
             label1 = new System.Windows.Forms.Label();
             modsTreeView = new System.Windows.Forms.TreeView();
             quickActionsGroupBox = new System.Windows.Forms.GroupBox();
-            infuseLegendaryComponentsButton = new ModernButton();
             pasteLegendaryIdButton = new ModernButton();
             questItemCheckBox = new System.Windows.Forms.CheckBox();
             flagsGroupBox = new System.Windows.Forms.GroupBox();
@@ -112,7 +111,6 @@ namespace CP2077SaveEditor
             // quickActionsGroupBox
             // 
             quickActionsGroupBox.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            quickActionsGroupBox.Controls.Add(infuseLegendaryComponentsButton);
             quickActionsGroupBox.Controls.Add(pasteLegendaryIdButton);
             quickActionsGroupBox.Location = new System.Drawing.Point(12, 138);
             quickActionsGroupBox.Name = "quickActionsGroupBox";
@@ -120,22 +118,6 @@ namespace CP2077SaveEditor
             quickActionsGroupBox.TabIndex = 4;
             quickActionsGroupBox.TabStop = false;
             quickActionsGroupBox.Text = "Quick Actions";
-            // 
-            // infuseLegendaryComponentsButton
-            // 
-            infuseLegendaryComponentsButton.BackColor = System.Drawing.Color.White;
-            infuseLegendaryComponentsButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            infuseLegendaryComponentsButton.ClickEffectEnabled = true;
-            infuseLegendaryComponentsButton.DefaultColor = System.Drawing.Color.White;
-            infuseLegendaryComponentsButton.HoverColor = System.Drawing.Color.LightGray;
-            infuseLegendaryComponentsButton.Location = new System.Drawing.Point(212, 21);
-            infuseLegendaryComponentsButton.Name = "infuseLegendaryComponentsButton";
-            infuseLegendaryComponentsButton.Size = new System.Drawing.Size(214, 24);
-            infuseLegendaryComponentsButton.TabIndex = 3;
-            infuseLegendaryComponentsButton.Text = "Infuse Legendary Components";
-            infuseLegendaryComponentsButton.TextColor = System.Drawing.SystemColors.ControlText;
-            infuseLegendaryComponentsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            infuseLegendaryComponentsButton.Click += infuseLegendaryComponentsButton_Click;
             // 
             // pasteLegendaryIdButton
             // 
@@ -148,7 +130,7 @@ namespace CP2077SaveEditor
             pasteLegendaryIdButton.Name = "pasteLegendaryIdButton";
             pasteLegendaryIdButton.Size = new System.Drawing.Size(200, 24);
             pasteLegendaryIdButton.TabIndex = 2;
-            pasteLegendaryIdButton.Text = "Make Legendary";
+            pasteLegendaryIdButton.Text = "Make Tier 5++";
             pasteLegendaryIdButton.TextColor = System.Drawing.SystemColors.ControlText;
             pasteLegendaryIdButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             pasteLegendaryIdButton.Click += pasteLegendaryIdButton_Click;
@@ -495,7 +477,6 @@ namespace CP2077SaveEditor
         private System.Windows.Forms.TabPage statsTab;
         private ModernButton newModNodeButton;
         private ModernButton deleteModNodeButton;
-        private ModernButton infuseLegendaryComponentsButton;
         private System.Windows.Forms.TabPage statsPlaceholderTab;
         private System.Windows.Forms.Label label3;
         private ModernButton createStatDataButton;

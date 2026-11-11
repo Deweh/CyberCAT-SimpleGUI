@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using WolvenKit.RED4.Types;
 using static WolvenKit.RED4.Types.Enums;
+using CP2077SaveEditor.Utils;
 
 namespace CP2077SaveEditor
 {
@@ -139,6 +140,7 @@ namespace CP2077SaveEditor
             }
 
             callbackFunc.Invoke();
+            ChangeTracker.MarkChanged();
             this.Close();
         }
     }

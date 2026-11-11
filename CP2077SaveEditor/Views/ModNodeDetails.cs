@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using CP2077SaveEditor.Views;
 using WolvenKit.RED4.Save.Classes;
+using CP2077SaveEditor.Utils;
 
 namespace CP2077SaveEditor
 {
@@ -25,24 +26,22 @@ namespace CP2077SaveEditor
                 return;
             }
 
-            activeNode.AttachmentSlotTdbId = txt_AttachmentName.Text;
+            var id = (WolvenKit.RED4.Types.TweakDBID)txt_AttachmentName.Text;
 
             _autoUpdate = true;
-            txt_AttachmentId.Text = ((ulong)activeNode.AttachmentSlotTdbId).ToString();
+            txt_AttachmentId.Text = ((ulong)id).ToString();
             _autoUpdate = false;
         }
 
         private void txt_AttachmentId_TextChanged(object sender, EventArgs e)
         {
-            if (_autoUpdate)
+            if (_autoUpdate || !ulong.TryParse(txt_AttachmentId.Text, out var parsedId))
             {
                 return;
             }
 
-            activeNode.AttachmentSlotTdbId = ulong.Parse(txt_AttachmentId.Text);
-
             _autoUpdate = true;
-            txt_AttachmentName.Text = activeNode.AttachmentSlotTdbId.GetResolvedText() ?? "";
+            txt_AttachmentName.Text = ((WolvenKit.RED4.Types.TweakDBID)parsedId).GetResolvedText() ?? "";
             _autoUpdate = false;
         }
 
@@ -53,24 +52,22 @@ namespace CP2077SaveEditor
                 return;
             }
 
-            activeNode.ItemInfo.ItemId.Id = txt_ModName.Text;
+            var id = (WolvenKit.RED4.Types.TweakDBID)txt_ModName.Text;
 
             _autoUpdate = true;
-            txt_ModId.Text = ((ulong)activeNode.ItemInfo.ItemId.Id).ToString();
+            txt_ModId.Text = ((ulong)id).ToString();
             _autoUpdate = false;
         }
 
         private void txt_ModId_TextChanged(object sender, EventArgs e)
         {
-            if (_autoUpdate)
+            if (_autoUpdate || !ulong.TryParse(txt_ModId.Text, out var parsedId))
             {
                 return;
             }
 
-            activeNode.ItemInfo.ItemId.Id = ulong.Parse(txt_ModId.Text);
-
             _autoUpdate = true;
-            txt_ModName.Text = activeNode.ItemInfo.ItemId.Id.GetResolvedText() ?? "";
+            txt_ModName.Text = ((WolvenKit.RED4.Types.TweakDBID)parsedId).GetResolvedText() ?? "";
             _autoUpdate = false;
         }
 
@@ -81,24 +78,22 @@ namespace CP2077SaveEditor
                 return;
             }
 
-            activeNode.ItemAdditionalInfo.LootItemPoolId = txt_LootItemName.Text;
+            var id = (WolvenKit.RED4.Types.TweakDBID)txt_LootItemName.Text;
 
             _autoUpdate = true;
-            txt_LootItemId.Text = ((ulong)activeNode.ItemAdditionalInfo.LootItemPoolId).ToString();
+            txt_LootItemId.Text = ((ulong)id).ToString();
             _autoUpdate = false;
         }
 
         private void txt_LootItemId_TextChanged(object sender, EventArgs e)
         {
-            if (_autoUpdate)
+            if (_autoUpdate || !ulong.TryParse(txt_LootItemId.Text, out var parsedId))
             {
                 return;
             }
 
-            activeNode.ItemAdditionalInfo.LootItemPoolId = ulong.Parse(txt_LootItemId.Text);
-
             _autoUpdate = true;
-            txt_LootItemName.Text = activeNode.ItemAdditionalInfo.LootItemPoolId.GetResolvedText() ?? "";
+            txt_LootItemName.Text = ((WolvenKit.RED4.Types.TweakDBID)parsedId).GetResolvedText() ?? "";
             _autoUpdate = false;
         }
 
@@ -163,6 +158,7 @@ namespace CP2077SaveEditor
             activeNode.AppearanceName = unknown4Box.Text;
 
             callbackFunc.Invoke();
+            ChangeTracker.MarkChanged();
             this.Close();
         }
 

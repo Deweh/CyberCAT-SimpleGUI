@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Windows.Forms;
+using CP2077SaveEditor.Utils;
 
 namespace CP2077SaveEditor
 {
@@ -45,6 +46,7 @@ namespace CP2077SaveEditor
             }
 
             callbackFunc("");
+            ChangeTracker.MarkChanged();
             this.Close();
         }
     }

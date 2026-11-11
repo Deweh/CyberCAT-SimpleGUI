@@ -1,4 +1,5 @@
-﻿using WolvenKit.RED4.Save;
+﻿#nullable enable
+using WolvenKit.RED4.Save;
 
 namespace CP2077SaveEditor.Utils;
 

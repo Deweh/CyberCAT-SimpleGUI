@@ -2,7 +2,7 @@
 
 namespace CP2077SaveEditor.Views
 {
-    partial class Form2
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,16 +30,18 @@ namespace CP2077SaveEditor.Views
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             filePathLabel = new System.Windows.Forms.Label();
             openSaveButton = new ModernButton();
             saveChangesButton = new ModernButton();
+            quickSaveButton = new ModernButton();
             sm_Menu = new CP2077SaveEditor.Views.Controls.ScrollMenuControl();
             pnl_Content = new System.Windows.Forms.Panel();
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             tssl_Status = new System.Windows.Forms.ToolStripStatusLabel();
             tssl_Empty = new System.Windows.Forms.ToolStripStatusLabel();
             tssl_Info = new System.Windows.Forms.ToolStripStatusLabel();
+            tspb_Busy = new System.Windows.Forms.ToolStripProgressBar();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -83,17 +85,35 @@ namespace CP2077SaveEditor.Views
             saveChangesButton.Name = "saveChangesButton";
             saveChangesButton.Size = new System.Drawing.Size(143, 44);
             saveChangesButton.TabIndex = 7;
-            saveChangesButton.Text = "Save Changes";
+            saveChangesButton.Text = "Save As...";
             saveChangesButton.TextColor = System.Drawing.SystemColors.ControlText;
             saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F);
             saveChangesButton.Click += saveChangesButton_Click;
+            // 
+            // quickSaveButton
+            // 
+            quickSaveButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            quickSaveButton.BackColor = System.Drawing.Color.WhiteSmoke;
+            quickSaveButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            quickSaveButton.ClickEffectEnabled = true;
+            quickSaveButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
+            quickSaveButton.Enabled = false;
+            quickSaveButton.HoverColor = System.Drawing.Color.LightGray;
+            quickSaveButton.Location = new System.Drawing.Point(12, 466);
+            quickSaveButton.Name = "quickSaveButton";
+            quickSaveButton.Size = new System.Drawing.Size(143, 44);
+            quickSaveButton.TabIndex = 6;
+            quickSaveButton.Text = "Save";
+            quickSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
+            quickSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 12F);
+            quickSaveButton.Click += quickSaveButton_Click;
             // 
             // sm_Menu
             // 
             sm_Menu.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             sm_Menu.Location = new System.Drawing.Point(12, 103);
             sm_Menu.Name = "sm_Menu";
-            sm_Menu.Size = new System.Drawing.Size(143, 407);
+            sm_Menu.Size = new System.Drawing.Size(143, 357);
             sm_Menu.TabIndex = 8;
             // 
             // pnl_Content
@@ -108,7 +128,7 @@ namespace CP2077SaveEditor.Views
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tssl_Status, tssl_Empty, tssl_Info });
+            statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tssl_Status, tspb_Busy, tssl_Empty, tssl_Info });
             statusStrip1.Location = new System.Drawing.Point(0, 572);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new System.Drawing.Size(1024, 22);
@@ -121,6 +141,14 @@ namespace CP2077SaveEditor.Views
             tssl_Status.Size = new System.Drawing.Size(26, 17);
             tssl_Status.Text = "Idle";
             // 
+            // tspb_Busy
+            // 
+            tspb_Busy.MarqueeAnimationSpeed = 30;
+            tspb_Busy.Name = "tspb_Busy";
+            tspb_Busy.Size = new System.Drawing.Size(100, 16);
+            tspb_Busy.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            tspb_Busy.Visible = false;
+            // 
             // tssl_Empty
             // 
             tssl_Empty.Name = "tssl_Empty";
@@ -131,9 +159,9 @@ namespace CP2077SaveEditor.Views
             // 
             tssl_Info.Name = "tssl_Info";
             tssl_Info.Size = new System.Drawing.Size(41, 17);
-            tssl_Info.Text = "v0.28c";
+            tssl_Info.Text = "v0.0";
             // 
-            // Form2
+            // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -141,14 +169,17 @@ namespace CP2077SaveEditor.Views
             Controls.Add(statusStrip1);
             Controls.Add(pnl_Content);
             Controls.Add(sm_Menu);
+            Controls.Add(quickSaveButton);
             Controls.Add(saveChangesButton);
             Controls.Add(filePathLabel);
             Controls.Add(openSaveButton);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
-            Name = "Form2";
+            KeyPreview = true;
+            Name = "MainForm";
             Text = "Cyberpunk 2077 Save Editor (CyberCAT-SimpleGUI)";
-            FormClosing += Form2_FormClosing;
-            Load += Form2_Load;
+            FormClosing += MainForm_FormClosing;
+            Load += MainForm_Load;
+            KeyDown += MainForm_KeyDown;
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
             ResumeLayout(false);
@@ -159,11 +190,13 @@ namespace CP2077SaveEditor.Views
         private System.Windows.Forms.Label filePathLabel;
         private ModernButton openSaveButton;
         private ModernButton saveChangesButton;
+        private ModernButton quickSaveButton;
         private Controls.ScrollMenuControl sm_Menu;
         private System.Windows.Forms.Panel pnl_Content;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tssl_Status;
         private System.Windows.Forms.ToolStripStatusLabel tssl_Empty;
         private System.Windows.Forms.ToolStripStatusLabel tssl_Info;
+        private System.Windows.Forms.ToolStripProgressBar tspb_Busy;
     }
 }

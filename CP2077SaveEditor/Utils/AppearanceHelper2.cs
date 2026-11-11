@@ -33,12 +33,6 @@ public class AppearanceHelper2
                 return;
             }
 
-            if (!Global.PSDataEnabled)
-            {
-                MessageBox.Show("PSData is disabled. Body Gender cannot be changed.", "Notice");
-                return;
-            }
-
             if (!SuppressBodyGenderPrompt)
             {
                 if (MessageBox.Show("Changing body gender will reset all appearance options to default. Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes)
@@ -118,25 +112,25 @@ public class AppearanceHelper2
     [Browsable(false)]
     public string HairStyle
     {
-        get => (string)GetValue();
+        get => GetValue();
         set => SetValue(value);
     }
 
     [Browsable(false)]
     public string HairColor
     {
-        get => (string)GetValue();
+        get => GetValue();
         set => SetValue(value);
     }
 
     [Browsable(false)]
     public string EyeColor
     {
-        get => (string)GetValue();
+        get => GetValue();
         set => SetValue(value);
     }
 
-    private object? GetValue([CallerMemberName] string? callerMemberName = null)
+    private string GetValue([CallerMemberName] string? callerMemberName = null)
     {
         if (callerMemberName == nameof(HairStyle))
         {

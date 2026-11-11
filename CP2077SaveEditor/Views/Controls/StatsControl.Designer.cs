@@ -828,8 +828,6 @@
         private System.Windows.Forms.Label label7;
         private ModernButton btn_ModifierGroupCreate;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.ComboBox cmb_ModifierGroupNodeType;
         private System.Windows.Forms.ComboBox cmb_ModifierGroupStatType;
     }

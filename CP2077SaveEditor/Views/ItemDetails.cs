@@ -5,6 +5,7 @@ using WolvenKit.RED4.Archive.Buffer;
 using WolvenKit.RED4.Types;
 using static WolvenKit.RED4.Types.Enums;
 using WolvenKit.RED4.Save.Classes;
+using CP2077SaveEditor.Utils;
 
 namespace CP2077SaveEditor
 {
@@ -15,6 +16,7 @@ namespace CP2077SaveEditor
         private SaveFileHelper activeSaveFile;
         private bool statsOnly = false;
         private bool _autoUpdate;
+        private bool _isLoading;
 
         public ItemDetails()
         {
@@ -26,6 +28,8 @@ namespace CP2077SaveEditor
             quantityUpDown.ValueChanged += ApplyableControlChanged;
             unknownFlag1CheckBox.CheckedChanged += ApplyableControlChanged;
             questItemCheckBox.CheckedChanged += ApplyableControlChanged;
+            unknown1Box.TextChanged += ApplyableControlChanged;
+            unknown3Box.TextChanged += ApplyableControlChanged;
 
             //Shown += (object s, EventArgs e) =>
             //{
@@ -72,78 +76,89 @@ namespace CP2077SaveEditor
 
         public bool ReloadData()
         {
-            if (!statsOnly)
+            _isLoading = true;
+            try
             {
-                if (activeItem.IsQuantityOnly())
+                if (!statsOnly)
                 {
-                    //SimpleItemData parsing
-                    this.Text = activeItem.ItemInfo.ItemId.Id.ResolvedText + " (Simple Item)";
-
-                    quantityUpDown.Value = activeItem.Quantity;
-                }
-
-                if (activeItem.HasExtendedData())
-                {
-                    //ModableItemData parsing
-                    this.Text = activeItem.ItemInfo.ItemId.Id.ResolvedText + " (Modable Item)";
-
-                    if (activeItem.HasQuantity())
+                    if (activeItem.IsQuantityOnly())
                     {
+                        //SimpleItemData parsing
+                        this.Text = activeItem.ItemInfo.ItemId.Id.ResolvedText + " (Simple Item)";
+
                         quantityUpDown.Value = activeItem.Quantity;
+                    }
+
+                    if (activeItem.HasExtendedData())
+                    {
+                        //ModableItemData parsing
+                        this.Text = activeItem.ItemInfo.ItemId.Id.ResolvedText + " (Modable Item)";
+
+                        if (activeItem.HasQuantity())
+                        {
+                            quantityUpDown.Value = activeItem.Quantity;
+                        }
+                        else
+                        {
+                            basicInfoGroupBox.Enabled = false;
+                            quantityUpDown.Value = 1;
+                        }
+
+                        quickActionsGroupBox.Enabled = true;
+
+                        _autoUpdate = true;
+                        txt_LootItemId.Text = ((ulong)activeItem.ItemAdditionalInfo!.LootItemPoolId).ToString();
+                        txt_LootItemName.Text = activeItem.ItemAdditionalInfo.LootItemPoolId.GetResolvedText() ?? "";
+                        _autoUpdate = false;
+                        unknown1Box.Text = activeItem.ItemAdditionalInfo!.Unknown2.ToString();
+                        unknown3Box.Text = activeItem.ItemAdditionalInfo!.RequiredLevel.ToString();
+
+                        modsTreeView.Nodes.Clear();
+                        var rootNode = modsTreeView.Nodes.Add(activeItem.ItemSlotPart!.AttachmentSlotTdbId.ResolvedText, activeItem.ItemSlotPart.AttachmentSlotTdbId.ResolvedText + " :: " + activeItem.ItemSlotPart.ItemInfo.ItemId.Id.ResolvedText + " [" + activeItem.ItemSlotPart.Children.Count.ToString() + "]");
+                        rootNode.Tag = activeItem.ItemSlotPart;
+                        IterativeBuildModTree(activeItem.ItemSlotPart, rootNode);
+
+                        rootNode.ExpandAll();
                     }
                     else
                     {
-                        basicInfoGroupBox.Enabled = false;
-                        quantityUpDown.Value = 1;
+                        detailsTabControl.TabPages.Remove(additionalInfoTab);
+                        detailsTabControl.TabPages.Remove(modInfoTab);
                     }
+                }
 
-                    quickActionsGroupBox.Enabled = true;
-
-                    txt_LootItemId.Text = ((ulong)activeItem.ItemAdditionalInfo!.LootItemPoolId).ToString();
-                    unknown1Box.Text = activeItem.ItemAdditionalInfo!.Unknown2.ToString();
-                    unknown3Box.Text = activeItem.ItemAdditionalInfo!.RequiredLevel.ToString();
-
-                    modsTreeView.Nodes.Clear();
-                    var rootNode = modsTreeView.Nodes.Add(activeItem.ItemSlotPart!.AttachmentSlotTdbId.ResolvedText, activeItem.ItemSlotPart.AttachmentSlotTdbId.ResolvedText + " :: " + activeItem.ItemSlotPart.ItemInfo.ItemId.Id.ResolvedText + " [" + activeItem.ItemSlotPart.Children.Count.ToString() + "]");
-                    rootNode.Tag = activeItem.ItemSlotPart;
-                    IterativeBuildModTree(activeItem.ItemSlotPart, rootNode);
-
-                    rootNode.ExpandAll();
+                //Stats parsing
+                if (Global.StatsSystemEnabled)
+                {
+                    var statsData = activeSaveFile.GetStatsFromItemId(activeItem.ItemInfo.ItemId);
+                    if (statsData == null)
+                    {
+                        detailsTabControl.TabPages.Remove(statsTab);
+                    }
+                    else
+                    {
+                        detailsTabControl.TabPages.Remove(statsPlaceholderTab);
+                        statsControl1.Init(statsData);
+                    }
                 }
                 else
-                {
-                    detailsTabControl.TabPages.Remove(additionalInfoTab);
-                    detailsTabControl.TabPages.Remove(modInfoTab);
-                }
-            }
-
-            //Stats parsing
-            if (Global.StatsSystemEnabled)
-            {
-                var statsData = activeSaveFile.GetStatsFromItemId(activeItem.ItemInfo.ItemId);
-                if (statsData == null)
                 {
                     detailsTabControl.TabPages.Remove(statsTab);
-                }
-                else
-                {
                     detailsTabControl.TabPages.Remove(statsPlaceholderTab);
-                    statsControl1.Init(statsData);
                 }
-            }
-            else
-            {
-                detailsTabControl.TabPages.Remove(statsTab);
-                detailsTabControl.TabPages.Remove(statsPlaceholderTab);
-            }
 
 
-            if (!statsOnly)
-            {
-                unknownFlag1CheckBox.Checked = activeItem.Flags.HasFlag(ItemFlag.IsNotUnequippable);
-                questItemCheckBox.Checked = activeItem.Flags.HasFlag(ItemFlag.IsQuestItem);
+                if (!statsOnly)
+                {
+                    unknownFlag1CheckBox.Checked = activeItem.Flags.HasFlag(ItemFlag.IsNotUnequippable);
+                    questItemCheckBox.Checked = activeItem.Flags.HasFlag(ItemFlag.IsQuestItem);
+                }
+                return true;
             }
-            return true;
+            finally
+            {
+                _isLoading = false;
+            }
         }
 
         public void LoadItem(ItemData item, object _saveFile, Func<bool> callback1, Random rand)
@@ -200,18 +215,18 @@ namespace CP2077SaveEditor
             var statData = activeSaveFile.GetStatsFromItemId(activeItem.ItemInfo.ItemId);
             if (statData == null)
             {
-                if (MessageBox.Show("Item has no stat data. To fix this, please upgrade the item in-game at least once.", "Notice", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    //modsBaseIdBox.Text = ((ulong)88400986533).ToString();
-                }
+                MessageBox.Show("Item has no stat data. To fix this, please upgrade the item in-game at least once.", "Notice");
             }
             else
             {
-                activeSaveFile.SetConstantStat(gamedataStatType.Quality, 4, statData);
-                activeSaveFile.SetConstantStat(gamedataStatType.RandomCurveInput, 0, statData, gameStatModifierType.Multiplier);
+                var changed = activeSaveFile.SetMaxTier(statData);
+                if (changed)
+                {
+                    ChangeTracker.MarkChanged();
+                }
 
                 ReloadData();
-                MessageBox.Show("Legendary quality stat applied.");
+                MessageBox.Show(changed ? "Item set to Tier 5++." : "Item is already Tier 5++, nothing changed.");
             }
         }
 
@@ -255,6 +270,7 @@ namespace CP2077SaveEditor
                 }
 
                 callbackFunc1();
+                ChangeTracker.MarkChanged();
                 applyButton.Enabled = false;
             }
         }
@@ -304,12 +320,14 @@ namespace CP2077SaveEditor
                 if (activeItem.ItemSlotPart != (ItemSlotPart)modsTreeView.SelectedNode.Tag)
                 {
                     IterativeDeleteModNode(((ItemSlotPart)modsTreeView.SelectedNode.Tag), activeItem.ItemSlotPart);
+                    ChangeTracker.MarkChanged();
                     modsTreeView.SelectedNode.Remove();
                 }
                 else
                 {
 
                     activeItem.ItemSlotPart.Children.Clear();
+                    ChangeTracker.MarkChanged();
                     activeItem.ItemSlotPart.AttachmentSlotTdbId = 0;
                     activeItem.ItemSlotPart.ItemInfo.ItemId.Id = 0;
                     activeItem.ItemSlotPart.ItemAdditionalInfo.LootItemPoolId = 0;
@@ -340,50 +358,25 @@ namespace CP2077SaveEditor
                     ItemAdditionalInfo = new ItemAdditionalInfo()
                 };
                 ((ItemSlotPart)modsTreeView.SelectedNode.Tag).Children.Add(newNode);
+                ChangeTracker.MarkChanged();
                 ReloadData();
                 var nodeDialog = new ModNodeDetails();
                 nodeDialog.LoadNode(newNode, ReloadData, activeSaveFile);
             }
         }
 
-        private void infuseLegendaryComponentsButton_Click(object sender, EventArgs e)
-        {
-            //var components = activeSaveFile.GetInventory(1).Items.Where(x => x.ItemTdbId.GameName == "Legendary Upgrade Components").FirstOrDefault();
-            //if (components == null || ((ItemData.SimpleItemData)components.Data).Quantity < 5)
-            //{
-            //    MessageBox.Show("Insufficient Legendary Upgrade Components. (5) required.");
-            //    return;
-            //}
-
-            //if (activeSaveFile.GetItemStatData(activeItem) == null)
-            //{
-            //    MessageBox.Show("Item has no stat data. To fix this, please upgrade the item in-game at least once.");
-            //    return;
-            //}
-
-            //if (MessageBox.Show("This process will remove (5) Legendary Upgrade Components from your inventory in exchange for upgrading the selected item to legendary quality. The selected item's level will also be upgraded to your current level. Do you wish to continue?", "Infuse Legendary Components", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            //{
-            //    var playerData = activeSaveFile.GetPlayerDevelopmentData();
-            //    var level = playerData.Value.Proficiencies[Array.FindIndex(playerData.Value.Proficiencies, x => x.Type == gamedataProficiencyType.Level)].CurrentLevel;
-
-            //    ((ItemData.SimpleItemData)components.Data).Quantity -= 5;
-            //    activeSaveFile.SetConstantStat(gamedataStatType.Quality, 4, activeSaveFile.GetItemStatData(activeItem));
-            //    activeSaveFile.SetConstantStat(gamedataStatType.ItemLevel, level * 10, activeSaveFile.GetItemStatData(activeItem));
-            //    activeSaveFile.SetConstantStat(gamedataStatType.PowerLevel, level, activeSaveFile.GetItemStatData(activeItem));
-            //    ReloadData();
-
-            //    MessageBox.Show("Legendary components infused.");
-            //}
-        }
-
         private void ApplyableControlChanged(object sender, EventArgs e)
         {
-            applyButton.Enabled = true;
+            if (!_isLoading)
+            {
+                applyButton.Enabled = true;
+            }
         }
 
         private void createStatDataButton_Click(object sender, EventArgs e)
         {
             activeSaveFile.CreateStatData(activeItem.ItemInfo.ItemId);
+            ChangeTracker.MarkChanged();
             detailsTabControl.TabPages.Remove(statsPlaceholderTab);
             detailsTabControl.TabPages.Insert(0, statsTab);
             detailsTabControl.SelectedTab = statsTab;
@@ -392,30 +385,32 @@ namespace CP2077SaveEditor
 
         private void txt_LootItemName_TextChanged(object sender, EventArgs e)
         {
-            if (!activeItem.HasExtendedData() || _autoUpdate)
+            if (!activeItem.HasExtendedData() || _autoUpdate || _isLoading)
             {
                 return;
             }
 
-            activeItem.ItemAdditionalInfo!.LootItemPoolId = txt_LootItemName.Text;
-
             _autoUpdate = true;
-            txt_LootItemId.Text = ((ulong)activeItem.ItemAdditionalInfo.LootItemPoolId).ToString();
+            var id = (TweakDBID)txt_LootItemName.Text;
+            txt_LootItemId.Text = ((ulong)id).ToString();
             _autoUpdate = false;
+            applyButton.Enabled = true;
         }
 
         private void txt_LootItemId_TextChanged(object sender, EventArgs e)
         {
-            if (!activeItem.HasExtendedData() || _autoUpdate)
+            if (!activeItem.HasExtendedData() || _autoUpdate || _isLoading)
             {
                 return;
             }
 
-            activeItem.ItemAdditionalInfo!.LootItemPoolId = ulong.Parse(txt_LootItemId.Text);
-
-            _autoUpdate = true;
-            txt_LootItemName.Text = activeItem.ItemAdditionalInfo.LootItemPoolId.GetResolvedText() ?? "";
-            _autoUpdate = false;
+            if (ulong.TryParse(txt_LootItemId.Text, out var parsedId))
+            {
+                _autoUpdate = true;
+                txt_LootItemName.Text = ((TweakDBID)parsedId).GetResolvedText() ?? "";
+                _autoUpdate = false;
+            }
+            applyButton.Enabled = true;
         }
 
         private void btn_MaxLevel_Click(object sender, EventArgs e)

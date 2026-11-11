@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using WolvenKit.RED4.Save;
 using WolvenKit.RED4.Types;
+using CP2077SaveEditor.Utils;
 
 namespace CP2077SaveEditor
 {
@@ -95,6 +96,7 @@ namespace CP2077SaveEditor
             entry.Resource = new CResourceAsyncReference<appearanceAppearanceResource>(pathBox.Text, entry.Resource.Flags);
 
             ChangesApplied();
+            ChangeTracker.MarkChanged();
             applyButton.Enabled = false;
         }
     }

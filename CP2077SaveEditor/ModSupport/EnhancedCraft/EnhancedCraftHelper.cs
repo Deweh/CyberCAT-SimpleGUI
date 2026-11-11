@@ -56,7 +56,7 @@ public static class EnhancedCraftHelper
                     if (visualTagList.TryGetValue(variantName, out var visualTag))
                     {
                         var newRecordId = stringName + "_" + visualTag;
-                        Form2.TweakDbStringHelper.AddRecordHash(newRecordId);
+                        MainForm.TweakDbStringHelper.AddRecordHash(newRecordId);
                     }
                 }
             }
@@ -98,7 +98,7 @@ public static class EnhancedCraftHelper
                         }
 
                         var newRecordId = stringName + "_" + appearanceName;
-                        Form2.TweakDbStringHelper.AddRecordHash(newRecordId);
+                        MainForm.TweakDbStringHelper.AddRecordHash(newRecordId);
                     }
                 }
             }

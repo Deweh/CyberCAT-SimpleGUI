@@ -13,9 +13,9 @@ namespace CP2077SaveEditor.Views.Controls
 {
     public partial class QuestFactsControl : UserControl, IGameControl
     {
-        private readonly Form2 _parentForm;
+        private readonly MainForm _parentForm;
 
-        public QuestFactsControl(Form2 parentForm)
+        public QuestFactsControl(MainForm parentForm)
         {
             InitializeComponent();
 
@@ -24,6 +24,7 @@ namespace CP2077SaveEditor.Views.Controls
         }
 
         public string GameControlName => "Quest Facts";
+        public string Icon => "";
 
         private void OnParentFormPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -44,6 +45,7 @@ namespace CP2077SaveEditor.Views.Controls
             }
 
             ((FactsTable.FactEntry)factsListView.SelectedVirtualItems()[0].Tag).Value = value;
+            ChangeTracker.MarkChanged();
         }
 
         private void factsListView_MouseUp(object sender, EventArgs e)
@@ -59,6 +61,7 @@ namespace CP2077SaveEditor.Views.Controls
             if (factsListView.SelectedIndices.Count > 0 && e.KeyCode == Keys.Delete)
             {
                 ((FactsTable)_parentForm.ActiveSaveFile.GetFactsContainer().Children[0].Value).FactEntries.Remove((FactsTable.FactEntry)factsListView.SelectedVirtualItems()[0].Tag);
+                ChangeTracker.MarkChanged();
                 _parentForm.SetStatus("'" + factsListView.SelectedVirtualItems()[0].SubItems[1].Text + "' deleted.");
                 factsListView.RemoveVirtualItem(factsListView.SelectedVirtualItems()[0]);
             }
@@ -69,7 +72,7 @@ namespace CP2077SaveEditor.Views.Controls
             if (((TextBox)sender).Text == "Search" && ((TextBox)sender).ForeColor == Color.Silver)
             {
                 ((TextBox)sender).Text = "";
-                ((TextBox)sender).ForeColor = Color.Black;
+                ((TextBox)sender).ForeColor = SystemColors.WindowText;
             }
         }
 
@@ -148,6 +151,7 @@ namespace CP2077SaveEditor.Views.Controls
         private void enableSecretEndingButton_Click(object sender, EventArgs e)
         {
             _parentForm.ActiveSaveFile.SetFactByName("sq032_johnny_friend", 1);
+            ChangeTracker.MarkChanged();
             RefreshFacts();
             MessageBox.Show("Secret ending enabled.");
         }
@@ -158,6 +162,7 @@ namespace CP2077SaveEditor.Views.Controls
             _parentForm.ActiveSaveFile.SetFactByName("river_romanceable", 1);
             _parentForm.ActiveSaveFile.SetFactByName("panam_romanceable", 1);
             _parentForm.ActiveSaveFile.SetFactByName("kerry_romanceable", 1);
+            ChangeTracker.MarkChanged();
             RefreshFacts();
             MessageBox.Show("All characters are now romanceable.");
         }

@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write # needed to attach the zip to releases
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      # Build separately: dotnet test passes unknown options like -clp on to the test app, which then fails to start
+      - name: Build tests
+        run: dotnet build CP2077SaveEditor.Tests/CP2077SaveEditor.Tests.csproj -p:Platform=x64 -clp:ErrorsOnly
+
+      # The round-trip tests need a real save (CP2077_TEST_SAVE), so here they are skipped and only prove the build works
+      - name: Test
+        run: dotnet test --project CP2077SaveEditor.Tests/CP2077SaveEditor.Tests.csproj -p:Platform=x64 --no-build
+
+      # Only errors in the log: the WolvenKit submodule alone produces hundreds of warnings
+      - name: Publish
+        run: dotnet publish CP2077SaveEditor/CP2077SaveEditor.csproj -c Release -p:Platform=x64 -r win-x64 --self-contained false -o publish -clp:ErrorsOnly
+
+      # The artifact download is zipped by GitHub already, so upload the folder as is
+      - uses: actions/upload-artifact@v7
+        with:
+          name: CP2077SaveEditor
+          path: publish/
+
+      - name: Zip for release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: Compress-Archive -Path publish/* -DestinationPath CP2077SaveEditor.zip
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v3
+        with:
+          files: CP2077SaveEditor.zip
+          generate_release_notes: true

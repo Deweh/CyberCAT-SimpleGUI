@@ -1,4 +1,4 @@
-﻿using CP2077SaveEditor.Extensions;
+using CP2077SaveEditor.Extensions;
 using CP2077SaveEditor.Utils;
 using System;
 using System.Collections.Generic;
@@ -13,12 +13,13 @@ namespace CP2077SaveEditor.Views.Controls
 {
     public partial class PlayerStatsControl : UserControl, IGameControl
     {
-        private readonly Form2 _parentForm;
+        private readonly MainForm _parentForm;
 
         private readonly Dictionary<Enum, NumericUpDown> _attributeFields, _proficiencyFields, _devPointFields;
         private readonly Dictionary<gamedataProficiencyType, gamedataStatType> _proficiencyToStatMap;
+        private bool _isLoading;
 
-        public PlayerStatsControl(Form2 parentForm)
+        public PlayerStatsControl(MainForm parentForm)
         {
             InitializeComponent();
 
@@ -81,6 +82,7 @@ namespace CP2077SaveEditor.Views.Controls
         }
 
         public string GameControlName => "Player Stats";
+        public string Icon => "";
 
         private void OnParentFormPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -95,74 +97,83 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void Init()
         {
-            var playerData = _parentForm.ActiveSaveFile.GetPlayerDevelopmentData();
-
-            var lifePathVal = (int)(gamedataLifePath)playerData.LifePath;
-
-            lifePathBox.Items.Clear();
-            lifePathBox.Items.Add("Corporate");
-            lifePathBox.Items.Add("Nomad");
-            lifePathBox.Items.Add("StreetKid");
-
-            if (lifePathVal == 3)
+            _isLoading = true;
+            try
             {
-                lifePathBox.Items.Add("Modded");
-                lifePathBox.SelectedIndex = 3;
-            }
-            else
-            {
-                lifePathBox.SelectedIndex = (gamedataLifePath)playerData.LifePath switch
+                var playerData = _parentForm.ActiveSaveFile.GetPlayerDevelopmentData();
+
+                var lifePathVal = (int)(gamedataLifePath)playerData.LifePath;
+
+                lifePathBox.Items.Clear();
+                lifePathBox.Items.Add("Corporate");
+                lifePathBox.Items.Add("Nomad");
+                lifePathBox.Items.Add("StreetKid");
+
+                if (lifePathVal == 3)
                 {
-                    gamedataLifePath.Corporate => 0,
-                    gamedataLifePath.Nomad => 1,
-                    gamedataLifePath.StreetKid => 2,
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-            }
-            
-            foreach (var proficiency in playerData.Proficiencies)
-            {
-                if (_proficiencyFields.TryGetValue(proficiency.Type, out var numUpDown))
+                    lifePathBox.Items.Add("Modded");
+                    lifePathBox.SelectedIndex = 3;
+                }
+                else
                 {
-                    if (proficiency.CurrentLevel > numUpDown.Maximum)
+                    lifePathBox.SelectedIndex = (gamedataLifePath)playerData.LifePath switch
                     {
-                        numUpDown.Maximum = proficiency.CurrentLevel;
-                    }
-
-                    numUpDown.Value = proficiency.CurrentLevel;
+                        gamedataLifePath.Corporate => 0,
+                        gamedataLifePath.Nomad => 1,
+                        gamedataLifePath.StreetKid => 2,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
                 }
-            }
-
-            foreach (var attribute in playerData.Attributes)
-            {
-                if (_attributeFields.TryGetValue(attribute.AttributeName, out var numUpDown))
+                
+                foreach (var proficiency in playerData.Proficiencies)
                 {
-                    if (attribute.Value > numUpDown.Maximum)
+                    if (_proficiencyFields.TryGetValue(proficiency.Type, out var numUpDown))
                     {
-                        numUpDown.Maximum = attribute.Value;
-                    }
+                        if (proficiency.CurrentLevel > numUpDown.Maximum)
+                        {
+                            numUpDown.Maximum = proficiency.CurrentLevel;
+                        }
 
-                    numUpDown.Value = attribute.Value;
+                        numUpDown.Value = proficiency.CurrentLevel;
+                    }
+                }
+
+                foreach (var attribute in playerData.Attributes)
+                {
+                    if (_attributeFields.TryGetValue(attribute.AttributeName, out var numUpDown))
+                    {
+                        if (attribute.Value > numUpDown.Maximum)
+                        {
+                            numUpDown.Maximum = attribute.Value;
+                        }
+
+                        numUpDown.Value = attribute.Value;
+                    }
+                }
+
+                foreach (var devPoint in playerData.DevPoints)
+                {
+                    if (_devPointFields.TryGetValue(devPoint.Type, out var numUpDown))
+                    {
+                        numUpDown.SetValue(devPoint.Unspent);
+                    }
                 }
             }
-
-            foreach (var devPoint in playerData.DevPoints)
+            finally
             {
-                if (_devPointFields.TryGetValue(devPoint.Type, out var numUpDown))
-                {
-                    numUpDown.SetValue(devPoint.Unspent);
-                }
+                _isLoading = false;
             }
         }
 
         private void PlayerStatChanged(object sender, EventArgs e)
         {
-            if (!_parentForm.IsLoaded)
+            if (!_parentForm.IsLoaded || _isLoading)
             {
                 return;
             }
 
             var playerData = _parentForm.ActiveSaveFile.GetPlayerDevelopmentData();
+            ChangeTracker.MarkChanged();
             var statsMap = GetPlayerStats();
             if (statsMap == null)
             {
@@ -314,23 +325,28 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void lifePathBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!_isLoading)
+            {
+                ChangeTracker.MarkChanged();
+            }
+
             switch (lifePathBox.SelectedIndex)
             {
                 case 0:
                     lifePathPictureBox.Image = Properties.Resources.corpo;
-                    _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Corporate;
+                    if (!_isLoading) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Corporate;
                     break;
                 case 1:
                     lifePathPictureBox.Image = Properties.Resources.nomad;
-                    _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Nomad;
+                    if (!_isLoading) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Nomad;
                     break;
                 case 2:
                     lifePathPictureBox.Image = Properties.Resources.streetkid;
-                    _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.StreetKid;
+                    if (!_isLoading) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.StreetKid;
                     break;
                 case 3:
                     lifePathPictureBox.Image = null;
-                    _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Count;
+                    if (!_isLoading) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Count;
                     break;
             }
         }

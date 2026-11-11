@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,6 +16,8 @@ namespace CP2077SaveEditor
         private Color defaultColor = Color.White;
         private Color hoverColor = Color.LightGray;
         private Boolean clickEffectEnabled = true;
+        private bool _isSelected;
+        private bool _isHovered;
 
         [Browsable(true)]
         [Category("Style")]
@@ -30,7 +32,7 @@ namespace CP2077SaveEditor
         public Color DefaultColor
         {
             get { return defaultColor; }
-            set { defaultColor = value; this.BackColor = value; }
+            set { defaultColor = value; UpdateVisualState(); }
         }
 
         [Browsable(true)]
@@ -38,7 +40,29 @@ namespace CP2077SaveEditor
         public Color HoverColor
         {
             get { return hoverColor; }
-            set { hoverColor = value; }
+            set { hoverColor = value; UpdateVisualState(); }
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                if (_isSelected == value)
+                {
+                    return;
+                }
+
+                _isSelected = value;
+                if (textLabel.Font != null)
+                {
+                    textLabel.Font = new Font(textLabel.Font, _isSelected ? FontStyle.Bold : FontStyle.Regular);
+                }
+                UpdateVisualState();
+                textLabel.Invalidate();
+            }
         }
 
         [Browsable(true)]
@@ -54,7 +78,7 @@ namespace CP2077SaveEditor
         public Font TextFont
         {
             get { return textLabel.Font; }
-            set { textLabel.Font = value; }
+            set { textLabel.Font = _isSelected && value != null ? new Font(value, FontStyle.Bold) : value; }
         }
 
         [Browsable(true)]
@@ -65,9 +89,10 @@ namespace CP2077SaveEditor
             set { clickEffectEnabled = value; }
         }
 
-        protected override void OnCreateControl()
+        // The label is added here rather than in OnCreateControl, so the form's constructor can already
+        // reach it (e.g. to give it the button's tooltip)
+        public ModernButton()
         {
-            base.OnCreateControl();
             this.Controls.Add(textLabel);
             this.BorderStyle = BorderStyle.FixedSingle;
             textLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -77,18 +102,81 @@ namespace CP2077SaveEditor
             textLabel.MouseLeave += TextMouseLeave;
             textLabel.MouseDown += TextMouseDown;
             textLabel.MouseUp += TextMouseUp;
+            textLabel.Paint += TextPaint;
+        }
+
+        private void UpdateVisualState()
+        {
+            if (_isHovered)
+            {
+                this.BackColor = hoverColor;
+            }
+            else if (_isSelected)
+            {
+                this.BackColor = Utils.Theme.IsDark ? hoverColor : Color.Gainsboro;
+            }
+            else
+            {
+                this.BackColor = defaultColor;
+            }
+        }
+
+        private void TextPaint(object sender, PaintEventArgs e)
+        {
+            if (_iconGlyph != null && s_iconFont.Value != null)
+            {
+                var iconBounds = new Rectangle(8, 0, IconWidth, textLabel.Height);
+                TextRenderer.DrawText(e.Graphics, _iconGlyph, s_iconFont.Value, iconBounds, textLabel.ForeColor,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            }
+
+            if (!_isSelected)
+            {
+                return;
+            }
+
+            using var brush = new SolidBrush(Utils.Theme.AccentBar);
+            e.Graphics.FillRectangle(brush, 0, 0, 4, textLabel.Height);
+        }
+
+        private const int IconWidth = 22;
+
+        // Windows 11 ships Segoe Fluent Icons, Windows 10 Segoe MDL2 Assets; without either the icons are left out
+        private static readonly Lazy<Font> s_iconFont = new(() =>
+        {
+            var installed = FontFamily.Families.Select(x => x.Name).ToHashSet();
+            var name = new[] { "Segoe Fluent Icons", "Segoe MDL2 Assets" }.FirstOrDefault(installed.Contains);
+            return name == null ? null : new Font(name, 13F, FontStyle.Regular, GraphicsUnit.Point);
+        });
+
+        private string _iconGlyph;
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string IconGlyph
+        {
+            get { return _iconGlyph; }
+            set
+            {
+                _iconGlyph = value;
+                // Keeps the centered text clear of the icon
+                textLabel.Padding = value != null && s_iconFont.Value != null ? new Padding(IconWidth + 8, 0, 0, 0) : Padding.Empty;
+                textLabel.Invalidate();
+            }
         }
 
         private void TextMouseEnter(object sender, EventArgs e)
         {
+            _isHovered = true;
             base.OnMouseEnter(e);
-            this.BackColor = HoverColor;
+            UpdateVisualState();
         }
 
         private void TextMouseLeave(object sender, EventArgs e)
         {
+            _isHovered = false;
             base.OnMouseLeave(e);
-            this.BackColor = DefaultColor;
+            UpdateVisualState();
         }
 
         private void TextMouseDown(object sender, EventArgs e)
@@ -264,6 +352,7 @@ namespace CP2077SaveEditor
             StringValue = "00";
             Size = new Size(200, 100);
             DoubleBuffered = true;
+            UpdatePen();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -276,8 +365,12 @@ namespace CP2077SaveEditor
             var valueSize = TextRenderer.MeasureText(StringValue.ToUpper(), fonts[1]);
             var nameSize = TextRenderer.MeasureText(PickerName.ToUpper(), fonts[2]);
 
-            if (gStates[0]) g.FillRectangle(Brushes.LightGray, leftRect);
-            if (gStates[1]) g.FillRectangle(Brushes.LightGray, rightRect);
+            var hover = Utils.Theme.IsDark ? Utils.Theme.DarkHover : Color.LightGray;
+            using (var hoverBrush = new SolidBrush(hover))
+            {
+                if (gStates[0]) g.FillRectangle(hoverBrush, leftRect);
+                if (gStates[1]) g.FillRectangle(hoverBrush, rightRect);
+            }
             if (gStates[2]) g.FillRectangle(Brushes.DarkGray, leftRect);
             if (gStates[3]) g.FillRectangle(Brushes.DarkGray, rightRect);
 
@@ -363,12 +456,19 @@ namespace CP2077SaveEditor
         protected override void OnEnabledChanged(EventArgs e)
         {
             base.OnEnabledChanged(e);
-            if (this.Enabled)
-            {
-                pixelPen = new Pen(Color.Black, 1);
-            } else {
-                pixelPen = new Pen(Color.Gray, 1);
-            }
+            UpdatePen();
+        }
+
+        // Follows ForeColor instead of a fixed black, so the dark theme's light text applies
+        protected override void OnForeColorChanged(EventArgs e)
+        {
+            base.OnForeColorChanged(e);
+            UpdatePen();
+        }
+
+        private void UpdatePen()
+        {
+            pixelPen = new Pen(this.Enabled ? this.ForeColor : Color.Gray, 1);
             this.Invalidate();
         }
 

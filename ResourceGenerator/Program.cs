@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using WolvenKit.Common.Services;
 using WolvenKit.Core.CRC;
 using WolvenKit.RED4.Archive.IO;
@@ -11,30 +12,276 @@ namespace ResourceGenerator
 {
     internal class Program
     {
-        private static string _gameDir = @"C:\Games\Steam\steamapps\common\Cyberpunk 2077";
+        private static string _gameDir = @"C:\Program Files (x86)\Steam\steamapps\common\Cyberpunk 2077";
 
+        // Usage: ResourceGenerator [gameDir] [generator ...] [--out <folder>]
+        // Generators: vehicles, mods, items, modifiergroups, names, perks, cyberware, or "all" for every file the editor uses.
+        // The json files are written to --out (e.g. CP2077SaveEditor/Resources) or the current directory.
         static void Main(string[] args)
         {
-            GenerateTweakFiles(Path.Combine(_gameDir, "r6", "cache", "tweakdb_ep1.bin"));
-            //GenerateAppearanceValues(Path.Combine(_gameDir, "archive", "pc", "content", "basegame_1_engine.archive"));
+            var arguments = args.ToList();
+
+            if (arguments.Contains("--help") || arguments.Contains("-h"))
+            {
+                PrintUsage();
+                return;
+            }
+
+            var outIndex = arguments.IndexOf("--out");
+            if (outIndex >= 0)
+            {
+                if (outIndex + 1 >= arguments.Count)
+                {
+                    Console.WriteLine("--out needs a folder");
+                    return;
+                }
+
+                Directory.CreateDirectory(arguments[outIndex + 1]);
+                Directory.SetCurrentDirectory(arguments[outIndex + 1]);
+                arguments.RemoveRange(outIndex, 2);
+            }
+
+            var gameDir = arguments.Count > 0 ? arguments[0] : _gameDir;
+            var generators = arguments.Skip(1).Select(x => x.ToLowerInvariant()).ToHashSet();
+            if (generators.Count == 0)
+            {
+                generators.Add("modifiergroups");
+            }
+
+            if (generators.Remove("all"))
+            {
+                // "mods" is left out, the editor doesn't use Mods.json
+                generators.UnionWith(new[] { "vehicles", "items", "modifiergroups", "names", "perks", "cyberware" });
+            }
+
+            Console.WriteLine($"Writing {string.Join(", ", generators)} to {Directory.GetCurrentDirectory()}");
+            GenerateTweakFiles(gameDir, generators);
+            //GenerateAppearanceValues(Path.Combine(gameDir, "archive", "pc", "content", "basegame_1_engine.archive"));
         }
 
-        private static void GenerateTweakFiles(string tweakPath)
+        private static void PrintUsage()
         {
+            Console.WriteLine("Usage: ResourceGenerator <game folder> <generator ...> [--out <folder>]");
+            Console.WriteLine("Generators: vehicles, mods, items, modifiergroups, names, perks, cyberware, all");
+            Console.WriteLine(@"Example: ResourceGenerator ""C:\Program Files (x86)\Steam\steamapps\common\Cyberpunk 2077"" all --out CP2077SaveEditor/Resources");
+        }
+
+        private static void GenerateTweakFiles(string gameDir, HashSet<string> generators)
+        {
+            var tweakPath = Path.Combine(gameDir, "r6", "cache", "tweakdb_ep1.bin");
+            if (!File.Exists(tweakPath))
+            {
+                Console.WriteLine($"{tweakPath} not found, is \"{gameDir}\" the game folder?");
+                PrintUsage();
+                return;
+            }
+
             var stringHelper = new TweakDBStringHelper();
             stringHelper.LoadFromStream(typeof(TweakDBService).Assembly.GetManifestResourceStream("WolvenKit.Common.Resources.tweakdbstr.kark"));
-            TweakDBIDPool.ResolveHashHandler += stringHelper.GetString;
+
+            // Registers the native TweakDB names, so GetResolvedText works
+            _ = new HashService();
 
             using var fh = File.OpenRead(tweakPath);
             using var reader = new TweakDBReader(fh);
 
-            if (reader.ReadFile(out var tweakDb) == WolvenKit.RED4.TweakDB.EFileReadErrorCodes.NoError)
+            var status = reader.ReadFile(out var tweakDb);
+            if (status != WolvenKit.RED4.TweakDB.EFileReadErrorCodes.NoError)
             {
-                //Test(tweakDb!);
-                //GenerateModList(tweakDb);
-                //GenerateVehicles(tweakDb);
-                //GenerateItemClasses(tweakDb);
-                GenerateModifierGroupsHash(tweakDb!);
+                Console.WriteLine($"Failed to read {tweakPath}: {status}");
+                return;
+            }
+
+            //Test(tweakDb!);
+            if (generators.Contains("mods")) GenerateModList(tweakDb!);
+            if (generators.Contains("vehicles")) GenerateVehicles(tweakDb!);
+            if (generators.Contains("items")) GenerateItemClasses(tweakDb!);
+            if (generators.Contains("modifiergroups")) GenerateModifierGroupsHash(tweakDb!);
+            if (generators.Contains("names")) GenerateDisplayNames(tweakDb!, gameDir);
+            if (generators.Contains("perks")) GeneratePerks(tweakDb!, gameDir);
+            if (generators.Contains("cyberware")) GenerateCyberware(tweakDb!);
+        }
+
+        // Writes Cyberware.json: { item hash: equipment area } for every cyberware item, e.g. "EyesCW"
+        private static void GenerateCyberware(TweakDB tweakDb)
+        {
+            var result = new SortedDictionary<ulong, string>();
+
+            foreach (var (id, type) in tweakDb.Records)
+            {
+                if (!type.IsAssignableTo(typeof(gamedataItem_Record)) || tweakDb.GetFullRecord(id) is not gamedataItem_Record record)
+                {
+                    continue;
+                }
+
+                // EquipmentArea.EyesCW -> EyesCW
+                var area = record.EquipArea.GetResolvedText()?.Replace("EquipmentArea.", "");
+                if (area != null && area.EndsWith("CW") && Enum.TryParse<Enums.gamedataEquipmentArea>(area, out _))
+                {
+                    result[(ulong)id] = area;
+                }
+            }
+
+            Console.WriteLine($"Cyberware: {result.Count} items");
+            File.WriteAllText("Cyberware.json", JsonSerializer.Serialize(result));
+        }
+
+        private record PerkInfo(string Type, string Attribute, int MaxLevel, string Tier, Dictionary<string, string> Names);
+
+        // Writes Perks.json: every 2.0 perk with its attribute tree, number of levels and localized name
+        private static void GeneratePerks(TweakDB tweakDb, string gameDir)
+        {
+            var texts = s_nameLanguages.ToDictionary(x => x.Language, x => LoadTexts(gameDir, x.ArchiveCode));
+            var perks = new List<PerkInfo>();
+
+            foreach (var (id, type) in tweakDb.Records)
+            {
+                if (!type.IsAssignableTo(typeof(gamedataNewPerk_Record)) || tweakDb.GetFullRecord(id) is not gamedataNewPerk_Record record)
+                {
+                    continue;
+                }
+
+                // A few records are cyberware abilities, not perks of the attribute trees
+                if (record.Levels.Count == 0 || record.EnumName == "None")
+                {
+                    continue;
+                }
+
+                var names = new Dictionary<string, string>();
+                var locName = ((string?)record.Loc_name_key) ?? "";
+                if (locName.StartsWith("LocKey#") && ulong.TryParse(locName["LocKey#".Length..], out var locKey))
+                {
+                    foreach (var (language, languageTexts) in texts)
+                    {
+                        if (languageTexts.TryGetValue(locKey, out var text) && !string.IsNullOrWhiteSpace(text))
+                        {
+                            names[language] = text;
+                        }
+                    }
+                }
+
+                // NewPerks.BodyAttributeData -> Body
+                var attribute = record.Attribute.GetResolvedText()?.Replace("NewPerks.", "").Replace("AttributeData", "") ?? "";
+                var tier = record.Tier.GetResolvedText()?.Replace("NewPerks.", "").Replace("NewPerkTier", "") ?? "";
+
+                perks.Add(new PerkInfo(record.EnumName, attribute, record.Levels.Count, tier, names));
+            }
+
+            perks = perks.OrderBy(x => x.Attribute).ThenBy(x => x.Type).ToList();
+            Console.WriteLine($"Perks: {perks.Count}");
+
+            File.WriteAllText("Perks.json", JsonSerializer.Serialize(perks, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            }));
+        }
+
+        private static Dictionary<ulong, string> LoadTexts(string gameDir, string archiveCode)
+        {
+            var texts = new Dictionary<ulong, string>();
+            foreach (var folder in new[] { "content", "ep1" })
+            {
+                var archivePath = Path.Combine(gameDir, "archive", "pc", folder, $"lang_{archiveCode}_text.archive");
+                if (File.Exists(archivePath))
+                {
+                    ReadOnScreenTexts(archivePath, texts);
+                }
+            }
+
+            return texts;
+        }
+
+        // Game language code -> folder used in the localization archives
+        private static readonly (string Language, string ArchiveCode)[] s_nameLanguages =
+        {
+            ("en-us", "en"),
+            ("pt-br", "pt"),
+        };
+
+        // Writes DisplayNames.json: { language: { record hash: localized name } } for items and vehicles
+        private static void GenerateDisplayNames(TweakDB tweakDb, string gameDir)
+        {
+            var locKeys = new Dictionary<ulong, ulong>();
+            foreach (var (id, type) in tweakDb.Records)
+            {
+                if (!type.IsAssignableTo(typeof(gamedataItem_Record)) && !type.IsAssignableTo(typeof(gamedataVehicle_Record)))
+                {
+                    continue;
+                }
+
+                var displayName = tweakDb.GetFullRecord(id) switch
+                {
+                    gamedataItem_Record item => item.DisplayName,
+                    gamedataVehicle_Record vehicle => vehicle.DisplayName,
+                    _ => null
+                };
+
+                if (displayName != null && displayName.Key != 0)
+                {
+                    locKeys[(ulong)id] = displayName.Key;
+                }
+            }
+
+            var result = new Dictionary<string, SortedDictionary<ulong, string>>();
+            foreach (var (language, archiveCode) in s_nameLanguages)
+            {
+                var texts = LoadTexts(gameDir, archiveCode);
+
+                var names = new SortedDictionary<ulong, string>();
+                foreach (var (recordId, locKey) in locKeys)
+                {
+                    if (texts.TryGetValue(locKey, out var text) && !string.IsNullOrWhiteSpace(text))
+                    {
+                        names[recordId] = text;
+                    }
+                }
+
+                result[language] = names;
+                Console.WriteLine($"DisplayNames: {language} {names.Count}/{locKeys.Count} names");
+            }
+
+            File.WriteAllText("DisplayNames.json", JsonSerializer.Serialize(result, new JsonSerializerOptions
+            {
+                // Keep accented characters readable in the file
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            }));
+        }
+
+        private static void ReadOnScreenTexts(string archivePath, Dictionary<ulong, string> texts)
+        {
+            _hashService ??= new HashService();
+
+            if (new ArchiveReader().ReadArchive(archivePath, _hashService, out var archive) != EFileReadErrorCodes.NoError)
+            {
+                Console.WriteLine($"Failed to read {archivePath}");
+                return;
+            }
+
+            // onscreens_final.json patches onscreens.json, so read it last
+            var files = archive.Files.Values
+                .Where(x => x.FileName != null && x.FileName.Contains(@"\onscreens\") && x.FileName.EndsWith(".json"))
+                .OrderBy(x => x.FileName.EndsWith("_final.json"));
+
+            foreach (var file in files)
+            {
+                var ms = new MemoryStream();
+                file.Extract(ms);
+                ms.Position = 0;
+
+                using var reader = new CR2WReader(ms);
+                if (reader.ReadFile(out var cr2w) != EFileReadErrorCodes.NoError ||
+                    cr2w.RootChunk is not JsonResource { Root.Chunk: localizationPersistenceOnScreenEntries entries })
+                {
+                    continue;
+                }
+
+                foreach (var entry in entries.Entries)
+                {
+                    // The female variant is the default text, the male one is only set when it differs
+                    var text = string.IsNullOrEmpty(entry.FemaleVariant) ? (string)entry.MaleVariant : (string)entry.FemaleVariant;
+                    texts[entry.PrimaryKey] = text;
+                }
             }
         }
 
@@ -46,9 +293,8 @@ namespace ResourceGenerator
 
             foreach (var (id, type) in tweakDb.Records)
             {
-                ArgumentNullException.ThrowIfNull(id.ResolvedText);
-
-                if (!id.ResolvedText.StartsWith("ModifierGroups.") || tweakDb.GetFullRecord(id) is not gamedataStatModifierGroup_Record record)
+                // Records added in newer patches may not have a known name yet
+                if (id.ResolvedText == null || !id.ResolvedText.StartsWith("ModifierGroups.") || tweakDb.GetFullRecord(id) is not gamedataStatModifierGroup_Record record)
                 {
                     continue;
                 }
@@ -183,7 +429,11 @@ namespace ResourceGenerator
 
         private static void GenerateVehicles(TweakDB tweakDb)
         {
-            var list = new List<string>();
+            // The shipped list also has hand-picked entries that don't match the filter below, so merge instead of replacing
+            var list = File.Exists("Vehicles.json")
+                ? JsonSerializer.Deserialize<List<string>>(File.ReadAllText("Vehicles.json"))!
+                : new List<string>();
+            var unresolved = 0;
 
             foreach (var (id, type) in tweakDb.Records)
             {
@@ -198,10 +448,20 @@ namespace ResourceGenerator
                 }
 
                 var resolvedText = id.GetResolvedText();
-                if (resolvedText != null && resolvedText.StartsWith("Vehicle.") && resolvedText.EndsWith("_player"))
+                if (resolvedText == null)
+                {
+                    unresolved++;
+                }
+                // "Vehicle.qXXX_" records are quest-only variants
+                else if (resolvedText.StartsWith("Vehicle.") && !resolvedText.StartsWith("Vehicle.q") && resolvedText.EndsWith("_player") && !list.Contains(resolvedText))
                 {
                     list.Add(resolvedText);
                 }
+            }
+
+            if (unresolved > 0)
+            {
+                Console.WriteLine($"Vehicles: {unresolved} records have no known name (tweakdbstr.kark in WolvenKit is outdated) and were skipped");
             }
 
             list.Sort();
@@ -209,7 +469,24 @@ namespace ResourceGenerator
         }
 
         public record SlotPartRecord(ulong ItemPartPreset, ulong Slot);
-        public record ItemRecord(string Type, bool IsSingleInstance, int IsItemPlus, List<SlotPartRecord> SlotParts);
+        // Quality: the record's fixed rarity ("Rare", "LegendaryPlus"...), left out when it is rolled on loot (Quality.Random)
+        public record ItemRecord(string Type, bool IsSingleInstance, int IsItemPlus, List<SlotPartRecord> SlotParts,
+            [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? Quality);
+
+        private static bool ModifiesQuality(TweakDB tweakDb, gamedataItem_Record record)
+        {
+            var quality = (TweakDBID)"BaseStats.Quality";
+            var modifiers = (record.StatModifiers ?? new()).ToList();
+            foreach (var groupId in record.StatModifierGroups ?? new())
+            {
+                if (tweakDb.GetFullRecord(groupId) is gamedataStatModifierGroup_Record group && group.StatModifiers != null)
+                {
+                    modifiers.AddRange(group.StatModifiers);
+                }
+            }
+
+            return modifiers.Any(x => tweakDb.GetFullRecord(x) is gamedataStatModifier_Record modifier && modifier.StatType == quality);
+        }
 
         private static void GenerateItemClasses(TweakDB tweakDb)
         {
@@ -260,7 +537,15 @@ namespace ResourceGenerator
                     }
                 }
 
-                dict.Add(id, new ItemRecord(itemType, record.IsSingleInstance, isItemPlus, presets));
+                string? quality = null;
+                var qualityName = record.Quality.GetResolvedText();
+                // Records that modify Quality themselves roll or scale it, so their quality field isn't the real tier
+                if (qualityName != null && qualityName.StartsWith("Quality.") && qualityName != "Quality.Random" && !ModifiesQuality(tweakDb, record))
+                {
+                    quality = qualityName["Quality.".Length..];
+                }
+
+                dict.Add(id, new ItemRecord(itemType, record.IsSingleInstance, isItemPlus, presets, quality));
             }
 
             dict = dict.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);

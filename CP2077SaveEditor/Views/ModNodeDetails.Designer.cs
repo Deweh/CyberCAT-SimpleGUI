@@ -317,7 +317,6 @@ namespace CP2077SaveEditor
         #endregion
 
         private System.Windows.Forms.Label lbl_AttachmentName;
-        private System.Windows.Forms.Label attachmentNameLabel;
         private System.Windows.Forms.TextBox txt_AttachmentId;
         private System.Windows.Forms.Label lbl_ModName;
         private System.Windows.Forms.TextBox txt_ModId;

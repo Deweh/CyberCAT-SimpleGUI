@@ -42,11 +42,11 @@
             inventoryDescriptionHeader = new System.Windows.Forms.ColumnHeader();
             groupBox1 = new System.Windows.Forms.GroupBox();
             btn_AddItem = new ModernButton();
+            btn_CraftingComponents = new ModernButton();
+            btn_MoveToStash = new ModernButton();
             clearQuestFlagsButton = new ModernButton();
             label2 = new System.Windows.Forms.Label();
             moneyUpDown = new System.Windows.Forms.NumericUpDown();
-            debloatWorker = new System.ComponentModel.BackgroundWorker();
-            debloatTimer = new System.Windows.Forms.Timer(components);
             groupBox2.SuspendLayout();
             containerGroupBox.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -97,7 +97,7 @@
             inventorySearchBox.Name = "inventorySearchBox";
             inventorySearchBox.Size = new System.Drawing.Size(833, 16);
             inventorySearchBox.TabIndex = 2;
-            inventorySearchBox.Text = "Search";
+            inventorySearchBox.Text = "Search  (filters: name: type: id: slot: quantity: desc:)";
             inventorySearchBox.TextChanged += inventorySearchBox_TextChanged;
             inventorySearchBox.GotFocus += SearchBoxGotFocus;
             inventorySearchBox.LostFocus += SearchBoxLostFocus;
@@ -110,7 +110,7 @@
             inventoryListView.FullRowSelect = true;
             inventoryListView.GridLines = true;
             inventoryListView.Location = new System.Drawing.Point(6, 39);
-            inventoryListView.MultiSelect = false;
+            inventoryListView.MultiSelect = true;
             inventoryListView.Name = "inventoryListView";
             inventoryListView.Size = new System.Drawing.Size(833, 396);
             inventoryListView.TabIndex = 0;
@@ -161,6 +161,8 @@
             // 
             groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             groupBox1.Controls.Add(btn_AddItem);
+            groupBox1.Controls.Add(btn_CraftingComponents);
+            groupBox1.Controls.Add(btn_MoveToStash);
             groupBox1.Controls.Add(clearQuestFlagsButton);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(moneyUpDown);
@@ -186,6 +188,37 @@
             btn_AddItem.TextColor = System.Drawing.SystemColors.ControlText;
             btn_AddItem.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             btn_AddItem.Click += btn_AddItem_Click;
+            // 
+            // btn_CraftingComponents
+            // 
+            btn_CraftingComponents.BackColor = System.Drawing.Color.White;
+            btn_CraftingComponents.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_CraftingComponents.ClickEffectEnabled = true;
+            btn_CraftingComponents.DefaultColor = System.Drawing.Color.White;
+            btn_CraftingComponents.HoverColor = System.Drawing.Color.LightGray;
+            btn_CraftingComponents.Location = new System.Drawing.Point(252, 56);
+            btn_CraftingComponents.Name = "btn_CraftingComponents";
+            btn_CraftingComponents.Size = new System.Drawing.Size(157, 23);
+            btn_CraftingComponents.TabIndex = 9;
+            btn_CraftingComponents.Text = "Crafting components...";
+            btn_CraftingComponents.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_CraftingComponents.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_CraftingComponents.Click += btn_CraftingComponents_Click;
+            // btn_MoveToStash
+            //
+            btn_MoveToStash.BackColor = System.Drawing.Color.White;
+            btn_MoveToStash.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            btn_MoveToStash.ClickEffectEnabled = true;
+            btn_MoveToStash.DefaultColor = System.Drawing.Color.White;
+            btn_MoveToStash.HoverColor = System.Drawing.Color.LightGray;
+            btn_MoveToStash.Location = new System.Drawing.Point(126, 56);
+            btn_MoveToStash.Name = "btn_MoveToStash";
+            btn_MoveToStash.Size = new System.Drawing.Size(120, 23);
+            btn_MoveToStash.TabIndex = 5;
+            btn_MoveToStash.Text = "Move to Stash";
+            btn_MoveToStash.TextColor = System.Drawing.SystemColors.ControlText;
+            btn_MoveToStash.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            btn_MoveToStash.Click += btn_MoveToStash_Click;
             // 
             // clearQuestFlagsButton
             // 
@@ -221,15 +254,6 @@
             moneyUpDown.TabIndex = 1;
             moneyUpDown.ValueChanged += moneyUpDown_ValueChanged;
             // 
-            // debloatWorker
-            // 
-            debloatWorker.DoWork += debloatWorker_DoWork;
-            debloatWorker.RunWorkerCompleted += debloatWorker_RunWorkerCompleted;
-            // 
-            // debloatTimer
-            // 
-            debloatTimer.Tick += debloatTimer_Tick;
-            // 
             // InventoryControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -264,9 +288,9 @@
         private ModernButton clearQuestFlagsButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown moneyUpDown;
-        private System.ComponentModel.BackgroundWorker debloatWorker;
-        private System.Windows.Forms.Timer debloatTimer;
         private System.Windows.Forms.ListBox containersListBox;
+        private ModernButton btn_CraftingComponents;
         private ModernButton btn_AddItem;
+        private ModernButton btn_MoveToStash;
     }
 }

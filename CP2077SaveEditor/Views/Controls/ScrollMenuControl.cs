@@ -14,7 +14,7 @@ namespace CP2077SaveEditor.Views.Controls
             InitializeComponent();
         }
 
-        public void AddButton(string text, EventHandler eventHandler)
+        public ModernButton AddButton(string text, string icon, EventHandler eventHandler)
         {
             var button = new ModernButton()
             {
@@ -26,16 +26,27 @@ namespace CP2077SaveEditor.Views.Controls
                 Location = new Point(-1, _buttons.Count * 60 - 1),
                 Size = new Size(pnl_Menu.Width + 1, 61),
                 Text = text,
+                IconGlyph = icon,
                 TextColor = Color.Black,
                 TextFont = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point),
             };
             button.Click += eventHandler;
+            button.MouseWheel += pnl_Menu_MouseWheel;
 
             _buttons.Add(button);
             pnl_Menu.Controls.Add(button);
+            return button;
         }
 
-        private void Scroll(int offset)
+        public void SelectButton(ModernButton selectedButton)
+        {
+            foreach (var button in _buttons)
+            {
+                button.IsSelected = button == selectedButton;
+            }
+        }
+
+        private void ScrollBy(int offset)
         {
             if (pnl_Menu.Controls[0].Location.Y + offset == 59)
             {
@@ -60,25 +71,25 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void btn_ScrollUp_Click(object sender, EventArgs e)
         {
-            Scroll(60);
+            ScrollBy(60);
         }
 
         private void pnl_Menu_MouseWheel(object sender, MouseEventArgs eventArgs)
         {
             if (eventArgs.Delta > 0)
             {
-                Scroll(60);
+                ScrollBy(60);
             }
 
             if (eventArgs.Delta < 0)
             {
-                Scroll(-60);
+                ScrollBy(-60);
             }
         }
 
         private void btn_ScrollDown_Click(object sender, EventArgs e)
         {
-            Scroll(-60);
+            ScrollBy(-60);
         }
     }
 }

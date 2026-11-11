@@ -11,7 +11,13 @@ namespace CP2077SaveEditor.Extensions
     {
         public static void RetrieveDefaultVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            e.Item = ((ListView)sender).GetVirtualInfo().Items[e.ItemIndex];
+            var listView = (ListView)sender;
+            var items = listView.GetVirtualInfo().Items;
+
+            // The ListView can still ask for an old index while the list is shrinking
+            e.Item = e.ItemIndex < items.Count
+                ? items[e.ItemIndex]
+                : new ListViewItem(new string[Math.Max(listView.Columns.Count, 1)]);
         }
 
         private static void DefaultColumnClick(object sender, ColumnClickEventArgs e)
@@ -30,10 +36,19 @@ namespace CP2077SaveEditor.Extensions
             }
             else
             {
+                // Selected indices point into the old list
+                targetView.SelectedIndices.Clear();
                 targetView.GetVirtualInfo().Items = newList;
+
+                // Shrinking a scrolled virtual list leaves the old scroll offset as blank rows at the top
+                if (targetView.IsHandleCreated && targetView.VirtualListSize > 0 && newList.Count < targetView.VirtualListSize)
+                {
+                    targetView.EnsureVisible(0);
+                }
             }
 
             targetView.VirtualListSize = newList.Count();
+            targetView.Invalidate();
             targetView.SortVirtualItems();
         }
 
