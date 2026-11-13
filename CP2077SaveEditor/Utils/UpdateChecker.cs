@@ -11,8 +11,12 @@ namespace CP2077SaveEditor.Utils
     /// </summary>
     public static class UpdateChecker
     {
-        public const string ReleasesPage = "https://github.com/bernardomcma/CyberCAT-SimpleGUI/releases/latest";
-        private const string LatestReleaseApi = "https://api.github.com/repos/bernardomcma/CyberCAT-SimpleGUI/releases/latest";
+        private const string Repository = "Deweh/CyberCAT-SimpleGUI";
+
+        public const string ReleasesPage = "https://github.com/" + Repository + "/releases";
+        private const string LatestReleaseApi = "https://api.github.com/repos/" + Repository + "/releases/latest";
+
+        public static string ReleasePage(string tag) => ReleasesPage + "/tag/" + Uri.EscapeDataString(tag);
 
         public static Version CurrentVersion { get; } = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0);
 

@@ -43,6 +43,9 @@ namespace CP2077SaveEditor.Views
         private UserControl _currentPage;
         private readonly Dictionary<UserControl, ModernButton> _pageButtons = new();
         private readonly string _baseTitle;
+
+        // Where the version in the status bar links to: the releases page, or the newer release once one is found
+        private string _infoLink = UpdateChecker.ReleasesPage;
         private string _saveName;
         private bool _isReadOnly;
 
@@ -64,6 +67,9 @@ namespace CP2077SaveEditor.Views
             InitializeComponent();
             _baseTitle = Text;
             tssl_Info.Text = UpdateChecker.CurrentVersionText;
+            tssl_Info.IsLink = true;
+            tssl_Info.ToolTipText = "Open the releases page";
+            tssl_Info.Click += (_, _) => Process.Start(new ProcessStartInfo(_infoLink) { UseShellExecute = true });
             ChangeTracker.Changed += (_, _) => this.InvokeIfRequired(UpdateTitle);
             ChangeTracker.Edited += (_, _) => this.InvokeIfRequired(OnEdited);
             _undoTimer.Tick += (_, _) => CaptureUndoPoint();
@@ -114,9 +120,8 @@ namespace CP2077SaveEditor.Views
             }
 
             tssl_Info.Text = $"{UpdateChecker.CurrentVersionText} - update available: {newerRelease}";
-            tssl_Info.IsLink = true;
             tssl_Info.ToolTipText = "Open the download page";
-            tssl_Info.Click += (_, _) => Process.Start(new ProcessStartInfo(UpdateChecker.ReleasesPage) { UseShellExecute = true });
+            _infoLink = UpdateChecker.ReleasePage(newerRelease);
         }
 
         // "*" after the save name while there are edits that weren't saved yet
