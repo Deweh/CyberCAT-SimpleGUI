@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -162,5 +162,14 @@
   </data>
   <data name="ModifierGroups" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ModifierGroups.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
+  </data>
+  <data name="cyberware_body" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cyberware_body.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cyberware_atlas" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cyberware_atlas.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CyberwareCatalogue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CyberwareCatalogue.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

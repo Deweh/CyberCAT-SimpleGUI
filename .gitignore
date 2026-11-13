@@ -9,6 +9,10 @@
 *.user
 *.userosscache
 *.sln.docstates
+.taste-skill
+.agents
+.ai-memory.toml
+skills-lock.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -340,3 +344,6 @@ ASALocalRun/
 healthchecksdb
 # Editor logs
 logs/
+
+# Nexus Mods page material, kept locally
+nexus/

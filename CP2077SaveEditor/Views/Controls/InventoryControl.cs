@@ -1,4 +1,4 @@
-﻿using CP2077SaveEditor.Extensions;
+using CP2077SaveEditor.Extensions;
 using CP2077SaveEditor.Utils;
 using System;
 using System.Collections.Generic;
@@ -55,6 +55,12 @@ namespace CP2077SaveEditor.Views.Controls
 
             _parentForm = parentForm;
             _parentForm.PropertyChanged += OnParentFormPropertyChanged;
+
+            var toolTip = new ToolTip();
+            Theme.SetToolTip(toolTip, btn_AddItem, "Add any weapon, clothing, cyberware, mod or consumable to the selected container.");
+            Theme.SetToolTip(toolTip, btn_MoveToStash, "Move the selected items (or all listed stashable items) between V's Inventory and V's Stash.");
+            Theme.SetToolTip(toolTip, btn_CraftingComponents, "Edit quantities of all item and quickhack crafting components at once.");
+            Theme.SetToolTip(toolTip, clearQuestFlagsButton, "Remove Quest/NotUnequippable flags so locked items can be dropped, stashed or disassembled.");
         }
 
         public string GameControlName => "Inventory";
@@ -200,10 +206,7 @@ namespace CP2077SaveEditor.Views.Controls
             containerGroupBox.Visible = true;
             containerGroupBox.Text = containerID;
 
-            if (_inventoryNames.Values.Contains(containerID))
-            {
-                containerID = _inventoryNames.FirstOrDefault(x => x.Value == containerID).Key.ToString();
-            }
+            containerID = GetSelectedContainerId();
 
             foreach (var item in _parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerID)).Items)
             {
@@ -358,132 +361,73 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void inventoryListView_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                var containerId = containersListBox.SelectedItem.ToString();
-                if (_inventoryNames.Values.Contains(containerId))
-                {
-                    containerId = _inventoryNames.FirstOrDefault(x => x.Value == containerId).Key.ToString();
-                }
-
-                var contextMenu = new ContextMenuStrip();
-
-                var hitTest = inventoryListView.HitTest(e.Location);
-                if (hitTest.Item != null)
-                {
-                    contextMenu.Items.Add("Cut", null, CutItem).Tag = hitTest.Item;
-                    contextMenu.Items.Add("Copy", null, CopyItem).Tag = hitTest.Item;
-                }
-
-                if (_itemHolder != null)
-                {
-                    contextMenu.Items.Add("Paste").Click += PasteItem;
-                }
-
-                if (contextMenu.Items.Count > 0)
-                {
-                    contextMenu.Items.Add(new ToolStripSeparator());
-                }
-
-                // Right-clicking a row outside the current selection makes it the only selected row,
-                // so menu actions always apply to what the user sees highlighted.
-                if (hitTest.Item != null && !inventoryListView.SelectedIndices.Contains(hitTest.Item.Index))
-                {
-                    inventoryListView.SelectedIndices.Clear();
-                    inventoryListView.SelectedIndices.Add(hitTest.Item.Index);
-                }
-
-                var selectedCount = inventoryListView.SelectedIndices.Count;
-
-                if (containerId == PlayerInventoryId.ToString())
-                {
-                    if (selectedCount > 0)
-                    {
-                        var moveText = selectedCount == 1 ? "Move to Stash" : $"Move {selectedCount} Items to Stash";
-                        contextMenu.Items.Add(moveText, null, MoveSelectedToStash);
-                    }
-
-                    if (inventoryListView.VirtualListSize > 0)
-                    {
-                        contextMenu.Items.Add(IsSearchActive() ? "Move All Listed Items to Stash" : "Move All to Stash", null, MoveAllToStash);
-                    }
-
-                    if (contextMenu.Items.Count > 0)
-                    {
-                        contextMenu.Items.Add(new ToolStripSeparator());
-                    }
-                }
-
-                if (inventoryListView.VirtualListSize > 0)
-                {
-                    if (containerId != PlayerInventoryId.ToString())
-                    {
-                        if (selectedCount > 0)
-                        {
-                            var moveBackText = selectedCount == 1 ? "Move to V's Inventory" : $"Move {selectedCount} Items to V's Inventory";
-                            contextMenu.Items.Add(moveBackText, null, MoveSelectedToInventory);
-                        }
-
-                        var moveAllBackText = IsSearchActive() ? "Move All Listed Items to V's Inventory" : "Move All to V's Inventory";
-                        contextMenu.Items.Add(moveAllBackText, null, MoveAllToInventory);
-                        contextMenu.Items.Add(new ToolStripSeparator());
-                    }
-
-                    contextMenu.Items.Add("Select All (Ctrl+A)", null, (_, _) => SelectAllInventoryItems());
-                }
-
-                if (containerId == "1" && hitTest.Item != null && selectedCount == 1)
-                {
-                    var activeItem = (ItemData)hitTest.Item.Tag;
-                    var equipSlot = _parentForm.ActiveSaveFile.GetEquippedItems().FirstOrDefault(x => x.Key.Id == activeItem.ItemInfo.ItemId.Id).Key;
-
-                    if (equipSlot != null)
-                    {
-                        var unequipItem = contextMenu.Items.Add("Unequip");
-                        unequipItem.Tag = equipSlot;
-                        unequipItem.Click += UnequipInventoryItem;
-                    }
-                    else
-                    {
-                        var equipIn = new ToolStripMenuItem("Equip in Slot");
-                        foreach (var area in _parentForm.ActiveSaveFile.GetEquipAreas())
-                        {
-                            int counter = 1;
-                            foreach (var slot in area.EquipSlots)
-                            {
-                                var slotItem = equipIn.DropDownItems.Add(area.AreaType.ToString() + " " + counter.ToString());
-                                slotItem.Tag = slot;
-                                slotItem.Click += EquipInventoryItem;
-                                counter++;
-                            }
-                        }
-                        contextMenu.Items.Add(equipIn);
-                    }
-                }
-
-                if (hitTest.Item != null)
-                {
-                    contextMenu.Items.Add(selectedCount > 1 ? $"Make {selectedCount} Items Tier 5++" : "Make Tier 5++", null, MakeSelectedMaxTier);
-                    contextMenu.Items.Add(selectedCount > 1 ? $"Set Quantity of {selectedCount} Items..." : "Set Quantity...", null, SetSelectedQuantity);
-                    contextMenu.Items.Add(selectedCount > 1 ? $"Delete {selectedCount} Items" : "Delete", null, DeleteInventoryItem);
-                }
-
-                contextMenu.Show(Cursor.Position);
-            }
-        }
-
-        private void CutItem(object sender, EventArgs e)
-        {
-            if (sender is not ToolStripMenuItem { Tag: ListViewItem { Tag: ItemData selectedItemData } selectedItem })
+            if (e.Button != MouseButtons.Right)
             {
                 return;
             }
 
-            var containerId = containersListBox.SelectedItem.ToString();
-            if (_inventoryNames.Values.Contains(containerId))
+            var containerId = GetSelectedContainerId();
+            var isPlayerInventory = containerId == PlayerInventoryId.ToString();
+            var hitTest = inventoryListView.HitTest(e.Location);
+
+            // Right-clicking a row outside the current selection makes it the only selected row,
+            // so menu actions always apply to what the user sees highlighted.
+            if (hitTest.Item != null && !inventoryListView.SelectedIndices.Contains(hitTest.Item.Index))
             {
-                containerId = _inventoryNames.FirstOrDefault(x => x.Value == containerId).Key.ToString();
+                inventoryListView.SelectedIndices.Clear();
+                inventoryListView.SelectedIndices.Add(hitTest.Item.Index);
             }
+
+            var selectedCount = inventoryListView.SelectedIndices.Count;
+            gameItemID equippedSlotId = null;
+            CArray<gameSEquipArea> equipAreas = null;
+
+            if (isPlayerInventory && hitTest.Item?.Tag is ItemData activeItem && selectedCount == 1)
+            {
+                equippedSlotId = _parentForm.ActiveSaveFile.GetEquippedItems()
+                    .FirstOrDefault(x => x.Key.Id == activeItem.ItemInfo.ItemId.Id).Key;
+                if (equippedSlotId == null)
+                {
+                    equipAreas = _parentForm.ActiveSaveFile.GetEquipAreas();
+                }
+            }
+
+            var contextMenu = InventoryContextMenuBuilder.Build(new InventoryContextMenuRequest
+            {
+                IsPlayerInventory = isPlayerInventory,
+                IsSearchActive = IsSearchActive(),
+                HasClipboardItem = _itemHolder != null,
+                SelectedCount = selectedCount,
+                TotalListedCount = inventoryListView.VirtualListSize,
+                ClickedItem = hitTest.Item,
+                EquippedSlotId = equippedSlotId,
+                EquipAreas = equipAreas,
+                OnCut = CutItem,
+                OnCopy = CopyItem,
+                OnPaste = PasteItem,
+                OnMoveSelectedToStash = MoveSelectedToStash,
+                OnMoveAllToStash = MoveAllToStash,
+                OnMoveSelectedToInventory = MoveSelectedToInventory,
+                OnMoveAllToInventory = MoveAllToInventory,
+                OnSelectAll = (_, _) => SelectAllInventoryItems(),
+                OnUnequip = UnequipInventoryItem,
+                OnEquipInSlot = EquipInventoryItem,
+                OnMakeMaxTier = MakeSelectedMaxTier,
+                OnSetQuantity = SetSelectedQuantity,
+                OnDelete = DeleteInventoryItem
+            });
+
+            contextMenu.Show(Cursor.Position);
+        }
+
+        private void CutItem(object sender, EventArgs e)
+        {
+            if (sender is not ToolStripMenuItem { Tag: ListViewItem { Tag: ItemData selectedItemData } })
+            {
+                return;
+            }
+
+            var containerId = GetSelectedContainerId();
 
             _itemOperation = Operation.Cut;
             _itemHolder = selectedItemData;
@@ -1000,7 +944,7 @@ namespace CP2077SaveEditor.Views.Controls
             if (((TextBox)sender).Text == SearchPlaceholder && ((TextBox)sender).ForeColor == Color.Silver)
             {
                 ((TextBox)sender).Text = "";
-                ((TextBox)sender).ForeColor = SystemColors.WindowText;
+                ((TextBox)sender).ForeColor = Theme.IsDark ? Theme.DarkText : SystemColors.WindowText;
             }
         }
 
@@ -1025,11 +969,7 @@ namespace CP2077SaveEditor.Views.Controls
 
         private void btn_AddItem_Click(object sender, EventArgs e)
         {
-            var containerID = containersListBox.SelectedItem.ToString();
-            if (_inventoryNames.Values.Contains(containerID))
-            {
-                containerID = _inventoryNames.FirstOrDefault(x => x.Value == containerID).Key.ToString();
-            }
+            var containerID = GetSelectedContainerId();
 
             var itemDialog = new AddItem();
             itemDialog.LoadDialog(_parentForm.ActiveSaveFile.GetInventory(ulong.Parse(containerID)), _parentForm.ActiveSaveFile);

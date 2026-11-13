@@ -8,7 +8,7 @@ namespace CP2077SaveEditor
         public WrongDefaultDialog(string className, string prop, object value)
         {
             InitializeComponent();
-            errorBox.Text = "Please report this issue at https://github.com/Deweh/CyberCAT-SimpleGUI/issues" + Environment.NewLine +
+            errorBox.Text = "Please report this issue at https://github.com/bernardomcma/CyberCAT-SimpleGUI/issues" + Environment.NewLine +
                             "WrongDefaultValue" + Environment.NewLine + 
                             "Class Name: " + className + Environment.NewLine + 
                             "Property: " + prop + Environment.NewLine +

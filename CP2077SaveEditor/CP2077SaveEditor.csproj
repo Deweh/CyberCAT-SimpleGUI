@@ -7,7 +7,13 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <Platforms>x64</Platforms>
     <!-- Shown in the status bar and compared with the latest GitHub release -->
-    <Version>0.30.1</Version>
+    <Version>0.34.0</Version>
+    <!-- Shown in the exe's file properties -->
+    <Product>CyberCAT Reloaded</Product>
+    <AssemblyTitle>CyberCAT Reloaded - Cyberpunk 2077 save editor</AssemblyTitle>
+    <Authors>bernardomcma</Authors>
+    <Company>bernardomcma</Company>
+    <Copyright>Copyright (c) 2026 bernardomcma, based on CyberCAT-SimpleGUI (c) 2021 DeweySalt</Copyright>
     <!-- The custom controls in Utils/Controls.cs rely on the default designer serialization -->
     <NoWarn>$(NoWarn);WFO1000</NoWarn>
   </PropertyGroup>

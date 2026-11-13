@@ -1,8 +1,8 @@
-﻿# CyberCAT-SimpleGUI
+﻿# CyberCAT Reloaded by bernardomcma
 
-A save editor for Cyberpunk 2077, including patch 2.5. A simplified offshoot of SirBitesalot's CyberCAT, by Deweh and contributors.
+A Cyberpunk 2077 save editor with support for patch 2.5 and Phantom Liberty. CyberCAT Reloaded continues [CyberCAT-SimpleGUI by Deweh](https://github.com/Deweh/CyberCAT-SimpleGUI), itself a simplified offshoot of SirBitesalot's CyberCAT.
 
-**Download:** [Nexus Mods](https://www.nexusmods.com/cyberpunk2077/mods/718) or the [latest GitHub release](https://github.com/Deweh/CyberCAT-SimpleGUI/releases/latest). Extract the whole zip into a folder before running the editor.
+**Download:** [Nexus Mods](https://www.nexusmods.com/cyberpunk2077/mods/36532) or the [latest GitHub release](https://github.com/bernardomcma/CyberCAT-SimpleGUI/releases/latest). Extract the whole zip into a folder before running the editor.
 
 **What's new:** see [CHANGELOG.md](CHANGELOG.md).
 
@@ -17,6 +17,7 @@ A save editor for Cyberpunk 2077, including patch 2.5. A simplified offshoot of 
 - **Perks:** the 2.0 skill trees and Relic perks, with or without spending points.
 - **Cyberware:** equip any cyberware in any slot of its body area and raise the cyberware capacity.
 - **Vehicles:** unlock or lock any player vehicle.
+- **Cloud saves:** download a save from the CD PROJEKT RED cross-save cloud, edit it and upload it back, without the game installed on the PC (see [Cloud saves](#cloud-saves)).
 - **Appearance:** presets, voice, and body gender (with a complete default appearance for the new body).
 - **Quest facts, fast travel** and support for several mods' saved data.
 - **Modded saves:** stat types and other values added by mods, data that script mods add to V and NPCs, and lifepath mods (shown as "Modded") are kept and written back unchanged.
@@ -25,7 +26,7 @@ Saves from game versions newer than the editor supports open read-only, so they 
 
 ## Game Version Support
 
-**Game Version**    | **Support** | **CyberCAT-SimpleGUI Version**
+**Game Version**    | **Support** | **Editor Version**
 --------------------| ------------|-----------------------------
 Patch 2.5           | Full        | >=v0.29.0
 Patch 2.0 - 2.3     | Full        | >=v0.28c
@@ -35,7 +36,10 @@ Patch 1.23          | Full        | >=v0.10a
 
 ## Usage
 
-Requires the [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (x64).
+Each release has two downloads:
+
+- **CyberCAT-Reloaded-Standalone.zip** (recommended): a single `CP2077SaveEditor.exe` with .NET included, nothing else to install.
+- **CyberCAT-Reloaded.zip**: smaller, but needs the [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (x64).
 
 1. Run **CP2077SaveEditor.exe** and double click a save (or use **Load Save** for one somewhere else).
 2. Make your changes. Double click items in the inventory to edit them.
@@ -47,11 +51,26 @@ Errors are written to `logs\` next to the executable, attach that file to bug re
 
 If loading fails with a message about `kraken.dll`, the zip wasn't fully extracted or an antivirus quarantined the file. Antivirus false positives happen with unsigned tools like this one; the full source is in this repository.
 
-The editor follows the Windows light/dark setting. To force one, create a `config.json` next to the executable with `{ "Theme": 1 }` (light) or `{ "Theme": 2 }` (dark).
+The editor uses a dark, Cyberpunk-styled theme by default. For the classic light look, create a `config.json` next to the executable with `{ "Theme": 1 }`, or `{ "Theme": 0 }` to follow the Windows light/dark setting.
 
 Other `config.json` options: `"UndoSteps"` (default 10, `0` turns undo off; each step keeps ~4 MB in memory) and `"CheckForUpdates": 0` to skip the update check on startup.
 
 Planned work is tracked in [TODO.md](TODO.md).
+
+## Cloud saves
+
+The **Cloud...** button works directly with the CD PROJEKT RED cross-save cloud, the same one the game uses. You don't need Cyberpunk 2077 installed on the PC, which is useful for saves from consoles such as the PS5 (the feature was developed and tested with a PS5 save) that would otherwise be hard to reach.
+
+1. Turn on cross-save in the game with your CD PROJEKT RED account, and make sure the save you want is synced to the cloud.
+2. Click **Cloud...** and **Sign in**. Your browser opens the CD PROJEKT RED sign-in page; the password is only ever typed there. The editor stays signed in until you close it and never writes the access token to disk.
+3. Select a slot and click **Download and open** to edit it like any other save.
+4. To send it back, open the save, click **Cloud...**, select the slot and click **Upload open save to slot**. The editor saves the open save first (with the usual backup and verification), keeps a copy of the previous cloud version in `%LOCALAPPDATA%\CyberCAT\cloud-backups`, uploads and reads the result back to check it.
+
+Notes:
+
+- Make your own backup of your cloud saves first. Uploading overwrites the slot.
+- This uses the cross-save API the game itself talks to. It is not publicly documented, so CD PROJEKT RED can change it at any time and the feature may stop working.
+- Downloaded saves are kept in `%LOCALAPPDATA%\CyberCAT\cloud-downloads`.
 
 ## Credits
 

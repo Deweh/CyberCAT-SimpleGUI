@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -24,9 +24,13 @@ namespace CP2077SaveEditor.Views.Controls
 
             _parentForm = parentForm;
             _parentForm.PropertyChanged += OnParentFormPropertyChanged;
+
+            var toolTip = new ToolTip();
+            Theme.SetToolTip(toolTip, btn_UnlockAll, "Unlock all vehicles currently shown in the list (respects the active search filter).");
+            Theme.SetToolTip(toolTip, btn_LockAll, "Lock (remove from garage) all vehicles currently shown in the list.");
         }
 
-        public string GameControlName => "Unlocked Vehicles";
+        public string GameControlName => "Vehicles";
         public string Icon => "";
 
         private void OnParentFormPropertyChanged(object sender, PropertyChangedEventArgs e)

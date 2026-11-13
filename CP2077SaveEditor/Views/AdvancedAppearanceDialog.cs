@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -33,7 +33,7 @@ namespace CP2077SaveEditor
             {
                 foreach (var mainEntry in customizationGroup.Customization)
                 {
-                    options.Add("face/" + customizationGroup.Name + "/" + mainEntry.Name, mainEntry);
+                    options["head/" + customizationGroup.Name + "/" + mainEntry.Name] = mainEntry;
                 }
             }
 
@@ -41,7 +41,7 @@ namespace CP2077SaveEditor
             {
                 foreach (var mainEntry in customizationGroup.Customization)
                 {
-                    options.Add("face/" + customizationGroup.Name + "/" + mainEntry.Name, mainEntry);
+                    options["arms/" + customizationGroup.Name + "/" + mainEntry.Name] = mainEntry;
                 }
             }
 
@@ -49,7 +49,7 @@ namespace CP2077SaveEditor
             {
                 foreach (var mainEntry in customizationGroup.Customization)
                 {
-                    options.Add("face/" + customizationGroup.Name + "/" + mainEntry.Name, mainEntry);
+                    options["body/" + customizationGroup.Name + "/" + mainEntry.Name] = mainEntry;
                 }
             }
 

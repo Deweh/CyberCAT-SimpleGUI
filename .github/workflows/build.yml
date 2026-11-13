@@ -40,26 +40,41 @@ jobs:
       - name: Test
         run: dotnet test --project CP2077SaveEditor.Tests/CP2077SaveEditor.Tests.csproj -p:Platform=x64 --no-build
 
-      # Only errors in the log: the WolvenKit submodule alone produces hundreds of warnings
-      - name: Publish
-        run: dotnet publish CP2077SaveEditor/CP2077SaveEditor.csproj -c Release -p:Platform=x64 -r win-x64 --self-contained false -o publish -clp:ErrorsOnly
+      # Only errors in the log: the WolvenKit submodule alone produces hundreds of warnings.
+      # No .pdb (WolvenKit's alone is 76 MB) and no translations of .NET's own messages.
+      - name: Publish (needs .NET 10)
+        run: dotnet publish CP2077SaveEditor/CP2077SaveEditor.csproj -c Release -p:Platform=x64 -r win-x64 --self-contained false -p:DebugType=none -p:SatelliteResourceLanguages=en -o publish -clp:ErrorsOnly
 
-      # The artifact download is zipped by GitHub already, so upload the folder as is
+      # A single exe with .NET inside, for players without the .NET 10 Desktop Runtime
+      - name: Publish (standalone)
+        run: dotnet publish CP2077SaveEditor/CP2077SaveEditor.csproj -c Release -p:Platform=x64 -r win-x64 --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none -p:SatelliteResourceLanguages=en -o publish-standalone -clp:ErrorsOnly
+
+      # The artifact download is zipped by GitHub already, so upload the folders as they are
       - uses: actions/upload-artifact@v7
         with:
-          name: CP2077SaveEditor
+          name: CyberCAT-Reloaded
           path: publish/
+
+      # Only the exe: the other files are WolvenKit's native libraries for Linux/macOS
+      - uses: actions/upload-artifact@v7
+        with:
+          name: CyberCAT-Reloaded-Standalone
+          path: publish-standalone/CP2077SaveEditor.exe
 
       - name: Zip for release
         if: startsWith(github.ref, 'refs/tags/v')
         shell: pwsh
-        run: Compress-Archive -Path publish/* -DestinationPath CP2077SaveEditor.zip
+        run: |
+          Compress-Archive -Path publish/* -DestinationPath CyberCAT-Reloaded.zip
+          Compress-Archive -Path publish-standalone/CP2077SaveEditor.exe -DestinationPath CyberCAT-Reloaded-Standalone.zip
 
       - name: Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v3
         with:
-          files: CP2077SaveEditor.zip
+          files: |
+            CyberCAT-Reloaded.zip
+            CyberCAT-Reloaded-Standalone.zip
           generate_release_notes: true
 
       # Scans the release zip before Nexus Mods does. Errors here never block the release.
@@ -71,7 +86,7 @@ jobs:
         env:
           VT_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
           VT_MAX_DETECTIONS: ${{ vars.VIRUSTOTAL_MAX_DETECTIONS }}
-          ZIP: CP2077SaveEditor.zip
+          ZIP: CyberCAT-Reloaded.zip
         run: |
           if (-not $env:VT_API_KEY) {
             Write-Host 'VIRUSTOTAL_API_KEY is not set, skipping the scan'
@@ -153,9 +168,9 @@ jobs:
           api_key: ${{ secrets.NEXUS_API_KEY }}
           mod_id: ${{ vars.NEXUS_MOD_ID }}
           file_id: ${{ vars.NEXUS_FILE_ID }}
-          filename: CP2077SaveEditor.zip
+          filename: CyberCAT-Reloaded.zip
           version: ${{ steps.nexus.outputs.version }}
-          display_name: ${{ vars.NEXUS_FILE_NAME || 'Save Editor (Project CyberCAT-SimpleGUI) (AIO)' }}
+          display_name: ${{ vars.NEXUS_FILE_NAME || 'CyberCAT Reloaded' }}
           description: Save editor for Cyberpunk 2077, including patch 2.5. Back up your saves before editing.
           changelog: ${{ steps.nexus.outputs.changelog }}
           archive_existing_version: true

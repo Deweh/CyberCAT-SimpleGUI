@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -30,9 +30,10 @@ namespace CP2077SaveEditor.Views.Controls
             _parentForm = parentForm;
             _parentForm.PropertyChanged += OnParentFormPropertyChanged;
 
-            //appearanceOptionsPanel.Enabled = Global.IsDebug;
-            //appearancePreviewBox.Enabled = Global.IsDebug;
-            //advancedAppearanceButton.Enabled = Global.IsDebug;
+            var toolTip = new ToolTip();
+            Theme.SetToolTip(toolTip, loadAppearButton, "Load a character appearance preset (.preset) into the current save.");
+            Theme.SetToolTip(toolTip, saveAppearButton, "Export V's current appearance to a shareable .preset file.");
+            Theme.SetToolTip(toolTip, advancedAppearanceButton, "Inspect and edit raw appearance customization groups and entries.");
 
             var lastPos = 0;
             foreach (PropertyInfo property in typeof(AppearanceHelper2).GetProperties())
@@ -52,7 +53,8 @@ namespace CP2077SaveEditor.Views.Controls
                     {
                         Name = property.Name,
                         PickerName = Regex.Replace(property.Name, "([a-z])([A-Z])", "$1 $2"),
-                        Location = new System.Drawing.Point(0, lastPos),
+                        Location = new System.Drawing.Point(8, lastPos),
+                        Size = new System.Drawing.Size(268, 96),
                         Tag = property
                     };
 

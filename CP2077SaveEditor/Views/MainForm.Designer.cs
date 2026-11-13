@@ -1,4 +1,4 @@
-﻿using CP2077SaveEditor.Properties;
+using CP2077SaveEditor.Properties;
 
 namespace CP2077SaveEditor.Views
 {
@@ -33,6 +33,7 @@ namespace CP2077SaveEditor.Views
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             filePathLabel = new System.Windows.Forms.Label();
             openSaveButton = new ModernButton();
+            cloudButton = new ModernButton();
             saveChangesButton = new ModernButton();
             quickSaveButton = new ModernButton();
             sm_Menu = new CP2077SaveEditor.Views.Controls.ScrollMenuControl();
@@ -48,9 +49,9 @@ namespace CP2077SaveEditor.Views
             // filePathLabel
             // 
             filePathLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            filePathLabel.Location = new System.Drawing.Point(12, 85);
+            filePathLabel.Location = new System.Drawing.Point(12, 74);
             filePathLabel.Name = "filePathLabel";
-            filePathLabel.Size = new System.Drawing.Size(143, 15);
+            filePathLabel.Size = new System.Drawing.Size(176, 18);
             filePathLabel.TabIndex = 5;
             filePathLabel.Text = "No save file selected.";
             filePathLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -65,13 +66,31 @@ namespace CP2077SaveEditor.Views
             openSaveButton.HoverColor = System.Drawing.Color.LightGray;
             openSaveButton.Location = new System.Drawing.Point(12, 12);
             openSaveButton.Name = "openSaveButton";
-            openSaveButton.Size = new System.Drawing.Size(143, 55);
+            openSaveButton.Size = new System.Drawing.Size(176, 54);
             openSaveButton.TabIndex = 3;
             openSaveButton.Text = "Load Save";
             openSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
-            openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 14.25F);
+            openSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 13.5F);
             openSaveButton.Click += openSaveButton_Click;
-            // 
+            //
+            // cloudButton
+            //
+            cloudButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            cloudButton.BackColor = System.Drawing.Color.WhiteSmoke;
+            cloudButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            cloudButton.ClickEffectEnabled = true;
+            cloudButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
+            cloudButton.Enabled = false;
+            cloudButton.HoverColor = System.Drawing.Color.LightGray;
+            cloudButton.Location = new System.Drawing.Point(12, 434);
+            cloudButton.Name = "cloudButton";
+            cloudButton.Size = new System.Drawing.Size(176, 36);
+            cloudButton.TabIndex = 4;
+            cloudButton.Text = "Cloud...";
+            cloudButton.TextColor = System.Drawing.SystemColors.ControlText;
+            cloudButton.TextFont = new System.Drawing.Font("Segoe UI", 11F);
+            cloudButton.Click += cloudButton_Click;
+            //
             // saveChangesButton
             // 
             saveChangesButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
@@ -81,13 +100,13 @@ namespace CP2077SaveEditor.Views
             saveChangesButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
             saveChangesButton.Enabled = false;
             saveChangesButton.HoverColor = System.Drawing.Color.LightGray;
-            saveChangesButton.Location = new System.Drawing.Point(12, 516);
+            saveChangesButton.Location = new System.Drawing.Point(12, 520);
             saveChangesButton.Name = "saveChangesButton";
-            saveChangesButton.Size = new System.Drawing.Size(143, 44);
+            saveChangesButton.Size = new System.Drawing.Size(176, 40);
             saveChangesButton.TabIndex = 7;
             saveChangesButton.Text = "Save As...";
             saveChangesButton.TextColor = System.Drawing.SystemColors.ControlText;
-            saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 12F);
+            saveChangesButton.TextFont = new System.Drawing.Font("Segoe UI", 11F);
             saveChangesButton.Click += saveChangesButton_Click;
             // 
             // quickSaveButton
@@ -99,21 +118,21 @@ namespace CP2077SaveEditor.Views
             quickSaveButton.DefaultColor = System.Drawing.Color.WhiteSmoke;
             quickSaveButton.Enabled = false;
             quickSaveButton.HoverColor = System.Drawing.Color.LightGray;
-            quickSaveButton.Location = new System.Drawing.Point(12, 466);
+            quickSaveButton.Location = new System.Drawing.Point(12, 474);
             quickSaveButton.Name = "quickSaveButton";
-            quickSaveButton.Size = new System.Drawing.Size(143, 44);
+            quickSaveButton.Size = new System.Drawing.Size(176, 40);
             quickSaveButton.TabIndex = 6;
             quickSaveButton.Text = "Save";
             quickSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
-            quickSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 12F);
+            quickSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 11F);
             quickSaveButton.Click += quickSaveButton_Click;
             // 
             // sm_Menu
             // 
             sm_Menu.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            sm_Menu.Location = new System.Drawing.Point(12, 103);
+            sm_Menu.Location = new System.Drawing.Point(12, 98);
             sm_Menu.Name = "sm_Menu";
-            sm_Menu.Size = new System.Drawing.Size(143, 357);
+            sm_Menu.Size = new System.Drawing.Size(176, 332);
             sm_Menu.TabIndex = 8;
             // 
             // pnl_Content
@@ -121,9 +140,9 @@ namespace CP2077SaveEditor.Views
             pnl_Content.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             pnl_Content.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             pnl_Content.Enabled = false;
-            pnl_Content.Location = new System.Drawing.Point(161, 12);
+            pnl_Content.Location = new System.Drawing.Point(196, 12);
             pnl_Content.Name = "pnl_Content";
-            pnl_Content.Size = new System.Drawing.Size(851, 548);
+            pnl_Content.Size = new System.Drawing.Size(856, 548);
             pnl_Content.TabIndex = 9;
             // 
             // statusStrip1
@@ -131,7 +150,7 @@ namespace CP2077SaveEditor.Views
             statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tssl_Status, tspb_Busy, tssl_Empty, tssl_Info });
             statusStrip1.Location = new System.Drawing.Point(0, 572);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new System.Drawing.Size(1024, 22);
+            statusStrip1.Size = new System.Drawing.Size(1064, 22);
             statusStrip1.TabIndex = 10;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -152,20 +171,21 @@ namespace CP2077SaveEditor.Views
             // tssl_Empty
             // 
             tssl_Empty.Name = "tssl_Empty";
-            tssl_Empty.Size = new System.Drawing.Size(911, 17);
+            tssl_Empty.Size = new System.Drawing.Size(951, 17);
             tssl_Empty.Spring = true;
             // 
             // tssl_Info
             // 
             tssl_Info.Name = "tssl_Info";
             tssl_Info.Size = new System.Drawing.Size(41, 17);
-            tssl_Info.Text = "v0.0";
+            tssl_Info.Text = "v0.28c";
             // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1024, 594);
+            ClientSize = new System.Drawing.Size(1064, 594);
+            MinimumSize = new System.Drawing.Size(960, 580);
             Controls.Add(statusStrip1);
             Controls.Add(pnl_Content);
             Controls.Add(sm_Menu);
@@ -173,10 +193,11 @@ namespace CP2077SaveEditor.Views
             Controls.Add(saveChangesButton);
             Controls.Add(filePathLabel);
             Controls.Add(openSaveButton);
+            Controls.Add(cloudButton);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "MainForm";
-            Text = "Cyberpunk 2077 Save Editor (CyberCAT-SimpleGUI)";
+            Text = "CyberCAT Reloaded by bernardomcma";
             FormClosing += MainForm_FormClosing;
             Load += MainForm_Load;
             KeyDown += MainForm_KeyDown;
@@ -189,6 +210,7 @@ namespace CP2077SaveEditor.Views
         #endregion
         private System.Windows.Forms.Label filePathLabel;
         private ModernButton openSaveButton;
+        private ModernButton cloudButton;
         private ModernButton saveChangesButton;
         private ModernButton quickSaveButton;
         private Controls.ScrollMenuControl sm_Menu;

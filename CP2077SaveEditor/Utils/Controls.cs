@@ -1,37 +1,52 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
 
 namespace CP2077SaveEditor
 {
     [DefaultEvent("Click")]
     public class ModernButton : Panel
     {
-        private Label textLabel = new Label();
-        private Color defaultColor = Color.White;
-        private Color hoverColor = Color.LightGray;
-        private Boolean clickEffectEnabled = true;
+        private readonly Label textLabel = new Label();
+        private Color defaultColor = Utils.Theme.DarkRaised;
+        private Color hoverColor = Utils.Theme.DarkHover;
+        private bool clickEffectEnabled = true;
         private bool _isSelected;
         private bool _isHovered;
+        private bool _isPressed;
+        private bool _isAccent;
+
+        [Browsable(true)]
+        [Category("Style")]
+        public new BorderStyle BorderStyle
+        {
+            get => BorderStyle.None;
+            set => base.BorderStyle = BorderStyle.None;
+        }
 
         [Browsable(true)]
         [Category("Style")]
         public override string Text
         {
-            get { return textLabel.Text; }
-            set { textLabel.Text = value; }
+            get => textLabel.Text;
+            set
+            {
+                textLabel.Text = value;
+                textLabel.Invalidate();
+            }
         }
 
         [Browsable(true)]
         [Category("Style")]
         public Color DefaultColor
         {
-            get { return defaultColor; }
+            get => defaultColor;
             set { defaultColor = value; UpdateVisualState(); }
         }
 
@@ -39,15 +54,23 @@ namespace CP2077SaveEditor
         [Category("Style")]
         public Color HoverColor
         {
-            get { return hoverColor; }
+            get => hoverColor;
             set { hoverColor = value; UpdateVisualState(); }
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsAccent
+        {
+            get => _isAccent;
+            set { _isAccent = value; UpdateVisualState(); }
         }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get => _isSelected;
             set
             {
                 if (_isSelected == value)
@@ -69,33 +92,36 @@ namespace CP2077SaveEditor
         [Category("Style")]
         public Color TextColor
         {
-            get { return textLabel.ForeColor; }
-            set { textLabel.ForeColor = value; }
+            get => textLabel.ForeColor;
+            set { textLabel.ForeColor = value; textLabel.Invalidate(); }
         }
 
         [Browsable(true)]
         [Category("Style")]
         public Font TextFont
         {
-            get { return textLabel.Font; }
-            set { textLabel.Font = _isSelected && value != null ? new Font(value, FontStyle.Bold) : value; }
+            get => textLabel.Font;
+            set
+            {
+                textLabel.Font = _isSelected && value != null ? new Font(value, FontStyle.Bold) : value;
+                textLabel.Invalidate();
+            }
         }
 
         [Browsable(true)]
         [Category("Style")]
-        public Boolean ClickEffectEnabled
+        public bool ClickEffectEnabled
         {
-            get { return clickEffectEnabled; }
-            set { clickEffectEnabled = value; }
+            get => clickEffectEnabled;
+            set => clickEffectEnabled = value;
         }
 
-        // The label is added here rather than in OnCreateControl, so the form's constructor can already
-        // reach it (e.g. to give it the button's tooltip)
         public ModernButton()
         {
-            this.Controls.Add(textLabel);
-            this.BorderStyle = BorderStyle.FixedSingle;
-            textLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            base.BorderStyle = BorderStyle.None;
+            DoubleBuffered = true;
+            Controls.Add(textLabel);
+            textLabel.TextAlign = ContentAlignment.MiddleCenter;
             textLabel.AutoSize = false;
             textLabel.Dock = DockStyle.Fill;
             textLabel.MouseEnter += TextMouseEnter;
@@ -103,50 +129,216 @@ namespace CP2077SaveEditor
             textLabel.MouseDown += TextMouseDown;
             textLabel.MouseUp += TextMouseUp;
             textLabel.Paint += TextPaint;
+            EnabledChanged += (_, _) => textLabel.Invalidate();
+            Resize += (_, _) => textLabel.Invalidate();
         }
 
         private void UpdateVisualState()
         {
-            if (_isHovered)
-            {
-                this.BackColor = hoverColor;
-            }
-            else if (_isSelected)
-            {
-                this.BackColor = Utils.Theme.IsDark ? hoverColor : Color.Gainsboro;
-            }
-            else
-            {
-                this.BackColor = defaultColor;
-            }
+            BackColor = Parent?.BackColor ?? (Utils.Theme.IsDark ? Utils.Theme.DarkGround : defaultColor);
+            textLabel.BackColor = BackColor;
+            textLabel.Invalidate();
         }
 
         private void TextPaint(object sender, PaintEventArgs e)
         {
-            if (_iconGlyph != null && s_iconFont.Value != null)
-            {
-                var iconBounds = new Rectangle(8, 0, IconWidth, textLabel.Height);
-                TextRenderer.DrawText(e.Graphics, _iconGlyph, s_iconFont.Value, iconBounds, textLabel.ForeColor,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
-            }
+            var g = e.Graphics;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            if (!_isSelected)
+            var bgClear = Parent?.BackColor ?? (Utils.Theme.IsDark ? Utils.Theme.DarkGround : Color.White);
+            g.Clear(bgClear);
+
+            var w = textLabel.Width;
+            var h = textLabel.Height;
+            if (w <= 4 || h <= 4)
             {
                 return;
             }
 
-            using var brush = new SolidBrush(Utils.Theme.AccentBar);
-            e.Graphics.FillRectangle(brush, 0, 0, 4, textLabel.Height);
+            if (!Utils.Theme.IsDark)
+            {
+                var lightFill = _isHovered ? hoverColor : (_isSelected ? Color.Gainsboro : defaultColor);
+                using var brush = new SolidBrush(lightFill);
+                using var pen = new Pen(Utils.Theme.BorderColor);
+                g.FillRectangle(brush, 0, 0, w - 1, h - 1);
+                g.DrawRectangle(pen, 0, 0, w - 1, h - 1);
+                DrawButtonContent(g, w, h, textLabel.ForeColor, textLabel.ForeColor);
+                return;
+            }
+
+            var cut = Math.Min(10, Math.Max(6, h / 4));
+            var rect = new Rectangle(0, 0, w - 1, h - 1);
+            var pts = Utils.Theme.GetChamferPoints(rect, 0, cut);
+
+            Color bodyColor;
+            Color borderColor;
+            Color barColor;
+            Color fgColor;
+            Color iconColor;
+            int barWidth;
+            float borderWidth;
+
+            if (!Enabled)
+            {
+                bodyColor = Color.FromArgb(20, 8, 12);
+                borderColor = Color.FromArgb(85, 22, 38);
+                barColor = Color.FromArgb(85, 22, 38);
+                fgColor = Color.FromArgb(115, 50, 68);
+                iconColor = fgColor;
+                barWidth = 3;
+                borderWidth = 1f;
+            }
+            else if (_isPressed && clickEffectEnabled)
+            {
+                bodyColor = Utils.Theme.Accent;
+                borderColor = Utils.Theme.Cyan;
+                barColor = Utils.Theme.NeonRed;
+                fgColor = Utils.Theme.OnAccent;
+                iconColor = Utils.Theme.OnAccent;
+                barWidth = 6;
+                borderWidth = 2f;
+            }
+            else if (_isSelected)
+            {
+                bodyColor = Color.FromArgb(62, 18, 24);
+                borderColor = Utils.Theme.Accent;
+                barColor = Utils.Theme.Accent;
+                fgColor = Utils.Theme.Accent;
+                iconColor = Utils.Theme.Cyan;
+                barWidth = 6;
+                borderWidth = 1.8f;
+            }
+            else if (_isHovered)
+            {
+                bodyColor = Utils.Theme.DarkHover;
+                borderColor = Utils.Theme.Cyan;
+                barColor = Utils.Theme.Cyan;
+                fgColor = Utils.Theme.Cyan;
+                iconColor = Utils.Theme.Accent;
+                barWidth = 5;
+                borderWidth = 1.8f;
+            }
+            else if (_isAccent)
+            {
+                bodyColor = Color.FromArgb(48, 12, 22);
+                borderColor = Utils.Theme.NeonRed;
+                barColor = Utils.Theme.Accent;
+                fgColor = Utils.Theme.Accent;
+                iconColor = Utils.Theme.Accent;
+                barWidth = 5;
+                borderWidth = 1.4f;
+            }
+            else
+            {
+                bodyColor = Utils.Theme.DarkRaised;
+                borderColor = Utils.Theme.NeonRed;
+                barColor = Utils.Theme.NeonRed;
+                fgColor = Utils.Theme.DarkText;
+                iconColor = Utils.Theme.Cyan;
+                barWidth = 3;
+                borderWidth = 1f;
+            }
+
+            using (var bodyBrush = new SolidBrush(bodyColor))
+            {
+                g.FillPolygon(bodyBrush, pts);
+            }
+
+            if (!_isPressed && Enabled)
+            {
+                Utils.Theme.DrawScanlines(g, rect, 18);
+            }
+
+            // Left high-voltage Cyberpunk bar
+            using (var barBrush = new SolidBrush(barColor))
+            {
+                g.FillRectangle(barBrush, 0, 0, barWidth, h);
+            }
+
+            // Selected / Accent inner notch on the left bar
+            if ((_isSelected || _isAccent) && Enabled)
+            {
+                using var notchBrush = new SolidBrush(_isSelected ? Utils.Theme.NeonRed : Utils.Theme.Cyan);
+                g.FillRectangle(notchBrush, barWidth, h / 2 - 4, 2, 8);
+            }
+
+            // Chamfered neon border
+            using (var borderPen = new Pen(borderColor, borderWidth))
+            {
+                g.DrawPolygon(borderPen, pts);
+            }
+
+            // Diagonal highlight along the chamfered corner
+            if (Enabled)
+            {
+                var chamferHighlight = _isHovered ? Utils.Theme.Accent : (_isSelected ? Utils.Theme.Cyan : Utils.Theme.Accent);
+                using var chamferPen = new Pen(chamferHighlight, 2f);
+                g.DrawLine(chamferPen, rect.Right, rect.Bottom - cut, rect.Right - cut, rect.Bottom);
+
+                // Top-right corner HUD tick
+                using var tickPen = new Pen(_isHovered || _isSelected ? Utils.Theme.Cyan : Utils.Theme.NeonRed, 1.5f);
+                g.DrawLine(tickPen, rect.Right - 9, rect.Top + 1, rect.Right - 1, rect.Top + 1);
+                g.DrawLine(tickPen, rect.Right - 1, rect.Top + 1, rect.Right - 1, rect.Top + 7);
+            }
+
+            // Micro telemetry stamp on tall primary buttons (like Load Save)
+            if (_isAccent && h >= 46 && Enabled)
+            {
+                using var microFont = new Font(Utils.Theme.MonoFontFamily, 6.5f, FontStyle.Bold);
+                var stampColor = _isPressed ? Utils.Theme.OnAccent : Utils.Theme.Cyan;
+                TextRenderer.DrawText(g, "NC // R-2077", microFont, new Rectangle(barWidth + 6, h - 15, w - cut - 12, 13), stampColor,
+                    TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            }
+
+            DrawButtonContent(g, w, h, fgColor, iconColor);
+        }
+
+        private void DrawButtonContent(Graphics g, int w, int h, Color fgColor, Color iconColor)
+        {
+            var hasIcon = _iconGlyph != null && s_iconFont.Value != null;
+            if (hasIcon)
+            {
+                var dpi = DeviceDpi / 96f;
+                var iconBounds = new Rectangle((int)(11 * dpi), 0, (int)(IconWidth * dpi), h);
+                TextRenderer.DrawText(g, _iconGlyph, s_iconFont.Value, iconBounds, iconColor,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            }
+
+            var displayText = (textLabel.Text ?? string.Empty).ToUpperInvariant();
+            var baseFont = textLabel.Font ?? Font;
+            var style = (_isSelected || _isAccent || _isHovered) ? FontStyle.Bold : baseFont.Style;
+            using var drawFont = new Font(Utils.Theme.UiFontFamily, baseFont.Size, style, baseFont.Unit);
+
+            if (hasIcon)
+            {
+                var dpiScale = DeviceDpi / 96f;
+                var textLeft = (int)((IconWidth + 15) * dpiScale);
+                var textBounds = new Rectangle(textLeft, 0, w - textLeft - (int)(7 * dpiScale), h);
+                TextRenderer.DrawText(g, displayText, drawFont, textBounds, fgColor,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+
+                if (_isSelected)
+                {
+                    TextRenderer.DrawText(g, "▸", drawFont, new Rectangle(w - 18, 0, 14, h), Utils.Theme.Cyan,
+                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+                }
+            }
+            else
+            {
+                var yAdjust = (_isAccent && h >= 46) ? -3 : 0;
+                var textBounds = new Rectangle(8, yAdjust, w - 14, h);
+                TextRenderer.DrawText(g, displayText, drawFont, textBounds, fgColor,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+            }
         }
 
         private const int IconWidth = 22;
 
-        // Windows 11 ships Segoe Fluent Icons, Windows 10 Segoe MDL2 Assets; without either the icons are left out
         private static readonly Lazy<Font> s_iconFont = new(() =>
         {
             var installed = FontFamily.Families.Select(x => x.Name).ToHashSet();
             var name = new[] { "Segoe Fluent Icons", "Segoe MDL2 Assets" }.FirstOrDefault(installed.Contains);
-            return name == null ? null : new Font(name, 13F, FontStyle.Regular, GraphicsUnit.Point);
+            return name == null ? null : new Font(name, 12.5F, FontStyle.Regular, GraphicsUnit.Point);
         });
 
         private string _iconGlyph;
@@ -155,12 +347,10 @@ namespace CP2077SaveEditor
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string IconGlyph
         {
-            get { return _iconGlyph; }
+            get => _iconGlyph;
             set
             {
                 _iconGlyph = value;
-                // Keeps the centered text clear of the icon
-                textLabel.Padding = value != null && s_iconFont.Value != null ? new Padding(IconWidth + 8, 0, 0, 0) : Padding.Empty;
                 textLabel.Invalidate();
             }
         }
@@ -175,41 +365,44 @@ namespace CP2077SaveEditor
         private void TextMouseLeave(object sender, EventArgs e)
         {
             _isHovered = false;
+            _isPressed = false;
             base.OnMouseLeave(e);
             UpdateVisualState();
         }
 
         private void TextMouseDown(object sender, EventArgs e)
         {
-            if (clickEffectEnabled)
-            {
-                this.BorderStyle = BorderStyle.Fixed3D;
-            }
+            _isPressed = true;
+            textLabel.Invalidate();
         }
 
         private void TextMouseUp(object sender, EventArgs e)
         {
-            this.BorderStyle = BorderStyle.FixedSingle;
+            _isPressed = false;
+            textLabel.Invalidate();
             base.OnClick(e);
         }
     }
 
     public class ModernValuePicker : Panel
     {
-        //Painting
-        private Font[] fonts = new Font[] { new Font("Segoe UI", (float)8.25), new Font("Segoe UI", 13), new Font("Segoe UI", 13, FontStyle.Bold) };
+        private readonly Font[] fonts = new Font[]
+        {
+            new Font(Utils.Theme.MonoFontFamily, 9.5F, FontStyle.Bold),
+            new Font(Utils.Theme.MonoFontFamily, 12.5F, FontStyle.Bold),
+            new Font(Utils.Theme.UiFontFamily, 9.5F, FontStyle.Bold)
+        };
         private Pen pixelPen = new Pen(Color.Black, 1);
         private bool[] gStates = new bool[] { false, false, false, false, false };
         private bool[] enabledStates = new bool[] { true, true };
-        private Rectangle leftRect = new Rectangle(1,1,1,1);
-        private Rectangle rightRect = new Rectangle(1,1,1,1);
+        private Rectangle leftRect = new Rectangle(1, 1, 1, 1);
+        private Rectangle rightRect = new Rectangle(1, 1, 1, 1);
 
-        //Other
         private PickerValueType _type = PickerValueType.Integer;
         private int _index = 0;
         private int _maxInt = 99;
         private int _minInt = 0;
-        private string[] _stringCollection = new string[] { };
+        private string[] _stringCollection = Array.Empty<string>();
         private string _stringValue = "00";
 
         public delegate void IndexChangedHandler(ModernValuePicker sender);
@@ -218,23 +411,18 @@ namespace CP2077SaveEditor
         public string PickerName { get; set; } = "Name";
         public string StringValue
         {
-            get
-            {
-                return _stringValue;
-            }
+            get => _stringValue;
             set
             {
                 _stringValue = value;
-                this.Invalidate(new Rectangle(leftRect.Right, leftRect.Top, rightRect.Left - leftRect.Right, 50));
+                Invalidate();
             }
         }
         public bool SuppressIndexChange { get; set; } = false;
 
         public PickerValueType PickerType
         {
-            get {
-                return _type;
-            }
+            get => _type;
             set
             {
                 _type = value;
@@ -245,10 +433,7 @@ namespace CP2077SaveEditor
 
         public int Index
         {
-            get
-            {
-                return _index;
-            }
+            get => _index;
             set
             {
                 if (PickerType == PickerValueType.Integer)
@@ -282,29 +467,23 @@ namespace CP2077SaveEditor
                         _index = value;
                     }
 
-                    if (StringCollection.Length < 1)
-                    {
-                        StringValue = string.Empty;
-                    } else {
-                        StringValue = StringCollection[_index];
-                    }
+                    StringValue = StringCollection.Length < 1 ? string.Empty : StringCollection[_index];
                 }
 
-                if (SuppressIndexChange == true)
+                if (SuppressIndexChange)
                 {
                     SuppressIndexChange = false;
-                } else {
-                    if (IndexChanged != null) { IndexChanged(this); }
+                }
+                else
+                {
+                    IndexChanged?.Invoke(this);
                 }
             }
         }
 
         public string[] StringCollection
         {
-            get
-            {
-                return _stringCollection;
-            }
+            get => _stringCollection;
             set
             {
                 _stringCollection = value;
@@ -316,11 +495,9 @@ namespace CP2077SaveEditor
             }
         }
 
-        public int MaxIntegerValue {
-            get
-            {
-                return _maxInt;
-            }
+        public int MaxIntegerValue
+        {
+            get => _maxInt;
             set
             {
                 _maxInt = value;
@@ -331,11 +508,9 @@ namespace CP2077SaveEditor
             }
         }
 
-        public int MinIntegerValue {
-            get
-            {
-                return _minInt;
-            }
+        public int MinIntegerValue
+        {
+            get => _minInt;
             set
             {
                 _minInt = value;
@@ -348,6 +523,7 @@ namespace CP2077SaveEditor
 
         public ModernValuePicker()
         {
+            base.BorderStyle = BorderStyle.None;
             PickerName = "Name";
             StringValue = "00";
             Size = new Size(200, 100);
@@ -358,28 +534,115 @@ namespace CP2077SaveEditor
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
-            leftRect = new Rectangle(10, (this.Height / 5) * 3 - 25, 20, 50);
-            rightRect = new Rectangle(this.Width - 30, (this.Height / 5) * 3 - 25, 20, 50);
-            var leftSize = TextRenderer.MeasureText("<", fonts[0]);
-            var rightSize = TextRenderer.MeasureText(">", fonts[0]);
-            var valueSize = TextRenderer.MeasureText(StringValue.ToUpper(), fonts[1]);
-            var nameSize = TextRenderer.MeasureText(PickerName.ToUpper(), fonts[2]);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.Clear(Parent?.BackColor ?? (Utils.Theme.IsDark ? Utils.Theme.DarkGround : Color.White));
 
-            var hover = Utils.Theme.IsDark ? Utils.Theme.DarkHover : Color.LightGray;
-            using (var hoverBrush = new SolidBrush(hover))
+            var cardRect = new Rectangle(1, 1, Width - 3, Height - 3);
+            var cut = 10;
+            var cardPts = Utils.Theme.GetChamferPoints(cardRect, 0, cut);
+
+            if (Utils.Theme.IsDark)
             {
-                if (gStates[0]) g.FillRectangle(hoverBrush, leftRect);
-                if (gStates[1]) g.FillRectangle(hoverBrush, rightRect);
-            }
-            if (gStates[2]) g.FillRectangle(Brushes.DarkGray, leftRect);
-            if (gStates[3]) g.FillRectangle(Brushes.DarkGray, rightRect);
+                using (var cardFill = new SolidBrush(Utils.Theme.DarkSurface))
+                {
+                    g.FillPolygon(cardFill, cardPts);
+                }
+                Utils.Theme.DrawScanlines(g, cardRect, 14);
 
-            g.DrawRectangle(pixelPen, leftRect);
-            g.DrawRectangle(pixelPen, rightRect);
-            TextRenderer.DrawText(g, "<", fonts[0], new Point(leftRect.X + ((leftRect.Width / 2) - (leftSize.Width / 2)), leftRect.Y + ((leftRect.Height / 2) - (leftSize.Height / 2))), pixelPen.Color);
-            TextRenderer.DrawText(g, ">", fonts[0], new Point(rightRect.X + ((rightRect.Width / 2) - (rightSize.Width / 2)), rightRect.Y + ((rightRect.Height / 2) - (rightSize.Height / 2))), pixelPen.Color);
-            if (!gStates[4]) TextRenderer.DrawText(g, StringValue.ToUpper(), fonts[1], new Point((this.Width / 2) - (valueSize.Width / 2), (this.Height / 5) * 3 - (valueSize.Height / 2)), pixelPen.Color);
-            TextRenderer.DrawText(g, PickerName.ToUpper(), fonts[2], new Point((this.Width / 2) - (nameSize.Width / 2), (this.Height / 5) - (nameSize.Height / 2)), pixelPen.Color);
+                // Header strip
+                using (var stripBrush = new SolidBrush(Color.FromArgb(45, 255, 0, 60)))
+                {
+                    g.FillRectangle(stripBrush, cardRect.Left + 1, cardRect.Top + 1, cardRect.Width - 2, 24);
+                }
+                using (var yellowBar = new SolidBrush(Utils.Theme.Accent))
+                {
+                    g.FillRectangle(yellowBar, cardRect.Left, cardRect.Top, 4, 25);
+                }
+
+                var isCardActive = gStates[0] || gStates[1];
+                using (var borderPen = new Pen(isCardActive ? Utils.Theme.Cyan : Utils.Theme.NeonRed, isCardActive ? 1.5f : 1f))
+                {
+                    g.DrawPolygon(borderPen, cardPts);
+                }
+
+                using (var yellowChamfer = new Pen(Utils.Theme.Accent, 2f))
+                {
+                    g.DrawLine(yellowChamfer, cardRect.Right, cardRect.Bottom - cut, cardRect.Right - cut, cardRect.Bottom);
+                }
+            }
+            else
+            {
+                g.DrawRectangle(pixelPen, cardRect);
+            }
+
+            leftRect = new Rectangle(10, (Height / 5) * 3 - 18, 26, 40);
+            rightRect = new Rectangle(Width - 36, (Height / 5) * 3 - 18, 26, 40);
+
+            // Center readout terminal box
+            var centerBox = new Rectangle(leftRect.Right + 6, leftRect.Top, rightRect.Left - leftRect.Right - 12, leftRect.Height);
+            if (Utils.Theme.IsDark && centerBox.Width > 10)
+            {
+                using var terminalFill = new SolidBrush(Utils.Theme.DarkGround);
+                using var terminalBorder = new Pen(Color.FromArgb(110, 0, 240, 255), 1f);
+                g.FillRectangle(terminalFill, centerBox);
+                g.DrawRectangle(terminalBorder, centerBox);
+            }
+
+            // Left & Right '<' '>' buttons
+            DrawStepButton(g, leftRect, "<", gStates[0], gStates[2]);
+            DrawStepButton(g, rightRect, ">", gStates[1], gStates[3]);
+
+            var valueColor = Enabled ? Utils.Theme.CyanAccent : Color.Gray;
+            var titleColor = Enabled ? (Utils.Theme.IsDark ? Utils.Theme.Accent : pixelPen.Color) : Color.Gray;
+
+            if (!gStates[4])
+            {
+                TextRenderer.DrawText(g, (StringValue ?? string.Empty).ToUpperInvariant(), fonts[1], centerBox, valueColor,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+            }
+
+            var headerRect = new Rectangle(10, 2, Width - 20, 22);
+            var titleText = Utils.Theme.IsDark ? "// " + (PickerName ?? string.Empty).ToUpperInvariant() : (PickerName ?? string.Empty).ToUpperInvariant();
+            TextRenderer.DrawText(g, titleText, fonts[2], headerRect, titleColor,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+        }
+
+        private void DrawStepButton(Graphics g, Rectangle rect, string symbol, bool hovered, bool pressed)
+        {
+            if (!Utils.Theme.IsDark)
+            {
+                if (hovered) g.FillRectangle(Brushes.LightGray, rect);
+                if (pressed) g.FillRectangle(Brushes.DarkGray, rect);
+                g.DrawRectangle(pixelPen, rect);
+                TextRenderer.DrawText(g, symbol, fonts[0], rect, pixelPen.Color, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                return;
+            }
+
+            var fill = !Enabled
+                ? Utils.Theme.DarkSurface
+                : pressed
+                    ? Utils.Theme.Cyan
+                    : hovered
+                        ? Utils.Theme.Accent
+                        : Utils.Theme.DarkRaised;
+
+            var border = !Enabled
+                ? Color.FromArgb(80, 30, 45)
+                : (hovered || pressed ? Utils.Theme.Cyan : Utils.Theme.NeonRed);
+
+            var fg = !Enabled
+                ? Color.FromArgb(100, 50, 65)
+                : (hovered || pressed ? Utils.Theme.OnAccent : Utils.Theme.Cyan);
+
+            using (var fillBrush = new SolidBrush(fill))
+            using (var borderPen = new Pen(border, 1.2f))
+            {
+                g.FillRectangle(fillBrush, rect);
+                g.DrawRectangle(borderPen, rect);
+            }
+
+            TextRenderer.DrawText(g, symbol, fonts[0], rect, fg,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -387,32 +650,30 @@ namespace CP2077SaveEditor
             if (leftRect.Contains(e.Location) && !gStates[0] && enabledStates[0])
             {
                 gStates[0] = true;
-                this.Invalidate(leftRect);
+                Invalidate();
             }
             else if (!leftRect.Contains(e.Location) && gStates[0])
             {
                 gStates[0] = false;
-                this.Invalidate(leftRect);
+                Invalidate();
             }
 
             if (rightRect.Contains(e.Location) && !gStates[1] && enabledStates[1])
             {
                 gStates[1] = true;
-                this.Invalidate(rightRect);
+                Invalidate();
             }
             else if (!rightRect.Contains(e.Location) && gStates[1])
             {
                 gStates[1] = false;
-                this.Invalidate(rightRect);
+                Invalidate();
             }
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             gStates = new bool[] { false, false, false, false, false };
-            
-            this.Invalidate(leftRect);
-            this.Invalidate(rightRect);
+            Invalidate();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -420,13 +681,13 @@ namespace CP2077SaveEditor
             if (leftRect.Contains(e.Location) && !gStates[2] && enabledStates[0])
             {
                 gStates[2] = true;
-                this.Invalidate(leftRect);
+                Invalidate();
             }
 
             if (rightRect.Contains(e.Location) && !gStates[3] && enabledStates[1])
             {
                 gStates[3] = true;
-                this.Invalidate(rightRect);
+                Invalidate();
             }
         }
 
@@ -439,7 +700,7 @@ namespace CP2077SaveEditor
                     Index -= 1;
                 }
                 gStates[2] = false;
-                this.Invalidate(leftRect);
+                Invalidate();
             }
 
             if (gStates[3])
@@ -449,7 +710,7 @@ namespace CP2077SaveEditor
                     Index += 1;
                 }
                 gStates[3] = false;
-                this.Invalidate(rightRect);
+                Invalidate();
             }
         }
 
@@ -459,7 +720,6 @@ namespace CP2077SaveEditor
             UpdatePen();
         }
 
-        // Follows ForeColor instead of a fixed black, so the dark theme's light text applies
         protected override void OnForeColorChanged(EventArgs e)
         {
             base.OnForeColorChanged(e);
@@ -468,8 +728,8 @@ namespace CP2077SaveEditor
 
         private void UpdatePen()
         {
-            pixelPen = new Pen(this.Enabled ? this.ForeColor : Color.Gray, 1);
-            this.Invalidate();
+            pixelPen = new Pen(Enabled ? ForeColor : Color.Gray, 1);
+            Invalidate();
         }
 
         protected override void OnDoubleClick(EventArgs e)
@@ -480,7 +740,7 @@ namespace CP2077SaveEditor
             }
 
             var valueSize = TextRenderer.MeasureText(StringValue.ToUpper(), fonts[1]);
-            var valueLoc = new Point((this.Width / 2) - (valueSize.Width / 2), (this.Height / 5) * 3 - (valueSize.Height / 2));
+            var valueLoc = new Point((Width / 2) - (valueSize.Width / 2), (Height / 5) * 3 - (valueSize.Height / 2));
 
             if (!new Rectangle(valueLoc, valueSize).Contains(PointToClient(Cursor.Position)))
             {
@@ -501,7 +761,7 @@ namespace CP2077SaveEditor
                 newCombo.SelectedIndexChanged += entryBox_IndexChanged;
                 entryBox = newCombo;
             }
-            this.Controls.Add(entryBox);
+            Controls.Add(entryBox);
 
             entryBox.Font = fonts[1];
             entryBox.Location = valueLoc;
@@ -512,7 +772,7 @@ namespace CP2077SaveEditor
 
             enabledStates = new bool[] { false, false };
             gStates[4] = true;
-            this.Invalidate();
+            Invalidate();
         }
 
         private void entryBox_IndexChanged(object sender, EventArgs e)
@@ -528,7 +788,8 @@ namespace CP2077SaveEditor
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.Handled = true; e.SuppressKeyPress = true;
+                e.Handled = true;
+                e.SuppressKeyPress = true;
                 entryBox_ApplyValue(sender);
             }
         }
@@ -548,17 +809,16 @@ namespace CP2077SaveEditor
             else
             {
                 castedSender = (TextBox)sender;
-                int newInd;
-                if (int.TryParse(castedSender.Text, out newInd) == true)
+                if (int.TryParse(castedSender.Text, out var newInd))
                 {
                     Index = newInd;
                 }
             }
-            this.Controls.Remove(castedSender);
+            Controls.Remove(castedSender);
 
             enabledStates = new bool[] { true, true };
             gStates[4] = false;
-            this.Invalidate();
+            Invalidate();
         }
     }
 

@@ -19,9 +19,9 @@ namespace CP2077SaveEditor.Utils
         public static bool EnableWipFeatures => s_values.GetValueOrDefault("EnableWIPFeatures") == 1;
 
         /// <summary>
-        /// 0 follows Windows, 1 light, 2 dark. "Theme": 2
+        /// 0 follows Windows, 1 light, 2 dark (default: 2 for Cyberpunk 2077 dark HUD). "Theme": 1 forces light mode.
         /// </summary>
-        public static int Theme => s_values.GetValueOrDefault("Theme");
+        public static int Theme => s_values.GetValueOrDefault("Theme", 2);
 
         /// <summary>
         /// Looks for a newer GitHub release on startup, on by default. "CheckForUpdates": 0 turns it off

@@ -231,7 +231,7 @@
             clearQuestFlagsButton.Name = "clearQuestFlagsButton";
             clearQuestFlagsButton.Size = new System.Drawing.Size(107, 23);
             clearQuestFlagsButton.TabIndex = 2;
-            clearQuestFlagsButton.Text = "Clear All Item Flags";
+            clearQuestFlagsButton.Text = "Clear Flags";
             clearQuestFlagsButton.TextColor = System.Drawing.SystemColors.ControlText;
             clearQuestFlagsButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             clearQuestFlagsButton.Click += clearQuestFlagsButton_Click;

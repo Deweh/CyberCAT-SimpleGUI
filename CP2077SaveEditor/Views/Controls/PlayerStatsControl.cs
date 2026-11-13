@@ -13,11 +13,17 @@ namespace CP2077SaveEditor.Views.Controls
 {
     public partial class PlayerStatsControl : UserControl, IGameControl
     {
+        private static readonly Lazy<System.Drawing.Bitmap> s_corpoImg = new(() => Properties.Resources.corpo);
+        private static readonly Lazy<System.Drawing.Bitmap> s_nomadImg = new(() => Properties.Resources.nomad);
+        private static readonly Lazy<System.Drawing.Bitmap> s_streetkidImg = new(() => Properties.Resources.streetkid);
+
         private readonly MainForm _parentForm;
 
         private readonly Dictionary<Enum, NumericUpDown> _attributeFields, _proficiencyFields, _devPointFields;
         private readonly Dictionary<gamedataProficiencyType, gamedataStatType> _proficiencyToStatMap;
         private bool _isLoading;
+        private System.Drawing.Bitmap _activeLifepathSource;
+        private System.Drawing.Bitmap _scaledLifepathCache;
         private CEnum<gamedataLifePath>? _originalLifePath;
 
         public PlayerStatsControl(MainForm parentForm)
@@ -27,7 +33,11 @@ namespace CP2077SaveEditor.Views.Controls
             _parentForm = parentForm;
             _parentForm.PropertyChanged += OnParentFormPropertyChanged;
 
-            //BackgroundImage = Properties.Resources.player_stats;
+            var toolTip = new ToolTip();
+            Theme.SetToolTip(toolTip, additionalPlayerStatsButton, "Inspect and edit raw stat modifiers attached to V's entity.");
+
+            lifePathPictureBox.Paint += LifePathPictureBox_Paint;
+            lifePathPictureBox.Resize += (_, _) => lifePathPictureBox.Invalidate();
 
             _attributeFields = new Dictionary<Enum, NumericUpDown>
             {
@@ -335,25 +345,83 @@ namespace CP2077SaveEditor.Views.Controls
                 ChangeTracker.MarkChanged();
             }
 
+            lifePathPictureBox.Image = null;
+            _scaledLifepathCache?.Dispose();
+            _scaledLifepathCache = null;
+
             switch (lifePathBox.SelectedIndex)
             {
                 case 0:
-                    lifePathPictureBox.Image = Properties.Resources.corpo;
+                    _activeLifepathSource = s_corpoImg.Value;
                     if (!_isLoading) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Corporate;
                     break;
                 case 1:
-                    lifePathPictureBox.Image = Properties.Resources.nomad;
+                    _activeLifepathSource = s_nomadImg.Value;
                     if (!_isLoading) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.Nomad;
                     break;
                 case 2:
-                    lifePathPictureBox.Image = Properties.Resources.streetkid;
+                    _activeLifepathSource = s_streetkidImg.Value;
                     if (!_isLoading) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = gamedataLifePath.StreetKid;
                     break;
                 case 3:
-                    lifePathPictureBox.Image = null;
+                    _activeLifepathSource = null;
                     if (!_isLoading && _originalLifePath is { } originalLifePath) _parentForm.ActiveSaveFile.GetPlayerDevelopmentData().LifePath = originalLifePath;
                     break;
             }
+            lifePathPictureBox.Invalidate();
+        }
+
+        private void LifePathPictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            var g = e.Graphics;
+            var w = lifePathPictureBox.Width;
+            var h = lifePathPictureBox.Height;
+            if (w <= 10 || h <= 10)
+            {
+                return;
+            }
+
+            var img = _activeLifepathSource;
+            if (img != null)
+            {
+                g.Clear(Theme.IsDark ? Theme.DarkSurface : lifePathPictureBox.BackColor);
+                var scale = Math.Min((float)w / img.Width, (float)h / img.Height);
+                var drawW = Math.Max(1, (int)(img.Width * scale));
+                var drawH = Math.Max(1, (int)(img.Height * scale));
+                var drawX = (w - drawW) / 2;
+                var drawY = (h - drawH) / 2;
+
+                if (_scaledLifepathCache == null || _scaledLifepathCache.Width != drawW || _scaledLifepathCache.Height != drawH)
+                {
+                    _scaledLifepathCache?.Dispose();
+                    _scaledLifepathCache = new System.Drawing.Bitmap(drawW, drawH, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                    using var bg = System.Drawing.Graphics.FromImage(_scaledLifepathCache);
+                    bg.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    bg.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                    bg.DrawImage(img, new System.Drawing.Rectangle(0, 0, drawW, drawH));
+                }
+                g.DrawImageUnscaled(_scaledLifepathCache, drawX, drawY);
+            }
+
+            if (!Theme.IsDark)
+            {
+                return;
+            }
+
+            using var borderPen = new System.Drawing.Pen(Theme.NeonRed, 1f);
+            using var cyanPen = new System.Drawing.Pen(Theme.Cyan, 2f);
+            using var yellowPen = new System.Drawing.Pen(Theme.Accent, 2f);
+            g.DrawRectangle(borderPen, 0, 0, w - 1, h - 1);
+
+            // Corner brackets
+            g.DrawLine(cyanPen, 0, 0, 18, 0);
+            g.DrawLine(cyanPen, 0, 0, 0, 18);
+            g.DrawLine(cyanPen, w - 18, 0, w - 1, 0);
+            g.DrawLine(cyanPen, w - 1, 0, w - 1, 18);
+            g.DrawLine(yellowPen, 0, h - 18, 0, h - 1);
+            g.DrawLine(yellowPen, 0, h - 1, 18, h - 1);
+            g.DrawLine(yellowPen, w - 18, h - 1, w - 1, h - 1);
+            g.DrawLine(yellowPen, w - 1, h - 18, w - 1, h - 1);
         }
     }
 }

@@ -36,16 +36,47 @@ namespace CP2077SaveEditor.Views.Controls
         {
             _parentForm = parentForm;
 
-            _search = new TextBox { PlaceholderText = "Search saves", Width = 250, Location = new Point(3, 5) };
+            _search = new TextBox { PlaceholderText = "Search saves", Width = 240, Location = new Point(10, 8), BorderStyle = BorderStyle.FixedSingle };
             _search.TextChanged += (_, _) => FillList();
 
-            _showAutoSaves = new CheckBox { Text = "Show autosaves", AutoSize = true, Checked = true, Location = new Point(262, 7) };
+            _showAutoSaves = new CheckBox { Text = "Show autosaves", AutoSize = true, Checked = true, Location = new Point(262, 9) };
             _showAutoSaves.CheckedChanged += (_, _) => FillList();
 
-            var refreshButton = new Button { Text = "Refresh", AutoSize = true, Location = new Point(390, 3) };
+            var refreshButton = new Button { Text = "Refresh", Size = new Size(92, 26), Location = new Point(392, 5) };
             refreshButton.Click += (_, _) => RefreshSaves();
 
-            var top = new Panel { Dock = DockStyle.Top, Height = 32 };
+            var top = new Panel { Dock = DockStyle.Top, Height = 38 };
+            top.Paint += (_, e) =>
+            {
+                if (!Theme.IsDark)
+                {
+                    return;
+                }
+                using var bottomPen = new Pen(Theme.NeonRed, 1f);
+                using var yellowPen = new Pen(Theme.Accent, 2f);
+                e.Graphics.DrawLine(bottomPen, 0, top.Height - 1, top.Width, top.Height - 1);
+                e.Graphics.DrawLine(yellowPen, 10, top.Height - 1, 140, top.Height - 1);
+
+                if (top.Width > 650)
+                {
+                    using var hudFont = new Font(Theme.MonoFontFamily, 8f, FontStyle.Bold);
+                    TextRenderer.DrawText(e.Graphics, "// NIGHT CITY DATABANK :: DOUBLE-CLICK TO JACK IN", hudFont,
+                        new Rectangle(refreshButton.Right + 12, 0, top.Width - refreshButton.Right - 22, top.Height - 2), Theme.Cyan,
+                        TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+                }
+            };
+            top.Resize += (_, _) => top.Invalidate();
+
+            // Position the row from the real control sizes, fixed pixel positions overlap on scaled displays
+            top.Layout += (_, _) =>
+            {
+                var s = top.DeviceDpi / 96f;
+                var gap = (int)(12 * s);
+                _search.Location = new Point((int)(10 * s), (top.Height - _search.Height) / 2);
+                _showAutoSaves.Location = new Point(_search.Right + gap, (top.Height - _showAutoSaves.Height) / 2);
+                refreshButton.Size = new Size((int)(92 * s), (int)(26 * s));
+                refreshButton.Location = new Point(_showAutoSaves.Right + gap, (top.Height - refreshButton.Height) / 2);
+            };
             top.Controls.AddRange(new Control[] { _search, _showAutoSaves, refreshButton });
 
             _thumbnails = new ImageList { ImageSize = s_thumbnailSize, ColorDepth = ColorDepth.Depth32Bit };
@@ -207,10 +238,24 @@ namespace CP2077SaveEditor.Views.Controls
                 }
 
                 using var image = Image.FromFile(screenshotPath);
-                var thumbnail = new Bitmap(s_thumbnailSize.Width, s_thumbnailSize.Height);
+                var w = s_thumbnailSize.Width;
+                var h = s_thumbnailSize.Height;
+                var thumbnail = new Bitmap(w, h);
                 using var graphics = Graphics.FromImage(thumbnail);
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.DrawImage(image, 0, 0, s_thumbnailSize.Width, s_thumbnailSize.Height);
+                graphics.DrawImage(image, 0, 0, w, h);
+
+                if (Theme.IsDark)
+                {
+                    using var borderPen = new Pen(Theme.NeonRed, 1f);
+                    using var cyanPen = new Pen(Theme.Cyan, 2f);
+                    using var yellowBrush = new SolidBrush(Theme.Accent);
+                    graphics.DrawRectangle(borderPen, 0, 0, w - 1, h - 1);
+                    graphics.FillRectangle(yellowBrush, 0, 0, 3, h);
+                    graphics.DrawLine(cyanPen, w - 12, 0, w - 1, 0);
+                    graphics.DrawLine(cyanPen, w - 1, 0, w - 1, 12);
+                    graphics.DrawLine(cyanPen, 0, h - 1, 12, h - 1);
+                }
                 return thumbnail;
             }
             catch (Exception)

@@ -68,16 +68,16 @@ namespace CP2077SaveEditor.Views.Controls
             _list.DoubleClick += (_, _) => ToggleSelected();
             _list.SelectedIndexChanged += (_, _) => UpdateLevelInput();
 
-            var levelLabel = new Label { Text = "Level:", AutoSize = true, Location = new Point(3, 9) };
-            _level = new NumericUpDown { Width = 60, Location = new Point(48, 6), Maximum = 3 };
+            var levelLabel = new Label { Text = "Level:", AutoSize = true, Margin = new Padding(3, 9, 3, 0) };
+            _level = new NumericUpDown { Width = 60, Margin = new Padding(3, 6, 6, 0), Maximum = 3 };
 
-            var setButton = new Button { Text = "Set level", AutoSize = true, Location = new Point(115, 4) };
+            var setButton = new Button { Text = "Set level", AutoSize = true };
             setButton.Click += (_, _) => SetLevel(_list.SelectedItems.Cast<ListViewItem>(), _ => (int)_level.Value);
 
-            var maxAllButton = new Button { Text = "Max all", AutoSize = true, Location = new Point(220, 4) };
+            var maxAllButton = new Button { Text = "Max all", AutoSize = true };
             maxAllButton.Click += (_, _) => SetLevel(_list.Items.Cast<ListViewItem>(), perk => perk.MaxLevel);
 
-            var removeAllButton = new Button { Text = "Remove all", AutoSize = true, Location = new Point(305, 4) };
+            var removeAllButton = new Button { Text = "Remove all", AutoSize = true };
             removeAllButton.Click += (_, _) =>
             {
                 if (MessageBox.Show($"Remove every perk of {_attribute.Text}?", "Perks", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -86,15 +86,20 @@ namespace CP2077SaveEditor.Views.Controls
                 }
             };
 
+            Theme.SetToolTip(toolTip, setButton, "Set the selected perks to the chosen level.");
+            Theme.SetToolTip(toolTip, maxAllButton, "Unlock every perk in the current attribute tree at its maximum level.");
+            Theme.SetToolTip(toolTip, removeAllButton, "Reset all perks in the current attribute tree to level 0.");
+
             var hint = new Label
             {
                 Text = "Double click toggles a perk. Requirements between perks are not checked.",
                 AutoSize = true,
                 ForeColor = SystemColors.GrayText,
-                Location = new Point(400, 9)
+                Margin = new Padding(12, 9, 3, 0)
             };
 
-            var bottom = new Panel { Dock = DockStyle.Bottom, Height = 34 };
+            // Flows, so the buttons can grow with the theme's font without overlapping
+            var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 34, WrapContents = false, Padding = new Padding(0, 1, 0, 0) };
             bottom.Controls.AddRange(new Control[] { levelLabel, _level, setButton, maxAllButton, removeAllButton, hint });
 
             Controls.Add(_list);

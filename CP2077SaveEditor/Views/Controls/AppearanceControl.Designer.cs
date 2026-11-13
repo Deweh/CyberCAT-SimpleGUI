@@ -1,4 +1,4 @@
-﻿namespace CP2077SaveEditor.Views.Controls
+namespace CP2077SaveEditor.Views.Controls
 {
     partial class AppearanceControl
     {
@@ -36,22 +36,21 @@
             ((System.ComponentModel.ISupportInitialize)(this.appearancePreviewBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // advancedAppearanceButton
+            // loadAppearButton
             // 
-            this.advancedAppearanceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.advancedAppearanceButton.BackColor = System.Drawing.Color.White;
-            this.advancedAppearanceButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.advancedAppearanceButton.ClickEffectEnabled = true;
-            this.advancedAppearanceButton.DefaultColor = System.Drawing.Color.White;
-            this.advancedAppearanceButton.HoverColor = System.Drawing.Color.LightGray;
-            this.advancedAppearanceButton.Location = new System.Drawing.Point(754, -1);
-            this.advancedAppearanceButton.Name = "advancedAppearanceButton";
-            this.advancedAppearanceButton.Size = new System.Drawing.Size(98, 18);
-            this.advancedAppearanceButton.TabIndex = 13;
-            this.advancedAppearanceButton.Text = "Advanced...";
-            this.advancedAppearanceButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.advancedAppearanceButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.advancedAppearanceButton.Click += new System.EventHandler(this.advancedAppearanceButton_Click);
+            this.loadAppearButton.BackColor = System.Drawing.Color.White;
+            this.loadAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.loadAppearButton.ClickEffectEnabled = true;
+            this.loadAppearButton.DefaultColor = System.Drawing.Color.White;
+            this.loadAppearButton.HoverColor = System.Drawing.Color.LightGray;
+            this.loadAppearButton.Location = new System.Drawing.Point(6, 6);
+            this.loadAppearButton.Name = "loadAppearButton";
+            this.loadAppearButton.Size = new System.Drawing.Size(116, 28);
+            this.loadAppearButton.TabIndex = 14;
+            this.loadAppearButton.Text = "Load Preset";
+            this.loadAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.loadAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.loadAppearButton.Click += new System.EventHandler(this.loadAppearButton_Click);
             // 
             // saveAppearButton
             // 
@@ -60,30 +59,31 @@
             this.saveAppearButton.ClickEffectEnabled = true;
             this.saveAppearButton.DefaultColor = System.Drawing.Color.White;
             this.saveAppearButton.HoverColor = System.Drawing.Color.LightGray;
-            this.saveAppearButton.Location = new System.Drawing.Point(96, -1);
+            this.saveAppearButton.Location = new System.Drawing.Point(128, 6);
             this.saveAppearButton.Name = "saveAppearButton";
-            this.saveAppearButton.Size = new System.Drawing.Size(98, 18);
+            this.saveAppearButton.Size = new System.Drawing.Size(116, 28);
             this.saveAppearButton.TabIndex = 11;
             this.saveAppearButton.Text = "Save Preset";
             this.saveAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.saveAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.saveAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.saveAppearButton.Click += new System.EventHandler(this.saveAppearButton_Click);
             // 
-            // loadAppearButton
+            // advancedAppearanceButton
             // 
-            this.loadAppearButton.BackColor = System.Drawing.Color.White;
-            this.loadAppearButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.loadAppearButton.ClickEffectEnabled = true;
-            this.loadAppearButton.DefaultColor = System.Drawing.Color.White;
-            this.loadAppearButton.HoverColor = System.Drawing.Color.LightGray;
-            this.loadAppearButton.Location = new System.Drawing.Point(-1, -1);
-            this.loadAppearButton.Name = "loadAppearButton";
-            this.loadAppearButton.Size = new System.Drawing.Size(98, 18);
-            this.loadAppearButton.TabIndex = 14;
-            this.loadAppearButton.Text = "Load Preset";
-            this.loadAppearButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.loadAppearButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.loadAppearButton.Click += new System.EventHandler(this.loadAppearButton_Click);
+            this.advancedAppearanceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.advancedAppearanceButton.BackColor = System.Drawing.Color.White;
+            this.advancedAppearanceButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.advancedAppearanceButton.ClickEffectEnabled = true;
+            this.advancedAppearanceButton.DefaultColor = System.Drawing.Color.White;
+            this.advancedAppearanceButton.HoverColor = System.Drawing.Color.LightGray;
+            this.advancedAppearanceButton.Location = new System.Drawing.Point(729, 6);
+            this.advancedAppearanceButton.Name = "advancedAppearanceButton";
+            this.advancedAppearanceButton.Size = new System.Drawing.Size(116, 28);
+            this.advancedAppearanceButton.TabIndex = 13;
+            this.advancedAppearanceButton.Text = "Advanced...";
+            this.advancedAppearanceButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.advancedAppearanceButton.TextFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.advancedAppearanceButton.Click += new System.EventHandler(this.advancedAppearanceButton_Click);
             // 
             // appearancePreviewBox
             // 
@@ -91,9 +91,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.appearancePreviewBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.appearancePreviewBox.Location = new System.Drawing.Point(31, 38);
+            this.appearancePreviewBox.Location = new System.Drawing.Point(16, 44);
             this.appearancePreviewBox.Name = "appearancePreviewBox";
-            this.appearancePreviewBox.Size = new System.Drawing.Size(456, 473);
+            this.appearancePreviewBox.Size = new System.Drawing.Size(500, 488);
             this.appearancePreviewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.appearancePreviewBox.TabIndex = 20;
             this.appearancePreviewBox.TabStop = false;
@@ -103,9 +103,9 @@
             this.appearanceOptionsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.appearanceOptionsPanel.AutoScroll = true;
-            this.appearanceOptionsPanel.Location = new System.Drawing.Point(533, 38);
+            this.appearanceOptionsPanel.Location = new System.Drawing.Point(533, 44);
             this.appearanceOptionsPanel.Name = "appearanceOptionsPanel";
-            this.appearanceOptionsPanel.Size = new System.Drawing.Size(295, 473);
+            this.appearanceOptionsPanel.Size = new System.Drawing.Size(306, 488);
             this.appearanceOptionsPanel.TabIndex = 19;
             // 
             // AppearanceControl

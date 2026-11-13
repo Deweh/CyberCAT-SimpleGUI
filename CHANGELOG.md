@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.34.0
+
+- **CD PROJEKT RED cross-save cloud sync (`Cloud...`):** sign in via browser OAuth device flow, list your cloud saves, download any slot into the editor, and upload the edited save back (with automatic local backup and byte-for-byte verification). Works with PS5, Xbox, and PC/Game Pass cloud saves without needing Cyberpunk 2077 installed.
+- **High-DPI scaling fixes:** scaled sidebar layout, HUD rules, button icons, and Save Browser toolbar on 125%+ displays.
+- **Patch 2.5 stats & modded saves (`v0.30.1` upstream merge):** fixed `Index was out of range` (`ArgumentOutOfRangeException`) when opening some Patch 2.5 saves, preserved forced stat modifiers per slice kind, and added support for modded saves (unknown stat types/enums, script mod fields, and custom lifepaths).
+- **Fewer antivirus false positives:** excluded unused third-party native DLLs (`wwtools.dll`, `DirectXTex`, `texconv.dll`, etc.) from release builds.
+
 ## 0.30.1
 
 - **Patch 2.5 stats are saved correctly.** V's attribute and skill values (and other "forced" modifiers) were merged into the regular modifiers when saving, even without edits, and edits to them were lost. Stats that mention a stat type the editor didn't know (from a newer game version or a mod) made the whole entry read-only, so for example extra cyberware capacity wasn't saved. Each kind of stat data is now written back to where it came from, and unchanged stats stay byte for byte the same.

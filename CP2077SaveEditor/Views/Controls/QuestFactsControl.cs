@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -21,6 +21,12 @@ namespace CP2077SaveEditor.Views.Controls
 
             _parentForm = parentForm;
             _parentForm.PropertyChanged += OnParentFormPropertyChanged;
+
+            var toolTip = new ToolTip();
+            Theme.SetToolTip(toolTip, enableSecretEndingButton, "Sets sq032_johnny_friend = 1 so Johnny's secret ending ('Don't Fear the Reaper') is available in Nocturne Op55N1.");
+            Theme.SetToolTip(toolTip, makeAllRomanceableButton, "Sets the romanceable flags for Judy, Panam, River and Kerry regardless of V's gender.");
+            Theme.SetToolTip(toolTip, addFactButton, "Add a new quest fact entry by name or hash.");
+            Theme.SetToolTip(toolTip, factsSaveButton, "Export all known quest facts and their current values to a JSON text file.");
         }
 
         public string GameControlName => "Quest Facts";
@@ -72,7 +78,7 @@ namespace CP2077SaveEditor.Views.Controls
             if (((TextBox)sender).Text == "Search" && ((TextBox)sender).ForeColor == Color.Silver)
             {
                 ((TextBox)sender).Text = "";
-                ((TextBox)sender).ForeColor = SystemColors.WindowText;
+                ((TextBox)sender).ForeColor = Theme.IsDark ? Theme.DarkText : SystemColors.WindowText;
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace CP2077SaveEditor.Views.Controls
+namespace CP2077SaveEditor.Views.Controls
 {
     partial class QuestFactsControl
     {
@@ -38,6 +38,22 @@
             this.factsNameHeader = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
+            // enableSecretEndingButton
+            // 
+            this.enableSecretEndingButton.BackColor = System.Drawing.Color.White;
+            this.enableSecretEndingButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.enableSecretEndingButton.ClickEffectEnabled = true;
+            this.enableSecretEndingButton.DefaultColor = System.Drawing.Color.White;
+            this.enableSecretEndingButton.HoverColor = System.Drawing.Color.LightGray;
+            this.enableSecretEndingButton.Location = new System.Drawing.Point(6, 6);
+            this.enableSecretEndingButton.Name = "enableSecretEndingButton";
+            this.enableSecretEndingButton.Size = new System.Drawing.Size(160, 28);
+            this.enableSecretEndingButton.TabIndex = 5;
+            this.enableSecretEndingButton.Text = "Enable Secret Ending";
+            this.enableSecretEndingButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.enableSecretEndingButton.TextFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.enableSecretEndingButton.Click += new System.EventHandler(this.enableSecretEndingButton_Click);
+            // 
             // makeAllRomanceableButton
             // 
             this.makeAllRomanceableButton.BackColor = System.Drawing.Color.White;
@@ -45,14 +61,30 @@
             this.makeAllRomanceableButton.ClickEffectEnabled = true;
             this.makeAllRomanceableButton.DefaultColor = System.Drawing.Color.White;
             this.makeAllRomanceableButton.HoverColor = System.Drawing.Color.LightGray;
-            this.makeAllRomanceableButton.Location = new System.Drawing.Point(146, -1);
+            this.makeAllRomanceableButton.Location = new System.Drawing.Point(172, 6);
             this.makeAllRomanceableButton.Name = "makeAllRomanceableButton";
-            this.makeAllRomanceableButton.Size = new System.Drawing.Size(207, 18);
+            this.makeAllRomanceableButton.Size = new System.Drawing.Size(220, 28);
             this.makeAllRomanceableButton.TabIndex = 6;
             this.makeAllRomanceableButton.Text = "Make All Characters Romanceable";
             this.makeAllRomanceableButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.makeAllRomanceableButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.makeAllRomanceableButton.TextFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.makeAllRomanceableButton.Click += new System.EventHandler(this.makeAllRomanceableButton_Click);
+            // 
+            // addFactButton
+            // 
+            this.addFactButton.BackColor = System.Drawing.Color.White;
+            this.addFactButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.addFactButton.ClickEffectEnabled = true;
+            this.addFactButton.DefaultColor = System.Drawing.Color.White;
+            this.addFactButton.HoverColor = System.Drawing.Color.LightGray;
+            this.addFactButton.Location = new System.Drawing.Point(398, 6);
+            this.addFactButton.Name = "addFactButton";
+            this.addFactButton.Size = new System.Drawing.Size(104, 28);
+            this.addFactButton.TabIndex = 3;
+            this.addFactButton.Text = "+ New Fact";
+            this.addFactButton.TextColor = System.Drawing.SystemColors.ControlText;
+            this.addFactButton.TextFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.addFactButton.Click += new System.EventHandler(this.addFactButton_Click);
             // 
             // factsSaveButton
             // 
@@ -62,56 +94,24 @@
             this.factsSaveButton.ClickEffectEnabled = true;
             this.factsSaveButton.DefaultColor = System.Drawing.Color.White;
             this.factsSaveButton.HoverColor = System.Drawing.Color.LightGray;
-            this.factsSaveButton.Location = new System.Drawing.Point(747, -1);
+            this.factsSaveButton.Location = new System.Drawing.Point(725, 6);
             this.factsSaveButton.Name = "factsSaveButton";
-            this.factsSaveButton.Size = new System.Drawing.Size(105, 18);
+            this.factsSaveButton.Size = new System.Drawing.Size(120, 28);
             this.factsSaveButton.TabIndex = 7;
             this.factsSaveButton.Text = "Export to Text";
             this.factsSaveButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.factsSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.factsSaveButton.TextFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.factsSaveButton.Click += new System.EventHandler(this.factsSaveButton_Click);
-            // 
-            // enableSecretEndingButton
-            // 
-            this.enableSecretEndingButton.BackColor = System.Drawing.Color.White;
-            this.enableSecretEndingButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.enableSecretEndingButton.ClickEffectEnabled = true;
-            this.enableSecretEndingButton.DefaultColor = System.Drawing.Color.White;
-            this.enableSecretEndingButton.HoverColor = System.Drawing.Color.LightGray;
-            this.enableSecretEndingButton.Location = new System.Drawing.Point(-1, -1);
-            this.enableSecretEndingButton.Name = "enableSecretEndingButton";
-            this.enableSecretEndingButton.Size = new System.Drawing.Size(149, 18);
-            this.enableSecretEndingButton.TabIndex = 5;
-            this.enableSecretEndingButton.Text = "Enable Secret Ending";
-            this.enableSecretEndingButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.enableSecretEndingButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.enableSecretEndingButton.Click += new System.EventHandler(this.enableSecretEndingButton_Click);
-            // 
-            // addFactButton
-            // 
-            this.addFactButton.BackColor = System.Drawing.Color.White;
-            this.addFactButton.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.addFactButton.ClickEffectEnabled = true;
-            this.addFactButton.DefaultColor = System.Drawing.Color.White;
-            this.addFactButton.HoverColor = System.Drawing.Color.LightGray;
-            this.addFactButton.Location = new System.Drawing.Point(352, -1);
-            this.addFactButton.Name = "addFactButton";
-            this.addFactButton.Size = new System.Drawing.Size(92, 18);
-            this.addFactButton.TabIndex = 3;
-            this.addFactButton.Text = "+ New Fact";
-            this.addFactButton.TextColor = System.Drawing.SystemColors.ControlText;
-            this.addFactButton.TextFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.addFactButton.Click += new System.EventHandler(this.addFactButton_Click);
             // 
             // factsSearchBox
             // 
             this.factsSearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.factsSearchBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.factsSearchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.factsSearchBox.ForeColor = System.Drawing.Color.Silver;
-            this.factsSearchBox.Location = new System.Drawing.Point(3, 24);
+            this.factsSearchBox.Location = new System.Drawing.Point(6, 40);
             this.factsSearchBox.Name = "factsSearchBox";
-            this.factsSearchBox.Size = new System.Drawing.Size(845, 16);
+            this.factsSearchBox.Size = new System.Drawing.Size(839, 23);
             this.factsSearchBox.TabIndex = 2;
             this.factsSearchBox.Text = "Search";
             this.factsSearchBox.TextChanged += new System.EventHandler(this.factsSearchBox_TextChanged);
@@ -130,10 +130,10 @@
             this.factsListView.FullRowSelect = true;
             this.factsListView.GridLines = true;
             this.factsListView.LabelEdit = true;
-            this.factsListView.Location = new System.Drawing.Point(0, 42);
+            this.factsListView.Location = new System.Drawing.Point(0, 69);
             this.factsListView.MultiSelect = false;
             this.factsListView.Name = "factsListView";
-            this.factsListView.Size = new System.Drawing.Size(851, 506);
+            this.factsListView.Size = new System.Drawing.Size(851, 479);
             this.factsListView.TabIndex = 8;
             this.factsListView.UseCompatibleStateImageBehavior = false;
             this.factsListView.View = System.Windows.Forms.View.Details;
@@ -146,13 +146,13 @@
             // 
             this.factsValueHeader.Name = "factsValueHeader";
             this.factsValueHeader.Text = "Value";
-            this.factsValueHeader.Width = 59;
+            this.factsValueHeader.Width = 72;
             // 
             // factsNameHeader
             // 
             this.factsNameHeader.Name = "factsNameHeader";
             this.factsNameHeader.Text = "Name";
-            this.factsNameHeader.Width = 764;
+            this.factsNameHeader.Width = 750;
             // 
             // QuestFactsControl
             // 
